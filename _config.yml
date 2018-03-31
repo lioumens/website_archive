@@ -1,0 +1,50 @@
+# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
+
+source: .
+paginate: 10 # pagination based on number of posts
+paginate_path: "page:num"
+exclude: ["README.md"] # files to exclude
+highlighter: rouge
+markdown: kramdown
+disqus: lioumens
+google_analytics: dbyll
+
+url: http://localhost:4000
+
+defaults:
+  -
+    scope:
+      path: "" # empty string for all files
+    values:
+      title: Michael Liou's Personal Homepage
+      
+repository: lioumens/lioumens.github.io
+title: ""
+description: Michael (lioumens) projects, research and blog posts.
+author:
+  name: Michael Liou
+  email: lioumens@gmail.com
+  github: lioumens
+  twitter: lioumens
+  pinterest: asd123
+  linkedin: asd123
+  bio: "import knowledge; blog.write(opinion)"
+  email_md5: cff471ff7d771f85f7c842ee87eb095c
+rss_path: feed.xml
+categories_path: categories.html
+tags_path: tags.html
+
+# Added to remove regeneration errors
+
+
+# set it as url of an image
+# sidebar_background_image: https://www.dropbox.com/s/g9h23zrycedxtk5/sky.png?raw=1
+
+BASE_PATH: ""
+
+plugins:
+  - jekyll-paginate
+  - jekyll-github-metadata
+  - jekyll-seo-tag
+
+github: [metadata]
