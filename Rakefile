@@ -98,7 +98,7 @@ end # task :page
 
 desc "Launch preview environment"
 task :preview do
-  system "bundle exec jekyll serve -w"
+  system "bundle exec jekyll serve -w --incremental"
 end # task :preview
 
 # Public: Alias - Maintains backwards compatability for theme switching.

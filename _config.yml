@@ -16,7 +16,7 @@ defaults:
     scope:
       path: "" # empty string for all files
     values:
-      title: Michael Liou's Personal Homepage
+      title: import knowledge; blog.write(opinion);
       
 repository: lioumens/lioumens.github.io
 title: ""
@@ -28,7 +28,7 @@ author:
   twitter: lioumens
   pinterest: asd123
   linkedin: asd123
-  bio: "import knowledge; blog.write(opinion)"
+  bio: "Statistics PhD Student at UW-Madison"
   email_md5: cff471ff7d771f85f7c842ee87eb095c
 rss_path: feed.xml
 categories_path: categories.html
