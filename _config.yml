@@ -9,7 +9,7 @@ markdown: kramdown
 disqus: lioumens
 google_analytics: dbyll
 
-url: http://localhost:4000
+url: https://lioumens.github.io
 
 defaults:
   -
@@ -46,5 +46,6 @@ plugins:
   - jekyll-paginate
   - jekyll-github-metadata
   - jekyll-seo-tag
+  - jekyll-sitemap
 
 github: [metadata]
