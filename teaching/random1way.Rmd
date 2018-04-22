@@ -1,0 +1,203 @@
+---
+title: "Random Effect - One Way Classification"
+author: "Michael Liou"
+date: "April 18, 2018"
+bibliography: biblio.bib
+output:
+  html_document:
+    theme: lumen
+    highlight: haddock
+    toc: true
+    df_print: default
+    number_sections: false
+    toc_float:
+      collapsed: true
+---
+
+\newcommand{\expect}[1]{\mathbf{E}\left[ #1 \right]}
+\newcommand{\variance}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\covariance}[1]{\mathrm{Cov}\left( #1 \right)}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Overview and Model
+
+Incorporating random effects into the model can seem to have a confusing impact on the downstream analsysis and at first, it may be hard to distinguish what is actually different between fixed and random effect models. Here we look at just the expected mean squares, and estimating the different variance components, with an emphasis on the derivations. For a book-length treatment of these topics, I would highly recommend the book [@varcomp]. Much of these derivations are in parallel to those presented in the book, but with more detail presented here.
+
+Our one-way model is:
+
+$$
+y_{ij} = \mu + \alpha_i + \varepsilon_{ij}
+$$
+where:
+
+* $y_{ij}$ is the observed response
+* $\mu$ is the grand mean of the responses
+* $\alpha_i$ is the effect of each of factor A for each level $i$, can either be fixed or random.
+* The errors for the jth observation in the ith treatment group $\varepsilon \sim_{iid} N(0, \sigma^2)$
+
+If this is fixed, we assume $\alpha_i$ to be some unknowable population constant. If we regard $\alpha$ as random, we add the assumptions that $\alpha \sim_{iid} N(0,\sigma^2_\alpha)$ and that $Cov(\alpha_{i}, \epsilon_{ij}) = 0$.
+
+Written succintly, we can use matrices to express all the equations at once:
+
+$$
+\begin{aligned}
+\begin{bmatrix}
+y_{11} \\
+y_{12} \\
+\vdots \\
+y_{1n} \\
+y_{21} \\
+y_{22} \\
+\vdots \\
+y_{an}
+\end{bmatrix}_{an\times 1} &=
+\begin{bmatrix}
+\mu \\
+\vdots \\
+\mu
+\end{bmatrix}_{an\times 1} + 
+\begin{bmatrix}
+1 & 0  & \cdots & 0 \\
+1 & 0  & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+1 & 0 &  \cdots & 0 \\
+0 & 1 & \cdots & 0 \\
+0 & 1 & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & 1
+\end{bmatrix}_{an\times a}
+\begin{bmatrix}
+\alpha_1\\
+\alpha_2\\
+\vdots\\
+\alpha_a
+\end{bmatrix}_{a\times 1} +
+\begin{bmatrix}
+\varepsilon_{11} \\
+\varepsilon_{12} \\
+\vdots \\
+\varepsilon_{1n} \\
+\varepsilon_{21} \\
+\varepsilon_{22} \\
+\vdots \\
+\varepsilon_{an}
+\end{bmatrix}_{an \times 1}
+\\\\\\
+\mathbf{y} &= \mathbf{j}_{an}'\mu + 
+\begin{bmatrix}
+\mathbf{j}'_n & 0 & \cdots & 0 \\
+0 & \mathbf{j}'_n & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & \mathbf{j}'_n
+\end{bmatrix} \mathbf{\alpha} + \mathbf{\varepsilon}\\\\
+\mathbf{y} &= \mathbf{j'}_{an} \mu + (\mathbf{I}_a \otimes \mathbf{j}'_n)\mathbf{\alpha} + \mathbf{\varepsilon}
+\end{aligned}
+$$
+
+
+where $\mathbf{j}_n$ is a $1\times n$ row vector of $1$'s, $I_a$ is a $a \times a$ identity matrix, and $\otimes$ is the [kronecker product](https://en.wikipedia.org/wiki/Kronecker_product).
+
+
+# Distinguishing between fixed and random effects
+
+Briefly, a factor is fixed if all levels of interest were measured, and we treat the factor as random if we can assume that the levels are from some general probability distribution. More detail can be found in [@varcomp, ch. 1], or other posts online such as [here](https://www.ma.utexas.edu/users/mks/statmistakes/fixedvsrandom.html) or [here](https://dynamicecology.wordpress.com/2015/11/04/is-it-a-fixed-or-random-effect/).
+
+
+# Expected Mean Squares {.tabset .tabset-fade}
+
+We can define the sum of squares error (SSE) and sum of squares for factor A (SSA) as follows (for a history of why sum of squares are used, see the history of statistics blog posts): 
+
+$$
+\begin{aligned}
+SSA &= \sum^{n}_{j=1} \sum^{a}_{i=1}{\left(\bar{y}_{i\cdot} - \bar{y}_{\cdot\cdot}\right)^2}  \\
+&= n  \sum^{a}_{i=1}{\left(\bar{y}_{i\cdot} - \bar{y}_{\cdot\cdot}\right)^2}  \\
+&= n \sum^{a}_{i=1}{\bar{y}_{i\cdot}^2 - an\bar{y}_{\cdot\cdot}^2} \\
+SSE &= \sum^{n}_{j=1} \sum^{a}_{i=1} \left(y_{ij} - \bar{y}_{i\cdot}\right)^2 \\
+&= \sum^{n}_{j=1} \sum^{a}_{i=1} y_{ij}^2 - 2 \left( \sum^{n}_{j=1} \sum^{a}_{i=1} y_{ij} \bar{y}_{i\cdot }\right) + n \sum^{a}_{i=1} \bar{y}_{i\cdot}^2 \\
+&= \sum^{n}_{j=1} \sum^{a}_{i=1} y_{ij}^2 - n \sum^{a}_{i=1} \bar{y}_{i\cdot}^2 \\
+\end{aligned}
+$$
+It is often convenient to write these in terms of matrices. Thus, these can be written out as:
+
+$$
+\begin{aligned}
+SSE &= \mathbf{y}'\left( \mathbf{I}_n - \mathbf{I}_a \otimes \frac{1}{n}\mathbf{J}_n\right) \mathbf{y}\\
+&= \mathbf{y}' \mathbf{y} - \frac{1}{n} \mathbf{y}' \begin{bmatrix} \mathbf{J}_n & 0 & \cdots & 0 \\
+0 &\mathbf{J}_n & \cdots & 0 \\
+\vdots & \vdots & \ddots & 0 \\
+0 & 0 & 0 & \mathbf{J}_n
+\end{bmatrix} y
+\\
+SSA &= \mathbf{y}'\left(\mathbf{I}_a \otimes \frac{1}{n}\mathbf{J}_n - \frac{1}{an} \mathbf{J}_{an} \right) \mathbf{y} \\
+&= \frac{1}{n} \mathbf{y}' \begin{bmatrix} \mathbf{J}_n & 0 & \cdots & 0 \\
+0 &\mathbf{J}_n & \cdots & 0 \\
+\vdots & \vdots & \ddots & 0 \\
+0 & 0 & 0 & \mathbf{J}_n
+\end{bmatrix} \mathbf{y} - \frac{1}{an}\mathbf{y}'\mathbf{J}_{an}\mathbf{y}
+\end{aligned}
+$$
+These matrices look a little confusing algebraically, so I recommend drawing them out as shaded matrices, by shading the $1$'s.
+
+
+We calculate our expected mean squares directly 
+
+$$
+\begin{aligned}
+\expect{y_{ij}} &= \expect{\mu + \alpha_{i} + \varepsilon_{ij}} & \variance{y_{ij}} &= \variance{ \mu_{} + \alpha_{i} + \varepsilon_{ij}} 
+\\
+&= \mu_{} &&= \variance{ \alpha_{i}} + \variance{ \varepsilon_{ij}} + 2 \covariance{\alpha_{i}, \varepsilon_{ij}} 
+\\
+&&&= \sigma^{2}_\alpha + \sigma^{2}_\varepsilon  + 0 \\
+\expect{\bar{y}_{i\cdot}} &= \mu_{} + 0 + 0 & \variance{\bar{y}_{i\cdot}} &= \variance{ \alpha_{i}} + \variance{ \sum^{n}_{j=1}{ \varepsilon_{ij}}\over n} \\ 
+&= \mu &&= \sigma^{2}_\alpha + \frac{ \sigma^{2}_\varepsilon}{n} 
+\\
+\expect{\bar{y}_{\cdot\cdot}} &= \mu & \variance{\bar{y}_{\cdot\cdot}} &= \variance{ \sum^{a}_{i=1}{ \sum^{n}_{j=1}{ y_{ij}}} \over an} \\
+&&&= \variance{ \mu_{} + \frac{ \sum^{a}_{i=1}{ \alpha_{i}}}{a} + \frac{ \sum^{a}_{i=1}{ \sum^{n}_{j=1}{ \varepsilon_{ij}}}}{an}} \\
+&&&= \frac{ \sigma^{2}_\alpha}{a} + \frac{ \sigma^{2}_\varepsilon}{an}
+\end{aligned}
+$$
+
+
+## MSA
+
+$$
+\begin{aligned}
+\expect{SSA} &= \expect{n \sum^{a}_{i=1}{\bar{y}_{i\cdot}^2 - an\bar{y}_{\cdot\cdot}^2}} \\
+&= an\expect{ \bar{y}_{i\cdot}^2} - an \expect{ \bar{y}_{\cdot\cdot}^2} \\
+&= an\left( \sigma^2_\alpha + \frac{\sigma^2_\varepsilon}{n} + \mu^2\right) - an\left( \frac{\sigma_\alpha^2}{a} + \frac{\sigma^2_\varepsilon}{an} + \mu^2\right) \\
+&= n(a - 1) \sigma^2_\alpha + (a-1)\sigma^2_\epsilon \\
+&= (a-1)(n \sigma^{2}_\alpha + \sigma^{2}_\varepsilon)\\
+\expect{MSA} &= \expect{ \frac{SSA}{a-1}} \\
+&= n \sigma^{2}_\alpha + \sigma^{2}_\varepsilon
+\end{aligned}
+$$
+
+
+
+
+## MSE
+
+$$
+\begin{aligned}
+\expect{SSE} &= \expect{ \sum^{n}_{j=1} \sum^{a}_{i=1} y_{ij}^2 - n \sum^{a}_{i=1} \bar{y}_{i\cdot}^2 } \\
+&= \sum^{n}_{j=1} \sum^{a}_{i=1} \expect{y_{ij}^2} - n \sum^{a}_{i=1} \expect{\bar{y}_{i\cdot}^2 } \\
+&= an( \sigma^{2}_\alpha + \sigma^{2}_\varepsilon + \mu_{}^2) - an \left(\sigma^{2}_\alpha + \frac{ \sigma^{2}_\varepsilon}{n} + \mu_{}^2\right) \\
+&= a(n-1) \sigma^{2}_\varepsilon \\
+\expect{MSE} &= \expect{ \frac{SSE}{a(n-1)}} \\
+&= \sigma^{2}_\varepsilon
+\end{aligned}
+$$
+
+# Estimation
+
+Thus, our estimate for $\hat{\sigma}^2_\varepsilon = MSE$ and $\hat{\sigma}^2_\alpha = \frac{MSA - MSE}{n }$. Note that in estimating the variance of the random effect, if $MSA < MSE$, we could end up with a negative estimate for our variance. This is rather embarassing to explain to a client, how this can happen, but conventionally, we just set our estimate to 0 in this scenario.
+
+# References
+
+
+
