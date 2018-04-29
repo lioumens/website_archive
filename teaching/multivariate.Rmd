@@ -1,0 +1,143 @@
+---
+title: "Multivariate Normal Results"
+author: "Michael Liou"
+date: "April 28, 2018"
+output:
+  html_document:
+    theme: lumen
+    highlight: haddock
+    toc: true
+    df_print: default
+    number_sections: false
+    toc_float:
+      collapsed: true
+---
+
+\newcommand{\expect}[1]{\mathbf{E}\left[ #1 \right]}
+\newcommand{\variance}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\covariance}[1]{\mathrm{Cov}\left( #1 \right)}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+These are all very classic results, but I can never find the results distilled in the manner that I wish, thus, I've written my own notes so that it's easier for me to reference. Most of the material I've drawn from various sources around the internet, or other people's notes.[^1] [^2] [^3]
+
+# Definitions
+
+If $\mathbf{Y}\sim \mathcal{N}( \mathbf{\mu}, \mathbf{\Sigma})$ where $\mathbf{Y} \in \mathbb{R^p}$ and $\Sigma$ is a *positive definite* symmetric variance-covariance matrix Note that *p.d.* also implies full rank and non-singular because all the eigenvalues are positive real numbers. The variance-covariance matrix is already guaranteed to be *positive semi-definite*, but imagine if all the variances of except 1 were non-zero (with 0 covariance), we would have a *degenerate* multivariate distribution, and the vector $\mathbf{X}$ is not really a random vector then. Thus, we define the following pdf for the *nondegenerate* multivariate normal:
+
+$$
+\begin{aligned}
+f(\mathbf{y}) = \frac{1}{(2\pi)^{p/2} |\Sigma|^{1/2}} \exp{\left(-( \mathbf{y} - \mathbf{\mu})'\Sigma^{-1}(\mathbf{y} - \mathbf{\mu})\right)}
+\end{aligned}
+$$
+
+Another definition of the general multivariate normal (MVN) involves constructing the distribution from the multivariate standard normal, in which $X \sim \mathcal{N}( \mathbf{0}, \mathbf{I}_n)$. (In turn, we define the multivariate standard normal as the joint pdf of univariate standard normal. We can verify this by direct multiplication of the pdfs.) 
+
+$$
+\begin{aligned}
+f( \mathbf{x}) = (2\pi)^{-p/2} \exp{\left(-\frac{1}{2}\mathbf{x'x}\right)}
+\end{aligned}
+$$
+
+
+The MVN is then defined as $\mathbf{Y} = \mathbf{\mu} + \mathbf{VX}$ where $\mathbf{VV^T} = \mathbf{\Sigma}$. In order to avoid non-degeneracy, we require that $V$ to be an invertible square matrix. I prefer this definition when dealing with the MGFs; it's easier to remember.
+
+# Moment Generating Functions {.tabset .tabset-fade}
+
+The moment generating function of $\mathbf{X}$ is defined as $M_\mathbf{x}(\mathbf{t}) = \expect{e^{t\mathbf{x}}}$. The derivation here uses the mgf of the standard normal, $M_x(t) = \exp{ \left(\frac{1}{2}t^2\right)}$. Again, we define $\mathbf{Y} = \mathbf{\mu} + \mathbf{VX}$.
+
+## Standard MVN
+
+$$
+\begin{aligned}
+M_\mathbf{x}(\mathbf{t}) &= \expect{e^{\mathbf{t'x}}} \\
+&= \expect{\exp{\left( \sum^{p}_{i=1}{t_i x_i}\right)}} \\
+&= \expect{\Pi_{i=1}^{p} \exp{t_i x_i}} \\
+&= \Pi_{i=1}^{p} \expect{\exp{t_i x_i}} \\
+&= \Pi_{i=1}^{p} M_{x_i}(t_i) \\
+&= \Pi_{i=1}^{p} \exp{ \left(\frac{1}{2}t_i^2\right)} \\
+&= \exp{ \left( \frac{1}{2} \mathbf{t't}\right)}
+\end{aligned}
+$$
+
+## General MVN
+
+$$
+\begin{aligned}
+M_\mathbf{y}(\mathbf{t}) &= \expect{e^{\mathbf{t'y}}}\\
+&= \expect{e^{\mathbf{t'(\mu + Vx)}}} \\
+&= \exp{(\mathbf{t'\mu})}\expect{e^{\mathbf{t'Vx}}} \\
+&= \exp{(\mathbf{t'\mu})}\expect{e^{\mathbf{(V't)'x}}} \\
+&= \exp{(\mathbf{t'\mu})} M_\mathbf{x}(\mathbf{V't})\\
+&= \exp{\left(\mathbf{t'\mu}\right)} \exp{ \left( \frac{1}{2} \mathbf{(V't)'(V't)}\right)} \\
+&= \exp{\left(\mathbf{t'\mu} + \frac{1}{2} \mathbf{t'\Sigma t}\right)}
+\end{aligned}
+$$
+
+# Linear transformation of MVN (marginals)
+
+If we define a $\mathbf{Z}=\mathbf{AY} + \mathbf{b}$ where $A \in \mathbb{R^{n \times p}}$, then $Z \sim \mathcal{N}_n ( \mathbf{A\mu} + \mathbf{b}, \mathbf{A\Sigma A^{T}})$. To show this, we can use the MGF result in the exact same manner.
+
+$$
+\begin{aligned}
+M_z(\mathbf{t}) &= \expect{e^{\mathbf{t'z}}} \\
+&= \expect{e^{\mathbf{t'(Ay + b)}}} \\
+&= e^{t'b}\expect{e^{\mathbf{(A't)'y}}} \\
+&= e^{t'b}M_y(\mathbf{A't}) \\
+&= \exp{ \left(t'b\right)}\exp{ \left((A't)'u + \frac{1}{2}(A't)'\Sigma (A't) \right)} \\
+&= \exp{ \left( t'(b + A\mu) + \frac{1}{2}t'A\Sigma A't\right)}
+\end{aligned}
+$$
+This is the mgf of  $\mathcal{N}_n ( \mathbf{A\mu} + \mathbf{b}, \mathbf{A\Sigma A^{T}})$.
+
+The marginals are simply a special case of taking the linear transformations, in which the entries along the diagonal are 1 for the random variables that we want to select out.
+
+# Conditional Distribution
+
+This is probabably the trickiest of all the basic MVN results. First we partition the MVN random vector, so $\mathbf{Y} = \begin{bmatrix} Y_1 \\ Y_2 \end{bmatrix}$ and $\Sigma = \begin{bmatrix}\Sigma_{11} & \Sigma_{12} \\ \Sigma_{21} & \Sigma_{22}\end{bmatrix}$. We will find that 
+
+$$
+\begin{aligned}
+\expect{\mathbf{Y_2} | \mathbf{Y_1} = \mathbf{y_1}} &= \mathbf{\mu_2} + \Sigma_{21}\Sigma_{11}^{-1}(\mathbf{y_1} - \mathbf{\mu_1}) \\
+\variance{\mathbf{Y_2} | \mathbf{Y_1} = \mathbf{y_1}} &= \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12}
+\end{aligned}
+$$
+Note that the conditional covariance is the [Schur Complement](https://en.wikipedia.org/wiki/Schur_complement) with respect to $\Sigma_{11}$.
+
+We define a new term $Y_2' = Y_2 - \Sigma_{21}\Sigma_{11}^{-1}Y_1 = CY$ where $C = \begin{bmatrix} -\Sigma_{21} \Sigma_{11}^{-1} & \mathbf{I}\end{bmatrix}$
+
+First we show that they are independent:
+
+$$
+\begin{aligned}
+\covariance{Y_1, Y_2'} &= \covariance{Y_1, Y_2 - \Sigma_{21}\Sigma_{11}^{-1}Y_1} \\
+&= \covariance{Y_1, Y_2} - \variance{Y_1}\Sigma_{11}^{-1}\Sigma_{12} \\
+&= \Sigma_{12} - \Sigma_{11}\Sigma_{11}^{-1}\Sigma_{12} \\
+&= \Sigma_{12} - \Sigma_{12} \\
+&= 0 \\
+\expect{Y_2 | Y_1=y_1} &= \expect{Y_2' +  \Sigma_{21}\Sigma_{11}^{-1}Y_1 | Y_1=y_1} \\
+&= \expect{Y_2' | Y_1=y_1} +  \Sigma_{21}\Sigma_{11}^{-1}y_1  \\
+&= \expect{Y_2'} + \Sigma_{21}\Sigma_{11}^{-1}y_1 \\
+&= \mu_2 - \Sigma_{21}\Sigma_{11}^{-1}\mu_1 + \Sigma_{21}\Sigma_{11}^{-1}y_1 \\
+&= \mu_2 + \Sigma_{21}\Sigma_{11}^{-1}(y_1 - \mu_1) \\
+\variance{Y_2 | Y_1 = y_1} &= \variance{Y_2 - \Sigma_{21}\Sigma_{11}^{-1}y_1 | Y_1 = y_1} \\
+&= \variance{Y_2' | Y_1 = y_1} \\
+&= \variance{Y_2'} \\
+&= \variance{CY} \\
+&= C\Sigma C' \\
+&= \begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1} & \mathbf{I}\end{bmatrix} \begin{bmatrix}\Sigma_{11} & \Sigma_{12} \\ \Sigma_{21} & \Sigma_{22}\end{bmatrix}\begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1}  \\ \mathbf{I}\end{bmatrix} \\
+&= \begin{bmatrix}-\Sigma_{21} + \Sigma_{12} & \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12}\end{bmatrix} \begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1}  \\ \mathbf{I}\end{bmatrix} \\
+&= \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12}
+\end{aligned}
+$$
+
+# References
+
+[^1]: http://www.maths.manchester.ac.uk/~mkt/MT3732%20(MVA)/Notes/MVA_Section3.pdf
+[^2]: http://www.mast.queensu.ca/~stat353/slides/5-multivariate_normal17_4.pdf
+[^3]: https://www.statlect.com/probability-distributions/multivariate-normal-distribution
+
