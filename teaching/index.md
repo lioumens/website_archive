@@ -28,4 +28,8 @@ That said, I really do hope you find these materials helpful, and I would love y
  * [Random Effects 1-way](random1way.html)
  * [Multivariate Normal](multivariate.html)
 
+## Software
+
+* [R to Python](RtoPython.md)
+
 

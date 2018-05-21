@@ -217,6 +217,10 @@ ul.dropdown-menu>li>a>i.fa {
     border-bottom: 15px double #428BCA;
 }
 
+.footnotes p {
+  margin: 0 0 0 0;
+}
+
 table {
   padding: 0; }
   table tr {

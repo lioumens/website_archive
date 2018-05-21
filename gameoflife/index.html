@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Conway's Game of Life</title>
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+    </head>
+    <body>
+        <div class="container-fluid text-center"><h1>Conway's Game of
+                Life</h1><p>Click anywhere in the canvas element to start
+            placing cells.</p></div>
+        <canvas class="center-block" id="mainCanvas" width="900" height="500" style="border:1px solid
+        #d3d3d3;">
+            Your browser does not support the HTML5 canvas tag.
+        </canvas>
+        <br>
+        <div class="container-fluid text-center"><h2>Controls</h2>
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default" onclick="nextState()">Next</button>
+            <button id="play" type="button" class="btn btn-default"
+                                            onclick="playToggle()">Run</button>
+            <button type="button" class="btn btn-default"
+                onclick="reset()">Reset</button>
+        </div>
+        </div>
+
+        <div class="container-fluid text-center"><h2>Examples</h2>
+            <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default"
+                onclick="examples.glider()">Basic Glider</button>
+            <button type="button" class="btn btn-default"
+                onclick="examples.gliderGun()">Glider Gun</button>
+            <button type="button" class="btn btn-default"
+                onclick="examples.oscillator()">Oscillators</button>
+            <button type="button" class="btn btn-default"
+                onclick="examples.stillLife()">Still Life</button>
+            </div>
+        </div>
+
+        <div class="container-fluid text-center"><h2>About Game of Life</h2>
+        <p>British mathematician John Conway came up with the idea of game of
+        life. It is a type of cellular automation for studying thing such as
+        computability theory and theoretical biology. The first public
+        appearance of the game was in the October 1970 issue of the Scientific
+        American. The rules of the game are
+        as follows:</p>
+        <ol style="display: inline-block; text-align: left">
+        <li>A neighborhood is defined as any of the 8 cells adjacent to a cell.</li>
+        <li>If a living cell has < 2 neighbors, it will die from
+            under-population.</li>
+        <li>If a living cell has 2 or 3 neighbors, it will continue living.</li>
+        <li>If a living cell has > 3 neighbors, it will die from
+            over-population.</li>
+        <li>If any dead cell has exactly 3 neighbors, it will become alive from
+            reproduction.</li>
+        </ol>
+        <p>Over the years, the game has been studied in many ways because there
+        are many ways in which patterns can emerge. There are for example, many
+        patterns of "still-life", oscillators, and infinite patterns.</p></div>
+
+        <script type="text/javascript" src="gol.js"> </script>
+    </body>
+
+</html>

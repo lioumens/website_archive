@@ -35,7 +35,7 @@ f(\mathbf{y}) = \frac{1}{(2\pi)^{p/2} |\Sigma|^{1/2}} \exp{\left(-( \mathbf{y} -
 \end{aligned}
 $$
 
-Another definition of the general multivariate normal (MVN) involves constructing the distribution from the multivariate standard normal, in which $X \sim \mathcal{N}( \mathbf{0}, \mathbf{I}_n)$. (In turn, we define the multivariate standard normal as the joint pdf of univariate standard normal. We can verify this by direct multiplication of the pdfs.) 
+Another definition of the general multivariate normal (MVN) involves constructing the distribution from the multivariate standard normal, in which $X \sim \mathcal{N}_p( \mathbf{0}, \mathbf{I}_p)$. (In turn, we define the multivariate standard normal as the joint pdf of univariate standard normal. We can verify this by direct multiplication of the pdfs.) 
 
 $$
 \begin{aligned}
@@ -134,6 +134,8 @@ $$
 &= \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12}
 \end{aligned}
 $$
+
+
 
 # References
 
