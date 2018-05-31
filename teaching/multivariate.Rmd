@@ -31,7 +31,7 @@ If $\mathbf{Y}\sim \mathcal{N}( \mathbf{\mu}, \mathbf{\Sigma})$ where $\mathbf{Y
 
 $$
 \begin{aligned}
-f(\mathbf{y}) = \frac{1}{(2\pi)^{p/2} |\Sigma|^{1/2}} \exp{\left(-( \mathbf{y} - \mathbf{\mu})'\Sigma^{-1}(\mathbf{y} - \mathbf{\mu})\right)}
+f(\mathbf{y}) = \frac{1}{(2\pi)^{p/2} |\Sigma|^{1/2}} \exp{\left(- \frac{1}{2}( \mathbf{y} - \mathbf{\mu})'\Sigma^{-1}(\mathbf{y} - \mathbf{\mu})\right)}
 \end{aligned}
 $$
 

@@ -210,22 +210,16 @@ div.tocify {
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>These are all very classic results, but I can never find the results distilled in the manner that I wish, thus, I’ve written my own notes so that it’s easier for me to reference. Most of the material I’ve drawn from various sources around the internet, or other people’s notes.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> <a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
-<p><details> <summary>Proof</summary> <span class="math display">\[
-  \begin{aligned}
-  {\mathbf{E}\left[ x \right]} = y
-  \end{aligned}
-  \]</span></p>
-<p></details></p>
 </div>
 <div id="definitions" class="section level1">
 <h1>Definitions</h1>
 <p>If <span class="math inline">\(\mathbf{Y}\sim \mathcal{N}( \mathbf{\mu}, \mathbf{\Sigma})\)</span> where <span class="math inline">\(\mathbf{Y} \in \mathbb{R^p}\)</span> and <span class="math inline">\(\Sigma\)</span> is a <em>positive definite</em> symmetric variance-covariance matrix Note that <em>p.d.</em> also implies full rank and non-singular because all the eigenvalues are positive real numbers. The variance-covariance matrix is already guaranteed to be <em>positive semi-definite</em>, but imagine if all the variances of except 1 were non-zero (with 0 covariance), we would have a <em>degenerate</em> multivariate distribution, and the vector <span class="math inline">\(\mathbf{X}\)</span> is not really a random vector then. Thus, we define the following pdf for the <em>nondegenerate</em> multivariate normal:</p>
 <p><span class="math display">\[
 \begin{aligned}
-f(\mathbf{y}) = \frac{1}{(2\pi)^{p/2} |\Sigma|^{1/2}} \exp{\left(-( \mathbf{y} - \mathbf{\mu})'\Sigma^{-1}(\mathbf{y} - \mathbf{\mu})\right)}
+f(\mathbf{y}) = \frac{1}{(2\pi)^{p/2} |\Sigma|^{1/2}} \exp{\left(- \frac{1}{2}( \mathbf{y} - \mathbf{\mu})'\Sigma^{-1}(\mathbf{y} - \mathbf{\mu})\right)}
 \end{aligned}
 \]</span></p>
-<p>Another definition of the general multivariate normal (MVN) involves constructing the distribution from the multivariate standard normal, in which <span class="math inline">\(X \sim \mathcal{N}( \mathbf{0}, \mathbf{I}_n)\)</span>. (In turn, we define the multivariate standard normal as the joint pdf of univariate standard normal. We can verify this by direct multiplication of the pdfs.)</p>
+<p>Another definition of the general multivariate normal (MVN) involves constructing the distribution from the multivariate standard normal, in which <span class="math inline">\(X \sim \mathcal{N}_p( \mathbf{0}, \mathbf{I}_p)\)</span>. (In turn, we define the multivariate standard normal as the joint pdf of univariate standard normal. We can verify this by direct multiplication of the pdfs.)</p>
 <p><span class="math display">\[
 \begin{aligned}
 f( \mathbf{x}) = (2\pi)^{-p/2} \exp{\left(-\frac{1}{2}\mathbf{x'x}\right)}
