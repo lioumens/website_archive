@@ -88,7 +88,7 @@ article .share .gplus:hover {
 }
 
 article{
-	margin-bottom: 40px;
+	margin-bottom: 0px;
 }
 
 .article_body{
@@ -133,6 +133,19 @@ article.home h3 a:hover,
 article.home h4 a:hover {
 	color: #e74c3c;
 }
+
+/* Custom Styling for posts */
+
+article.home > .post-title > a {
+	color: #f2756a;
+}
+article.home > .post-title > a:hover {
+	color: #e74c3c;
+}
+article.home {
+  font-size: 16px;
+}
+
 
 .author .author-image {
   float: left;
