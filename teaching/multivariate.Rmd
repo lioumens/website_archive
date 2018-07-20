@@ -27,7 +27,7 @@ These are all very classic results, but I can never find the results distilled i
 
 # Definitions
 
-If $\mathbf{Y}\sim \mathcal{N}( \mathbf{\mu}, \mathbf{\Sigma})$ where $\mathbf{Y} \in \mathbb{R^p}$ and $\Sigma$ is a *positive definite* symmetric variance-covariance matrix Note that *p.d.* also implies full rank and non-singular because all the eigenvalues are positive real numbers. The variance-covariance matrix is already guaranteed to be *positive semi-definite*, but imagine if all the variances of except 1 were non-zero (with 0 covariance), we would have a *degenerate* multivariate distribution, and the vector $\mathbf{X}$ is not really a random vector then. Thus, we define the following pdf for the *nondegenerate* multivariate normal:
+If $\mathbf{Y}\sim \mathcal{N}( \mathbf{\mu}, \mathbf{\Sigma})$ where $\mathbf{Y} \in \mathbb{R^p}$ and $\Sigma$ is a *positive definite* symmetric variance-covariance matrix Note that *p.d.* also implies full rank and non-singular because all the eigenvalues are positive real numbers. The variance-covariance matrix is already restricted to be *positive semi-definite*, but imagine if all the variances except 1 were non-zero (with 0 covariance); we would have a *degenerate* multivariate distribution, and the vector $\mathbf{Y}$ is not really a random vector then. Thus, we define the following pdf for the *nondegenerate* multivariate normal:
 
 $$
 \begin{aligned}
@@ -98,42 +98,141 @@ The marginals are simply a special case of taking the linear transformations, in
 
 # Conditional Distribution
 
-This is probabably the trickiest of all the basic MVN results. First we partition the MVN random vector, so $\mathbf{Y} = \begin{bmatrix} Y_1 \\ Y_2 \end{bmatrix}$ and $\Sigma = \begin{bmatrix}\Sigma_{11} & \Sigma_{12} \\ \Sigma_{21} & \Sigma_{22}\end{bmatrix}$. We will find that 
+This is probabably the trickiest of all the basic MVN results. The clearest way is to try and factor the joint distribution directly.[^4]
+
+First we partition the MVN random vector by variables we wish to condition on, so $\mathbf{Y} = \begin{bmatrix}\mathbf{Y_1} \\ \mathbf{Y_2}\end{bmatrix}$ and $\mathbf{\Sigma} = \begin{bmatrix}\mathbf{\Sigma_{11}} & \mathbf{\Sigma_{12}} \\ \mathbf{\Sigma_{21}} & \mathbf{\Sigma_{22}}\end{bmatrix}$. If $Y$ is $p$-dimensional, let $Y_1$ and $Y_2$ be $r$ and $s$-dimensional, so that $p = r+s$. We wish to know,
+
+$$\mathbf{Y_1}|\mathbf{Y_2} \sim \, ?$$
+
+The main idea is that we want to factor the joint distribution into a product of the conditional and marginal. $f(\mathbf{y}) = f(\mathbf{y_1}|\mathbf{y_2})f(\mathbf{y_2})$. We already know the marginal distribution of $\mathbf{Y_2}\sim MVN(\mathbf{\mu_2}, \mathbf{\Sigma_{22}})$, given above, so we have some idea of what to factor out.
+
+We will abbreviate the [Schur Complement](https://en.wikipedia.org/wiki/Schur_complement) of $\Sigma$ with respect to $\Sigma_{22}$ as $\Sigma / \Sigma_{22} = \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}$.
 
 $$
 \begin{aligned}
-\expect{\mathbf{Y_2} | \mathbf{Y_1} = \mathbf{y_1}} &= \mathbf{\mu_2} + \Sigma_{21}\Sigma_{11}^{-1}(\mathbf{y_1} - \mathbf{\mu_1}) \\
-\variance{\mathbf{Y_2} | \mathbf{Y_1} = \mathbf{y_1}} &= \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12}
+f(\mathbf{y}) &= (2\pi)^{-p/2}|\Sigma|^{-1/2}\exp{\left(- \frac{1}{2}(\mathbf{y-\mu})^T\mathbf{\Sigma}^{-1}(\mathbf{y-\mu})\right)}
+\\
+&= (2\pi)^{-p/2}|\Sigma|^{-1/2}\exp{\left(- \frac{1}{2} \begin{bmatrix}
+\mathbf{y_1-\mu_1} \\ \mathbf{y_2-\mu_2}\end{bmatrix}^T \begin{bmatrix}\mathbf{\Sigma_{11}} & \mathbf{\Sigma_{12}} \\ \mathbf{\Sigma_{21}} & \mathbf{\Sigma_{22}}\end{bmatrix}
+^{-1}\begin{bmatrix}
+\mathbf{y_1-\mu_1} \\ \mathbf{y_2-\mu_2}\end{bmatrix}\right)} 
+\\
+&=(2\pi)^{-p/2}|\Sigma|^{-1/2}\exp{\left(- \frac{1}{2} 
+\begin{bmatrix}
+\mathbf{y_1-\mu_1} \\ \mathbf{y_2-\mu_2}
+\end{bmatrix}^T 
+\left(
+\begin{bmatrix}
+\mathbf{I} & \mathbf{\Sigma_{12}\Sigma_{22}^{-1}} \\ \mathbf{0} & \mathbf{I}
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{\Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1} \Sigma_{21}} & \mathbf{0} \\ \mathbf{0} & \mathbf{\Sigma_{22}}
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{I} & \mathbf{0} \\ \mathbf{\Sigma_{22}^{-1}\Sigma_{21}} & \mathbf{I}
+\end{bmatrix}
+\right)^{-1}
+\begin{bmatrix}
+\mathbf{y_1-\mu_1} \\
+\mathbf{y_2-\mu_2}
+\end{bmatrix}\right)} \\
+&= (2\pi)^{-p/2}|\Sigma|^{-1/2}\exp{\left(- \frac{1}{2} 
+\begin{bmatrix}
+\mathbf{y_1-\mu_1} \\ \mathbf{y_2-\mu_2}
+\end{bmatrix}^T 
+\begin{bmatrix}
+\mathbf{I} & \mathbf{0} \\ \mathbf{-\Sigma_{22}^{-1}\Sigma_{21}} & \mathbf{I}
+\end{bmatrix}
+\begin{bmatrix}
+\left(\mathbf{\Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1} \Sigma_{21}}\right)^{-1} & \mathbf{0} \\ \mathbf{0} & \mathbf{\Sigma_{22}^{-1}}
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{I} & \mathbf{-\Sigma_{12}\Sigma_{22}^{-1}} \\ \mathbf{0} & \mathbf{I}
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{y_1-\mu_1} \\
+\mathbf{y_2-\mu_2}
+\end{bmatrix}\right)} 
+\\
+&=(2\pi)^{-r/2}|\Sigma / \Sigma_{22}|^{-1/2}(2\pi)^{-s/2}|\Sigma_{22}|^{-1/2}\exp{\left(- \frac{1}{2} 
+\begin{bmatrix}
+\mathbf{y_1-\mu_1 - \Sigma_{12}\Sigma_{22}^{-1} (y_2 - \mu_2)} \\ \mathbf{y_2-\mu_2}
+\end{bmatrix}^T
+\begin{bmatrix}
+\left(\mathbf{\Sigma / \Sigma_{22}}\right)^{-1} & \mathbf{0} \\ \mathbf{0} & \mathbf{\Sigma_{22}^{-1}}
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{y_1-\mu_1 - \Sigma_{12}\Sigma_{22}^{-1} (y_2 - \mu_2)} \\ \mathbf{y_2-\mu_2}
+\end{bmatrix}\right)} 
+\\
+&=(2\pi)^{-r/2}|\Sigma / \Sigma_{22}|^{-1/2}\exp{\left(- \frac{1}{2} 
+\left(
+\mathbf{y_1-\mu_1 - \Sigma_{12}\Sigma_{22}^{-1} (y_2 - \mu_2)}\right)^T
+\left(\mathbf{\Sigma / \Sigma_{22}}\right)^{-1}
+\left(\mathbf{y_1-\mu_1 - \Sigma_{12}\Sigma_{22}^{-1} (y_2 - \mu_2)}\right)\right)}
+\\
+& \quad \times (2\pi)^{-s/2}|\Sigma_{22}|^{-1/2}
+\exp{\left(- \frac{1}{2}
+(\mathbf{y_2-\mu_2})^T
+\mathbf{\Sigma_{22}^{-1}}
+(\mathbf{y_2-\mu_2})\right)}
+\\
+&= f(y_1|y_2)f(y_2)
 \end{aligned}
 $$
-Note that the conditional covariance is the [Schur Complement](https://en.wikipedia.org/wiki/Schur_complement) with respect to $\Sigma_{11}$.
 
-We define a new term $Y_2' = Y_2 - \Sigma_{21}\Sigma_{11}^{-1}Y_1 = CY$ where $C = \begin{bmatrix} -\Sigma_{21} \Sigma_{11}^{-1} & \mathbf{I}\end{bmatrix}$
+Recognizing both as multivariate normal pdfs, we've successfully factored the joint into a product of conditional and marginal distributions. Here we've used a few verifiable identities, both results come from the theory surrounding Schur Complements. The first can be verified by direct multiplication.
 
-First we show that they are independent:
+* $\begin{bmatrix}\mathbf{\Sigma_{11}} & \mathbf{\Sigma_{12}} \\ \mathbf{\Sigma_{21}} & \mathbf{\Sigma_{22}}\end{bmatrix}=\begin{bmatrix}
+\mathbf{I} & \mathbf{\Sigma_{12}\Sigma_{22}^{-1}} \\ \mathbf{0} & \mathbf{I}
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{\Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1} \Sigma_{21}} & \mathbf{0} \\ \mathbf{0} & \mathbf{\Sigma_{22}}
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{I} & \mathbf{0} \\ \mathbf{\Sigma_{22}^{-1}\Sigma_{21}} & \mathbf{I}
+\end{bmatrix}$
+* $det|\Sigma| = det|\Sigma / \Sigma_{22}|\cdot det|\Sigma_{22}|$
+
+Thus, by partitioning the MVN random vector, we get $\mathbf{Y} = \begin{bmatrix} Y_1 \\ Y_2 \end{bmatrix}$ and $\Sigma = \begin{bmatrix}\Sigma_{11} & \Sigma_{12} \\ \Sigma_{21} & \Sigma_{22}\end{bmatrix}$. We find that 
 
 $$
 \begin{aligned}
-\covariance{Y_1, Y_2'} &= \covariance{Y_1, Y_2 - \Sigma_{21}\Sigma_{11}^{-1}Y_1} \\
-&= \covariance{Y_1, Y_2} - \variance{Y_1}\Sigma_{11}^{-1}\Sigma_{12} \\
-&= \Sigma_{12} - \Sigma_{11}\Sigma_{11}^{-1}\Sigma_{12} \\
-&= \Sigma_{12} - \Sigma_{12} \\
-&= 0 \\
-\expect{Y_2 | Y_1=y_1} &= \expect{Y_2' +  \Sigma_{21}\Sigma_{11}^{-1}Y_1 | Y_1=y_1} \\
-&= \expect{Y_2' | Y_1=y_1} +  \Sigma_{21}\Sigma_{11}^{-1}y_1  \\
-&= \expect{Y_2'} + \Sigma_{21}\Sigma_{11}^{-1}y_1 \\
-&= \mu_2 - \Sigma_{21}\Sigma_{11}^{-1}\mu_1 + \Sigma_{21}\Sigma_{11}^{-1}y_1 \\
-&= \mu_2 + \Sigma_{21}\Sigma_{11}^{-1}(y_1 - \mu_1) \\
-\variance{Y_2 | Y_1 = y_1} &= \variance{Y_2 - \Sigma_{21}\Sigma_{11}^{-1}y_1 | Y_1 = y_1} \\
-&= \variance{Y_2' | Y_1 = y_1} \\
-&= \variance{Y_2'} \\
-&= \variance{CY} \\
-&= C\Sigma C' \\
-&= \begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1} & \mathbf{I}\end{bmatrix} \begin{bmatrix}\Sigma_{11} & \Sigma_{12} \\ \Sigma_{21} & \Sigma_{22}\end{bmatrix}\begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1}  \\ \mathbf{I}\end{bmatrix} \\
-&= \begin{bmatrix}-\Sigma_{21} + \Sigma_{12} & \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12}\end{bmatrix} \begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1}  \\ \mathbf{I}\end{bmatrix} \\
-&= \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12}
+\expect{\mathbf{Y_1} | \mathbf{Y_2} = \mathbf{y_2}} &= \mathbf{\mu_1} + \Sigma_{12}\Sigma_{22}^{-1}(\mathbf{y_2} - \mathbf{\mu_2}) \\
+\variance{\mathbf{Y_1} | \mathbf{Y_2} = \mathbf{y_2}} &= \Sigma_{11} - \Sigma_{12}\Sigma^{-1}_{22}\Sigma_{21}
 \end{aligned}
 $$
+
+
+
+<!-- Note that the conditional covariance is the [Schur Complement](https://en.wikipedia.org/wiki/Schur_complement) with respect to $\Sigma_{11}$. -->
+
+<!-- We define a new term $Y_2' = Y_2 - \Sigma_{21}\Sigma_{11}^{-1}Y_1 = CY$ where $C = \begin{bmatrix} -\Sigma_{21} \Sigma_{11}^{-1} & \mathbf{I}\end{bmatrix}$ -->
+
+<!-- First we show that they are independent: -->
+
+<!-- $$ -->
+<!-- \begin{aligned} -->
+<!-- \covariance{Y_1, Y_2'} &= \covariance{Y_1, Y_2 - \Sigma_{21}\Sigma_{11}^{-1}Y_1} \\ -->
+<!-- &= \covariance{Y_1, Y_2} - \variance{Y_1}\Sigma_{11}^{-1}\Sigma_{12} \\ -->
+<!-- &= \Sigma_{12} - \Sigma_{11}\Sigma_{11}^{-1}\Sigma_{12} \\ -->
+<!-- &= \Sigma_{12} - \Sigma_{12} \\ -->
+<!-- &= 0 \\ -->
+<!-- \expect{Y_2 | Y_1=y_1} &= \expect{Y_2' +  \Sigma_{21}\Sigma_{11}^{-1}Y_1 | Y_1=y_1} \\ -->
+<!-- &= \expect{Y_2' | Y_1=y_1} +  \Sigma_{21}\Sigma_{11}^{-1}y_1  \\ -->
+<!-- &= \expect{Y_2'} + \Sigma_{21}\Sigma_{11}^{-1}y_1 \\ -->
+<!-- &= \mu_2 - \Sigma_{21}\Sigma_{11}^{-1}\mu_1 + \Sigma_{21}\Sigma_{11}^{-1}y_1 \\ -->
+<!-- &= \mu_2 + \Sigma_{21}\Sigma_{11}^{-1}(y_1 - \mu_1) \\ -->
+<!-- \variance{Y_2 | Y_1 = y_1} &= \variance{Y_2 - \Sigma_{21}\Sigma_{11}^{-1}y_1 | Y_1 = y_1} \\ -->
+<!-- &= \variance{Y_2' | Y_1 = y_1} \\ -->
+<!-- &= \variance{Y_2'} \\ -->
+<!-- &= \variance{CY} \\ -->
+<!-- &= C\Sigma C' \\ -->
+<!-- &= \begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1} & \mathbf{I}\end{bmatrix} \begin{bmatrix}\Sigma_{11} & \Sigma_{12} \\ \Sigma_{21} & \Sigma_{22}\end{bmatrix}\begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1}  \\ \mathbf{I}\end{bmatrix} \\ -->
+<!-- &= \begin{bmatrix}-\Sigma_{21} + \Sigma_{12} & \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12}\end{bmatrix} \begin{bmatrix}-\Sigma_{21} \Sigma_{11}^{-1}  \\ \mathbf{I}\end{bmatrix} \\ -->
+<!-- &= \Sigma_{22} - \Sigma_{21}\Sigma^{-1}_{11}\Sigma_{12} -->
+<!-- \end{aligned} -->
+<!-- $$ -->
 
 
 
@@ -141,5 +240,6 @@ $$
 
 [^1]: http://www.maths.manchester.ac.uk/~mkt/MT3732%20(MVA)/Notes/MVA_Section3.pdf
 [^2]: http://www.mast.queensu.ca/~stat353/slides/5-multivariate_normal17_4.pdf
-[^3]: https://www.statlect.com/probability-distributions/multivariate-normal-distribution
+[^3]: [MGF of Multivariate Normal](https://www.statlect.com/probability-distributions/multivariate-normal-distribution)
+[^4]: [Conditional Distribution, Jordan](https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/other-readings/chapter13.pdf)
 

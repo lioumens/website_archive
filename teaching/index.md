@@ -21,12 +21,12 @@ That said, I really do hope you find these materials helpful, and I would love y
 | Title | R | SAS |
 |---|---|---|
 | Reading in data | [R](reading_in_data.html)| [SAS](reading_data_sas.html) |
-| Latin Square | | |
 
 ## Derivations
 
  * [Random Effects 1-way](random1way.html)
  * [Multivariate Normal](multivariate.html)
+ * [Exponential Family](exponential_family.html)
 
 ## Software
 
