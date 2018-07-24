@@ -16,10 +16,10 @@ defaults:
     scope:
       path: "" # empty string for all files
     values:
-      title: import knowledge; blog.write(opinion);
+      title: Michael Liou
       
 repository: lioumens/lioumens.github.io
-title: ""
+title: "Michael Liou"
 description: Michael (lioumens) projects, research and blog posts.
 author:
   name: Michael Liou
