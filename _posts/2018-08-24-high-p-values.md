@@ -25,18 +25,18 @@ hypothesis is true. For example, my null hypothesis could be,
 
 $$
 H_0: \text{The average number of blue M&M's in a fun size pack is 3 } (\mu = 3) \\
-H_A: \text{The average number of blue M&M's in a fun size pack is less than 3 } (\mu\leq = 3)
+H_A: \text{The average number of blue M&M's in a fun size pack is less than 3 } (\mu < 3)
 $$
 
 This would be an example of a one sided hypothesis.
 
 A low p-value in this case would indicate that we counted the blue M&M's in a
 fun size pack and there were a statistically significant number of packs that
-had less than 3 blue M&M's. A high p-value wouldmean that our observed data is
+had less than 3 blue M&M's. A high p-value would mean that our observed data is
 consistent with the null, and we would "fail to reject the null". If we ran two
 experiements, and got two high p-values, .5 vs .99, we might be tempted to say
 that there's stronger evidence that the average number of blue M&M's in a pack
-is 3 from the second experiment than the first.
+is 3 from the second experiment than the first. But this shouldn't be your conclusion.
 
 Here's another example that I think clarifies the difference. We could think of
 the following set of hypotheses,
@@ -71,9 +71,13 @@ p-values for more evidence for the null, this is effectively the nonsensical
 conclusion we would be making. That's why statisticians are sticklers for the
 verbiage "failing to reject the null hypothesis."
 
-P-values have always been a somewhat tricky framework to fully understand
-that's full of little nuances. It's no wonder why some scientific journals are
-considering banning p-values entirely.
+
+P-values have always been a somewhat tricky framework to fully understand.
+It follows a philosophical framework called [critical rationalism](https://en.wikipedia.org/wiki/Critical_rationalism) that
+ultimately says, "you can't observe evidence for a theory, only evidence
+against it." Perhaps another analogy for this is the theory of evolution. We'll
+only observe things that are either *consistent* with it, or evidence *against* the
+theory, but never evidence *for* the theory.
 
 If you would like a better understanding of some of the pitfalls with the
 p-value I would recommend reading through [A Dirty Dozen: Twelve P-Value
