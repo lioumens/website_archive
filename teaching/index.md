@@ -20,6 +20,7 @@ That said, I really do hope you find these materials helpful, and I would love y
 
 | Title | R | SAS |
 |---|---|---|
+| Introduction to Language | [R](Intro_to_R.html)| |
 | Reading in data | [R](reading_in_data.html)| [SAS](reading_data_sas.html) |
 
 ## Derivations
