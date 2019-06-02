@@ -25,11 +25,11 @@ knitr::opts_chunk$set(echo = TRUE, cache=TRUE, eval=FALSE)
 
 This guide is meant to help beginners in R. If you have little programming experience, are in the midst of taking your first statistics class, I have you in mind as I write this guide.
 
-These guides are incredibly difficult to write, because the person on the other end of this guide may come to the table with varying amounts of experience. Perhaps you've never dealt ANY programming before, some of you may be familiar with how functions work, or what an "argument" is. Others may not remember their order of operations. 
-
-There have been many iterations of guides like these, written at similar levels. It would be irresponsible for me not to mention them or even claim that this guide is better than those previously written.
+These guides are incredibly difficult to write, because the person on the other end of this guide may come to the table with varying amounts of experience. Perhaps you've never dealt ANY programming before, some of you may be familiar with how functions work, or what an "argument" is. Others may not remember their order of operations. And that's *okay*, just know that sometimes this guide might feel a bit slow, and sometimes a bit fast.
 
 What I can promise, is that I will be a little more explicit about the systematic components of R such as the data types. In addition, I'll link out to more detailed sources liberally, so no matter what level you're coming from, either this guide or the external links will have your answer. This will be particularly helpful if you're coming to R from a different programming language, because you are more familiar with the terminology, like "strings" or "file paths".
+
+There have been many iterations of guides like these, written at similar levels. It would be irresponsible for me not to mention them or even claim that this guide is better than those previously written. My personal favorite is
 
 * [Roger Peng's R programming for Data Science](https://bookdown.org/rdpeng/rprogdatascience/)
   - If this book is helpful to you, or you would like to have the R code/datasets while reading along, please consider paying for his work through [Leanpub](https://leanpub.com/rprogramming). It's pay what you want.
@@ -79,7 +79,7 @@ Throughout this guide, it will be useful to play with things on your own to trul
 
 That said, R has internal "help" files for everything in the language, which provide both a description of the function, a breakdown of the topic, and some examples. These can be accessed by prepending things with a `?`. You will see statements like these littered throughout the document below. Just know that these are for when you just want a little more information about how a particular operation or function works.
 
-And when that doesn't help, Google furiously.
+And when that doesn't help, Google furiously! [Stack Overflow](https://stackoverflow.com/questions/tagged/r) has a very friendly community to ask questions if you get stuck. Chances are someone has run into the problem you've run into already, and someone will have an answer for you online.
 
 ## Calculator in R
 
@@ -111,11 +111,25 @@ These come with what are called "boolean operators", essentially mathematical op
 * `!` - logical "not"
 * `xor()` - logical "exclusive or"
 
-Each of these correspond pretty well to what they mean in the english language.Imagine I say:
+Each of these correspond pretty well to what they mean in the english language. Imagine I say:
 
 "I'm either a statistician OR a circus performer." 
 
-At least one of those would need to be true in order for that statement to be factual. Hence all of `T | T`, `T | F` and `F | T` will evaluate to `TRUE`. The only way for that statement to be a lie would be for both to be false, which is why `F | F` evaluates to `FALSE`. Exclusive Or `xor()` is a special case in which instead of at least one, we require EXACTLY one to be true in order to evaluate to true. The "not" `!` statement will reverse the logical value.
+At least one of those would need to be true in order for that statement to be factual. Hence all of `T | T`, `T | F` and `F | T` will evaluate to `TRUE`. The only way for that statement to be a lie would be for both to be false, which is why `F | F` evaluates to `FALSE`. Exclusive Or `xor()` is a special case in which instead of at least one, we require EXACTLY one to be true in order to evaluate to true. The "not" `!` statement will reverse the logical value. Here's a summary of the truth values that the basic functions will  evaluate to. 
+
+
++-----+-----+-----+---------+---------+------------+
+| `x` | `y` |`!x` | `x & y` | `x | y` | `xor(x,y)` |
++=====+=====+=====+=========+=========+============+
+|T    |T    |F    |T        |T        |F           |
++-----+-----+-----+---------+---------+------------+
+|T    |F    |F    |F        |T        |T           |
++-----+-----+-----+---------+---------+------------+
+|F    |T    |T    |F        |T        |T           |
++-----+-----+-----+---------+---------+------------+
+|F    |F    |T    |F        |F        |F           |
++-----+-----+-----+---------+---------+------------+
+
 
 Now we can compare numbers, and have them evaluate to logical values. Most computing languages have this so it's easier to control the flow of programs. "Run this chunk of code conditional on whether or not something is true".
 
@@ -221,6 +235,9 @@ myVector <- 1:5
 exp(myVector)
 ```
 
+Here's what this looks like in R studio.
+
+<img src="images/assignment_statement.png" style="height:90%; width:90%"/>
 
 ## Functions
 
@@ -241,16 +258,19 @@ The logarithm that we used before was a function. `log(5)` will take the "natura
 >
 > base :     a positive or complex number: the base with respect to which logarithms are computed. Defaults to e=exp(1).
 
-To explain this in a little more detail, we can see that `log` is designed to actually take 2 arguments. The first is a number (or vector) that we wish to take the log of. The second argument is *named* and *optional*. It's named, `base`, and it's optional because we can see that R by default sets it to `exp(1)`, which is the Euler number, and thus natural log. If we don't specify anything R will use the default. 
+To explain this in a little more detail, we can see that `log` is designed to actually take 2 arguments. The first is a number (or vector) that we wish to take the log of. The second argument is *named* and *optional*. It's named, `base`, and it's optional because we can see that R by default sets it to `exp(1)`, which is the Euler number $e$, and thus natural log. If we don't specify anything R will use the default. 
 
 ```{r}
 ?log
 log(3) # Assumes natural log
 log(10, 10) # The second argument R will read as the "base"
 log(10, base = 10) # We can also specify arguments by it's name explicitly.
+log(base=2) # Here we run into an error. Why?
 ```
 
 Seeing above, we can other specify arguments "positionally" or "by name". Specifying arguments by name is useful because if you ever encounter a function with MANY optional arguments, but we only needed to modify one of them, specifying by name allows us to just select out the one we wish to use, without having to count the position of the argument.
+
+Note that when the documentation is not *named*, the argument is **required**. In the final case above, we didn't specify something to take the `log` of, and so R returns us an error saying that an argument is missing for this function to work properly.
 
 #### Specifying our own functions
 
@@ -264,7 +284,7 @@ myPower <- function(x = 2, p = 2) {
 
 myPower(5,3) # 5^3 = 125
 myPower(5) # 25, specify the "x" argument positionally, while default power is 2
-myPower() # 4, All arguments are optional
+myPower() # 4, All arguments are optiona
 myPower(p = 3) # 8, Specify second argument by name
 ```
 
@@ -272,6 +292,108 @@ The way we have defined our function, we are able to "save" it into a variable n
 
 Below the function definition, we illustrate the various ways of interacting with a function like this. That is, we may use a combination of specifying the arguments *positionally* or *by name*. Since both are optional arguments, we can specify between 0-2 of the arguments.
 
+# Data Frames
+
+A data frame is a 2-dimensional data structure that holds variable names in columns, and each row will have an entry in the corresponding row. Generally the columns are some attributes of interest, and the rows are individual observations. Since you're probably learning R to do data analysis, it will prove useful to know these inside out. In fact, since R is designed around this purpose, it handles this format of data structure quite well, and there are many functions built around working with data frames.
+
+Because this is such a critical part of the R language, I will spend quite a bit of time on this. In order to utilize these well, it requires a *very* solid understanding of the foundational elements, and basic data types, elementary data structures, assignment.
+
+## Basics
+
+Let's make our own data frame to examine. Here we have 4 observations, and look at the population and the area per square mile. The data was pulled from [Wikipedia](https://en.wikipedia.org/wiki/Green_Bay,_Wisconsin).
+
+```{r eval=TRUE}
+WI_cities <- data.frame(city = c("Madison", "Milwaukee", "Green Bay", "Oshkosh"),
+                        population = c(255000, 595000, 105000, 66000),
+                        area_sq_mi = c(100, 97, 56, 28))
+
+WI_cities
+```
+
+Note that especially with data frames, the number of arguments that we pass into the function can become quite high, and will become harder to read if everything is on one line. Thus, in R, it's often useful to separate out the arguments line by line, for readability. So long as the beginning and ending parentheses are present, R should have no problem understanding what you're trying to do.
+
+Every city above has it's own row, and the columns define the attributes that we're interested in. Here are some common operations on data frames. I use `dat` to represent a generic data frame.
+
+* Dimensions
+  - `nrow(dat)` -  number of rows
+  - `ncol(dat)` - number of columns
+  - `dim(dat)` - returns number of rows and columns as vector
+* Naming
+  - `colnames(dat)` - get the columns names
+  - `rownames(dat)` - get the row names
+  - `colnames(dat) <- c("Col1", "Col2", "Col3)` - rename the columns of the data frame. Be sure the length of the vector matches the number of columns you have in the data frame.
+  - `rownames(dat) <- c("Row1", "Row2", "Row3)` - rename the rows of the data frame. Be sure the length of the vector matches the number of columns you have in the data frame.
+* Examining
+  - `head(dat, n=6)` - look at the first 6 rows of the data frame
+  - `tail(dat, n=6)` - look at the last 6 rows of the data frame
+  - `View(dat)` - look at the entire frame in a new tab, with the Rstudio viewer.
+* Summaries
+  - `str(dat)` - see the structure of the data frames, includes data type information and number of observations, and preview of values.
+  - `summary(dat)` - summarize information (mean, median, max, etc.) column-wise in the data frame
+* Indexing (by name)
+  - `dat$column_name` - get the column named "column_name" from the data frame `dat` AND simplify from a data frame to a vector.
+  - `dat["column_name"]` - Similar to above, but keep the data frame structure, and does not simplify to a vector.
+  - `dat[c("column_one", "column_two")]` - Select only certain columns of the data frame by name.
+  - `dat[- c("column_one", "column_two")]` - Select all columns EXCEPT `column_one` and `column_two`. Notice the `-` sign!
+* Indexing (by position)
+  - `dat[4, 3]` - get the entry in the 4th row and 3rd column.
+  - `dat[ , 4]` - get the entire second column (all rows), AND simplify from a data frame to a vector. Note the comma! A blank implicitly means "all" when indexing
+  - `dat[4, ]` - get the entire 4th row (all columns). Note the comma! A blank implicitly means "all" when indexing.
+  - `dat[c(1, 3), c(1, 2, 3)]` - gets the 1st and 3rd ROW, and columns 1 through 3. Returns data frame. Replacing vectors with the `1:3` shortcut syntax is quite common and will work here. Leaving out a vector (but leaving IN the comma) will let R know that you want "all" of that row or column.
+    - `dat[-c(1, 3), c(1, 2, 3)]` - gets all rows EXCEPT 1 and 3, with columns 1 through 3. Notice the `-` sign!
+*  Indexing (by logicals)
+  - `dat[c(TRUE, FALSE), c(FALSE, TRUE, TRUE)]` - assuming 2 rows and 3 columns in `dat`, this selects the 1st row, and 2nd and 3rd column. Again, leaving off a column or row selector will imply "all".
+  - `dat[dat$col1 > 5 & dat$col2 < 10 , ]` - Select all rows in which the value in `col1` is greater than 5, and simultaneously the value in `col2` is less than 10.
+  - `subset(dat, col1 > 5 & col2 < 10)` - same as above, with `subset` function.
+
+Here are a number of examples of using the above functions with the data frame we've created.
+
+```{r}
+nrow(WI_cities) # 4 rows
+ncol(WI_cities) # 3 columns
+str(WI_cities) # Summarize properties of the data frame
+head(WI_cities, n=2) # see first two
+WI_cities$population # vector of populations
+WI_cities[ , 3 ] # Areas of cities
+WI_cities[3, 2] # 2nd column (population) of 3rd city (Green Bay)
+WI_cities[-3, c("city", "population")] # index all but 3rd city, and get "city" and "population" columns
+
+WI_cities[WI_cities$area_sq_mi > 60, ] # cities with area larger than 60 sq mi
+```
+
+Subsetting and indexing can be a pretty complicated topic that takes quite some time to get used to, but you can do it! I believe in you!
+
+Further readings:
+
+* For more details about the simplifying and preserving nature of subsetting, see [Advanced R](http://adv-r.had.co.nz/Subsetting.html#simplify-preserve)
+
+## Adding/Modifying Columns
+
+One common operation with data frames is use existing columns to create a new column of data. With our data frame above about Wisconsin Cities, along with the population and area in square miles, we might want to calculate the *population density* of the cities. We can calculate this by the formula,
+
+$$
+\text{density} = \frac{\text{population}}{\text{Area in Sq. Miles}}
+$$
+Let's first start by creating the vector of population densities.
+
+```{r echo=TRUE}
+WI_cities$population / WI_cities$area_sq_mi # Population Density
+```
+
+Note that when dividing two vectors, R does them in a *vectorized* manner, that is, it divides the first by the first, the second by the second etc. This  will show us the resulting population densities, but we have not yet saved it into our original WI_cities data frame. In order to save this as a new column in our data frame, we use the selector syntax on the left side of an assignment, with the *name of the column* as the selector. Assigning to a selector might seem odd at first, but this allows us create or modify existing columns very precisely.
+
+```{r}
+WI_cities$density <- WI_cities$population / WI_cities$area_sq_mi # Create new density column
+WI_cities
+```
+
+Now if we examine our data frame, we can see that a density column has been added. We notice that when dividing, the density values are rather precise, and we would instead like to round these to whole numbers. We will use R's built in `round(...)` function in order to show how to modify an existing column in the data frame.
+
+```{r}
+WI_cities$density <- round(WI_cities$density) # Round to nearest integer
+?round # Check out the documentation for details about the function `round`
+WI_cities
+```
 
 # Libraries/Packages
 
@@ -293,31 +415,33 @@ RStudio makes the point and click version of this very easy. In the lower right 
 Some packages that you may consider learning to use/installing.
 
 * [swirl](https://swirlstats.com/students.html) - interactive session on introductory R, all within the R environment.
-* [tidyverse packages](https://www.tidyverse.org/packages/) - This is actually a group of packages that are very tightly integrated with one another, and have a similar philosophy. These are very commonly used for data wrangling and data visualization. They include "dplyr", "ggplot2", "tidyr".
+* [tidyverse packages](https://www.tidyverse.org/packages/) - This is actually a group of packages that are very tightly integrated with one another, and have a similar philosophy. These are very commonly used for data wrangling and data visualization. They include "dplyr", "ggplot2", "tidyr". I would **highly** recommend learning this set of packages.
 * [lme4](https://www.rdocumentation.org/packages/lme4/versions/1.1-21/topics/lme4-package) - Used for working with mixed models
 * [car](https://cran.r-project.org/web/packages/car/index.html) - Adds common functionality to regression functions.
+* [devtools](https://www.rdocumentation.org/packages/devtools/versions/1.12.0?) - If you will be doing any R package development, or working with R packages on Github, this will prove to be very useful.
 
 # Plotting
 
 There are three somewhat related systems of plotting common in R.
 
 1. Base
-2. ggplot2
-3. lattice
+2. [ggplot2](https://ggplot2.tidyverse.org/)
+3. [lattice](https://cran.r-project.org/web/packages/lattice/lattice.pdf)
 
-I will go through some of the basics of plotting with the base system, but since this is a big topic, the bulk of it will be in another tutorial.
+I will go through some of the basics of plotting with the base system, but since this is a big topic, I will leave discussing more details to a later time.
 
 ## Basic
 
 The plot function takes two main arguments, `x` and `y` that are both required. Somewhat intuitively, they are the coordinates of the the points you want to plot. The first number in vector `x` is matched with the first in vector `y`, the second with second, etc...
-```{r}
+```{r eval=TRUE}
 plot(c(1,2,3), c(4, 0, -2)) # Plots points (1,2), (2, 0), and (3, -2)
 ```
+
 We learned that many functions in R "vectorize" meaning you can apply them to each individual element of a vector very quickly. Plotting functions is a great illustration of how this can be useful.
 
 ```{r eval=TRUE}
-x <- seq(-3, 3, .25)
-y <- x^2
+x <- seq(-3, 3, .25) # create a vector of values between -3 and 3, separated by .25
+y <- x^2 # square each value of the vector
 plot(x,y)
 ?plot
 ```
@@ -360,20 +484,21 @@ In fact, there are loads of options to modify how the plot looks, labels on `x` 
   
 For example, here's what an option filled plot would look like,
 
-```{r}
-# Note: As long as you have the beginning and end parentheses to the function, 
-plot(x, y, col="red",
-     type="l",
-     lty=2,
-     lwd=3,
+```{r eval=TRUE}
+# Note: As long as you have the beginning and end parentheses to the function,
+# the function can span many lines and make the code more readable.
+plot(x, y,
+     type="l",              # connect the points with a line
+     col="red",             # color of line
+     lty=2,                 # make line dashed
+     lwd=3,                 # width of line
      xlab="Error",
-     ylab="Penalty",
+     ylab="Penalty",        
      main="Example Title",
      sub="The subtitle")
 ```
-## Legend
 
-<!-- TODO? -->
+
 
 # Concluding words
 
