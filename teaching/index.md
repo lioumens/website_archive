@@ -1,7 +1,7 @@
 ---
 layout: page
-title: "Teaching"
-description: "Teaching Materials and Tutorials on various statistical concepts"
+title: "Resources"
+description: "Teaching Materials, Tutorials and Resources on various statistical concepts"
 comments: true
 ---
 
@@ -22,6 +22,15 @@ That said, I really do hope you find these materials helpful, and I would love y
 |---|---|---|
 | Introduction to Language | [R](Intro_to_R.html)| |
 | Reading in data | [R](reading_in_data.html)| [SAS](reading_data_sas.html) |
+| Introduction to Mixed Models | [R](https://m-clark.github.io/mixed-models-with-R/introduction.html) | |
+
+## Visual Introductions to Statistics
+
+* [Central Limit Theorem](https://seeing-theory.brown.edu/probability-distributions/index.html#section3)
+* [Confidence Intervals](https://seeing-theory.brown.edu/frequentist-inference/index.html#section2)
+* [Correlation as angle between two regressions](https://seeing-theory.brown.edu/regression-analysis/index.html#section2)
+* [Ordinary Least Squares](https://seeing-theory.brown.edu/regression-analysis/index.html#section1)
+* [Hierarchical Modeling](http://mfviz.com/hierarchical-models/)
 
 ## Derivations
 
@@ -31,6 +40,19 @@ That said, I really do hope you find these materials helpful, and I would love y
 
 ## Software
 
+* Version Control with Git
+  - [Git explained in Plain English](https://blog.red-badger.com/2016/11/29/gitgithub-in-plain-english) - Good for convincing you to use version control with Git
+  - [Tutorials in Git by Atlassian](https://www.atlassian.com/git/tutorials/setting-up-a-repository)
+  - [Pro Git Book documentation](https://git-scm.com/book/en/v2)
+* [Introduction to Web Development](https://internetingishard.com/)
 * [R to Python](RtoPython.md)
+
+## Web Development
+
+* [Client Side Web Development Book](https://info340.github.io/index.html)
+
+## Further Resources
+
+* [FAQ about Generalized Linear Mixed Models in R](https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html)
 
 
