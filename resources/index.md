@@ -44,12 +44,12 @@ That said, I really do hope you find these materials helpful, and I would love y
   - [Git explained in Plain English](https://blog.red-badger.com/2016/11/29/gitgithub-in-plain-english) - Good for convincing you to use version control with Git
   - [Tutorials in Git by Atlassian](https://www.atlassian.com/git/tutorials/setting-up-a-repository)
   - [Pro Git Book documentation](https://git-scm.com/book/en/v2)
-* [Introduction to Web Development](https://internetingishard.com/)
 * [R to Python](RtoPython.md)
 
 ## Web Development
 
 * [Client Side Web Development Book](https://info340.github.io/index.html)
+* [Introduction to Web Development](https://internetingishard.com/)
 
 ## Further Resources
 
