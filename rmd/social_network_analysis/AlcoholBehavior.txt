@@ -1,0 +1,850 @@
+
+
+-----------------------------------
+New Analysis started.
+Date and time: 14/04/2022 12:12:25
+New results follow.
+-----------------------------------
+
+RSiena version 1.3.0.1 (02 May 21)
+
+
+@1
+Estimation by stochastic approximation algorithm.
+=================================================
+
+Random initialization of random number stream.
+Current random number seed is 464727.
+Effects object used: effects.8 
+Model Type:
+ Standard actor-oriented model
+Behavioral Model Type:
+ Standard behavior actor-oriented model ('restrict')
+Estimation method: unconditional moment estimation
+.
+
+Time duration for simulations is 1.0.
+Standard errors are estimated with the likelihood ratio method.
+Dolby method (regression on scores) is used.
+Initial value of gain parameter is  0.2000000.
+Reduction factor for gain parameter is  0.5000000.
+Number of subphases in Phase 2 is 4.
+
+Initial parameter values are 
+  1. rate:  basic rate parameter friendties                 6.5181
+  2. eval:  outdegree (density)                            -1.3891
+  3. eval:  reciprocity                                     0.0000
+  4. eval:  transitive triplets                             0.0000
+  5. eval:  3-cycles                                        0.0000
+  6. eval:  ah_pvt similarity                               0.0000
+  7. eval:  age similarity                                  0.0000
+  8. eval:  same male                                       0.0000
+  9. eval:  alcdrinkbeh similarity                          0.0000
+ 10. rate:  rate alcdrinkbeh period 1                       2.1446
+ 11. eval:  alcdrinkbeh linear shape                       -0.0061
+ 12. eval:  alcdrinkbeh quadratic shape                     0.0000
+ 13. eval:  alcdrinkbeh max. alter                          0.0000
+ 14. eval:  alcdrinkbeh: effect from ah_pvt                 0.0000
+ 15. eval:  alcdrinkbeh: effect from age                    0.0000
+ 16. eval:  alcdrinkbeh: effect from parentdrkfrq           0.0000
+ 17. eval:  alcdrinkbeh: effect from tobacco                0.0000
+
+
+Observed values of target statistics are
+  1. Amount of network change                                           248.0000
+  2. Number of ties                                                     273.0000
+  3. Number of reciprocated ties                                         84.0000
+  4. Number of transitive triplets                                      295.0000
+  5. 3-cycles                                                            43.0000
+  6. Similarity on ah_pvt                                                 3.8622
+  7. Similarity on age                                                   42.7430
+  8. Same values on male                                                153.0000
+  9. Similarity on alcdrinkbeh                                           19.7938
+ 10. Amount of behavioral change                                         65.0000
+ 11. alcdrinkbeh centered sum                                            -0.1552
+ 12. alcdrinkbeh sum of cent. squares                                   154.6756
+ 13. alcdrinkbeh max. alters                                             20.4886
+ 14. alcdrinkbeh x ah_pvt                                               218.7248
+ 15. alcdrinkbeh x age                                                   59.3631
+ 16. alcdrinkbeh x parentdrkfrq                                          -8.0189
+ 17. alcdrinkbeh x tobacco                                               10.6872
+
+ 17 parameters, 17 statistics
+
+Estimation of derivatives by the LR method (type 1).
+
+
+@2
+End of stochastic approximation algorithm, phase 3.
+---------------------------------------------------
+
+Total of 3382 iterations.
+Parameter estimates based on 2382 iterations,
+convergence diagnostics, covariance and derivative matrices based on 1000 iterations.
+
+Information for convergence diagnosis.
+Averages, standard deviations, and t-ratios for deviations from targets:
+  1.   0.4500  15.2864   0.0294 
+  2.   0.5380  20.3244   0.0265 
+  3.   0.3160  12.9037   0.0245 
+  4.   2.0060  90.5183   0.0222 
+  5.   0.4770  18.2647   0.0261 
+  6.  -0.0377   2.4734  -0.0153 
+  7.   0.1256   4.4648   0.0281 
+  8.   0.3480  13.4152   0.0259 
+  9.   0.0967   3.5558   0.0272 
+ 10.  -0.4570   7.1695  -0.0637 
+ 11.  -0.2710  10.0745  -0.0269 
+ 12.  -0.0727  30.5905  -0.0024 
+ 13.  -0.4415  23.2032  -0.0190 
+ 14.  -0.0414  99.2606  -0.0004 
+ 15.  -0.1368  17.2832  -0.0079 
+ 16.  -0.0105   7.8465  -0.0013 
+ 17.   0.0156   4.0938   0.0038 
+
+Good convergence is indicated by the t-ratios being close to zero.
+
+Overall maximum convergence ratio =  0.0886 .
+
+
+
+@2
+Estimation Results.
+-------------------
+
+Regular end of estimation algorithm.
+Total of 3382 iteration steps.
+
+
+@3
+Estimates and standard errors
+                             
+Network Dynamics
+ 1. rate:  basic rate parameter friendties                         6.5833  (   0.7074)
+ 2. eval:  outdegree (density)                                    -2.4233  (   0.1103)
+ 3. eval:  reciprocity                                             1.6324  (   0.2241)
+ 4. eval:  transitive triplets                                     0.6344  (   0.0804)
+ 5. eval:  3-cycles                                               -0.4627  (   0.1716)
+ 6. eval:  ah_pvt similarity                                       0.7401  (   0.3715)
+ 7. eval:  age similarity                                          1.3400  (   0.3064)
+ 8. eval:  same male                                               0.2830  (   0.1112)
+ 9. eval:  alcdrinkbeh similarity                                  0.8817  (   0.5294)
+Behavior Dynamics
+
+10. rate:  rate alcdrinkbeh period 1                               4.6751  (   1.4526)
+11. eval:  alcdrinkbeh linear shape                               -0.6401  (   0.1828)
+12. eval:  alcdrinkbeh quadratic shape                             0.0524  (   0.0466)
+13. eval:  alcdrinkbeh max. alter                                  0.0721  (   0.1900)
+14. eval:  alcdrinkbeh: effect from ah_pvt                         0.0207  (   0.0121)
+15. eval:  alcdrinkbeh: effect from age                            0.0712  (   0.0705)
+16. eval:  alcdrinkbeh: effect from parentdrkfrq                   0.0689  (   0.1210)
+17. eval:  alcdrinkbeh: effect from tobacco                        0.0584  (   0.2517)
+
+
+@3
+Covariance matrices
+                   
+Covariance matrix of estimates (correlations below diagonal):
+     0.500      0.013     -0.005     -0.015      0.005      0.013      0.029     -0.017     -0.077      0.089      0.016     -0.003     -0.018      0.000      0.008      0.011      0.022
+     0.160      0.012     -0.005     -0.004      0.003     -0.006     -0.004     -0.007     -0.017      0.011      0.003      0.000     -0.004      0.000      0.001     -0.001      0.002
+    -0.029     -0.207      0.050      0.005     -0.018     -0.007     -0.011     -0.002     -0.010      0.083     -0.003      0.001      0.000      0.000     -0.001     -0.003      0.002
+    -0.270     -0.394      0.262      0.006     -0.008      0.002     -0.006      0.001      0.001      0.019     -0.001      0.000      0.001      0.000     -0.001     -0.001     -0.001
+     0.043      0.157     -0.462     -0.571      0.029      0.002      0.005      0.000     -0.010     -0.031      0.000      0.000      0.002      0.000      0.000      0.003      0.000
+     0.050     -0.151     -0.079      0.069      0.026      0.138      0.001      0.003     -0.010     -0.057     -0.002      0.000      0.007      0.000      0.001      0.004     -0.008
+     0.132     -0.127     -0.162     -0.261      0.088      0.009      0.094     -0.003      0.001     -0.052      0.005     -0.001     -0.004      0.000      0.002      0.003     -0.002
+    -0.222     -0.564     -0.083      0.095      0.005      0.079     -0.090      0.012      0.009     -0.029      0.000      0.000      0.000      0.000      0.000      0.000     -0.002
+    -0.206     -0.298     -0.086      0.017     -0.105     -0.050      0.007      0.151      0.280     -0.086     -0.003     -0.001      0.014      0.000     -0.001      0.000      0.000
+     0.087      0.072      0.256      0.166     -0.126     -0.106     -0.116     -0.177     -0.111      2.110      0.002      0.009     -0.032     -0.007     -0.019     -0.036      0.093
+     0.122      0.150     -0.075     -0.038     -0.011     -0.028      0.083     -0.014     -0.034      0.008      0.033     -0.003     -0.025      0.000      0.002     -0.001      0.005
+    -0.101     -0.016      0.060      0.080     -0.004      0.009     -0.094     -0.003     -0.052      0.126     -0.325      0.002      0.000      0.000     -0.001      0.000     -0.003
+    -0.131     -0.204     -0.003      0.034      0.066      0.104     -0.074      0.014      0.137     -0.118     -0.721     -0.010      0.036     -0.001     -0.002      0.003     -0.008
+     0.011      0.030     -0.106     -0.069      0.012      0.025      0.110      0.098     -0.008     -0.401      0.096     -0.064     -0.246      0.000      0.000      0.000     -0.001
+     0.159      0.072     -0.075     -0.174      0.041      0.035      0.099     -0.030     -0.038     -0.186      0.126     -0.371     -0.180      0.077      0.005      0.001     -0.001
+     0.133     -0.054     -0.103     -0.129      0.131      0.092      0.094      0.021     -0.001     -0.203     -0.060      0.063      0.126      0.041      0.173      0.015     -0.004
+     0.126      0.074      0.040     -0.037      0.007     -0.084     -0.021     -0.076     -0.003      0.255      0.115     -0.218     -0.159     -0.169     -0.048     -0.116      0.063
+
+Derivative matrix of expected statistics X by parameters and
+covariance/correlation matrix of X can be found using
+summary(ans) within R, or by using the 'verbose' option in Siena07.
+ 
+Total computation time 64.47 seconds.
+
+
+-----------------------------------
+New Analysis started.
+Date and time: 14/04/2022 12:27:01
+New results follow.
+-----------------------------------
+
+RSiena version 1.3.0.1 (02 May 21)
+
+
+@1
+Estimation by stochastic approximation algorithm.
+=================================================
+
+Random initialization of random number stream.
+Current random number seed is 324230.
+Effects object used: effects.7 
+Model Type:
+ Standard actor-oriented model
+Behavioral Model Type:
+ Standard behavior actor-oriented model ('restrict')
+Estimation method: unconditional moment estimation
+.
+
+Time duration for simulations is 1.0.
+Standard errors are estimated with the likelihood ratio method.
+Dolby method (regression on scores) is used.
+Initial value of gain parameter is  0.2000000.
+Reduction factor for gain parameter is  0.5000000.
+Number of subphases in Phase 2 is 4.
+
+Initial parameter values are 
+  1. rate:  basic rate parameter friendties                 5.9638
+  2. eval:  outdegree (density)                            -1.6919
+  3. eval:  reciprocity                                     0.0000
+  4. eval:  transitive triplets                             0.0000
+  5. eval:  3-cycles                                        0.0000
+  6. eval:  ah_pvt similarity                               0.0000
+  7. eval:  age similarity                                  0.0000
+  8. eval:  same male                                       0.0000
+  9. eval:  alcdrinkbeh similarity                          0.0000
+ 10. rate:  rate alcdrinkbeh period 1                       2.4616
+ 11. eval:  alcdrinkbeh linear shape                        0.0102
+ 12. eval:  alcdrinkbeh quadratic shape                     0.0000
+ 13. eval:  alcdrinkbeh max. alter                          0.0000
+ 14. eval:  alcdrinkbeh: effect from ah_pvt                 0.0000
+ 15. eval:  alcdrinkbeh: effect from age                    0.0000
+ 16. eval:  alcdrinkbeh: effect from parentdrkfrq           0.0000
+ 17. eval:  alcdrinkbeh: effect from tobacco                0.0000
+
+
+Observed values of target statistics are
+  1. Amount of network change                                           355.0000
+  2. Number of ties                                                     310.0000
+  3. Number of reciprocated ties                                        122.0000
+  4. Number of transitive triplets                                      148.0000
+  5. 3-cycles                                                            24.0000
+  6. Similarity on ah_pvt                                                12.2481
+  7. Similarity on age                                                   38.5793
+  8. Same values on male                                                215.0000
+  9. Similarity on alcdrinkbeh                                           16.8970
+ 10. Amount of behavioral change                                        115.0000
+ 11. alcdrinkbeh centered sum                                            -4.2308
+ 12. alcdrinkbeh sum of cent. squares                                   290.5158
+ 13. alcdrinkbeh max. alters                                            -37.2405
+ 14. alcdrinkbeh x ah_pvt                                               -43.9910
+ 15. alcdrinkbeh x age                                                   53.9348
+ 16. alcdrinkbeh x parentdrkfrq                                          32.2233
+ 17. alcdrinkbeh x tobacco                                               30.2349
+
+ 17 parameters, 17 statistics
+
+Estimation of derivatives by the LR method (type 1).
+
+
+@2
+End of stochastic approximation algorithm, phase 3.
+---------------------------------------------------
+
+Total of 3406 iterations.
+Parameter estimates based on 2406 iterations,
+convergence diagnostics, covariance and derivative matrices based on 1000 iterations.
+
+Information for convergence diagnosis.
+Averages, standard deviations, and t-ratios for deviations from targets:
+  1.  -0.2610  16.5457  -0.0158 
+  2.  -1.1050  21.0051  -0.0526 
+  3.  -1.0480  15.3449  -0.0683 
+  4.  -1.1860  45.8915  -0.0258 
+  5.  -0.2210  10.0132  -0.0221 
+  6.  -0.0433   3.0123  -0.0144 
+  7.  -0.0791   4.3067  -0.0184 
+  8.  -0.0970  17.2530  -0.0056 
+  9.  -0.2682   4.9434  -0.0543 
+ 10.   0.2320  10.0266   0.0231 
+ 11.  -0.2280  11.5284  -0.0198 
+ 12.  -1.7867  36.3486  -0.0492 
+ 13.  -0.1818  24.0036  -0.0076 
+ 14.  -0.3550 132.2211  -0.0027 
+ 15.  -0.2791  17.2190  -0.0162 
+ 16.  -0.0885  12.8271  -0.0069 
+ 17.  -0.2819   5.2574  -0.0536 
+
+Good convergence is indicated by the t-ratios being close to zero.
+
+Overall maximum convergence ratio =  0.1516 .
+
+
+
+@2
+Estimation Results.
+-------------------
+
+Regular end of estimation algorithm.
+Total of 3406 iteration steps.
+
+
+@3
+Estimates and standard errors
+                             
+Network Dynamics
+ 1. rate:  basic rate parameter friendties                         7.9623  (   0.7490)
+ 2. eval:  outdegree (density)                                    -2.9349  (   0.1224)
+ 3. eval:  reciprocity                                             2.3888  (   0.1609)
+ 4. eval:  transitive triplets                                     0.7538  (   0.0960)
+ 5. eval:  3-cycles                                               -0.7297  (   0.1940)
+ 6. eval:  ah_pvt similarity                                       0.9288  (   0.3165)
+ 7. eval:  age similarity                                          1.2670  (   0.2655)
+ 8. eval:  same male                                               0.4013  (   0.1073)
+ 9. eval:  alcdrinkbeh similarity                                  0.4252  (   0.3251)
+Behavior Dynamics
+
+10. rate:  rate alcdrinkbeh period 1                               5.0564  (   0.9932)
+11. eval:  alcdrinkbeh linear shape                               -0.3783  (   0.1190)
+12. eval:  alcdrinkbeh quadratic shape                             0.0314  (   0.0316)
+13. eval:  alcdrinkbeh max. alter                                 -0.1526  (   0.1450)
+14. eval:  alcdrinkbeh: effect from ah_pvt                         0.0098  (   0.0072)
+15. eval:  alcdrinkbeh: effect from age                           -0.0018  (   0.0573)
+16. eval:  alcdrinkbeh: effect from parentdrkfrq                   0.1429  (   0.0873)
+17. eval:  alcdrinkbeh: effect from tobacco                        0.3532  (   0.2049)
+
+
+@3
+Covariance matrices
+                   
+Covariance matrix of estimates (correlations below diagonal):
+     0.561      0.018     -0.029     -0.008      0.015      0.008     -0.021     -0.010     -0.005     -0.090      0.002     -0.002      0.017     -0.001     -0.002      0.005     -0.020
+     0.192      0.015     -0.007     -0.005      0.005     -0.004     -0.006     -0.009     -0.003      0.016     -0.001      0.000      0.002      0.000      0.001     -0.001     -0.001
+    -0.243     -0.365      0.026      0.004     -0.012     -0.003     -0.005      0.000      0.003      0.002     -0.001      0.000      0.001      0.000      0.000     -0.001      0.001
+    -0.107     -0.419      0.248      0.009     -0.012      0.003     -0.001      0.001     -0.004     -0.010      0.001      0.000     -0.001      0.000      0.000      0.001      0.000
+     0.102      0.208     -0.383     -0.641      0.038     -0.003     -0.001     -0.001      0.003      0.012      0.000      0.000     -0.002      0.000      0.000      0.000      0.000
+     0.035     -0.113     -0.051      0.105     -0.045      0.100      0.004      0.001     -0.013      0.005     -0.003      0.001     -0.001      0.000     -0.001      0.000     -0.002
+    -0.104     -0.199     -0.115     -0.023     -0.025      0.045      0.071      0.001     -0.003      0.060     -0.003      0.000     -0.001      0.000      0.000     -0.002      0.005
+    -0.122     -0.686     -0.003      0.119     -0.062      0.040      0.018      0.012     -0.004     -0.031      0.001      0.000     -0.002      0.000     -0.001      0.001      0.002
+    -0.020     -0.075      0.055     -0.124      0.041     -0.130     -0.032     -0.117      0.106      0.071     -0.004      0.000      0.008      0.000      0.001     -0.004      0.000
+    -0.121      0.135      0.012     -0.107      0.063      0.016      0.227     -0.288      0.220      0.986     -0.054      0.004      0.070      0.000      0.003     -0.029     -0.026
+     0.018     -0.048     -0.071      0.091      0.007     -0.089     -0.081      0.089     -0.099     -0.458      0.014     -0.002     -0.011      0.000      0.002      0.003      0.002
+    -0.065      0.061     -0.031     -0.073      0.049      0.098      0.047     -0.029      0.024      0.134     -0.473      0.001      0.001      0.000     -0.001      0.000     -0.002
+     0.159      0.101      0.047     -0.083     -0.074     -0.015     -0.018     -0.131      0.168      0.484     -0.641      0.171      0.021      0.000     -0.002     -0.005     -0.009
+    -0.094     -0.133      0.019      0.043     -0.015      0.021     -0.003      0.136      0.013     -0.069     -0.036      0.159     -0.062      0.000      0.000      0.000      0.000
+    -0.045      0.098     -0.034     -0.050      0.031     -0.045      0.006     -0.102      0.072      0.048      0.241     -0.284     -0.219      0.000      0.003      0.000      0.001
+     0.083     -0.064     -0.084      0.129     -0.021     -0.016     -0.073      0.094     -0.135     -0.335      0.264     -0.159     -0.389     -0.042      0.061      0.008     -0.001
+    -0.133     -0.033      0.040     -0.022      0.006     -0.031      0.088      0.069      0.007     -0.130      0.090     -0.262     -0.293      0.057      0.045     -0.055      0.042
+
+Derivative matrix of expected statistics X by parameters and
+covariance/correlation matrix of X can be found using
+summary(ans) within R, or by using the 'verbose' option in Siena07.
+ 
+Total computation time 119.35 seconds.
+
+
+-----------------------------------
+New Analysis started.
+Date and time: 14/04/2022 12:33:03
+New results follow.
+-----------------------------------
+
+RSiena version 1.3.0.1 (02 May 21)
+
+
+@1
+Estimation by stochastic approximation algorithm.
+=================================================
+
+Random initialization of random number stream.
+Current random number seed is 339768.
+Effects object used: effects.5809 
+Model Type:
+ Standard actor-oriented model
+Behavioral Model Type:
+ Standard behavior actor-oriented model ('restrict')
+Estimation method: unconditional moment estimation
+.
+
+Time duration for simulations is 1.0.
+Standard errors are estimated with the likelihood ratio method.
+Dolby method (regression on scores) is used.
+Initial value of gain parameter is  0.2000000.
+Reduction factor for gain parameter is  0.5000000.
+Number of subphases in Phase 2 is 4.
+
+Initial parameter values are 
+  1. rate:  basic rate parameter friendties                 7.7434
+  2. eval:  outdegree (density)                            -1.7105
+  3. eval:  reciprocity                                     0.0000
+  4. eval:  transitive triplets                             0.0000
+  5. eval:  3-cycles                                        0.0000
+  6. eval:  ah_pvt similarity                               0.0000
+  7. eval:  age similarity                                  0.0000
+  8. eval:  same male                                       0.0000
+  9. eval:  alcdrinkbeh similarity                          0.0000
+ 10. rate:  rate alcdrinkbeh period 1                       2.1701
+ 11. eval:  alcdrinkbeh linear shape                        0.0112
+ 12. eval:  alcdrinkbeh quadratic shape                     0.0000
+ 13. eval:  alcdrinkbeh max. alter                          0.0000
+ 14. eval:  alcdrinkbeh: effect from ah_pvt                 0.0000
+ 15. eval:  alcdrinkbeh: effect from age                    0.0000
+ 16. eval:  alcdrinkbeh: effect from parentdrkfrq           0.0000
+ 17. eval:  alcdrinkbeh: effect from tobacco                0.0000
+
+
+Observed values of target statistics are
+  1. Amount of network change                                           794.0000
+  2. Number of ties                                                     622.0000
+  3. Number of reciprocated ties                                        284.0000
+  4. Number of transitive triplets                                      503.0000
+  5. 3-cycles                                                           115.0000
+  6. Similarity on ah_pvt                                                15.1959
+  7. Similarity on age                                                   20.4071
+  8. Same values on male                                                420.0000
+  9. Similarity on alcdrinkbeh                                           23.6267
+ 10. Amount of behavioral change                                        211.0000
+ 11. alcdrinkbeh centered sum                                             0.4170
+ 12. alcdrinkbeh sum of cent. squares                                   428.5300
+ 13. alcdrinkbeh max. alters                                             27.2171
+ 14. alcdrinkbeh x ah_pvt                                              -163.0135
+ 15. alcdrinkbeh x age                                                   -1.1590
+ 16. alcdrinkbeh x parentdrkfrq                                          21.6809
+ 17. alcdrinkbeh x tobacco                                               42.2987
+
+ 17 parameters, 17 statistics
+
+Estimation of derivatives by the LR method (type 1).
+
+
+@2
+End of stochastic approximation algorithm, phase 3.
+---------------------------------------------------
+
+Total of 3406 iterations.
+Parameter estimates based on 2406 iterations,
+convergence diagnostics, covariance and derivative matrices based on 1000 iterations.
+
+Information for convergence diagnosis.
+Averages, standard deviations, and t-ratios for deviations from targets:
+  1.   0.2160  22.0057   0.0098 
+  2.  -0.8960  31.9240  -0.0281 
+  3.  -0.6620  22.9126  -0.0289 
+  4.  -4.8570 129.3443  -0.0376 
+  5.  -0.2670  33.2732  -0.0080 
+  6.  -0.1894   4.0998  -0.0462 
+  7.  -0.4656   5.2079  -0.0894 
+  8.  -0.8130  22.2963  -0.0365 
+  9.   0.1041   4.9732   0.0209 
+ 10.  -0.2140  13.0310  -0.0164 
+ 11.  -0.8940  17.8115  -0.0502 
+ 12.  -5.6294  44.2861  -0.1271 
+ 13.  -0.5508  42.8423  -0.0129 
+ 14.   9.5124 180.0512   0.0528 
+ 15.  -0.8085   9.9382  -0.0814 
+ 16.   0.1089  21.3296   0.0051 
+ 17.  -0.2051   6.1285  -0.0335 
+
+Good convergence is indicated by the t-ratios being close to zero.
+
+Overall maximum convergence ratio =  0.2334 .
+
+
+
+@2
+Estimation Results.
+-------------------
+
+Regular end of estimation algorithm.
+Total of 3406 iteration steps.
+
+
+@3
+Estimates and standard errors
+                             
+Network Dynamics
+ 1. rate:  basic rate parameter friendties                         9.8409  (   0.8510)
+ 2. eval:  outdegree (density)                                    -3.1436  (   0.1414)
+ 3. eval:  reciprocity                                             2.3894  (   0.1229)
+ 4. eval:  transitive triplets                                     0.6610  (   0.0650)
+ 5. eval:  3-cycles                                               -0.4618  (   0.1542)
+ 6. eval:  ah_pvt similarity                                       0.6468  (   0.2650)
+ 7. eval:  age similarity                                         -0.0547  (   0.1877)
+ 8. eval:  same male                                               0.2795  (   0.0993)
+ 9. eval:  alcdrinkbeh similarity                                  1.6133  (   0.9227)
+Behavior Dynamics
+
+10. rate:  rate alcdrinkbeh period 1                               6.2987  (   1.9815)
+11. eval:  alcdrinkbeh linear shape                               -0.3681  (   0.0987)
+12. eval:  alcdrinkbeh quadratic shape                             0.0044  (   0.0268)
+13. eval:  alcdrinkbeh max. alter                                  0.0145  (   0.0814)
+14. eval:  alcdrinkbeh: effect from ah_pvt                        -0.0026  (   0.0064)
+15. eval:  alcdrinkbeh: effect from age                           -0.0401  (   0.1022)
+16. eval:  alcdrinkbeh: effect from parentdrkfrq                   0.0153  (   0.0439)
+17. eval:  alcdrinkbeh: effect from tobacco                        0.4614  (   0.1871)
+
+
+@3
+Covariance matrices
+                   
+Covariance matrix of estimates (correlations below diagonal):
+     0.724      0.079     -0.004     -0.006     -0.058     -0.102      0.036     -0.031     -0.562     -1.079     -0.024      0.011      0.023      0.003     -0.016      0.015     -0.081
+     0.660      0.020     -0.005     -0.003     -0.007     -0.020      0.005     -0.010     -0.113     -0.201     -0.006      0.002      0.005      0.001     -0.004      0.002     -0.014
+    -0.036     -0.275      0.015      0.002     -0.005      0.005      0.000      0.001      0.012      0.046      0.002     -0.001     -0.001      0.000      0.001      0.000      0.003
+    -0.109     -0.294      0.226      0.004     -0.006      0.001      0.000      0.001      0.004      0.020      0.000      0.000      0.000      0.000      0.001      0.000      0.002
+    -0.443     -0.337     -0.252     -0.646      0.024      0.014     -0.007      0.003      0.075      0.115      0.004     -0.001     -0.003      0.000      0.002     -0.001      0.008
+    -0.453     -0.534      0.164      0.073      0.331      0.070     -0.012      0.008      0.136      0.287      0.006     -0.002     -0.005     -0.001      0.005     -0.003      0.021
+     0.224      0.201     -0.021      0.000     -0.233     -0.236      0.035     -0.002     -0.044     -0.045     -0.002      0.000      0.002      0.000      0.001      0.001     -0.003
+    -0.372     -0.743      0.076      0.170      0.213      0.303     -0.092      0.010      0.048      0.127      0.003     -0.001     -0.003      0.000      0.003     -0.001      0.008
+    -0.716     -0.868      0.110      0.072      0.526      0.555     -0.253      0.523      0.851      1.240      0.034     -0.011     -0.032     -0.003      0.022     -0.017      0.086
+    -0.640     -0.716      0.190      0.159      0.375      0.546     -0.120      0.644      0.678      3.926      0.093     -0.025     -0.083     -0.009      0.085     -0.023      0.248
+    -0.288     -0.424      0.181      0.050      0.234      0.246     -0.097      0.350      0.377      0.477      0.010     -0.001     -0.007      0.000      0.001      0.000      0.005
+     0.485      0.467     -0.185     -0.091     -0.227     -0.337      0.073     -0.321     -0.450     -0.473     -0.236      0.001      0.000      0.000     -0.001      0.000     -0.002
+     0.329      0.437     -0.115     -0.054     -0.268     -0.251      0.121     -0.350     -0.422     -0.515     -0.845      0.043      0.007      0.000     -0.001      0.000     -0.006
+     0.516      0.567     -0.158     -0.070     -0.359     -0.402      0.134     -0.474     -0.555     -0.703     -0.386      0.390      0.409      0.000      0.000      0.000     -0.001
+    -0.189     -0.258      0.052      0.091      0.125      0.199      0.043      0.276      0.230      0.419      0.122     -0.205     -0.084     -0.257      0.010      0.000      0.008
+     0.395      0.382     -0.064     -0.157     -0.117     -0.250      0.112     -0.191     -0.416     -0.264     -0.051      0.234      0.051      0.178      0.004      0.002     -0.002
+    -0.507     -0.527      0.136      0.171      0.268      0.423     -0.077      0.437      0.499      0.670      0.275     -0.455     -0.390     -0.503      0.407     -0.229      0.035
+
+Derivative matrix of expected statistics X by parameters and
+covariance/correlation matrix of X can be found using
+summary(ans) within R, or by using the 'verbose' option in Siena07.
+ 
+Total computation time 501.09 seconds.
+
+
+-----------------------------------
+New Analysis started.
+Date and time: 14/04/2022 12:41:24
+New results follow.
+-----------------------------------
+
+RSiena version 1.3.0.1 (02 May 21)
+
+
+@1
+Estimation by stochastic approximation algorithm.
+=================================================
+
+Random initialization of random number stream.
+Current random number seed is 403722.
+Effects object used: effects.8 
+Model Type:
+ Standard actor-oriented model
+Behavioral Model Type:
+ Standard behavior actor-oriented model ('restrict')
+Estimation method: unconditional moment estimation
+.
+
+Time duration for simulations is 1.0.
+Standard errors are estimated with the likelihood ratio method.
+Dolby method (regression on scores) is used.
+Initial value of gain parameter is  0.2000000.
+Reduction factor for gain parameter is  0.5000000.
+Number of subphases in Phase 2 is 4.
+
+Initial parameter values are 
+  1. rate:  basic rate parameter friendties                 6.5181
+  2. eval:  outdegree (density)                            -1.3891
+  3. eval:  reciprocity                                     0.0000
+  4. eval:  transitive triplets                             0.0000
+  5. eval:  3-cycles                                        0.0000
+  6. eval:  ah_pvt similarity                               0.0000
+  7. eval:  age similarity                                  0.0000
+  8. eval:  same male                                       0.0000
+  9. eval:  alcdrinkbeh similarity                          0.0000
+ 10. rate:  rate alcdrinkbeh period 1                       2.1446
+ 11. eval:  alcdrinkbeh linear shape                       -0.0061
+ 12. eval:  alcdrinkbeh quadratic shape                     0.0000
+ 13. eval:  alcdrinkbeh max. alter                          0.0000
+ 14. eval:  alcdrinkbeh: effect from ah_pvt                 0.0000
+ 15. eval:  alcdrinkbeh: effect from age                    0.0000
+ 16. eval:  alcdrinkbeh: effect from parentdrkfrq           0.0000
+ 17. eval:  alcdrinkbeh: effect from tobacco                0.0000
+
+
+Observed values of target statistics are
+  1. Amount of network change                                           248.0000
+  2. Number of ties                                                     273.0000
+  3. Number of reciprocated ties                                         84.0000
+  4. Number of transitive triplets                                      295.0000
+  5. 3-cycles                                                            43.0000
+  6. Similarity on ah_pvt                                                 3.8622
+  7. Similarity on age                                                   42.7430
+  8. Same values on male                                                153.0000
+  9. Similarity on alcdrinkbeh                                           19.7938
+ 10. Amount of behavioral change                                         65.0000
+ 11. alcdrinkbeh centered sum                                            -0.1552
+ 12. alcdrinkbeh sum of cent. squares                                   154.6756
+ 13. alcdrinkbeh max. alters                                             20.4886
+ 14. alcdrinkbeh x ah_pvt                                               218.7248
+ 15. alcdrinkbeh x age                                                   59.3631
+ 16. alcdrinkbeh x parentdrkfrq                                          -8.0189
+ 17. alcdrinkbeh x tobacco                                               10.6872
+
+ 17 parameters, 17 statistics
+
+Estimation of derivatives by the LR method (type 1).
+
+
+@2
+End of stochastic approximation algorithm, phase 3.
+---------------------------------------------------
+
+Total of 3578 iterations.
+Parameter estimates based on 2578 iterations,
+convergence diagnostics, covariance and derivative matrices based on 1000 iterations.
+
+Information for convergence diagnosis.
+Averages, standard deviations, and t-ratios for deviations from targets:
+  1.  -0.3920  15.4865  -0.0253 
+  2.  -1.1660  20.4008  -0.0572 
+  3.  -0.1400  12.6566  -0.0111 
+  4.  -1.1080  91.7116  -0.0121 
+  5.  -0.3320  18.0249  -0.0184 
+  6.  -0.0880   2.3205  -0.0379 
+  7.  -0.3433   4.4077  -0.0779 
+  8.  -0.2600  13.3996  -0.0194 
+  9.   0.0133   3.6759   0.0036 
+ 10.  -0.4610   7.1063  -0.0649 
+ 11.   0.1890   9.5700   0.0197 
+ 12.   1.0557  28.9214   0.0365 
+ 13.  -0.4044  22.7118  -0.0178 
+ 14.   2.7057  97.5554   0.0277 
+ 15.   1.0031  16.6667   0.0602 
+ 16.  -0.7818   7.7430  -0.1010 
+ 17.   0.2252   4.0800   0.0552 
+
+Good convergence is indicated by the t-ratios being close to zero.
+
+Overall maximum convergence ratio =  0.1985 .
+
+
+
+@2
+Estimation Results.
+-------------------
+
+Regular end of estimation algorithm.
+Total of 3578 iteration steps.
+
+
+@3
+Estimates and standard errors
+                             
+Network Dynamics
+ 1. rate:  basic rate parameter friendties                         6.6100  (   0.6905)
+ 2. eval:  outdegree (density)                                    -2.4269  (   0.1194)
+ 3. eval:  reciprocity                                             1.6366  (   0.2090)
+ 4. eval:  transitive triplets                                     0.6350  (   0.0750)
+ 5. eval:  3-cycles                                               -0.4599  (   0.1784)
+ 6. eval:  ah_pvt similarity                                       0.7455  (   0.4026)
+ 7. eval:  age similarity                                          1.3273  (   0.3390)
+ 8. eval:  same male                                               0.2846  (   0.1131)
+ 9. eval:  alcdrinkbeh similarity                                  0.8795  (   0.6205)
+Behavior Dynamics
+
+10. rate:  rate alcdrinkbeh period 1                               4.7497  (   1.5761)
+11. eval:  alcdrinkbeh linear shape                               -0.6328  (   0.1792)
+12. eval:  alcdrinkbeh quadratic shape                             0.0515  (   0.0467)
+13. eval:  alcdrinkbeh max. alter                                  0.0577  (   0.1727)
+14. eval:  alcdrinkbeh: effect from ah_pvt                         0.0202  (   0.0116)
+15. eval:  alcdrinkbeh: effect from age                            0.0781  (   0.0701)
+16. eval:  alcdrinkbeh: effect from parentdrkfrq                   0.0634  (   0.1156)
+17. eval:  alcdrinkbeh: effect from tobacco                        0.0634  (   0.2384)
+
+
+@3
+Covariance matrices
+                   
+Covariance matrix of estimates (correlations below diagonal):
+     0.477      0.008     -0.021     -0.003      0.008      0.001     -0.034     -0.009     -0.074      0.006     -0.001      0.002      0.003      0.001     -0.003      0.005     -0.025
+     0.095      0.014     -0.007     -0.004      0.005     -0.007     -0.004     -0.008     -0.027     -0.032      0.001      0.001     -0.002      0.000      0.001      0.001     -0.001
+    -0.143     -0.282      0.044      0.002     -0.010     -0.005     -0.007      0.001      0.003     -0.044     -0.001     -0.001      0.002      0.000      0.000     -0.001      0.002
+    -0.049     -0.435      0.122      0.006     -0.009      0.002     -0.002      0.001      0.004      0.037      0.000      0.000     -0.001      0.000      0.000     -0.001      0.000
+     0.061      0.248     -0.266     -0.667      0.032     -0.001     -0.010     -0.002     -0.015     -0.124     -0.002      0.000      0.005      0.000     -0.001      0.001     -0.002
+     0.004     -0.142     -0.063      0.069     -0.008      0.162     -0.002      0.002      0.044     -0.001     -0.001      0.001      0.002      0.000     -0.002      0.004      0.002
+    -0.146     -0.094     -0.097     -0.098     -0.165     -0.015      0.115     -0.002     -0.007      0.121      0.003      0.002     -0.012      0.000      0.002      0.001      0.008
+    -0.110     -0.584      0.030      0.139     -0.091      0.034     -0.045      0.013      0.002      0.022      0.001      0.000      0.000      0.000      0.000      0.000     -0.001
+    -0.172     -0.364      0.020      0.080     -0.133      0.176     -0.031      0.026      0.385      0.217      0.010     -0.005      0.001     -0.001     -0.002     -0.005      0.018
+     0.006     -0.168     -0.133      0.311     -0.443     -0.002      0.226      0.123      0.221      2.484      0.031      0.009     -0.079     -0.008      0.015     -0.010      0.031
+    -0.010      0.061     -0.027      0.025     -0.067     -0.017      0.042      0.048      0.091      0.109      0.032     -0.003     -0.022      0.000      0.003      0.001      0.001
+     0.055      0.094     -0.097     -0.060     -0.016      0.035      0.098     -0.009     -0.188      0.126     -0.323      0.002      0.000      0.000     -0.001      0.000     -0.002
+     0.024     -0.111      0.044     -0.059      0.161      0.028     -0.197     -0.011      0.012     -0.291     -0.726     -0.057      0.030      0.000     -0.004     -0.001     -0.003
+     0.100      0.048      0.060     -0.102      0.173     -0.019     -0.094     -0.056     -0.122     -0.463     -0.178      0.022      0.172      0.000      0.000      0.000     -0.001
+    -0.062      0.090     -0.007     -0.011     -0.050     -0.068      0.104      0.001     -0.042      0.132      0.204     -0.242     -0.347     -0.195      0.005      0.002      0.000
+     0.065      0.100     -0.039     -0.080      0.047      0.086      0.029     -0.028     -0.065     -0.053      0.052      0.056     -0.073      0.045      0.259      0.013     -0.001
+    -0.153     -0.023      0.038      0.014     -0.058      0.018      0.097     -0.030      0.122      0.083      0.021     -0.208     -0.065     -0.230      0.026     -0.049      0.057
+
+Derivative matrix of expected statistics X by parameters and
+covariance/correlation matrix of X can be found using
+summary(ans) within R, or by using the 'verbose' option in Siena07.
+ 
+Total computation time 59.57 seconds.
+
+
+-----------------------------------
+New Analysis started.
+Date and time: 14/04/2022 12:42:24
+New results follow.
+-----------------------------------
+
+RSiena version 1.3.0.1 (02 May 21)
+
+
+@1
+Estimation by stochastic approximation algorithm.
+=================================================
+
+Random initialization of random number stream.
+Current random number seed is 118623.
+Effects object used: effects.88 
+Model Type:
+ Standard actor-oriented model
+Behavioral Model Type:
+ Standard behavior actor-oriented model ('restrict')
+Estimation method: unconditional moment estimation
+.
+
+Time duration for simulations is 1.0.
+Standard errors are estimated with the likelihood ratio method.
+Dolby method (regression on scores) is used.
+Initial value of gain parameter is  0.2000000.
+Reduction factor for gain parameter is  0.5000000.
+Number of subphases in Phase 2 is 4.
+
+Initial parameter values are 
+  1. rate:  basic rate parameter friendties                 7.0401
+  2. eval:  outdegree (density)                            -1.5734
+  3. eval:  reciprocity                                     0.0000
+  4. eval:  transitive triplets                             0.0000
+  5. eval:  3-cycles                                        0.0000
+  6. eval:  ah_pvt similarity                               0.0000
+  7. eval:  age similarity                                  0.0000
+  8. eval:  same male                                       0.0000
+  9. eval:  alcdrinkbeh similarity                          0.0000
+ 10. rate:  rate alcdrinkbeh period 1                       1.6683
+ 11. eval:  alcdrinkbeh linear shape                        0.1186
+ 12. eval:  alcdrinkbeh quadratic shape                     0.0000
+ 13. eval:  alcdrinkbeh max. alter                          0.0000
+ 14. eval:  alcdrinkbeh: effect from ah_pvt                 0.0000
+ 15. eval:  alcdrinkbeh: effect from age                    0.0000
+ 16. eval:  alcdrinkbeh: effect from parentdrkfrq           0.0000
+ 17. eval:  alcdrinkbeh: effect from tobacco                0.0000
+
+
+Observed values of target statistics are
+  1. Amount of network change                                           229.0000
+  2. Number of ties                                                     206.0000
+  3. Number of reciprocated ties                                        100.0000
+  4. Number of transitive triplets                                      267.0000
+  5. 3-cycles                                                            69.0000
+  6. Similarity on ah_pvt                                                 6.9127
+  7. Similarity on age                                                   34.9028
+  8. Same values on male                                                117.0000
+  9. Similarity on alcdrinkbeh                                           12.3503
+ 10. Amount of behavioral change                                         41.0000
+ 11. alcdrinkbeh centered sum                                             4.9014
+ 12. alcdrinkbeh sum of cent. squares                                   135.8185
+ 13. alcdrinkbeh max. alters                                             31.4475
+ 14. alcdrinkbeh x ah_pvt                                              -263.6855
+ 15. alcdrinkbeh x age                                                   65.6400
+ 16. alcdrinkbeh x parentdrkfrq                                           2.5497
+ 17. alcdrinkbeh x tobacco                                               11.4733
+
+ 17 parameters, 17 statistics
+
+Estimation of derivatives by the LR method (type 1).
+
+
+@2
+End of stochastic approximation algorithm, phase 3.
+---------------------------------------------------
+
+Total of 3372 iterations.
+Parameter estimates based on 2372 iterations,
+convergence diagnostics, covariance and derivative matrices based on 1000 iterations.
+
+Information for convergence diagnosis.
+Averages, standard deviations, and t-ratios for deviations from targets:
+  1.   0.1280  12.9322   0.0099 
+  2.   2.0820  22.8527   0.0911 
+  3.   2.1960  18.2030   0.1206 
+  4.  16.2900 117.1279   0.1391 
+  5.   5.5260  35.4534   0.1559 
+  6.  -0.1007   2.5022  -0.0402 
+  7.   0.4892   4.8491   0.1009 
+  8.   0.8420  13.8312   0.0609 
+  9.   0.1015   3.1253   0.0325 
+ 10.   0.1150   6.4140   0.0179 
+ 11.   0.4990   8.0286   0.0622 
+ 12.   1.1198  22.3587   0.0501 
+ 13.   1.0763  21.2196   0.0507 
+ 14.  -0.1365  82.2407  -0.0017 
+ 15.   0.1837  10.8853   0.0169 
+ 16.   0.0639   8.2551   0.0077 
+ 17.   0.0638   3.2812   0.0194 
+
+Good convergence is indicated by the t-ratios being close to zero.
+
+Overall maximum convergence ratio =  0.2097 .
+
+
+
+@2
+Estimation Results.
+-------------------
+
+Regular end of estimation algorithm.
+Total of 3372 iteration steps.
+
+
+@3
+Estimates and standard errors
+                             
+Network Dynamics
+ 1. rate:  basic rate parameter friendties                         8.5368  (   0.8884)
+ 2. eval:  outdegree (density)                                    -2.6198  (   0.1417)
+ 3. eval:  reciprocity                                             1.6774  (   0.2280)
+ 4. eval:  transitive triplets                                     0.4857  (   0.0713)
+ 5. eval:  3-cycles                                               -0.3117  (   0.1415)
+ 6. eval:  ah_pvt similarity                                       0.9303  (   0.3911)
+ 7. eval:  age similarity                                          1.7414  (   0.5100)
+ 8. eval:  same male                                               0.0889  (   0.1312)
+ 9. eval:  alcdrinkbeh similarity                                  0.6371  (   0.4646)
+Behavior Dynamics
+
+10. rate:  rate alcdrinkbeh period 1                               1.7822  (   0.7558)
+11. eval:  alcdrinkbeh linear shape                               -1.1455  (   0.5068)
+12. eval:  alcdrinkbeh quadratic shape                             0.5930  (   0.5855)
+13. eval:  alcdrinkbeh max. alter                                  0.3429  (   0.4047)
+14. eval:  alcdrinkbeh: effect from ah_pvt                        -0.0412  (   0.0325)
+15. eval:  alcdrinkbeh: effect from age                            0.0665  (   0.2430)
+16. eval:  alcdrinkbeh: effect from parentdrkfrq                  -0.1426  (   0.3907)
+17. eval:  alcdrinkbeh: effect from tobacco                       -0.0975  (   0.6614)
+
+
+@3
+Covariance matrices
+                   
+Covariance matrix of estimates (correlations below diagonal):
+     0.789      0.038     -0.036      0.002      0.008     -0.020     -0.135     -0.005     -0.024      0.133      0.060     -0.153     -0.040      0.003      0.055      0.076      0.138
+     0.298      0.020     -0.009     -0.004      0.005     -0.010     -0.031     -0.010     -0.001      0.014      0.005     -0.018      0.000      0.001      0.006      0.008      0.003
+    -0.180     -0.279      0.052      0.003     -0.018     -0.013      0.004     -0.002     -0.015     -0.001      0.006      0.013     -0.009      0.000     -0.005     -0.012      0.012
+     0.038     -0.381      0.174      0.005     -0.007      0.002     -0.004      0.000     -0.003      0.012     -0.001     -0.006     -0.002      0.000      0.002      0.003      0.010
+     0.067      0.242     -0.544     -0.684      0.020     -0.001     -0.006      0.001      0.007     -0.018     -0.001      0.005      0.007      0.000     -0.001     -0.001     -0.014
+    -0.056     -0.189     -0.148      0.085     -0.011      0.153      0.015      0.004      0.046      0.017      0.004     -0.013      0.004      0.000      0.004      0.011     -0.007
+    -0.298     -0.431      0.032     -0.117     -0.090      0.073      0.260      0.006     -0.045     -0.159     -0.042      0.136      0.020     -0.004     -0.043     -0.065     -0.091
+    -0.047     -0.513     -0.076      0.003      0.040      0.071      0.087      0.017     -0.004     -0.021     -0.008      0.018      0.004     -0.001     -0.005     -0.008     -0.008
+    -0.059     -0.008     -0.144     -0.080      0.103      0.250     -0.189     -0.059      0.216      0.034      0.014     -0.037      0.007      0.000      0.008      0.022     -0.005
+     0.198      0.130     -0.006      0.215     -0.169      0.058     -0.413     -0.208      0.097      0.571      0.140     -0.355     -0.124      0.014      0.102      0.180      0.262
+     0.134      0.071      0.051     -0.041     -0.012      0.020     -0.161     -0.120      0.061      0.365      0.257     -0.147     -0.171      0.008      0.036      0.025      0.118
+    -0.294     -0.219      0.094     -0.133      0.060     -0.058      0.456      0.229     -0.136     -0.803     -0.494      0.343      0.088     -0.010     -0.100     -0.164     -0.216
+    -0.112      0.000     -0.100     -0.068      0.120      0.024      0.098      0.081      0.038     -0.405     -0.832      0.371      0.164     -0.006     -0.025     -0.007     -0.113
+     0.092      0.158      0.015      0.024     -0.082      0.028     -0.245     -0.143      0.027      0.579      0.498     -0.512     -0.448      0.001      0.002      0.001      0.007
+     0.257      0.167     -0.090      0.115     -0.026      0.047     -0.346     -0.166      0.075      0.557      0.292     -0.705     -0.251      0.303      0.059      0.056      0.048
+     0.219      0.153     -0.133      0.101     -0.009      0.072     -0.327     -0.158      0.121      0.608      0.124     -0.716     -0.042      0.115      0.589      0.153      0.060
+     0.235      0.031      0.078      0.208     -0.145     -0.027     -0.270     -0.089     -0.017      0.523      0.351     -0.559     -0.423      0.316      0.297      0.233      0.437
+
+Derivative matrix of expected statistics X by parameters and
+covariance/correlation matrix of X can be found using
+summary(ans) within R, or by using the 'verbose' option in Siena07.
+ 
+Total computation time 41.12 seconds.

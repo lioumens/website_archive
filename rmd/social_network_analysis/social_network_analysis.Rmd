@@ -1,0 +1,662 @@
+---
+title: "Social Network Analysis"
+author: "Michael Liou"
+date: "12/6/2021"
+output: 
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(tidyverse)
+library(sna)
+library(asnipe)
+library(ergm) # exponential random graph models
+library(eigenmodel) # latent models by peter hoff
+library(network)
+library(sand) # statistical analysis of network data
+library(RSiena) # Simulation Investigation for Empirical Network Analysis
+library(statnet)
+library(coda)
+library(intergraph)
+library(igraph)
+```
+
+
+# Visualizing Networks
+
+- [ggraph](https://ggraph.data-imaginist.com/) - a nice interface for network data into ggplot
+- [gephi]() - has been around a while
+- [UCINET]() - windows only
+- [Pajek]() - very nice interface
+
+# Sienna
+
+## Introduction
+
+Stands for Simulation Investigation for Empirical Network Analysis, named after the city in which the work for this started.
+
+Program for statistical analysis of network data, with the focus on social networks. There's some interesting context for this
+
+The basic model fit 
+
+## Resources
+- [Informational Website](https://www.stats.ox.ac.uk/~snijders/siena/) - the home website for the SIENNA Project. The website also contains many helpful example scripts and datasets.
+- [Manual for R](https://www.stats.ox.ac.uk/~snijders/siena/RSiena_Manual.pdf#section.8) - This is the place to get started with SIENA modeling, with a longer, practical introduction to using their software.
+- [Duke 2018 Workshop Materials](duke workshop materials/Day 5 - SIENA Models/) - There's some powerpoints with details calculations of how each objective function and evaluation function actually plays out for change in the dyad.
+  - [Links to all the resources and lectures](https://sites.duke.edu/dnac/training/) - the entire workshop materials listed on the website.
+
+## Model Specification
+
+See Section 5 of [Manual for R](https://www.stats.ox.ac.uk/~snijders/siena/RSiena_Manual.pdf#section.5)
+
+There are 4 types of functions in the model specification:
+
+1. Rate functions - how often do we get the opportunity to change around the specification?
+2. Evaluation functions - determines the probability of changing their ties. Can be thought of evaluating "satisfaction" for each actor's local environment, actors will change to increase their total satisfaction.
+3. Creation function - probability of changes only in the creation of new ties.
+4. Maintenance function - probability of changes only in the maintenance and termination of existing ties.
+
+Most of the time we're only using the first 2, rate and evaluation, with most of the focus on the evaluation function
+
+## Meta Analysis in Rsienna
+
+The idea is to fit SABM's to each network, and combine the parameter estimates intelligently from all the studies. We could also consider combining the network into one large network and add structural zeros for nodes from different networks, this would also work, but apparently it's very slow running as a large diagonal block matrix in RSienna.
+
+## Examples
+
+### PH819 Lab (single network, two timepoints)
+
+```{r}
+friend.data.w1 <- as.matrix(read.table("data/class5809.txt"))
+friend.data.w2 <- as.matrix(read.table("data/class5809_t2.txt"))
+attr5809<-read.table("data/attr5809.txt",header=TRUE,stringsAsFactors=FALSE)
+
+for (i in 1:nrow(attr5809)) {if (attr5809[i,50] > 98) {friend.data.w2[i,]=9}}
+friend.data.w1[friend.data.w1 %in% c(6,9)] <- NA
+friend.data.w2[friend.data.w2 %in% c(6,9)] <- NA
+
+alcfrq<-cbind(attr5809[,45],attr5809[,48])
+alcfrq[alcfrq %in% c(4,5,6)] <- 4
+alcfrq[alcfrq %in% c(99)] <- NA
+```
+
+```{r}
+# Visualize the networks that we're working with
+par(mfrow = c(1, 2), oma = c(0, 0, 0, 0), mar = c(0, 0, 1, 0))
+
+kcoord <- gplot.layout.fruchtermanreingold(friend.data.w1, layout.par = NULL)
+gplot(friend.data.w1, coord = kcoord, main = "timepoint 1", vertex.cex = alcfrq[,1], object.scale = .005)
+gplot(friend.data.w2, coord = kcoord, main = "timepoint 2", vertex.cex = alcfrq[,2], object.scale = .005)
+```
+
+```{r}
+# create the network (response) and the behavior attributes for each timepoint
+friendties <- sienaNet(array(c(friend.data.w1, friend.data.w2),
+                             dim=c(nrow(attr5809), nrow(attr5809), 2)))
+alcdrinkbeh <- sienaNet(alcfrq, type="behavior")
+
+# create data covariates
+ah_pvt <- coCovar(attr5809[,36]) # denotes constant Covariates
+age <- coCovar(attr5809[,38]) 
+male <- coCovar(attr5809[,40])
+parentdrkfrq <- coCovar(attr5809[,53])
+parentdrkfiv <- coCovar(attr5809[,54])
+tobacco <- coCovar(attr5809[,56])
+```
+
+```{r}
+# create the data object for siena
+data5809 <- sienaDataCreate(friendties,
+                            ah_pvt, age, male, parentdrkfrq,
+                            parentdrkfiv,tobacco,alcdrinkbeh)
+eff5809 <- getEffects(data5809)
+
+# prints out a txtfile with more information
+print01Report(data5809, modelname = 'class5809_init')
+```
+
+```{r message=FALSE, warning=FALSE, results=FALSE}
+# Fit the null model, and display the summary without covariance
+# creates output file "class5809_run1.txt"
+model5809 <- sienaModelCreate(useStdInits = FALSE, 
+                              projname = 'class5809_run1')
+ans5809 <- siena07(model5809, data=data5809, effects=eff5809, 
+                   batch=FALSE, verbose=FALSE)
+```
+
+
+```{r message=FALSE, warning=FALSE}
+ans5809 # display results from fitting
+```
+
+```{r}
+# Wald-style p-values can be calculated by
+
+1 - pnorm(abs(ans5809$theta / ans5809$se))
+```
+
+### PH819 Lab Meta analysis (4 networks, 2 timepoints each)
+
+There's a massive amount of code for this, and we need to run SABM for all 4 models before we can actually do a meta analysis
+
+```{r message=FALSE, warning=FALSE, results=FALSE}
+# Network 1: class 7
+friend.data.w1 <- as.matrix(read.table("data/class7.txt"))
+friend.data.w2 <- as.matrix(read.table("data/class7_t2.txt"))
+attr7<-read.table("data/attr7.txt",header=TRUE,stringsAsFactors=FALSE)
+for (i in 1:nrow(attr7)) {if (attr7[i,48] > 98) {friend.data.w2[i,]=9}}
+friend.data.w1[friend.data.w1 %in% c(6,9)] <- NA
+friend.data.w2[friend.data.w2 %in% c(6,9)] <- NA
+alcdrinkbeh<-cbind(attr7[,45],attr7[,48])
+alcdrinkbeh[alcdrinkbeh %in% c(99)] <- NA
+friendties <- sienaNet(array(c(friend.data.w1,friend.data.w2),dim=c(nrow(attr7),nrow(attr7),2)))
+alcdrinkbeh <- sienaNet(alcdrinkbeh,type="behavior")
+ah_pvt <- coCovar(attr7[,36])
+age <- coCovar(attr7[,38])
+male <- coCovar(attr7[,40])
+parentdrkfrq <- coCovar(attr7[,53])
+tobacco <- coCovar(attr7[,56])
+dataset.7 <- sienaDataCreate(friendties,ah_pvt,age,male,parentdrkfrq,tobacco,alcdrinkbeh)
+effects.7 <- getEffects(dataset.7)
+effectsDocumentation(effects.7)
+
+effects.7 <- includeEffects(effects.7,transTrip,type="eval")
+effects.7 <- includeEffects(effects.7,cycle3,type="eval")
+effects.7 <- includeEffects(effects.7,simX,type="eval",interaction1="age") #age similarity
+effects.7 <- includeEffects(effects.7,sameX,type="eval",interaction1="male") #same gender
+effects.7 <- includeEffects(effects.7,simX,type="eval",interaction1="ah_pvt") #similar scholastic aptitude
+effects.7 <- includeEffects(effects.7,simX,type="eval",interaction1="alcdrinkbeh") #similar alcoholic use
+effects.7 <- includeEffects(effects.7,name="alcdrinkbeh",maxAlt,interaction1="friendties") #average exposure
+# effects.7 <- includeEffects(effects.7,name="alcdrinkbeh",avRecAlt,interaction1="friendties") #average exposure
+effects.7 <- includeEffects(effects.7,name="alcdrinkbeh",effFrom,type="eval",interaction1="age") #age effect
+effects.7 <- includeEffects(effects.7,name="alcdrinkbeh",effFrom,type="eval",interaction1="parentdrkfrq") #parent drinking effect
+effects.7 <- includeEffects(effects.7,name="alcdrinkbeh",effFrom,type="eval",interaction1="tobacco") #tobacco effect
+effects.7 <- includeEffects(effects.7,name="alcdrinkbeh",effFrom,type="eval",interaction1="ah_pvt") #ah_pvt effect
+
+modelall <- sienaModelCreate(useStdInits = FALSE, projname = 'AlcoholBehavior')
+
+ans.7 <- siena07(modelall, data=dataset.7, effects=effects.7, batch=FALSE)
+```
+
+```{r message=FALSE, warning=FALSE, results=FALSE}
+# Network 2: class 5809
+friend.data.w1 <- as.matrix(read.table("data/class5809.txt"))
+friend.data.w2 <- as.matrix(read.table("data/class5809_t2.txt"))
+attr5809<-read.table("data/attr5809.txt",header=TRUE,stringsAsFactors=FALSE)
+for (i in 1:nrow(attr5809)) {if (attr5809[i,48] > 98) {friend.data.w2[i,]=9}}
+friend.data.w1[friend.data.w1 %in% c(6,9)] <- NA
+friend.data.w2[friend.data.w2 %in% c(6,9)] <- NA
+alcdrinkbeh<-cbind(attr5809[,45],attr5809[,48])
+alcdrinkbeh[alcdrinkbeh %in% c(99)] <- NA
+friendties <- sienaNet(array(c(friend.data.w1,friend.data.w2),dim=c(nrow(attr5809),nrow(attr5809),2)))
+alcdrinkbeh <- sienaNet(alcdrinkbeh,type="behavior")
+ah_pvt <- coCovar(attr5809[,36])
+
+age <- coCovar(attr5809[,38])
+male <- coCovar(attr5809[,40])
+parentdrkfrq <- coCovar(attr5809[,53])
+tobacco <- coCovar(attr5809[,56])
+dataset.5809 <- sienaDataCreate(friendties,ah_pvt,age,male,parentdrkfrq,tobacco,alcdrinkbeh)
+effects.5809 <- getEffects(dataset.5809)
+
+effects.5809 <- includeEffects(effects.5809,transTrip,type="eval")
+effects.5809 <- includeEffects(effects.5809,cycle3,type="eval")
+effects.5809 <- includeEffects(effects.5809,simX,type="eval",interaction1="age") #age similarity
+effects.5809 <- includeEffects(effects.5809,sameX,type="eval",interaction1="male") #same gender
+effects.5809 <- includeEffects(effects.5809,simX,type="eval",interaction1="ah_pvt") #similar scholastic aptitude
+effects.5809 <- includeEffects(effects.5809,simX,type="eval",interaction1="alcdrinkbeh") #similar alcoholic use
+effects.5809 <- includeEffects(effects.5809,name="alcdrinkbeh",maxAlt,interaction1="friendties") #average exposure
+# effects.5809 <- includeEffects(effects.5809,name="alcdrinkbeh",avRecAlt,interaction1="friendties") #average exposure
+effects.5809 <- includeEffects(effects.5809,name="alcdrinkbeh",effFrom,type="eval",interaction1="age") #age effect
+effects.5809 <- includeEffects(effects.5809,name="alcdrinkbeh",effFrom,type="eval",interaction1="parentdrkfrq") #parent drinking effect
+effects.5809 <- includeEffects(effects.5809,name="alcdrinkbeh",effFrom,type="eval",interaction1="tobacco") #tobacco effect
+effects.5809 <- includeEffects(effects.5809,name="alcdrinkbeh",effFrom,type="eval",interaction1="ah_pvt") #ah_pvt effect
+
+modelall <- sienaModelCreate(useStdInits = FALSE, projname = 'AlcoholBehavior')
+
+ans.5809 <- siena07(modelall, data=dataset.5809, effects=effects.5809, batch=FALSE)
+```
+
+
+```{r message=FALSE, warning=FALSE, results=FALSE}
+# Network 3: class 8
+friend.data.w1 <- as.matrix(read.table("data/class8.txt"))
+friend.data.w2 <- as.matrix(read.table("data/class8_t2.txt"))
+attr8<-read.table("data/attr8.txt",header=TRUE,stringsAsFactors=FALSE)
+for (i in 1:nrow(attr8)) {if (attr8[i,48] > 98) {friend.data.w2[i,]=9}}
+friend.data.w1[friend.data.w1 %in% c(6,9)] <- NA
+friend.data.w2[friend.data.w2 %in% c(6,9)] <- NA
+
+alcdrinkbeh<-cbind(attr8[,45],attr8[,48])
+alcdrinkbeh[alcdrinkbeh %in% c(99)] <- NA
+friendties <- sienaNet(array(c(friend.data.w1,friend.data.w2),dim=c(nrow(attr8),nrow(attr8),2)))
+alcdrinkbeh <- sienaNet(alcdrinkbeh,type="behavior")
+ah_pvt <- coCovar(attr8[,36])
+age <- coCovar(attr8[,38])
+male <- coCovar(attr8[,40])
+parentdrkfrq <- coCovar(attr8[,53])
+tobacco <- coCovar(attr8[,56])
+dataset.8 <- sienaDataCreate(friendties,ah_pvt,age,male,parentdrkfrq,tobacco,alcdrinkbeh)
+effects.8 <- getEffects(dataset.8)
+effects.8 <- includeEffects(effects.8,transTrip,type="eval")
+effects.8 <- includeEffects(effects.8,cycle3,type="eval")
+effects.8 <- includeEffects(effects.8,simX,type="eval",interaction1="age") #age similarity
+effects.8 <- includeEffects(effects.8,sameX,type="eval",interaction1="male") #same gender
+effects.8 <- includeEffects(effects.8,simX,type="eval",interaction1="ah_pvt") #similar scholastic aptitude
+effects.8 <- includeEffects(effects.8,simX,type="eval",interaction1="alcdrinkbeh") #similar alcoholic use
+effects.8 <- includeEffects(effects.8,name="alcdrinkbeh",maxAlt,interaction1="friendties") #average exposure
+# effects.8 <- includeEffects(effects.8,name="alcdrinkbeh",avRecAlt,interaction1="friendties") #average exposure
+effects.8 <- includeEffects(effects.8,name="alcdrinkbeh",effFrom,type="eval",interaction1="age") #age effect
+effects.8 <- includeEffects(effects.8,name="alcdrinkbeh",effFrom,type="eval",interaction1="parentdrkfrq") #parent drinking effect
+effects.8 <- includeEffects(effects.8,name="alcdrinkbeh",effFrom,type="eval",interaction1="tobacco") #tobacco effect
+effects.8 <- includeEffects(effects.8,name="alcdrinkbeh",effFrom,type="eval",interaction1="ah_pvt") #ah_pvt effect
+
+modelall <- sienaModelCreate(useStdInits = FALSE, projname = 'AlcoholBehavior')
+
+ans.8 <- siena07(modelall, data=dataset.8, effects=effects.8, batch=FALSE)
+```
+
+
+```{r message=FALSE, warning=FALSE, results=FALSE}
+# Network 4: class 88
+friend.data.w1 <- as.matrix(read.table("data/class88.txt"))
+friend.data.w2 <- as.matrix(read.table("data/class88_t2.txt"))
+attr88<-read.table("data/attr88.txt",header=TRUE,stringsAsFactors=FALSE)
+for (i in 1:nrow(attr88)) {if (attr88[i,48] > 98) {friend.data.w2[i,]=9}}
+friend.data.w1[friend.data.w1 %in% c(6,9)] <- NA
+friend.data.w2[friend.data.w2 %in% c(6,9)] <- NA
+alcdrinkbeh<-cbind(attr88[,45],attr88[,48])
+alcdrinkbeh[alcdrinkbeh %in% c(99)] <- NA
+friendties <- sienaNet(array(c(friend.data.w1,friend.data.w2),dim=c(nrow(attr88),nrow(attr88),2)))
+alcdrinkbeh <- sienaNet(alcdrinkbeh,type="behavior")
+ah_pvt <- coCovar(attr88[,36])
+age <- coCovar(attr88[,38])
+male <- coCovar(attr88[,40])
+parentdrkfrq <- coCovar(attr88[,53])
+tobacco <- coCovar(attr88[,56])
+dataset.88 <- sienaDataCreate(friendties,ah_pvt,age,male,parentdrkfrq,tobacco,alcdrinkbeh)
+effects.88 <- getEffects(dataset.88)
+
+effects.88 <- includeEffects(effects.88,transTrip,type="eval")
+effects.88 <- includeEffects(effects.88,cycle3,type="eval")
+effects.88 <- includeEffects(effects.88,simX,type="eval",interaction1="age") #age similarity
+effects.88 <- includeEffects(effects.88,sameX,type="eval",interaction1="male") #same gender
+effects.88 <- includeEffects(effects.88,simX,type="eval",interaction1="ah_pvt") #similar scholastic aptitude
+effects.88 <- includeEffects(effects.88,simX,type="eval",interaction1="alcdrinkbeh") #similar alcoholic use
+effects.88 <- includeEffects(effects.88,name="alcdrinkbeh",maxAlt,interaction1="friendties") #average exposure
+# effects.88 <- includeEffects(effects.88,name="alcdrinkbeh",avRecAlt,interaction1="friendties") #average exposure
+effects.88 <- includeEffects(effects.88,name="alcdrinkbeh",effFrom,type="eval",interaction1="age") #age effect
+effects.88 <- includeEffects(effects.88,name="alcdrinkbeh",effFrom,type="eval",interaction1="parentdrkfrq") #parent drinking effect
+effects.88 <- includeEffects(effects.88,name="alcdrinkbeh",effFrom,type="eval",interaction1="tobacco") #tobacco effect
+effects.88 <- includeEffects(effects.88,name="alcdrinkbeh",effFrom,type="eval",interaction1="ah_pvt") #ah_pvt effect
+
+modelall <- sienaModelCreate(useStdInits = FALSE, projname = 'AlcoholBehavior')
+
+ans.88 <- siena07(modelall, data=dataset.88, effects=effects.88, batch=FALSE)
+```
+
+the actual meta analysis is done by the function `siena08()`, based on Siena fits.
+
+- Must have the same covariates fit in the networks. The output of the file is pretty self explanatory.
+- There's an automatic warning/filtering if the standard error of any of the variable estimates is >5 because this is a sign of instability, and need to model the networks again.
+- If you have fit warning, the advice is to check the output simulations and goodness-of-fit parameters to make sure we have a good fit
+
+```{r attr.output='style="max-height:600px;"'}
+meta <- siena08(ans.5809, ans.88, ans.7, ans.8)
+summary(meta)
+```
+
+
+
+# Exponential Random Graphs
+
+## Lazega example
+
+From Statistical Analysis of Networks with R
+
+```{r}
+# igraph example
+data(lazega)
+plot(lazega, layout = layout_with_kk, vertex.label = V(lazega),
+     vertex.size = 10)
+```
+
+The statnet representation of 
+
+```{r}
+# making statnet version of network data
+A <- get.adjacency(lazega)
+v.attrs <- get.data.frame(lazega, what= "vertices")
+lazega.s <- as.network(as.matrix(A), directed = FALSE)
+network::set.vertex.attribute(lazega.s, "office", v.attrs$Office)
+network::set.vertex.attribute(lazega.s, "practice", v.attrs$Practice)
+network::set.vertex.attribute(lazega.s, "gender", v.attrs$Gender)
+network::set.vertex.attribute(lazega.s, "seniority", v.attrs$Seniority)
+```
+
+
+```{r}
+# summary statistics
+## Degrees
+ergm_deg <- formula(lazega.s ~ degree(1:8) + triangles) 
+summary(ergm_deg)
+
+degree_distribution(lazega) * vcount(lazega)
+degreedist(lazega.s) # statnet
+```
+
+```{r warning= FALSE}
+# mixing matrix - how many ties are between each for each attribute
+mixingmatrix(lazega.s, "gender")
+```
+
+
+```{r message = FALSE}
+# Bernoulli ERGM
+ergm_bern_form <- formula(lazega.s ~ edges)
+summary(ergm_bern_form)
+ergm_bern <- ergm(ergm_bern_form)
+summary(ergm_bern)
+```
+
+```{r}
+exp(-1.499) / (1 + exp(-1.499 )) # this is also the density of the network
+```
+
+The interpretation of this "edges" network means, that if we were to try to estimate the probability of the existence of an edge by just the number of edges in the model, we should expect a uniform distribution of the edges
+
+
+```{r}
+# Simulating from ergm
+sim_bern <- simulate(ergm_bern, burnin = 1e+6, seed = 9)
+plot(degreedist(sim_bern))
+degreedist(lazega.s)
+```
+
+
+```{r message = FALSE}
+# simulate with triangles
+ergm_tri_form <- formula(lazega.s ~ triangle)
+summary(ergm_tri_form)
+ergm_tri <- ergm(ergm_tri_form)
+sim_tri <- simulate(ergm_tri)
+plot(sim_tri)
+
+summary(ergm_tri)
+exp(-0.38937) / (1 + exp(-0.38937)) # p = .403
+```
+
+.403 should loosely translate to the density of triangles, but I don't know how.
+
+```{r}
+# Complex with k stars
+ergm_complex <- formula(lazega.s ~ edges + kstar(2) + kstar(3) + triangle)
+summary(ergm_complex)
+
+# alternating kstar statistic
+ergm_geometric <- formula(lazega.s ~ edges + gwesp(1, fixed = TRUE))
+summary(ergm_geometric)
+```
+
+
+```{r}
+ergm_lazega <- formula(lazega.s ~ edges +
+                         gwesp(log(3), fixed = TRUE) +
+                         nodemain("seniority") +
+                         nodemain("practice") + 
+                         match("practice") + # dyads that link same practice
+                         match("gender") + # dyads that link same gender
+                         match("office"))
+summary(ergm_lazega)
+```
+Types of structural components
+
+- "geometrically weighted degree count"
+
+- "Alternating sums of k-triangles"
+
+- "Alternating k-star statistic"
+
+
+```{r message = FALSE}
+# ERGM fitting
+ergm_lazega_fit <- ergm(ergm_lazega)
+anova(ergm_lazega_fit) # overall fit based on deviance statistic i guess
+summary(ergm_lazega_fit)
+```
+
+
+```{r}
+# goodness of fit
+ergm_lazega_gof <- gof(ergm_lazega_fit)
+par(mfrow = c(2, 2))
+plot(ergm_lazega_gof)
+```
+
+The way goodness of fit is currently conducted is by generating a bunch of network statistics and seeing if they fit the simulated distribution.
+
+
+# Linear Regression w/ Matrices
+
+Section follows [Dai Shizuka's Intro to MRQAP](https://dshizuka.github.io/networkanalysis/07_mrqap.html)
+
+
+```{r}
+# Generate random matrices
+set.seed(2)
+m1=rgraph(10, m=1, tprob=0.5, mode="graph")
+m2=rgraph(10, m=1, tprob=0.5, mode="graph") 
+m3=rgraph(10, m=1, tprob=0.5, mode="graph")
+```
+
+```{r}
+mod_net <- netlm(m1, m2 + m3, mode = "graph", nullhyp = "qap", test.statistic = "t-value")
+
+summary(mod_net)
+```
+
+```{r}
+# recreating netlm
+y <- m1[upper.tri(m1)]
+x <- (m2+m3)[upper.tri(m1)]
+
+summary(lm(y~x))
+```
+
+It seems that `netlm` is simply vectorizing the upper triangle of the matrix and running lm. In this case, they have 1 response and 1 covariate matrix. There is some additional output for the coefficient distribution.
+
+```{r}
+mrqap.dsp(m1~m2+m3, directed = "undirected", randomisations = 10000)
+```
+
+```{r}
+# same thing, but with additional regressor.
+y <- m1[upper.tri(m1)]
+x1 <- m2[upper.tri(m2)]
+x2 <- m3[upper.tri(m3)]
+
+manual_mrqap <- lm(y~x1+x2)
+
+summary(manual_mrqap)
+```
+
+For the additional "testing of null hypothesis" version, see the paper references, but it involves first regressing on other covariates to "take out the effect", Now we use the residuals in place of the original covariate and shuffle them for the permutation test. It's unclear that there is any structure to the permutations.
+
+```{r}
+# first pval for x1
+x1_resid <- lm(x1~x2)$residuals
+
+set.seed(1)
+num_random <- 10000
+betas <- vector(mode = "numeric", length = num_random)
+for (i in 1:num_random) {
+  x1_resid_shuf <- sample(x1_resid, length(x1_resid))
+  betas[i] <- lm(y~x1_resid_shuf + x2)$coef["x1_resid_shuf"]
+}
+
+mean(betas <= 0.05813)
+```
+
+
+```{r}
+# second pval for x2
+x2_resid <- lm(x2~x1)$residuals
+y2_resid <- lm(y~x1)$residuals
+
+
+lm(y ~ x1 + x2_resid) # beta coefficient is the same
+# # lm(y2_resid ~ x2_resid) # beta coefficient is the same
+# lm(y~x1+x2) # beta coef in original.
+
+set.seed(1)
+num_random <- 10000
+betas <- vector(mode = "numeric", length = num_random)
+for (i in 1:num_random) {
+  x2_resid_shuf <- sample(x2_resid, length(x2_resid))
+  betas[i] <- lm(y~x1 + x2_resid_shuf)$coef["x2_resid_shuf"]
+}
+mean(betas <= -0.23561)
+```
+
+## Resources
+
+* [Intro to Network Regression](https://dshizuka.github.io/networkanalysis/07_mrqap.html)
+
+## QAP with correlation
+
+Match results from "QAP Partialling as a test of spuriousness, Krackhardt (1987)".
+
+```{r}
+m1 <- matrix(c(0, 1, 0, 0, 0,
+               1, 0, 1, 0, 0,
+               0, 1, 0, 1, 1,
+               0, 0, 1, 0, 1,
+               0, 0, 1, 1, 0), nrow = 5, byrow = T)
+m2 <- matrix(c(0, 0, 1, 1, 1,
+               0, 0, 0, 1, 1,
+               1, 0, 0, 0, 1, 
+               1, 1, 0, 0, 0,
+               1, 1, 1, 0, 0), nrow = 5, byrow = T)
+
+cor(c(m1[upper.tri(m1)]), c(m2[upper.tri(m2)])) # matches paper
+```
+
+
+
+# Permuting matrices
+
+```{r}
+# pmatrix from Matrix package, creates the permutation matrix based on a vector
+(mm <- round(array(rnorm(3 * 3), c(3, 3)), 2))
+(pm1 <- as(as.integer(c(2,3,1)), "pMatrix"))
+
+mm %*% pm1 # permute cols
+pm1 %*% mm # permute rows
+mm[c(2,3,1), c(2, 3, 1)] # permute both row & col
+```
+
+
+# Network Block Models
+
+Analagous to classic mixture models, and used to fit stochastic block models
+
+$$
+\begin{aligned}
+\mathbb{P}_\theta (Y = y) = \frac{1}{\kappa}\exp \left\{\sum_{q,r} \theta_{qr}L_{qr}(y)\right\}
+\end{aligned}
+$$
+where $L_{qr}(y)$ is the number of edges in the observed graph $y$ connecting pairs of vertices of classes between $q$ and $r$.
+
+Algorithmically, the EM algorithm is a natural choice here.
+
+Unfortunately, couldn't get mixer to work because it errored out in installation.
+
+```{r eval = FALSE, include = FALSE}
+# devtools::install_github(https://github.com/cran/mixer) # fails to install, taken off cran in 2018
+library(mixer)
+```
+
+# Latent Network Models
+
+Loosely speaking, latent network models extract the eigenspace of relational data, essentially the eigen decomposition of the symmetric adjacency matrix. We follow Kolacyzk's statistical analysis of network data in this section.
+
+```{r}
+set.seed(42) # for mcmc sampling
+laz_A <- get.adjacency(lazega, sparse = FALSE)
+```
+
+
+```{r}
+# base fit
+lazega_leig_fit1 <- eigenmodel_mcmc(laz_A, R = 2, S = 11000, burn = 10000)
+```
+
+
+```{r}
+# same practice regressor
+v_attr_df <- get.data.frame(lazega, what = "vertices")
+same_prac_op <- v_attr_df$Practice %o% v_attr_df$Practice # outer product of all ties
+# possible values are 1:3, so squared values are equality,
+same_prac <- matrix(as.numeric(same_prac_op %in% c(1, 4, 9)), 36, 36)
+# regressors into array
+leig_X <- array(same_prac, dim = c(36, 36, 1))
+
+# model w/ practice as regressor
+lazega_leig_fit2 <- eigenmodel_mcmc(laz_A, leig_X, R = 2, S = 11000, burn = 1000)
+```
+
+
+```{r}
+# same office - create regression matrix
+same_off_op <- v_attr_df$Office %o% v_attr_df$Office
+same_off <- matrix(as.numeric(same_off_op %in% c(1, 4, 9)), 36, 36)
+same_off <- array(same_off, dim = c(36, 36, 1))
+leig_X <- array(same_off, dim = c(36, 36, 1))
+
+lazega_leig_fit3 <- eigenmodel_mcmc(laz_A, leig_X, R = 2, S = 3000, burn = 5000)
+```
+
+
+```{r echo = FALSE}
+# extract 2-d latent space for these models
+leig_lat_1 <- eigen(lazega_leig_fit1$ULU_postmean)$vec[, 1:2]
+leig_lat_2 <- eigen(lazega_leig_fit2$ULU_postmean)$vec[, 1:2]
+leig_lat_3 <- eigen(lazega_leig_fit3$ULU_postmean)$vec[, 1:2]
+colbar <- c("red", "dodgerblue", "goldenrod")
+v_colors <- colbar[V(lazega)$Office]
+v_shapes <- c("circle", "square")[V(lazega)$Practice]
+v_size <- 3.5*sqrt(V(lazega)$Years)
+v_label <- V(lazega)$Seniority
+```
+
+Below are the 3 latent variable spaces based on 
+
+1. base regression
+2. same practice
+3. same office
+
+```{r}
+par(mfrow = c(1, 3), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0))
+plot(lazega, layout = leig_lat_1,
+     vertex.color = v_colors,
+     vertex.shape = v_shapes,
+     vertex.size = v_size,
+     vertex.label = v_label)
+plot(lazega, layout = leig_lat_2,
+     vertex.color = v_colors,
+     vertex.shape = v_shapes,
+     vertex.size = v_size,
+     vertex.label = v_label)
+plot(lazega, layout = leig_lat_3,
+     vertex.color = v_colors,
+     vertex.shape = v_shapes,
+     vertex.size = v_size,
+     vertex.label = v_label)
+```
+

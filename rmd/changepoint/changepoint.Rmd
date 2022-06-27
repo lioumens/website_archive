@@ -1,0 +1,53 @@
+---
+title: "Change Point Power Analysis"
+author: "Michael Liou"
+date: "12/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Simulate the data
+
+```{r}
+days <- 1:30
+bp <- 10 # Breakpoint
+n <- 4 # number of measurements
+beta <- 3 # estimated slope of change at bp
+sigma <- 3 # estimated residual error
+
+# True model
+tm <- Vectorize(function(days, bp, beta, n, sigma) {
+  if (days < 10) {
+    return(rnorm(n, mean = 0, sd = sigma))
+  }
+  else if (days >= 10) {
+    return(rnorm(n, mean = (days - bp)*beta, sd = sigma))
+  }
+}, "days")
+
+dat_sim <- tm(1:30, bp, beta, n, sigma)
+```
+
+```{r}
+dat <- data.frame(days = rep(days, each = n),
+                  y = c(dat_sim)) # stack all columns of matrix into vector
+
+dat %>% ggplot(aes(days, y)) +
+  geom_point()
+```
+
+
+```{r}
+mod <- nls(y ~ ifelse(days < 10, constant, (days - 10) *beta + constant),
+    data = dat,
+    start = c(constant = 0, beta = 3))
+
+summary
+plot(dat$days, dat$y)
+curve(predict(mod, newdata = data.frame(days = x)), add = TRUE)
+```
+

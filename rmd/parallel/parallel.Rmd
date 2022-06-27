@@ -1,0 +1,25 @@
+---
+title: "Parallel Computing in R"
+author: "Michael Liou"
+date: "2/11/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+# Parallel Packages
+
+- foreach
+- doparallel
+
+## Parallel
+
+## furrr
+
+furrr is meant to be an easy way to parallelize things when you already use purrr. It uses parallel as a backend.
+
+
+
+
