@@ -1,0 +1,86 @@
+---
+title: "Stochastic Modeling"
+author: "Michael Liou"
+date: "3/18/2022"
+output: 
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Gamblers Ruin
+
+The random walk we're simulating is a symmetric random walk
+
+
+```{r echo = FALSE}
+# parameterization
+b <- 20 # upper bound
+a <- 0 # lower bound
+k <- 1 # initial state
+p <- .5 # probability of increase
+
+# random walk simulation for hitting times
+rw_sim <- function(a, b, p, k, return_path = FALSE){
+  t <- 0 
+  ks <- NULL
+  if (return_path) {
+    ks <- c(k)
+  }
+  while(k < b & k > a) {
+    k <- ifelse(rbinom(1, 1, p) == 1, k + 1, k - 1)
+    ks <- c(ks, k)
+    t <- t + 1
+  }
+  if (return_path) return(ks)
+  return(t) # hitting time
+}
+```
+
+
+```{r}
+set.seed(20)
+k <- 10
+rw <- rw_sim(a, b, p, k, return_path = TRUE)
+
+qplot(0:(length(rw) - 1), rw, geom = "line", xlab = "time", ylab = "state", linetype = "random walk path") + 
+  geom_hline(yintercept = b, color = "tomato1") + 
+  geom_hline(yintercept = a, color = "tomato1") +
+  annotate("point", x = 0, y = 10, size = 2, color = "lightblue") +
+  annotate("label", label = "k - initial state", x = 3, y = 9, fill = "lightblue", size = 2) +
+  annotate("point", x = 44, y = 0, size = 2, color = "lightblue") +
+  annotate("label", label = "T - hitting time", x = 41, y = 1, fill = "lightblue", size = 2) +
+  scale_linetype_manual(values = c(3)) + 
+  labs(linetype = "",
+       title = "Hitting Times of Random Walk") + 
+  lims(y = c(a, b)) + 
+  theme_minimal() + 
+  theme(legend.position = "bottom")
+  
+```
+
+By theory, for the symmetric random walk, (see Durrett)
+
+$$
+\begin{aligned}
+E[T|X_0 = k] = (k - a)(b - k)
+\end{aligned}
+$$
+
+```{r}
+hitting_times <- replicate(10000,
+                           rw_sim(a,b,p, k))
+mean(hitting_times)
+```
+
+# Brownian Motion
+
+Brownian motion is a formalized continuous gaussian step with variance proportional

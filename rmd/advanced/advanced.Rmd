@@ -1,0 +1,237 @@
+---
+title: "Advanced R"
+author: "Michael Liou"
+date: "12/6/2021"
+output: 
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(tidyverse)
+library(gtable)
+library(grid)
+library(gridExtra)
+```
+
+
+# Plotting in R
+
+The interface of plotting is powered by the package `grid`
+
+## grid package
+
+- grobs : graphical object
+- viewports: defining regions where to plot
+
+```{r}
+grid.circle(x=seq(0.1, 0.9, length=100), # position
+            y=0.5 + 0.4*sin(seq(0, 2*pi, length=100)),
+            r=abs(0.1*cos(seq(0, 2*pi, length=100))))
+```
+
+### viewports
+
+viewports are "drawing contexts", basically defining regions of plotting. 
+
+```{r}
+# An easy first example
+grid.newpage()
+vp1 <- viewport(x = .5, y = .5,
+                height = .9, width = .9,
+                xscale=c(0,1), yscale=c(0,1))
+
+for (i in 1:5) {
+ pushViewport(vp1)
+ grid.rect()
+}
+# current.vpTree() # check the drawing context
+```
+
+What's going on here?!
+
+The viewports are stored in a tree structure, and the active context of the viewport
+
+Example of recreating a scatter plot
+
+```{r}
+x <- runif(10)
+y <- runif(10)
+plot(x, y)
+```
+Looking above, we can decompose the plot into 9 sections,
+
+```{r}
+# first layer
+main_vp <- viewport(layout = grid.layout(3, 3,
+                                         widths = unit(c(5, 1, 2), c("lines", "null", "lines")),
+                                         heights = unit(c(5, 1, 2), c("lines", "null", "lines"))),
+                    name = "main")
+
+# second layer 
+mr_vp <- viewport(layout.pos.row = 2, layout.pos.col = 3, name = "margin_right")
+mb_vp <- viewport(layout.pos.row = 3, layout.pos.col = 2, name = "margin_bottom")
+mt_vp <- viewport(layout.pos.row = 1, layout.pos.col = 2, name = "margin_top")
+ml_vp <- viewport(layout.pos.row = 2, layout.pos.col = 3, name = "margin_left")
+center_vp <- viewport(layout.pos.row = 2, layout.pos.col = 2, name = "center",
+                      xscale = extendrange(x),
+                      yscale = extendrange(y))
+
+# create the viewport
+splot <- vpTree(main_vp, vpList(mr_vp, mb_vp, mt_vp, ml_vp, center_vp))
+splot # Currently just the description, and not associated with the graphics device
+
+# viewport of current device
+current.vpTree() # current vp tree of graphic device
+current.viewport() # This is the current viewport LAYER (in the tree) of our graphics device
+
+# In order to make the viewport splot active, we must add it to the vpTree of our device
+pushViewport(splot)
+current.vpTree() # notice how our tree has changed
+current.viewport() # our current layer is center
+
+grid.points(x, y) # drawn to center, for some reason this isn't showing up
+grid.xaxis()
+grid.yaxis()
+grid.rect()
+
+# navigate to bottom margin
+seekViewport("margin_bottom")
+grid.text("Random X", y=unit(1, "lines"))
+
+seekViewport("margin_left")
+grid.text("Random Y", x=unit(1, "lines"), rot = 90)
+```
+
+Run all the code all at once, rmarkdown does some weird stuff with viewports
+
+```{r}
+pushViewport(viewport())
+upViewport()
+pushViewport(viewport(name = "A"))
+upViewport()
+pushViewport(viewport(name = "B"))
+upViewport()
+current.vpTree()
+```
+
+
+## gtable
+
+[Unofficial Guide](https://cran.r-project.org/web/packages/gridExtra/vignettes/gtable.html)
+
+The important structures of `gtable` object are
+
+- `grobs`:d
+
+
+```{r}
+# creating a gtable
+gtable(unit(1:3, c("cm")),
+       unit(5, "cm"))
+
+a <- rectGrob(gp = gpar(fill = "red"))
+
+a <- rectGrob(gp = gpar(fill = "red"))
+b <- grobTree(rectGrob(), textGrob("new\ncell"))
+c <- ggplotGrob(qplot(1:10,1:10))
+d <- linesGrob()
+mat <- matrix(list(a, b, c, d), nrow = 2)
+g <- gtable_matrix(name = "demo", grobs = mat, 
+                   widths = unit(c(2, 4), "cm"), 
+                   heights = unit(c(2, 5), c("in", "lines")))
+g
+```
+
+## gridextra
+
+```{r}
+dummy_grob <- function(id)  {
+  grobTree(rectGrob(gp=gpar(fill=id, alpha=0.5)), textGrob(id))
+}
+gs <- lapply(1:9, dummy_grob)
+grid.arrange(ncol=4, grobs=gs, 
+               top="top\nlabel", bottom="bottom\nlabel", 
+               left="left\nlabel", right="right\nlabel")
+
+```
+
+
+
+# R MacOS
+
+## Matrix Operations
+
+- [Which BLAS library is used by R?](https://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html#Which-BLAS-is-used-and-how-can-it-be-changed_003f)
+- [Using the faster veclib dynamically linked library](https://gist.github.com/nicebread/6920c8287d7bffb03007)
+- [A tutorial/discussion from 2019 about rebuilding R binary with openBLAS and openMP](https://www.btskinner.io/code/install-r-with-openblas-and-openmp-on-macos-mojave/)
+
+There are two common libraries for matrix operations, LAPACK and BLAS. There are many varieties of these two libraries, 
+
+```{r}
+sessionInfo() # Shows library used for matrix products
+```
+
+Of note, R binary versus the CRAN version of the R binary have different libraries bundled together. For older versions of Rstudio, there is a BLAS library that is provided with Apple that sometimes is faster. Ultimately, R will look for a symlinked library in the `lib/` folder.
+
+```{bash eval=FALSE}
+# Install openblas
+brew install openblas
+
+# Some potentially useful symlinking commands
+ln -sf /usr/local/opt/openblas/lib/libopenblas.dylib /usr/local/Cellar/r/4.1.2/lib/R/lib/libRblas.dylib
+ln -sf /usr/local/opt/openblas/lib/libopenblas.dylib /usr/local/Cellar/r/4.1.2/lib/libRblas.dylib
+```
+
+# Metaprogramming
+
+## Expressions
+
+* constants
+* symbols
+
+```{r}
+library(rlang)
+# two ways of creating a symbol
+sym("x") # symbol
+class(expr(x)) # symbol
+quo(x)
+?quo
+
+expr("x") # expression
+
+as_string(sym("x")) 
+as_name(sym("x")) # character
+class(as_name("x")) # character
+```
+
+
+## Quosures
+
+Quosures are special type of *defused expression* that also keeps track of the original context the expression was written in.
+
+### quo
+
+`quo is used to capture local expressions, and also track the environment the expression was written.
+
+### enquo
+
+`enquo` is used to defuse function arguments, the `{{` is short for this common pattern. The arguments need to be defused because otherwise R will try to evaluate the expression in its orginal environment.
+
+```{r}
+my_function <- function(var) {
+  var <- enquo(var)
+  their_function(!!var)
+}
+
+# Equivalently
+my_function <- function(var) {
+  their_function({{ var }})
+}
+```
+

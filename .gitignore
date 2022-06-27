@@ -5,3 +5,9 @@ _site
 *.DS_Store
 *.Rhistory
 *.jekyll-metadata
+
+rmd/*/*_cache
+rmd/*/*_files
+*.Rhistory
+*.swp
+

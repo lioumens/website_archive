@@ -1,0 +1,121 @@
+---
+title: "Next Generation Sequencing"
+author: "Michael Liou"
+date: "1/15/2022"
+output: 
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+# Copy Number Variation (window binning)
+
+## readDepth
+
+readDepth uses a negative binomial distribution to model the counts that fall into each bin.
+
+```{r}
+```
+
+# Primer for Microbiomes
+
+## permANOVA
+
+## Corncob
+
+```{r}
+library(corncob)
+library(phyloseq)
+library(tidyverse)
+data(soil_phylo)
+```
+
+```{r}
+soil_phylo
+otu_table(soil_phylo)[1:3, 1:3]
+sample_data(soil_phylo) # covariates
+tax_table(soil_phylo)[1:3,] # taxonomic information of 
+
+```
+
+
+```{r}
+# Modeling
+data(soil_phylum_small)
+soil <- soil_phylum_small
+cob <- bbdml(formula = OTU.1 ~ 1, 
+      phi.formula = ~ 1,
+      data = soil)
+plot(cob, B = 50, total = TRUE, color = "DayAmdmt") # bootstrap simulations, total counts scale instead of relative abundance.
+
+sample_data(soil) %>% rownames_to_column("sample") %>% 
+  group_by(sample) %>% 
+  summarize
+
+otu_table(soil) %>% margin.table(margin = 2)
+
+otu_table(soil)[c("OTU.1")]
+```
+
+```{r}
+corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
+                    phi.formula = ~ DayAmdmt,
+                    data = soil)
+plot(corncob_da, color = "DayAmdmt", total = TRUE, B = 50) # bars are from bootstrap samples, while
+```
+
+```{r}
+# Multiple Taxa
+da_analysis <- differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~1,
+                                phi.formula_null = ~ DayAmdmt,
+                                test = "Wald", boot = FALSE,
+                                data = soil,
+                                fdr_cutoff = 0.05)
+
+da_analysis %>% names()
+
+da_analysis$restrictions_DA # differential abundance
+da_analysis$restrictions_DV # differential variability (because phi.formula and phi.formula_null are the same)
+
+plot(da_analysis)
+da_analysis$significant_taxa # switch from OTU labels to taxonomy
+otu_to_taxonomy(da_analysis$significant_taxa, data = soil)
+```
+
+```{r message = FALSE}
+# Looking at differentially variable taxa
+dv_analysis <- differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~1,
+                                phi.formula_null = ~ DayAmdmt,
+                                test = "Wald", boot = FALSE,
+                                data = soil,
+                                fdr_cutoff = 0.05)
+?abbreviate(c("a", "aa", "aaaaaaaaaaaaaaaaaaaaa", "bbbbbbbbbbbbb", "aasdlfjas;ldkfja;sdixckvjlsdjfiosjdlk")) # can be useful for plotting long names
+```
+
+```{r}
+
+```
+
+
+```{r}
+# model selection
+lrtest(mod_null = cob, mod = corncob_da)
+```
+
+```{r}
+summary(corncob_da)
+
+```
+
+

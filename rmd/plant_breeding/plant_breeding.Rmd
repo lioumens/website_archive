@@ -1,0 +1,248 @@
+---
+title: "Plant Breeding"
+author: "Michael Liou"
+date: "2/25/2022"
+output: 
+  html_document:
+    df_print: paged
+    code_folding: show
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(tidyverse)
+library(agricolae)
+library(magrittr)
+library(scales)
+```
+
+# Plant Breeding Introduction
+
+The motivation for many plant breeding programs is to identify a particular variety/strain/genotype 
+
+## Terminology
+
+There are several names loosely related to *genotype* in plant breeding:
+
+* **variety** - normally used to divide plant types
+* **cultivar** - used similarly to variety
+* **species** - taxonomic categorization which are reproductively isolated from one another. Often broader than variety.
+* **strain** - informal taxonomic division, generally used as a subdivision of species
+* **genotype** - used commonly when referencing specifically genomic distinguished characteristics.
+* **accession** - accession numbers are assigned like an ID code by people that maintain or curate a set of plants or crops. The analogy is that it's a call number for their library. For example, the USDA Agricultural Research Station has a library of crops that they maintain, and their system for assigning accession numbers is detailed in [a directive](https://directives.sc.egov.usda.gov/viewDirective.aspx?hid=27310). One of their goals is to help facilitate the discovery of better plants, you can read the full [mission statement here](https://www.ars.usda.gov/midwest-area/ames/plant-introduction-research/) and list of plants they have [curated in their library](https://www.ars.usda.gov/midwest-area/ames/plant-introduction-research/home/curators/page-1/).
+
+
+## Additional Resources
+
+* A [great glossary of plant germplasm terms](https://www.nap.edu/read/1583/chapter/8)
+
+# AMMI
+
+AMMI stands for Additive Main Effects and Multiplicative Interaction models and have been used to analyze main effects and genotype by environment interactions in multilocation variety trials.
+
+Consider the anova of genotype (G) the environment (E) and their interaction (GE),
+
+$$
+\begin{aligned}
+Y_{ijk} = G_i + E_j + GE_{ij} + \varepsilon_{ijk}
+\end{aligned}
+$$
+
+There are a few downsides to this ANOVA, in that GE is not sufficiently explored. AMMI breaks down the GE interaction into orthogonal components and tests each of the orthogonal components with svd, that is,
+
+$$
+\begin{aligned}
+Y_{ijk} = G_i + E_j + \sum_{n=1}^{h}u_{ni}s_nv_{in} + \varepsilon_{ijk}
+\end{aligned}
+$$
+where $s_n$ is the n'th singular value, $u_{ni}$ is the nth left singular vector, $v_{in}$ is the $n^{th}$ right singular vector.
+
+## Example and Breakdown of AMMI
+
+The example from the documetation is `plrv`, which we will use and replicate results for
+
+```{r}
+data(plrv)
+head(plrv)
+```
+
+### ANOVA
+
+anova with rep nested in location.
+
+```{r}
+# AMMI
+plrv <- plrv %>% mutate(Rep = factor(Rep))
+mod_ammi <- with(plrv, AMMI(Locality, Genotype, Rep, Yield, console = FALSE))
+mod_ammi$ANOVA
+```
+```{r}
+# The same anova table by lm
+# mod_plrv <- lm(Yield~Genotype*Locality +  Rep:Locality, data = plrv) # same
+mod_plrv <- lm(Yield~Genotype*Locality +  Rep %in% Locality, data = plrv)
+anova(mod_plrv)
+```
+
+## genXenv
+
+These are residuals from the regression of only gen and env main effects.
+
+```{r}
+# AMMI version
+mod_ammi$genXenv %>% head()
+```
+```{r}
+# by hand
+mean_plrv <- plrv %>% group_by(Genotype, Locality) %>% 
+  summarize(Yield = mean(Yield), .groups = "drop_last") %>% 
+  add_column(residuals = lm(Yield~Genotype + Locality, data = .)$residuals)
+
+plrv_int <- mean_plrv %>% pivot_wider(id_cols = "Genotype", names_from = "Locality", values_from = "residuals")
+plrv_int %>% head()
+```
+
+## SVD
+
+
+```{r}
+# AMMI version
+mod_ammi$analysis
+```
+
+
+```{r}
+# by hand
+plrv_mat <- plrv_int %>% data.matrix() %>% `[`(,-1)
+
+s <- svd(plrv_mat)
+U <- s$u
+L <- s$d
+V <- s$v
+
+# sum of squares for each orthogonal component is simply sum(singular values^2). We multiply by 3 because we averaged over 3 reps
+SS <- (L^2) * 3
+scales::number(SS, big.mark = "", accuracy = .001)
+```
+
+the sum of squares, is because the frobenius norm is invariant to unitary changes, thus, the SVD, $U$ and $V$ matrices don't affect the norm, and we can just calculate frobenius norm of the singular values. See proof on site [facts of unitary invariant norms](https://nhigham.com/2021/02/02/what-is-a-unitarily-invariant-norm/)
+
+
+```{r}
+# total is the same as SS of the GE in the anova table
+SSTotal <- sum(SS, na.rm = TRUE)
+percent <- (1/SSTotal) * SS * 100
+
+# percent is just the ratio to total.
+scales::number(percent, accuracy = .01)
+```
+
+The formula for degrees of freedom is
+
+$$
+\begin{aligned}
+df_n = i + j - 1 - 2m
+\end{aligned}
+$$
+
+where $i$ is number of genotypes, $j$ is number of environments, and $m$ is how many components you choose.
+
+not sure the derivation, but details should be in:
+
+- Zobel, R. W., Wright, M.J., and Gauch, H. G. (1988). Statistical analysis of a yield trial. Agronomy Journal, 388-393.
+
+
+```{r}
+# df in table 
+28 + 6 - 1 - 2*(1:5)
+```
+
+```{r}
+# mean squares of residual from anova table
+SSres <- 37.0 # df = 31
+
+# F = MS / MSres, df from the tables and formulas
+1 - pf(431.24501 / 37, 31, 31)
+```
+
+## Biplots
+
+biplots are just principal components.
+
+# GGE
+
+GGE stands for "Genotype + Genotype:Environment" biplot analysis. There is additional specification for "block" or grouping structures among different environments (locations or years typically),
+
+## crossa.wheat example
+
+We use the crossa wheat example to see how the method works. see `?crossa.wheat` for details.
+
+```{r}
+data(crossa.wheat)
+```
+
+
+```{r}
+library(agridat)
+data(crossa.wheat)
+m1 <- gge(crossa.wheat, yield ~ gen*loc , env.group=locgroup, scale=FALSE, ggb = TRUE)
+plot(m1)
+biplot(m1)
+```
+Plot explanations:
+
+- **The proportion explained plot** - is just the ratio of singular values squared
+- **Raster** - is showing the heatmap of probably the residuals after regression on G + G:E i think?
+- **biplot** - first two principal components with vectors for each environment.
+
+## plrv example (reproduction)
+
+We use the plrv example to try and recreate the components of the GGE analysis
+
+```{r}
+m2 <- gge(plrv, formula = Yield~Genotype*Locality, center=TRUE, scale = TRUE)
+m2 %>% names()
+```
+
+
+```{r}
+# x.orig is the means grouped by genotype and locality, first dimension is genotype
+x.orig <- plrv %>% group_by(Genotype, Locality) %>% 
+  summarize(mean_yield = mean(Yield), .groups = "drop_last") %>% 
+  pivot_wider(id_cols = "Genotype", names_from = "Locality", values_from = "mean_yield") %>% 
+  data.matrix() %>% 
+  `[`(,-1)
+
+# gge$x is center scaled matrix
+x <- x.orig %>% scale()
+```
+
+```{r}
+s <- svd(plrv_mat_scaled)
+U <- s$u
+D <- s$d
+V <- s$v
+
+# genCoord
+genCoord <- U * sqrt(nrow(plrv_mat)  - 1) # matrix A in paper
+genCoord
+
+# locCoord and blockCoord are the same in this case
+locCoord <- 1/sqrt(nrow(plrv_mat) - 1) * V %*% diag(D) # matrix B in paper
+locCoord
+
+# R2 is from singular values
+D^2 / sum(D^2)
+```
+
+```{r}
+# genMeans is just average across all the environments
+genMeans <- rowMeans(x, na.rm = TRUE)
+# genMeans %*% t(rep(1, ncol(x)))
+```
+
+
+
