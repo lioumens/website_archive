@@ -22,5 +22,15 @@ There is a [rakefile](https://github.com/ruby/rake) in this repository (a makefi
 
 * `_includes/`:  contains the template of default, post and page.
 * `_posts/`: contains the published blog posts. Without dates means that it's a [draft](https://jekyllrb.com/docs/posts/).
-* '_layouts/': contains further information about how the posts should look.
+* `_layouts/`: contains further information about how the posts should look.
 
+## Troubleshooting
+
+* commonmark gem
+  * https://stackoverflow.com/questions/63729369/commonmarker-gem-cannot-be-installed-needed-for-jekyll-macos
+
+* Liquid Syntax trying to process raw code chunks
+
+> Liquid Exception: Liquid syntax error (line 211): Variable '{{` is short for this common pattern. The arguments need to be defused because otherwise R will try to evaluate the expression in its orginal environment. ```{r}' was not properly terminated with regexp: /\}\}/ in rmd/advanced/advanced.Rmd
+
+  * https://stackoverflow.com/questions/52324134/getting-an-liquid-exception-liquid-syntax-error-while-using-jekyll

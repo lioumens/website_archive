@@ -14,10 +14,6 @@ added", as I will try not to replicate educational material well documented
 elsewhere on the web or in textbooks. Rather, I will point you to those
 resources when necessary and elaborate when I find fit.
 
-That said, I really do hope you find these materials helpful, and I would love
-your feedback as to things you found helpful, and possible improvements (errors
-or organization). Cheers!
-
 ## Data Analysis
 
 | Title                        | R                                                                    | SAS                          |
