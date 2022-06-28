@@ -221,7 +221,12 @@ Quosures are special type of *defused expression* that also keeps track of the o
 
 ### enquo
 
-`enquo` is used to defuse function arguments, the `{{` is short for this common pattern. The arguments need to be defused because otherwise R will try to evaluate the expression in its orginal environment.
+<!-- raw needed because liquid trying to process raw code -->
+
+{% raw %}
+`enquo` is used to defuse function arguments, the `{{` is short for this common pattern. The arguments need to be defused because otherwise R will try to evaluate the expression in its original environment.
+
+{% endraw %}
 
 ```{r}
 my_function <- function(var) {
