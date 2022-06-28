@@ -16,12 +16,12 @@ resources when necessary and elaborate when I find fit.
 
 ## Data Analysis
 
-| Title                        | R                                                                    | SAS                          |
-|------------------------------+----------------------------------------------------------------------+------------------------------|
-| Introduction to Language     | [R](Intro_to_R.html)                                                 |                              |
-| Reading in data              | [R](reading_in_data.html)                                            | [SAS](reading_data_sas.html) |
-| Introduction to Mixed Models | [R](https://m-clark.github.io/mixed-models-with-R/introduction.html) |                              |
-| Introduction to Mixed Models | [R](https://m-clark.github.io/mixed-models-with-R/introduction.html) |                              |
+| Title                                | R                                                                    | SAS                          |
+|--------------------------------------+----------------------------------------------------------------------+------------------------------|
+| Introduction to Language             | [R](Intro_to_R.html)                                                 |                              |
+| Reading in data                      | [R](reading_in_data.html)                                            | [SAS](reading_data_sas.html) |
+| Introduction to Mixed Models         | [R](https://m-clark.github.io/mixed-models-with-R/introduction.html) |                              |
+| Heterogeneity in Variance Components | [R](../rmd/mixed_models/mixed_models_variance.html)                  |                              |
 
 
 ## Visual Introductions to Statistics
