@@ -48,6 +48,7 @@ Smooth terms in GAMS, `bs = ""`
 4.2 of Wood.
 
 Example on Engine data. Hypothesis is that larger the engine copacity, the faster the engine will wear out.
+
 ```{r}
 # read engine data. Hypothesis is that
 data(engine)
@@ -276,11 +277,6 @@ plot(ap0, residuals = TRUE, n = 1000)
 ```{r}
 ap1 <- gam(death ~ s(time, bs = "cr", k=200) + s(pm10median, bs = "cr") + s(so2median, bs = "cr") + s(o3median, bs = "cr") + s(tmpd, bs = "cr"), data = chicago, family = poisson)
 gam.check(ap1) # honestly not that much better
-```
-
-
-```{r}
-
 ```
 
 
