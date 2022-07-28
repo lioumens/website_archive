@@ -293,3 +293,115 @@ hitting_times <- replicate(10000,
                            rw_sim(a,b,p, k))
 mean(hitting_times)
 ```
+
+# Brownian Motion
+
+Brownian motion is a formalized continuous gaussian step with variance proportional to the time step taken. Wiener process is sometimes used to describe the same thing. It's both a martingale and a martingale.
+
+
+# Simulating Stochastic Differential Equations
+
+It seems like in R there are
+
+* Sim.DiffProc
+
+## Sim.DiffProc
+
+Following the [package vignette](https://cran.r-project.org/web/packages/Sim.DiffProc/vignettes/snssde.html)
+
+- `rsde1d` - random deviates from a sde object
+- `dsde1d()` - random deviates from sde object
+- `snssde2d()` - 
+
+We simulate from the example
+
+$$
+\begin{aligned}
+dX = \frac{1}{2}\theta^2Xdt + \theta X dW
+\end{aligned}
+$$
+
+Solving this for the steady state mean, then we get
+
+$$
+\begin{aligned}
+E[X| t= 1, x_0 = 10, \theta = .5] = \exp{\left(\frac{1}{2}\theta^2t\right)}
+\end{aligned}
+$$
+
+```{r}
+library(sde)
+library(Sim.DiffProc)
+set.seed(1234, kind = "L'Ecuyer-CMRG")
+theta <- .5
+f <- expression((.5*theta^2*x))
+g <- expression(theta*x)
+mod1 <- snssde1d(drift = f, 
+                 diffusion = g, # for the random gaussian portion
+                 x0=10, # initial conditions
+                 t0=0,
+                 T = 5,
+                 M = 1000, # number of sample solutions to simulate
+                 type = "ito", # type of integral
+                 method = "euler") # method
+
+mod2 <- snssde1d(drift = f, diffusion = g, x0=10, M = 1000, type = "str")
+
+# many summary and confidence intervals.
+summary(mod1, at = .3) # by monte carlo of fitting the stochastic paths of the pandemic
+
+summary(mod1)
+```
+
+```{r}
+# sample from the conditional distribution, conditional on the initial value.
+rsde1d(mod1, at = 1)
+mu1 <- log(10); sigma1= sqrt(theta^2)
+mu2 <- log(10) - .5*theta^2; sigma2= sqrt(theta^2)
+
+# ito's integral
+appdensI <- dsde1d(mod1, at = 1) # conditional density estimation at particular time
+# strat integral
+appdensS <- dsde1d(mod2, at = 1)
+plot(appdensI, dens = function(x) dlnorm(x, meanlog = mu1, sdlog = sigma1))
+plot(appdensS, dens = function(x) dlnorm(x, meanlog = mu2, sdlog = sigma2))
+```
+
+
+```{r}
+plot(mod1) # show the plot values
+lines(time(mod1),apply(mod1$X,1,mean),col=2,lwd=2)
+lines(time(mod1),apply(mod1$X,1,bconfint,level=0.95)[1,],col=4,lwd=2)
+lines(time(mod1),apply(mod1$X,1,bconfint,level=0.95)[2,],col=4,lwd=2)
+legend("topleft",c("mean path",paste("bound of", 95,"% confidence")),inset = .01,col=c(2,4),lwd=2,cex=0.8)
+```
+
+In two dimensions, vector of dfrit and diffusion
+
+$$
+\begin{aligned}
+dX = -\frac{1}{\mu} Xdt + \sqrt{\sigma} dW, \quad X_0 = x_0
+\end{aligned}
+$$
+
+```{r}
+x0=5;y0=0
+mu=3;sigma=0.5
+fx <- expression(-(x/mu),x)  
+gx <- expression(sqrt(sigma),0)
+mod2d <- snssde2d(drift=fx,diffusion=gx,Dt=0.01,M=1000,x0=c(x0,y0),method="smilstein")
+mod2d
+```
+
+```{r}
+summary(mod2d, at = 10)
+```
+
+```{r}
+## in time
+plot(mod2d)
+## in plane (O,X,Y)
+plot2d(mod2d,type="n") 
+points2d(mod2d,col=rgb(0,100,0,50,maxColorValue=255), pch=16)
+```
+
