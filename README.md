@@ -34,3 +34,6 @@ There is a [rakefile](https://github.com/ruby/rake) in this repository (a makefi
 > Liquid Exception: Liquid syntax error (line 211): Variable '{{` is short for this common pattern. The arguments need to be defused because otherwise R will try to evaluate the expression in its orginal environment. ```{r}' was not properly terminated with regexp: /\}\}/ in rmd/advanced/advanced.Rmd
 
   * https://stackoverflow.com/questions/52324134/getting-an-liquid-exception-liquid-syntax-error-while-using-jekyll
+  
+## R Markdown Files
+

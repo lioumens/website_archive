@@ -1,0 +1,125 @@
+---
+title: "Crossover Designs"
+author: "Michael Liou"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(tidyverse)
+library(tibble)
+library(purrr)
+library(effectsize) # for pooled sd
+```
+
+# Introduction 
+
+- uniform in sequence
+- uniform in period
+- balanced
+  - carry over effects are all balanced
+- strongly balanced
+ - including following self
+
+Effects of interest
+
+- "period effect"
+- "treatment effect"
+- "carryover effect"
+- "treatment x period"
+- "subject x treatment"
+- "subject x period" 
+
+```{r}
+tribble(~Advantages, ~Disadvantages,
+        "fewer samples", "",
+        "more precision per unit", "")
+```
+
+
+# 2x2 Design
+
+## Example: PEF
+
+The data in Table 3.1 are taken from those which were reported in
+Senn and Auclair 1990, p. 1290). They are measurements of peak expiratory
+flow PEF), a measure of lung function National Asthma Education Program,
+1991, pp. 6±9), made on 13 children aged 7 to 14 with moderate or severe
+asthma in a two-treatment two-period cross-over comparing the effects of a
+single inhaled dose of 200g salbutamol, a well-established bronchodilator,
+and 12g formoterol, a more recently developed bronchodilator Faulds et al.,
+1991). The children were randomized to one of two sequence groups. In one
+group they were given a dose of formoterol in the morning and observed for 8 h in
+the clinic. They then travelled home where they or their parents took further
+measurements 10, 11 and 12 h after treatment. PEF is a measurement which
+patients may record themselves using a simple device.) On a subsequent occasion
+after a wash-out of at least one day they presented at the clinic again and were
+given a single dose of salbutamol. Measurements in the clinic followed as before
+and were again succeeded by measurements at home. For the second sequence
+group, the procedure was as for the first except that they received salbutamol on
+the first visit to the clinic and formoterol on the second visit to the clinic.
+
+Peak Exploratory Flow
+
+- `id` - patient id
+- `trt` - two levels, formoterol (for) and salbutamol (sal)
+- `pef` - peak exploratory flow
+- `period` - period of experiment
+
+```{r}
+pef <- read.csv("data/pef.csv") %>% 
+  # create variable for treatment sequence
+  mutate(seq = ifelse((trt == "for" & period == 1) |
+                        (trt == "sal" & period == 2),
+                      "FS",
+                      "SF"),
+         trt = dplyr::recode(trt,
+                             "for" = "formo",
+                             "sal" = "salbu")) %>% 
+  rename("trt_seq" = "seq")
+
+pef %>% ggplot(aes(id, pef, color = trt)) +
+  geom_point() +
+  facet_wrap(~trt_seq)
+```
+
+### Analysis
+
+The easiest analysis is probably the paired t-test. This throws away information about the periods in the study.
+
+```{r}
+pef_wide <- pef %>% pivot_wider(id_cols = c(id, trt_seq), names_from = trt, values_from = "pef") %>% 
+  mutate(diff = formo - salbu)
+pef_wide$diff %>% mean() # 45.385
+pef_wide$diff %>% sd() # 40.593
+pef_t <- t.test(pef_wide$formo, pef_wide$salbu, paired = TRUE)
+
+45.384462 / 4.0312 # the estimated standard error
+
+pef_t
+```
+
+The next analysis is to adjust for the period effect with just to do a sample t test of the differences by period.
+
+```{r}
+
+pef_wide_period
+pef_FS <- pef_wide %>% filter(trt_seq == "FS") %>% pull(diff)
+pef_SF <- pef_wide %>% filter(trt_seq == "SF") %>% pull(diff)
+
+pef_FS_SS <- sum((pef_FS - mean(pef_FS))^2) # FS sum squares
+pef_SF_SS <- sum((pef_SF - mean(pef_SF))^2) # SF sum squares
+
+((length(pef_FS) - 1) * pef_FS_SS + (length(pef_SF) -1) * pef_SF_SS) / (length(pef_FS) + length(pef_SF) - 2)
+
+(pef_FS_SS + pef_SF_SS) / (length(pef_FS) + length(pef_SF) - 2) # 1500.81
+
+sd_pooled(pef_FS, pef_SF)
+
+# pooled estimate of variance
+
+t.test(scale(pef_FS, scale = F), scale(pef_SF, scale = F), var.equal = FALSE)
+```
+
+
