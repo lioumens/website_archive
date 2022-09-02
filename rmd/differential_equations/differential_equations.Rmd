@@ -4,7 +4,7 @@ author: "Michael Liou"
 date: "4/20/2022"
 output: 
   html_document:
-    code_folding: show
+    code_folding: hide
     toc: true
     toc_float:
       collapsed: true
@@ -13,13 +13,42 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(tidyverse)
 library(deSolve)
+library(FME)
+library(plotly)
 ```
 
 
-# ODE Solver
+# Software
+
+In R, there are a number of packages that deal with differential equations. [CRAN View](https://cran.r-project.org/web/views/DifferentialEquations.html)
+
+* `deSolve` - the main integrator
+* `ReacTran` - simulating reaction diffusion equations
+* `FMA` - "flexible modeling 
+* `bvpSolve` - boundary value problems
+* `simecol` - interactive enviromnent for implementing models
+
+Stochastic Differential Equations have a different set
+
+* `sde` - simulatio n and inference of stochastic differential equations
+* `GillespieSSA`
+* `adaptivetau` - are for quick simulation
+
+## deSolve Package
+
+## FME Package
+
+Stands for flexible modeling pacakge, allows one to define some cost function
+
+## rootsolver
+
+# ODE
 
 Using `ode` from package deSolve
+
+## Example: Prey and Predator
 
 ```{r}
 LVmod <- function(Time, State, Pars) {
@@ -45,16 +74,23 @@ yini  <- c(Prey = 1, Predator = 2) # initial states of the system
 times <- seq(0, 200, by = 1) # initial time
 out   <- ode(yini, times, LVmod, pars)
 summary(out)
+```
 
+
+```{r}
 ## Default plot method
 plot(out)
+```
 
+
+```{r}
 ## User specified plotting
 matplot(out[ , 1], out[ , 2:3], type = "l", xlab = "time", ylab = "Conc",
         main = "Lotka-Volterra", lwd = 2)
 legend("topright", c("prey", "predator"), col = 1:2, lty = 1:2)
 ```
 
+## Example: Substrate Producer/Consumer
 
 ```{r}
 SPCmod <- function(t, x, parms, input)  {
@@ -101,29 +137,14 @@ plot(out[,"P"], out[,"C"], type = "l", lwd = 2, xlab = "producer",
 par(mfrow = mf)
 ```
 
-### SIR Modeling
+
+## Example:  SIR Modeling
 
 A simple example is provided by https://www.r-bloggers.com/2017/01/sir-model-with-desolve-ggplot2/
 
 
 ```{r}
-SIRmod <- function(Time, State, Pars) {
-  with(as.list(c(State, Pars)), {
-    dSusceptible <- -beta * Infected * Susceptible
-    dInfected <- beta * Infected * Susceptible - gamma * Infected
-    dRecovered <- gamma * Infected
-    return(list(c(dSusceptible, dInfected, dRecovered)))
-  })
-}
-
-pars  <- c(beta = 1.5,
-           gamma = .3)     # mmol/m3, carrying capacity
-
-yini  <- c(Susceptible = 1-1e-6, Infected = 1e-6, Recovered = 0) # initial states of the system
-times <- seq(0, 100 , by = 1) # initial time
-out   <- ode(yini, times, SIRmod, pars)
-summary(out)
-
+# definition of the differential equation
 sir_diffeq <- function(Time, State, Pars) {
   with(as.list(c(State, Pars)), {
     dSusceptible <- -beta * Infected * Susceptible
@@ -133,8 +154,9 @@ sir_diffeq <- function(Time, State, Pars) {
   })
 }
 
+# solver for differential equation
 sir_ode <- function(beta = 1, gamma = .2,
-                initial_state = c(Susceptible = 1-1e-6,
+                initial_state = c(Susceptible = 1-1e-6, # initial state defined
                                   Infected = 1e-6,
                                   Recovered = 0),
                 times = seq(0, 100, by = 1)) {
@@ -143,9 +165,14 @@ sir_ode <- function(beta = 1, gamma = .2,
   # check that initial state has the correctly named variables
   ode(initial_state, times, sir_diffeq, pars)
 }
+```
 
+
+```{r}
+# Parameter  values
 beta <- 1
 gamma <- .2
+
 out <- sir_ode(beta = beta, gamma = gamma)
 
 out %>% as.data.frame() %>%
@@ -155,7 +182,79 @@ out %>% as.data.frame() %>%
   theme_minimal() + 
   labs(title = sprintf("SIR, beta = %g, gamma = %g", beta, gamma))
 ```
+```{r}
+
+```
 
 
+## Example: Rossler attractor
 
+This example is a non-linear ordinary differential equation system with chaotic dynamics
+
+$$
+\begin{aligned}
+\frac{dx}{dt} &= -y - z \\
+\frac{dy}{dt} &= x + ay \\
+\frac{dz}{dt} &= b + z(x -c) \\
+\end{aligned}
+$$
+
+equations x and y are linear which gives the attractor some regularity
+
+```{r}
+rosslerode <- function(t, state, parms) {
+  with(as.list(state), {
+    dx <- -y - z
+    dy <- x + .2 * y
+    dz <- .2 + z * (x - 5)
+    return(list(c(dx, dy, dz)))
+  })
+}
+
+yini <- c(x=1, y = 0, z = .9)
+times <- seq(0, 100, .05)
+
+out <- ode(times = times, y = yini, func = rosslerode, parms = NULL)
+scatterplot3d::scatterplot3d(out[,"x"], out[,"y"], out[,"z"], pch = 19, cex.symbols = .5)
+```
+
+
+```{r}
+rossler_plotly <- plot_ly(out %>% as.data.frame(), x = ~x, y=~y, z= ~z,
+                          marker = list(color= ~time, colorscale = c("#FFFFFF", "#683531")))
+rossler_plotly
+```
+
+
+## Example: Van der Pol Equation
+
+This is a good example of a system that can be either stiff or non-stiff.
+
+- For large values of $\mu$, it's stiff.
+- For small values of $\mu$, it's non stiff
+
+The 2nd order ODE can be transformed into a 2 first order equations:
+
+$$
+\begin{aligned}
+y'' - \mu(1 - y^2)y' + y &= 0 \\\\
+x' &= y\\
+y' &= \mu(1 - x^2)y - x
+\end{aligned}
+$$
+
+```{r}
+vdpol <- function(t, state, mu) {
+  with(as.list(state), {
+    list(c(y, mu * (1 - x^2) *y - x))
+  })
+}
+
+yini <- c(x = 2, y = 0)
+vdpol_stiff <- ode(yini, times = 0:3000, func = vdpol, parms = 1000)
+vdpol_nonstiff <- ode(yini, times = seq(0, 30, .01), func = vdpol, parms = 1)
+
+plot(vdpol_stiff, type = "l", main = "IVP ODE, stiff", xlim = c(0, 3000), which = "x")
+plot( vdpol_nonstiff,type = "l", main = "IVP ODE, nonstiff", xlim = c(0, 30), which = "x")
+```
 

@@ -23,7 +23,6 @@ library(effects)
 library(sjPlot)
 library(ggeffects)
 library(rstanarm)
-
 ```
 
 # Introduction to Bayesian Modeling

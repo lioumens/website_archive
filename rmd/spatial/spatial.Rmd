@@ -52,6 +52,7 @@ bb <- matrix(c(30, 85, 300, 90), ncol = 2, dimnames = list(NULL,c("min", "max"))
 crs <- CRS("+proj=longlat")
 Spatial(bb, crs)
 ```
+
 ## Spatial Points
 
 Class `SpatialPoints` adds a `coords` slot to `Spatial`
@@ -286,9 +287,7 @@ res <- inla(formula, # formula from above
   family = "poisson", # log link
   data = map@data, # the data file
   E = E, # "Known component in the mean for the Poisson likelihoods defined as E exp(eta)" see docs
-  control.predictor = list(compute = TRUE), # compute posteriors of predictions
-  control.compute=list(return.marginals.predictor=TRUE) # marginals of each predictor as well, for exceedence probabilities
-)
+  control.predictor = list(compute = TRUE)) # compute posteriors of predictions
 
 summary(res) # output
 ```
@@ -1036,8 +1035,7 @@ for(t in 1:6) {
 }
 ```
 
-
-
+# 
 
 # General Resources
 

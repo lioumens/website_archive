@@ -296,12 +296,12 @@ mean(hitting_times)
 
 # Brownian Motion
 
-Brownian motion is a formalized continuous gaussian step with variance proportional to the time step taken. Wiener process is sometimes used to describe the same thing. It's both a martingale and a martingale.
+Brownian motion is a formalized continuous gaussian step with variance proportional to the time step taken. Wiener process is sometimes used to describe the same thing.
 
 
 # Simulating Stochastic Differential Equations
 
-It seems like in R there are
+It seems like in R there are packages
 
 * Sim.DiffProc
 
@@ -310,8 +310,8 @@ It seems like in R there are
 Following the [package vignette](https://cran.r-project.org/web/packages/Sim.DiffProc/vignettes/snssde.html)
 
 - `rsde1d` - random deviates from a sde object
-- `dsde1d()` - random deviates from sde object
-- `snssde2d()` - 
+- `dsde1d()` - approximate density from sde object
+- `snssde2d()` - simulates 2d sde
 
 We simulate from the example
 
@@ -376,7 +376,7 @@ lines(time(mod1),apply(mod1$X,1,bconfint,level=0.95)[2,],col=4,lwd=2)
 legend("topleft",c("mean path",paste("bound of", 95,"% confidence")),inset = .01,col=c(2,4),lwd=2,cex=0.8)
 ```
 
-In two dimensions, vector of dfrit and diffusion
+In two dimensions, vector of drift and diffusion
 
 $$
 \begin{aligned}
@@ -404,4 +404,105 @@ plot(mod2d)
 plot2d(mod2d,type="n") 
 points2d(mod2d,col=rgb(0,100,0,50,maxColorValue=255), pch=16)
 ```
+
+# Guassian Markov Random Field
+
+GMRF is a generalization of the markov chians. I want to know what data actually looks like when simulated from a GMRF. We start with a line graph, which is just a standard random walk
+
+## Random Walk
+
+```{r}
+n <- 20 # 20 obs
+N <- 100 # nodes
+
+
+#' Random Walk
+#'
+#' @param N number of nodes
+#'
+#' @return
+#' @export
+#'
+#' @examples
+randomwalk <- function(nodes = 10, y0 = 0, drift = 0, stddev = 1) {
+  y0 + cumsum(rnorm(nodes, mean = drift, sd = stddev))
+}
+
+set.seed(1)
+rw_mat <- replicate(1000,
+          randomwalk(10)) # 6 rows, 1000 samples
+
+rw_cov <- rw_mat %>% t() %>% cov() 
+rw_prec <- rw_cov %>% solve()
+image(rw_prec)
+
+```
+
+```{r}
+# can try to use glasso to estimate sparse patterns in the covariance matrix
+rw_glasso <- glasso(rw_cov, rho = .02, nobs = 1000)
+
+rw_glassopath <- glassopath(rw_cov, rholist = seq(.01, .40, .01))
+
+rw_glassopath$wi[,,6]
+
+apply(rw_glassopath$wi, 3, as_function(~sum(.x != 0))) # why does the number of elements increase then decrease?
+```
+
+```{r}
+set.seed(1)
+gaus <- matrix(rnorm(50*20), ncol = 20)
+gaus_cov <- var(gaus)
+gaus_prec <- gaus_cov %>% solve()
+gaus_prec %>% Matrix() %>% image() # has a diagonal structure
+
+gaus_glasso <- glasso(gaus_cov, rho = .03, nobs = 50)
+
+gaus_glassopath <- glassopath(gaus_cov, rho = seq(.01, .7, .01))
+
+# count number of non-zero entries
+apply(gaus_glassopath$wi, 3, as_function(~sum(.x != 0)))
+gaus_glassopath$wi[,,60] %>% image() # sparsity pattern is correct but not the scale...
+```
+
+
+Sampling from multivariate normal distribution, sparse precision matrix, we use `sparseMVN`
+
+```{r}
+library(reshape2)
+
+rw_dat <- rw_mat %>% melt(c("node","obs"))
+
+rw_mat %>% t() %>% cov() # sample covariance
+
+rw_dat %>% ggplot(aes(node, value)) +
+  geom_point()
+
+# estimating an unstructred covariance matrix...
+
+rw_gls <- gls(value~1,  data = rw_dat,
+          weights = varIdent(form = ~1 | node))
+
+
+attr(rw_gls$modelStruct$varStruct, "weights")
+class(rw_gls$modelStruct$varStruct)
+nlme:::print.varFunc
+
+coef(rw_gls$modelStruct$varStruct, unconstrained = FALSE, allCoef = TRUE)^2
+nlme:::coef.varIdent
+
+
+vignette(package = "sandwich")
+
+
+
+getVarCov(rw_gls)
+getVarCov(rw_gls, individual = 4)
+
+rw_cs_cov <- corMatrix(Initialize(corCompSymm(value = .3, form = ~1 | obs), rw_dat))
+
+rw_cs_cov %>% length()
+```
+
+
 

@@ -94,6 +94,12 @@ with assumptions,
  2. $e_i\sim MVN(0, R)$
  3. $Cov(u, e) = 0$  (Violation of this results in parameter confounding.)
 
+# REML Theory
+
+A step-by-step proof of the mixed model equations can be found on [Kevin Liu's Website: Linear Mixed Model Equations](https://rh8liuqy.github.io/Linear_mixed_model_equations.html).
+
+- [Introduction to REML equations](https://www.stats.net.au/Maths_REML_manual.pdf)
+
 # Software {.tabset}
 
 ## nlme
@@ -110,6 +116,9 @@ Many methods that apply to class `lme` objects,
   * "using a normal approximation to the distribution of the (restricted) maximum likelihood estimators (the estimators are assumed to have a normal distribution centered at the true parameter values and with covariance matrix equal to the negative inverse Hessian matrix of the (restricted) log-likelihood evaluated at the estimated parameters)." ~ from documentation
 * `augPred` - produces preditions of the response for each group, and produces plot of predicted lines for each subject superposed on the original data.
 * `plot(compareFits(coef(mod), coef(mod2)))` - plot estimates of two models, (like REML vs ML) estimates.
+* `getVarCov` - gives marginal and conditional covariance matrices, very useful!
+* `VarCorr` - instead of covariances, list the correlations
+
 
 ```{r}
 # random defaults to the rhs of grouped Data
@@ -134,13 +143,7 @@ orth_lmod <- lme(Orth.new)
 
 ```
 
-## lmer
-
-## sommer
-
-## glmmTMB
-
-# Basics of Mixed Models in R
+## lme4
 
 Some common accessor functions for working with mixed models and what they return:
 
@@ -152,7 +155,20 @@ Some common accessor functions for working with mixed models and what they retur
   - `Z` - random-effects model matrix
   - `mu` - conditional mean of response
   - `b` - conditional mode of random effects variable
- 
+  - `theta` - just the parameters in the covariance matrix $G$
+  - `sigma` - relative variance factor
+  - `Lambda` - squareroot of random effect covariance,  $G = \sigma^2LL'$
+- `predict(mod, re.form = "NA | NULL | ~subject")` - predictions with different levels of random effect structures
+
+## lmeInfo
+
+Gives expected information and variance components from information matrices of "lme" models. Useful because lme doesn't report the standard errors from the objects 
+
+## sommer
+
+## glmmTMB
+
+# Basics of Mixed Models in R
  
 ```{r}
 # Oats Model
@@ -258,10 +274,185 @@ some useful options
 - `terms = c("factor(nitro)0.2", "factor(nitro)0.4"`
 
 
-
 # Inference in Mixed Models
 
 A wonderful resource for discussing inference in mixed models is given by [Faraway's Inferential Methods for Linear Mixed Models](https://people.bath.ac.uk/jjf23/mixchange/index.html#worked-examples)
+
+# Correlation structures
+
+
+
+## varFunc variance functions
+
+varfunc is for modeling variance with covariate, for heterogeneity
+
+```{r}
+Dialyzer$QB
+Dialyzer %>% ggplot(aes(pressure, rate, group = Subject)) + 
+  geom_point() +
+  geom_line() + 
+  facet_wrap(~QB)
+
+# relevel so 300 is first
+Dialyzer$QB <- factor(Dialyzer$QB, levels = c(300, 200))
+contrasts(Dialyzer$QB) <- contr.sum(levels(Dialyzer$QB))
+
+dial_lme <- lme(rate ~ pressure*QB + I(pressure^2)*QB + I(pressure^3)*QB + I(pressure^4)*QB,
+                data =  Dialyzer,
+                random = ~pressure + pressure^2)
+
+summary(dial_lme)
+plot(dial_lme, resid(., type = "pearson")~pressure, abline = 0)
+
+# update the weights by pressure
+dial_lme2 <- update(dial_lme,
+       weights = varPower(form = ~pressure))
+
+summary(dial_lme2)
+cbind(AIC(dial_lme),
+      AIC(dial_lme2))
+
+plot(dial_lme2, 
+     resid(., type = "pearson")~pressure,
+     abline = 0)
+
+plot(dial_lme2,
+     resid(., type = "pearson")~pressure | QB,
+           abline =0) # increasing heterogeneity in both 
+
+plot(dial_lme,
+     resid(., type = "pearson")~pressure | QB,
+           abline =0) # increasing heterogeneity in both 
+
+getVarCov(dial_lme2, type = "marginal")
+dist(Dialyzer$pressure[Dialyzer$Subject == 1])
+```
+
+## lme corstruct
+
+corstructs are for modeling with "distances"
+
+```{r}
+spatDat <- data.frame(x = c(0, .25, .5, .75, 1), y = c(0, .25, .5, .75, 1))
+example_cormat <- Initialize(corExp(c(1,.2),
+                                    form = ~x + y, # specifies the position vector and | grouping variable
+                                    nugget = TRUE), spatDat)
+
+corMatrix(example_cormat)
+plot(Variogram(example_cormat, distance = seq(0, 3, .1)))
+```
+
+## Variograms
+
+(semi) variogram are a way of plotting and visualizing correlations over time/space
+
+$$
+\begin{aligned}
+\gamma[d(\varepsilon_x, \varepsilon_y), \mathbf{\lambda}] &= \frac{1}{2}\operatorname{Var}(\varepsilon_x - \varepsilon_y) \\
+&= \frac{1}{2}E[\varepsilon_x - \varepsilon_y]^2
+\end{aligned}
+$$
+
+
+```{r}
+# calculating the variogram manually
+plot(Variogram(c(1, 3, -1, 5), # time points
+               c(1, .3, .5, 2, 7, .2))) # values at time points
+
+
+
+val <- outer(c(1, 3, -1, 5), c(1, 3, -1, 5), function(x, y) (y - x)^2 / 2)
+val <- val[lower.tri(val)]
+val # the variogram values
+```
+
+
+```{r}
+n <- 20 # 20 obs
+N <- 100 # nodes
+
+randomwalk <- function(N) {
+  cumsum(rnorm(N))
+}
+set.seed(1)
+rw_mat <- replicate(1000,
+          randomwalk(6))
+```
+
+
+```{r}
+rw_dat <- rw_mat %>% melt(c("node","obs"))
+
+rw_mat %>% t() %>% cov() # sample covariance
+
+rw_dat %>% ggplot(aes(node, value)) +
+  geom_point()
+
+rw_gls <- gls(value~1,  data = rw_dat,
+          correlation = corSymm(form = ~1|obs),
+          weights = varIdent(form = ~1 | node))
+
+
+getVarCov(rw_gls)
+getVarCov(rw_gls, individual = 4)
+
+rw_cs_cov <- corMatrix(Initialize(corCompSymm(value = .3, form = ~1 | obs), rw_dat))
+
+rw_cs_cov %>% length()
+```
+
+
+## Example: BodyWeight
+
+body weight of rats measured over 64 days and 3 different diets
+
+```{r}
+BodyWeight %>% ggplot(aes(Time, weight, group = Rat)) +
+  geom_line() +
+  facet_wrap(~Diet)
+
+# Residuals
+bw_lme <- lme(weight ~ Time * Diet, BodyWeight,
+    random = ~Time | Rat)
+
+
+
+# model with varPower
+bw_lme2 <- update(bw_lme, weights = varPower())
+plot(bw_lme, resid(., type = "p") ~ Time) # Residual plot
+plot(bw_lme2, resid(., type = "p")~Time) # such a subtle difference... how much effect does it really have. yet it's strongly statistically significant
+
+anova(bw_lme, bw_lme2)
+```
+
+The anova gives a significant result, meaning that the covariance with heterogenous modeling is better, but if you look summary of the results, the standard errors are really not that different, maybe a difference of about 10%.
+
+```{r}
+summary(bw_lme)
+summary(bw_lme2)
+```
+
+
+```{r}
+```
+
+
+```{r}
+# variogram seems to increase at 20 days, so model with exponential spatial
+plot(Variogram(bw_lme, form = ~Time, maxDist = 42)) # loess smoother
+bw_lme3 <- update(bw_lme, corr = corExp(form = ~Time))
+
+plot(Variogram(bw_lme3, maxDist = 42, form = ~Time, 
+               resType = "normalized",
+               robust = T), ylim = c(0, 1.4)) # fit with time variogram
+```
+
+Use the normalized residuals and robust
+
+
+
+
+
 
 
 # Computational Notes
@@ -338,8 +529,6 @@ df_models
 ```
 
 
-
-
 ### Partial Pooling
 
 ```{r}
@@ -355,8 +544,6 @@ df_partial_pooling <- coef(lmm)[["Subject"]] %>%
 df_models <- bind_rows(df_pooled, df_no_pooling, df_partial_pooling) %>% 
   left_join(df_sleep, by = "Subject")
 ```
-
-
 
 
 ### Plot comparing all versions
