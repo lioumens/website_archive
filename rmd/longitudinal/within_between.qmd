@@ -1,0 +1,255 @@
+---
+title: "The Within-Between Model"
+author: "Michael Liou"
+format: html
+execute:
+  cache: true
+---
+
+```{r}
+#| message: false
+#| code-fold: true
+#| code-summary: Load Libraries
+
+library(tidyverse)
+library(nlme)
+library(lme4)
+library(plm)
+library(kableExtra)
+```
+
+# Introduction
+
+This material is largely sourced from Chapter 9 of Longitudinal Data Analysis.
+
+For fixed effects models,
+
+- $X_{ij}$ is independent of $\varepsilon_{ij}$ and $\varepsilon_{ij'}$.
+  - an observation will not help determine the value of the next
+- FE models "clear out" any higher level trends, and just focus on the within estimate
+- The $\hat\beta$ estimate will be consistent even when the higher level effect is correlated with the covariates.
+
+# Within-Between
+
+To introduce the model, we will look at a simulated example where there is a higher level effect
+
+```{r}
+#| code-fold: true
+
+# simulated  
+dat_skel <- data.frame(cohort = rep(1:3, each = 16),
+           id = rep(1:12, each = 4),
+           age = c(rep(c(4, 6, 7, 10), 4), # cohort 1
+                   rep(c(4, 5, 8, 9) + 1, 4), # cohort 2 
+                   rep(c(4, 7, 8, 10) + 2, 4))) # cohort 3
+# creating data
+set.seed(1)
+id_int <- rnorm(12, 2) + 10
+id_slope <- rnorm(12, mean = 1, sd = .01) # random slope
+cohort_int <- c(1, 4, 7)
+
+dat <- dat_skel %>% 
+  mutate(y = id_int + id_slope * age + cohort_int[cohort] + rnorm(nrow(.), sd = 5),
+         id = factor(id),
+         cohort = factor(cohort))
+
+dat %>% head()
+```
+ 
+```{r}
+#| code-fold: true
+dat %>% ggplot(aes(age, y, color = cohort, group = id)) +
+  geom_point() +
+  geom_line()
+```
+
+```{r}
+dat_centered <- dat %>% arrange(id, age) %>%
+  group_by(id) %>% 
+  mutate(age_mean = mean(age),
+         y_mean = mean(y),
+         age_centered = age - age_mean,
+         y_centered = y - y_mean,
+         age_baseline = age - first(age),
+         y_baseline = y - first(y))
+
+dat_baseline <- dat_centered %>% 
+  filter(age_baseline != 0)
+```
+
+
+```{r}
+# Fixed Effect Estimate (within model)
+centered_lm <- lm(y_centered ~ age_centered, data = dat_centered) # centered regression
+
+# between model
+baseline_lm <- lm(y_baseline~age_baseline, data = dat_baseline) # baseline adjusted (centered)
+id_lm <- lm(y~age + id, data = dat_centered) # id model (centered)
+
+mean_lm <- lm(y_mean ~ age_mean, data = dat_centered) # mean regression (pooled model)
+
+pooled_lm <- lm(y~age, data = dat_centered)
+
+cohort_lm <- lm(y~age + cohort, data = dat_centered)
+
+# mixed model
+mmod <- lmer(y ~ age + (1|id), data = dat)
+
+# within-between model
+wb_mmod <- lmer(y~age_centered + age_mean + (1 | id), data = dat_centered)
+```
+
+
+```{r}
+#| code-fold: true
+cbind(
+  baseline_lm = coef(baseline_lm),
+  mean = coef(mean_lm),
+  cohort = coef(cohort_lm)[1:2],
+  id = coef(id_lm)[1:2],
+  pooled = coef(pooled_lm),
+  centered = coef(centered_lm),
+  mixed = fixef(mmod)) %>% rbind(NA) %>% 
+  cbind(within_between = fixef(wb_mmod))
+```
+
+$$
+\begin{aligned}
+w = \frac{(1 - \rho_y)\rho_x}{(1 - \rho_y) + n\rho_y(1-\rho_x)}
+\end{aligned}
+$$
+and 
+
+$$
+\begin{aligned}
+\hat \beta_2^{(RE)} = (1 - w)\hat\beta_2^{(FE)} + w\hat\beta_2^{(B)}
+\end{aligned}
+$$
+
+```{r}
+# help function for weight
+fixed_random_weight <- function(rho_x, rho_y, n) {
+  (1-rho_y) * rho_x / ((1-rho_y) + n * rho_y * (1 - rho_x))
+}
+
+```
+
+```{r}
+# response correlation
+rho_y <- VarCorr(mmod) %>% as.data.frame() %>% pull(vcov) %>% 
+  as_mapper(~.x[1]/sum(.x))()
+
+# correlation of age
+age_lm <- lm(age~id, data = dat_centered)
+rho_x <- summary(age_lm)$r.squared
+
+n <- 4
+w <- fixed_random_weight(rho_x, rho_y, n)
+(1-w) * fixef(wb_mmod)[2] + w * fixef(wb_mmod)[3]
+```
+
+
+
+```{r}
+dat %>% ggplot(aes(age, y, color = cohort, group = id)) +
+  geom_point(alpha = .2) +
+  geom_line(alpha = .2) +
+  geom_abline(slope = coef(centered_lm)[2], intercept = coef(centered_lm)[1] + 10) + # centered estimate
+  geom_abline(slope = coef(mean_lm)[2], intercept = coef(mean_lm)[1]) + # mean estimate
+  geom_abline(slope = fixef(mmod)[2], intercept = fixef(mmod)[1], linetype = 2) # mixed effects estimate
+```
+
+
+
+
+
+# FEV example
+
+
+```{r}
+library(foreign)
+fev <- read.dta("data/fev1.dta") %>% 
+  filter(id != 197) %>%
+  mutate(id = factor(id),
+         y =  logfev1 - 2 * (log(ht)))
+
+fev_centered <- fev %>% group_by(id) %>% 
+  mutate(
+    y_mean = mean(y),
+    age_mean = mean(age),
+    age_centered = age - age_mean)
+```
+
+
+
+```{r}
+# fitting all models
+fev_lm <- lm(y ~ age + id, data = fev) # lm
+fev_mer <- lmer(y~age + (1|id), data = fev) # random
+
+# within/between model
+fev_wb <- lmer(y ~ age_centered + age_mean + (1|id),
+               data = fev_centered,
+               REML = FALSE)
+
+# cross sectional
+fev_mean_lm <- lm(y_mean ~ age_mean, data = fev_centered)
+
+
+# age correlation (between/within)
+fev_age_lm <- lm(age ~ id, data = fev)
+
+```
+
+```{r}
+# comparing the coefficients
+cbind(fixed = coef(fev_lm)[1:2],
+      random = fixef(fev_mer),
+      mean = coef(fev_mean_lm)) %>% 
+  rbind(NA) %>% cbind(within_between = fixef(fev_wb))
+```
+
+
+
+```{r}
+rho_y <- VarCorr(fev_mer) %>% 
+  as.data.frame() %>%
+  pull(vcov) %>%
+  as_mapper(~.x[1]/sum(.x))() # .689
+
+# age covariance
+# fev_age_ss <- anova(fev_age_lm)$`Sum Sq`
+# rho_x <- fev_age_ss[1] / sum(fev_age_ss) 
+rho_x <- summary(fev_age_lm)$r.squared # .172
+
+nbar <- fev %>% count(id) %>% pull(n) %>% mean()
+
+w <- fixed_random_weight(rho_x, rho_y, nbar)
+w
+```
+
+Since this value of w is very low we expect that the mixed estimate is very close to the fixed estimate.
+
+
+```{r}
+# hausman test manually
+
+haus_contr <- cbind(c(0, -1, 1))
+haus_mean <- fixef(fev_wb) %*% haus_contr
+haus_var <- t(haus_contr) %*% vcov(fev_wb) %*% haus_contr
+haus_z <- haus_mean / sqrt(haus_var)[1]
+pchisq(haus_z^2, 1, lower.tail = FALSE) # p = .84
+
+# hausman with plm
+
+# phtest(y~age, data = fev_centered, index = c("id"))
+wi <- plm(y~age, data = fev_centered, index = c("id"), model = "within" )
+fe <- plm(y~age, data = fev_centered, index = c("id"), model = "between")
+mi <- plm(y~age, data = fev_centered, index = c("id"), model = "random")
+
+phtest(wi, mi)
+```
+
+# Resources
+
+- [Separation of individual-level and cluster-level covariate effects in regression analysis of correlated data](https://onlinelibrary-wiley-com.ezproxy.library.wisc.edu/doi/pdfdirect/10.1002/sim.1524)

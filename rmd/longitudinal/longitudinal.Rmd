@@ -1060,6 +1060,136 @@ coeftest(dental_lm, vcov = vcovHAC)
 Introducing this many different ways for estimating "robust" standard errors is quite confusing.
 
 
+# Random Coefficient Models
+
+This is a method of adjusting for differing slopes and effects.
+
+## Example: Autism
+
+```{r}
+autism <- read.csv("data/autism.csv") %>% 
+  mutate(sicdegp = factor(sicdegp),
+         childid = factor(childid)) 
+
+autism_copy <- autism
+
+autism %>% ggplot(aes(age, vsae, group = childid, color = sicdegp)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~sicdegp)
+```
+
+```{r}
+# how many distinct in each
+autism %>% count(sicdegp)
+autism %>% count(sicdegp, childid) %>%
+  pivot_wider(names_from = sicdegp, values_from = n)
+
+# 2 missing vsae values
+autism %>% lapply(rlang::as_function(~which(is.na(.x)))) # columnwise which missing
+```
+
+
+```{r}
+# without child id
+autism_lm <- lm(vsae ~ age*sicdegp, data = autism) # autism
+
+# with child id
+autism_lm_id <- lm(vsae ~ age*sicdegp + childid, data = autism)
+
+# with id varying slopes
+autism_lm_id_slope <- lm(vsae ~ age*sicdegp + childid + childid:age + childid:sicdegp, data = autism)
+
+
+# predictions, plotted raw
+autism_predict <- autism %>% filter(complete.cases(.)) %>% 
+  add_column(
+  yhat_lm = predict(autism_lm),
+  yhat_lm_id = predict(autism_lm_id),
+  yhat_lm_id_slope = predict(autism_lm_id_slope))
+
+autism_predict %>% pivot_longer(cols = c(vsae, starts_with("yhat")),
+                                names_to = "type",
+                                values_to = "y") %>% 
+  ggplot(aes(age, y, group = childid, color = type)) +
+  geom_line(alpha = .2) +
+  facet_grid(type~sicdegp)
+
+```
+
+```{r}
+# fully fixed
+c(slope1 = coef(autism_lm)[2],
+  slope2 = sum(coef(autism_lm)[c(2,5)]),
+  slope3 = sum(coef(autism_lm)[c(2,6)]))
+# with id
+c(slope1 = coef(autism_lm_id)["age"],
+  slope2 = sum(coef(autism_lm_id)[c("age", "age:sicdegp2")]),
+  slope3 = sum(coef(autism_lm_id)[c("age", "age:sicdegp3")]))
+```
+
+
+```{r}
+# TODO: with id_slope
+# average coefficients for each fitted child? seems okay way to summarize this fixed effects model.
+rg_lm_id_slope <- ref_grid(autism_lm_id_slope, at = list("age" = c(2, 3), "sicdegp")) # nesting
+emmp_lm_id_slope <- pairs(emmeans(rg_lm_id_slope, specs = c("age", "sicdegp"), by = "childid")) %>% as.data.frame()
+emmp_lm_id_slope %>% group_by(sicdegp) %>% 
+  summarize(mean_slope = -mean(estimate, na.rm = TRUE)) %>% pull(mean_slope)
+```
+
+```{r}
+# random models
+autism_lme_id <- lme(vsae~age*sicdegp,
+                  random = ~ 1 | childid,
+                  data = autism[complete.cases(autism),])
+
+autism_lmer_id <- lmer(vsae~ age * sicdegp + (1| childid),
+                       data = autism)
+
+autism_lmer_id_slope <- lmer(vsae~ age * sicdegp + ( age | childid),
+                             data = autism)
+
+autism_lmer_id_slope_split <- lmer(vsae~ age * sicdegp + (1 | childid) + ( 0 + age | childid),
+                             data = autism)
+
+# uncorrelated intercept and age
+autism_lmer_id_slope_uncor <- lmer(vsae ~ age * sicdegp + (age || childid),
+                             data = autism)
+
+# unstructured covariance matrix
+gls(vsae~age*sicdegp,
+    random = ~1 | childid,
+    correlation = corSymm(form = ~),
+    weights = varIdent(form = ~ age) 
+
+
+autism_lme_id_slope <- lme(vsae~age*sicdegp,
+                           random = ~ age | childid,
+                           data = autism[complete.cases(autism),],
+                           control = lmeControl(opt = "optim"))
+
+summary(autism_lme_id_slope)
+
+
+# lmer_id
+c(fixef(autism_lmer_id)["age"],
+  sum(fixef(autism_lmer_id)[c("age", "age:sicdegp2")]),
+  sum(fixef(autism_lmer_id)[c("age", "age:sicdegp3")]))
+
+# lme_id_slope
+c(fixef(autism_lme_id_slope)["age"],
+  sum(fixef(autism_lme_id_slope)[c("age", "age:sicdegp2")]),
+  sum(fixef(autism_lme_id_slope)[c("age", "age:sicdegp3")]))
+```
+
+
+```{r}
+# random models
+```
+
+
+
 # Baseline adjustment
 
 There are 4 ways that we can discuss for baseline adjustment from @fitzmaurice_applied_2011 chapter 5.7

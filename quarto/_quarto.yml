@@ -1,0 +1,8 @@
+# project:
+  # output-dir: _output
+
+toc: true
+bibliography: references.bib
+
+execute:
+  freeze: true

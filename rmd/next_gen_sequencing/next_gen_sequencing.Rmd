@@ -13,6 +13,11 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(ape)
+library(vegan)
+library(dplyr)
+library(hagis)
+library(ggplot2)
 ```
 
 # Copy Number Variation (window binning)
@@ -21,12 +26,49 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 
 readDepth uses a negative binomial distribution to model the counts that fall into each bin.
 
-```{r}
-```
 
 # Primer for Microbiomes
 
 ## permANOVA
+
+[Beta Diversity with Hagis](https://cran.r-project.org/web/packages/hagis/vignettes/betadiversity.html)
+
+```{r}
+head(P_sojae_survey) # survey sample data
+P_sojae_survey$Isolate <-
+  gsub(pattern = "MPS17_",
+       replacement = "",
+       x = P_sojae_survey$Isolate)
+P_sojae_survey$Rps <-
+  gsub(pattern = "Rps ",
+       replacement = "",
+       x = P_sojae_survey$Rps)
+hagis_args <- list(
+  x = P_sojae_survey,
+  cutoff = 60,
+  control = "susceptible",
+  sample = "Isolate",
+  gene = "Rps",
+  perc_susc = "perc.susc"
+)
+P_sojae_survey.matrix <- do.call(create_binary_matrix, hagis_args)
+P_sojae_survey.matrix.jaccard <-
+  vegdist(P_sojae_survey.matrix, "jaccard", na.rm = TRUE)
+groups <- factor(c(rep("Michigan_1", 11), rep("Michigan_2", 10)))
+
+# calculate beta dispersion for each group, when comparing 2 or more
+pathotype.disp <-
+  betadisper(P_sojae_survey.matrix.jaccard, groups)
+
+# tests if centroid distances are significantly different from each other
+pathotype.disp.anova <- anova(pathotype.disp) 
+pathotype.disp.anova
+
+# the output gives p-value
+adonis2(P_sojae_survey.matrix.jaccard ~ groups)
+```
+
+
 
 ## Corncob
 

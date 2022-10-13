@@ -37,3 +37,22 @@ There is a [rakefile](https://github.com/ruby/rake) in this repository (a makefi
   
 ## R Markdown Files
 
+## Quarto Files
+
+This is a the first yaml block you've been using
+
+``` yaml
+title: "The Within-Between Model"
+author: "Michael Liou"
+format: 
+  html:
+    mainfont: Palitino
+    code-fold: true
+    theme: lumen
+    linestretch: 1.2
+    fontsize: 1em
+    html-math-method: katex
+execute:
+  cache: true
+```
+

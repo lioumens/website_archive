@@ -233,7 +233,7 @@ rw_glassopath <- glassopath(rw_cov, rholist = seq(.01, .40, .01))
 
 rw_glassopath$wi[,,6]
 
-apply(rw_glassopath$wi, 3, as_function(~sum(.x != 0))) # why does the number of elements increase then decrease?
+apply(rw_glassopath$wi, 3, as_function(~sum(.x != 0))) # why does the number of elements increase then decrease? behavior is curious
 ```
 
 ```{r}

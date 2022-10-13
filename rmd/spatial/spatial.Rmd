@@ -30,6 +30,9 @@ library(FRK) # for distance function, stands for Fixed-Rank Kriging
 library(plyr) # for data manipulation
 library(expm) # raising matrices to specified powers
 library(spacetime)
+library(CARBayes)
+library(CARBayesdata)
+library(GGally)
 
 # devtools::install_github("andrewzm/STRbook")
 library(STRbook) # Accompanying code for Spatio-Temporal statistics with R book
@@ -122,6 +125,63 @@ getClass("ST")
 # Conditional AutoRegressive Model
 
 ## Examples
+
+### Glasgow Prices (Spatial CAR)
+
+This example is the vignette for CARBayes, another packages that allows spatial modeling of this kind. This example is taken from [Th CARBayes Vignette](https://cran.r-project.org/web/packages/CARBayes/vignettes/CARBayes.pdf)
+
+```{r}
+data(pricedata)
+data(GGHB.IZ)
+
+pricedata <- pricedata %>% mutate(logprice = log(pricedata$price))
+
+ggpairs(data = pricedata, columns = c(8, 3:7))
+```
+
+
+```{r}
+# merge price 
+pricedata.sf <- merge(x=GGHB.IZ, y=pricedata, by="IZ", all.x=FALSE)
+pricedata.sf <- st_transform(x=pricedata.sf,
+                             crs='+proj=longlat +datum=WGS84 +no_defs')
+
+library(leaflet)
+colours <- colorNumeric(palette = "YlOrRd", domain = pricedata.sf$price)
+map1 <- leaflet(data=pricedata.sf) %>% 
+  addTiles() %>% 
+  addPolygons(fillColor = ~colours(price), color = "", weight = 1,
+              fillOpacity = .7) %>% 
+  addLegend(pal = colours, values = pricedata.sf$price, opacity = 1,
+            title = "price") %>% 
+  addScaleBar(position="bottomleft")
+map1
+```
+
+#### The Nonspatial modeling approach
+
+```{r}
+glasgow_lm <- lm(logprice~crime+rooms+sales + factor(type) + driveshop, data = pricedata.sf)
+glasgow_lm %>% summary()
+```
+
+```{r}
+W.nb <- poly2nb(pricedata.sf, row.names = pricedata.sf$IZ)
+W.list <- nb2listw(W.nb, style = "B") # binary coding, just 1 if they are a neighbor
+moran.mc(x = residuals(glasgow_lm), listw=W.list, nsim = 1000)
+```
+
+#### Spatial Modeling
+
+The models here are no different, but I'm still having a hard time understanding the parameters that are estimate
+```{r}
+W <- nb2mat(W.nb, style = "B")
+chain1 <- S.CARleroux(logprice~crime+rooms+sales + factor(type) + driveshop, data = pricedata.sf, family="gaussian", W=W, burnin = 100000, n.sample=300000, thin=100)
+chain2 <- S.CARleroux(logprice~crime+rooms+sales + factor(type) + driveshop, data = pricedata.sf, family="gaussian", W=W, burnin = 100000, n.sample=300000, thin=100)
+chain3 <- S.CARleroux(logprice~crime+rooms+sales + factor(type) + driveshop, data = pricedata.sf, family="gaussian", W=W, burnin = 100000, n.sample=300000, thin=100)
+```
+
+
 
 ### Scotland Lip Cancer (Spatial CAR)
 
@@ -1035,9 +1095,181 @@ for(t in 1:6) {
 }
 ```
 
-# 
+
+# Spatial Autoregression (Simultaneous)
+
+One formulation is
+
+$$
+\begin{aligned}
+(I - B)(Z - \mu) = \varepsilon
+\end{aligned}
+$$
+
+where:
+
+- $B$ is the dependency matrix with $b_{ij} > 0$ if dependent, and $0$ otherwise. Also, assumed $b_{ii} = 0$, (does _not_ need to be symmetric)
+- $\varepsilon \overset{\mathrm{iid}}{\sim} (0, \Sigma)$
+
+if we assume that $\varepsilon \overset{\mathrm{iid}}{\sim} N(0, \Sigma)$, then it's a _gaussian_ SAR model.
+
+If so, then we have
+
+```{r}
+# lollipop dependence
+B <- matrix(c(0, 1, 1, 0,
+              1, 0, 1, 0,
+              1, 1, 0, 1,
+              0, 0, 1, 0), ncol = 4, byrow = TRUE)
+
+mu <- c(1:4)
+Sigma <- I4 <- diag(4)
+
+IB_inv <- solve(I4 - B) 
+Z_cov <- IB_inv %*% Sigma %*% t(IB_inv)
+
+Z <- mvtnorm::rmvnorm(1000, mu, Z_cov)
+
+solve(Z_cov)
+```
+
+# Moran's I statistic (spatial dependency)
+
+## Tutorial from website
+
+We follow along here with the explanation: https://mgimond.github.io/simple_moransI_example/
+
+```{r}
+library(sf)
+library(spdep)
+library(tmap) # ggplot for large maps
+```
+
+Moran's I statistic is the regression of spatial lag values (weighted mean of neighbors), against the value itself.
+
+```{r}
+s <- readRDS(url("https://github.com/mgimond/Data/raw/gh-pages/Exercises/nhme.rds"))
+s
+tm_shape(s) + tm_fill(col="Income", style="quantile", n = 8, palette = "Greens") + 
+  tm_legend(outside=TRUE)
+nb <- poly2nb(s, queen = TRUE) # neighbors from poly
+lw <- nb2listw(nb, style="W", zero.policy = TRUE) # row standardizing
+inc_lag <- lag.listw(x = lw, var = s$Income) # means from all neighbors
+
+plot(inc_lag ~ s$Income, pch = 16, asp = 1)
+M1 <- lm(inc_lag ~ s$Income)
+abline(M1, col = "blue")
+coef(M1)[2]
+
+I <- moran(s$Income, lw, length(nb), Szero(lw))[[1]]
+
+spweights.constants(lw) # constants relating to n, given a listw object
+
+nb2mat(nb) # W matrix basically
+
+
+```
+
+
+$$
+\begin{aligned}
+I = \frac{Z'WZ}{Z'Z}
+\end{aligned}
+$$
+
+should be large for spatially dependent Z.
+
+To understand this as a regression let $Y = WZ$, $Y$ gives the weighted sums of spatial neighbors (the spatial lags). Now $I = \hat\beta =  (Z'Z)^{-1}Z'Y$ when we regress the spatial lags against our observed stochastic realization, so moran's I statistic is just the slope of that regression.
+
+The properties of this are a little involved yet, see formula's for the variance here [Spatial Autocorrelation, Michael Goodchild](https://alexsingleton.files.wordpress.com/2014/09/47-spatial-aurocorrelation.pdf)
+
+
+## Manually
+
+```{r}
+library(igraph)
+n <- 20
+g <- make_lattice(c(20, 20))
+A <- as_adj(g) # Adj matr
+j <- cbind(rep(1, n^2))
+Aj <- (A %*% j) # out degree, "rowSums"
+W <- Diagonal(x = 1/ Aj[,1]) %*% A # weighted W matrix, manually
+lw_W <- mat2listw(W) # convert to listw object
+```
+
+
+```{r}
+t(Z_c) %*% W %*% Z_c / crossprod(Z_c)
+```
+
+```{r}
+# create various spatial dependencies...
+set.seed(1)
+
+# z <- rbinom(n^2, 1, .2)
+# z <- c(rbinom(n^2 / 2, 1, .8), rbinom(n^2 / 2, 1, .4)) # half one prob, another half different prob
+# z <- c(rep(1, n^2 / 2), rep(0, n^2 /2 )) # half yes half no
+z <- rbinom(n^2, 1, seq(0, 1, length.out = n^2)) # getting larger by number
+z_c <- scale(z, center = T, scale = F)  # need to center to match results
+Z <- cbind(z)
+Z_c <- cbind(z_c) # center to match results
+```
+
+
+```{r}
+# by I statistic
+I_man <- (t(Z_c) %*% W %*% Z_c) / crossprod(Z_c)
+# I_man
+
+# by regression
+lag_W <- lag.listw(lw_W, z_c)
+
+I_lm <- lm(lag_W ~ Z_c)
+summary(I_lm)
+# coef(I_lm)[2]
+
+I_mor <- moran(z, lw_W, length(lw_W$neighbours), S0 = Szero(lw_W)) # centered version of it
+# I_mor$I
+I_mor$K
+sum(z_c^4) / sum(z_c^2)
+```
+
+
+```{r}
+# Testing
+moran.test(z_c, lw_W, randomisation = FALSE)
+(.389128622 + 0.002506266) / sqrt(0.001320440)
+```
+
+
+```{r}
+# vec -> matrix
+microbenchmark(times = 100L,
+               "matrix" = matrix(z, ncol = 20, nrow = 20), # way way way faster
+               "Matrix" = Matrix(z, ncol = 20, nrow = 20))
+
+# vec -> colvec
+microbenchmark(times = 100L,
+               "cbind" = cbind(z), # similar to matrix
+               "t" = t(t(z)),
+               "Matrix" = Matrix(z, ncol = 1),
+               "matrix" = matrix(z, ncol = 1)) # similar to matrix
+
+# dividing by
+library(microbenchmark)
+microbenchmark(times = 100L,
+               "1" = A / Aj[row(A)], # slowwww
+               "2" = Diagonal(x = 1/ Aj[,1]) %*% A) # multiply by diag matrix
+```
+
+## spdep
+
+```{r}
+```
+
 
 # General Resources
 
 - [Geospatial Health with R-INLA and Shiny](https://www.paulamoraga.com/book-geospatial/sec-spatialdataandCRS.html)
 
+spatialspatial

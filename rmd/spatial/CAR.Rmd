@@ -1,0 +1,80 @@
+---
+title: "CAR Models"
+author: "Michael Liou"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+# CAR Models
+
+The spatial variability and correlation is modeled as an intrinsic Gaussian Markov Random Field. 
+
+Suppose we have some model that looks like,
+
+$$
+\begin{aligned}
+\eta_i = \mu + \mathbf{x}_i'\beta + b_i
+\end{aligned}
+$$
+
+ - $x_i$ is the vector of covariates $(x_{i1}, x_{i2}, \dots, x_{ip})$
+ - $b_i$ is the spatial random effect
+ 
+ It is natural to specify $b_i$ as a conditional distribution.
+ 
+ $$
+ \begin{aligned}
+ b_i | \mathbf{b_{-i}}, \tau^2_i \sim \mathcal{N}\big(\sum_{j:i\sim j} c_{ij}b_j, \tau^2_i\big)
+ \end{aligned}
+ $$
+
+This conditional specification can be shown to be equivalent to the joint specification,
+
+$$
+\begin{aligned}
+\mathbf{b} | \tau^2 \sim \mathcal{N} \big(0, D_{\tau^2}^{-1}(I - C)\big)
+\end{aligned}
+$$
+
+
+The requirement that we impose here is that the covariance matrix is symmetric, Since $D_{\tau^2}$ and $I$ are symmetric, this results in the requirement that
+
+$$
+\begin{aligned}
+\frac{c_{ij}}{c_{ji}} = \frac{\tau_i^2}{\tau_j^2}
+\end{aligned}
+$$
+
+$C$ is the matrix that controls the amount of correlation between the nodes. So how do we interpret $C$ or how do we create it? The most direct interpretation of $c_ij$ is that it signifies the strength of averaging from its neighbor, conditional on the strength of the neighbor.
+
+How do we create $C$? We normally start with some symmetric distance matrix $W$, and then row standardize it. In some cases, we just start with the simple adjacency matrix.
+
+# A simple example
+
+We'll use the lollipop graph,
+
+```{r}
+A <- matrix(c(0, 1, 1, 0,
+              1, 0, 1, 0,
+              1, 1, 0, 1,
+              0, 0, 1, 0), nrow = 4, byrow = T)
+
+W <- diag(1/rowSums(A)) %*% A # row standardize the matrix
+
+tau <- 2
+D <- diag(rowSums(A)) #
+D
+Dtau <- tau * D # 
+I <- diag(4)
+alpha <- 1 / eigen(W)$values[1] # 0 is independence, 1 is intrinsic conditional autoregressive (singular)
+B <- solve(D) %*% A 
+
+solve(tau * (D - alpha * A)) # Covariance matrix
+solve(tau * (D - alpha * W))
+
+```
+

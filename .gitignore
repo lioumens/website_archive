@@ -11,3 +11,8 @@ rmd/*/*_files
 *.Rhistory
 *.swp
 
+# Quarto Related
+quarto/.quarto
+quarto/_freeze
+quarto/*/*_files
+quarto/*/*_cache
