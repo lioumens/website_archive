@@ -1,0 +1,1555 @@
+---
+title: 'Lesson 8: Random Coefficient Models'
+author: "Michael Liou"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(kableExtra)
+library(nlme)
+library(lme4)
+library(tidyverse)
+library(reshape2)
+library(grid) # for extra plotting functionality
+library(ellipse) # for ellipse plotting
+library(ggpubr) # for plotting arrange function
+library(redres)
+```
+
+# Modeling Heterogeneity: Fixed Effect models vs Random Coefficient Models
+
+In continuation of looking at heterogenous variance modeling, random coefficient models are a specific type of mixed effect model that allow richness in modeling the variance through random effects. This is adding to the toolbox that we've built upon from last week in we looked at modeling the covariance matrix directly. Since we are introducing two "angles" of attack and giving structure to the variance $Var(Y)$, SAS commonly refers to this method of covariance modeling through random effects as "G"-side. Modeling the covariance directly as we did last week is referred to as "R"-side for "residuals". The terminology becomes more clear with the framework:
+
+$$
+\begin{aligned}
+Y = X\beta + Zu + e
+\end{aligned}
+$$
+
+where:
+
+- $u\sim N(0,G)$
+- $\varepsilon \sim N(0, R)$
+
+$$
+\begin{aligned}
+Var(Y) &= Z\underbrace{\operatorname{Var}(u)}_GZ' + \underbrace{\operatorname{Var}(e)}_{R} \\
+&= \Sigma
+\end{aligned}
+$$
+Note we can also define the following variances when additional random effects are present, such that:
+
+- $\operatorname{Var}(Y | u) = R$ "conditional variance"
+- $\operatorname{Var}(Y) = ZGZ' + R$ "marginal (individual) variance"
+- $\operatorname{Var}(u) = G$ "random effect variance"
+
+These are directly extractable through `lme` with `getVarCov(obj, type = c("random.effects", "conditional", "marginal"))`.
+
+
+In the fixed effects models, we have
+
+$$
+\begin{aligned}
+Y = X\beta + \varepsilon
+\end{aligned}
+$$
+
+where:
+
+- $\varepsilon \sim N(0,\Sigma)$
+
+Again, we have that $\operatorname{Var}(Y) = \Sigma$. This is exclusively "R"-side modeling when the $ZGZ'$ matrix is 0, which is the case when we don't have any random effects.
+
+# Introducing Autism Data (part b)
+
+```{r fig.width = 13}
+autism <- read.csv("data/autism.csv") %>% 
+  mutate(sicdegp = factor(sicdegp),
+         childid = factor(childid),
+         agef = factor(age)) # if we choose to model age as a factor 
+
+autism_complete <- autism[complete.cases(autism),]
+
+autism %>% ggplot(aes(age, vsae, group = childid, color = sicdegp)) +
+  geom_line(alpha = as.numeric(autism$childid)^2 / 30000) + # hack to emphasize just a few response curves
+  facet_wrap(~sicdegp)
+```
+
+
+In context of this dataset, we note some research questions in particular that we are interested in modeling:
+
+* The age trend seems different among `sicdegp` levels.
+  - I'd like to quantify the differences in these trends, and pick models that make this comparison easier to interpret.
+* The age trend itself seems mostly increasing linear, but each child seems to have their own linear trajectory. 
+  - There is perhaps an sharper inflection upwards around age 9. It would be worthwhile testing models that inflect upward as age increases.
+* There seem to be a greater variability in the _slope_ for `sicdegp = 2,3` than in `sicdegp = 1`.
+  - There is fanning present from variability in slopes for each child, but the diversity among those slopes seem to differ as well.
+  - We should make another plot that more directly shows/quantifies the extent of this. This also helps inform whether or not trying heterogenous models would be empirically necessary.
+* There are a non-trivial number of individuals that show "drop out" before the end of the study.
+  - since the data doesn't show the incompleteness, we should make the missingness "explicit" and try to quantify the extent that this missingness may bias our results.
+
+
+# Fixed Effect Modeling (part c)
+
+In this section, we try to "push" fixed effects as far as we can by modeling the mean and covariance (R-side) and see how good of a model we can get. We'll first focus on modeling the mean.
+
+## Modeling the Mean
+
+From the exploratory plots, we loosely fit linear/quadratic/stick models to the data.
+
+```{r}
+# without child id
+autism_lm <- lm(vsae ~ age*sicdegp, data = autism_complete) 
+
+# with child id, varying intercept
+autism_lm_id <- lm(vsae ~ age*sicdegp + childid, data = autism_complete)
+
+# with child id varying slope and intercept
+# Note: these estimates are the same as if we subset dataset to just the single child and ran lm. 
+# sum(coef(autism_lm_id_slope)[c("(Intercept)", "childid10")])
+# sum(coef(autism_lm_id_slope)[c("age", "age:childid10")])
+# coef(lm(vsae~age, data = subset(autism, childid == 10)))
+autism_lm_id_slope <- lm(vsae ~ age + childid + childid:age, data = autism_complete)
+
+
+# stick models
+autism_stick <- autism_complete %>% 
+  mutate(age_gt_9 = as.numeric(age > 9), # create indicator for stick models
+         age_relu_9 = age_gt_9 * (age - 9)) # ReLu function for adding slope above 9
+
+autism_lm_stick <- lm(vsae ~ age*sicdegp + age_relu_9:sicdegp, data = autism_stick) # without child id, "pooled"
+autism_lm_stick_id <- lm(vsae ~ age*sicdegp + age_relu_9:sicdegp + childid, data = autism_stick) # without child id, "pooled"
+autism_lm_stick_id_slope <- lm(vsae ~ age + childid + age:childid + age_relu_9:childid, data = autism_stick) # individual stick model
+
+# quadratic trend
+autism_lm_quad <- lm(vsae ~ age*sicdegp + I(age^2):sicdegp, data = autism_complete)
+autism_lm_quad_id <- lm(vsae ~ age*sicdegp + I(age^2):sicdegp + childid, data = autism_complete) # id specific intercept
+autism_lm_quad_id_slope1 <- lm(vsae ~ age*childid + I(age^2):sicdegp, data = autism_complete) # id specific intercept and linear terms
+autism_lm_quad_id_slope2 <- lm(vsae ~ age*childid + I(age^2)*childid, data = autism_complete) # id specific intercept, linear and quadratic
+
+
+# using poly macro
+# autism_lm_poly2 <- lm(vsae ~ poly(age, degree = 2) * sicdegp, data = autism)
+# autism_lm_poly2 <- lm(vsae ~ poly(age, degree = 2) * child_id, data = autism)
+```
+
+
+
+
+```{r fig.height = 10, fig.width = 12}
+# predictions, plotted raw
+autism_predict <- autism %>% filter(complete.cases(.)) %>% 
+  add_column(
+  yhat_lm = predict(autism_lm),
+  yhat_lm_id = predict(autism_lm_id),
+  yhat_lm_id_slope = predict(autism_lm_id_slope),
+  yhat_lm_stick = predict(autism_lm_stick),
+  yhat_lm_stick_id_slope = predict(autism_lm_stick_id_slope),
+  yhat_lm_quad = predict(autism_lm_quad),
+  yhat_lm_quad_id = predict(autism_lm_quad_id),
+  yhat_lm_quad_id_slope1 = predict(autism_lm_quad_id_slope1),
+  yhat_lm_quad_id_slope2 = predict(autism_lm_quad_id_slope2),
+  )
+
+autism_predict %>% 
+  pivot_longer(cols = c(vsae, starts_with("yhat")),
+                                names_to = "type",
+                                values_to = "y") %>% 
+  arrange(childid, age) %>% 
+  ggplot(aes(age, y, group = childid, color = type)) +
+  geom_line(alpha = .4) +
+  facet_grid(type~sicdegp)
+```
+
+- The stick model estimates look a little funky because there are some individuals with only observations at age = 2, 13, thus a stick model would be degenerate in those individuals and the plotting is simply showing the direct line instead of the stick estimates. I think the same thing is happening in the id quad estimates.
+
+
+```{r class.source = "fold-hide"}
+autism_fixed_ic <- AIC(autism_lm,
+    autism_lm_id,
+    autism_lm_id_slope,
+    autism_lm_stick,
+    autism_lm_stick_id_slope,
+    autism_lm_quad,
+    autism_lm_quad_id,
+    autism_lm_quad_id_slope1,
+    autism_lm_quad_id_slope2) %>% 
+  add_column(
+    BIC = BIC(autism_lm,
+              autism_lm_id,
+              autism_lm_id_slope,
+              autism_lm_stick,
+              autism_lm_stick_id_slope,
+              autism_lm_quad,
+              autism_lm_quad_id,
+              autism_lm_quad_id_slope1,
+              autism_lm_quad_id_slope2)$BIC)
+
+autism_fixed_ic %>% 
+  kbl(format = "html",
+      caption = "Fixed Model Mean Information Criteria",
+      table.attr = "style='width:50%;'") %>% 
+  kable_classic(full_width = TRUE) %>% 
+  column_spec(3, color = c("black", "red")[as.numeric(autism_fixed_ic$AIC == min(autism_fixed_ic$AIC)) + 1]) %>% 
+  column_spec(4, color = c("black", "red")[as.numeric(autism_fixed_ic$BIC == min(autism_fixed_ic$BIC)) + 1])
+```
+
+
+The information criteria here show something very interesting! AIC chooses one of the most complex models, with 408 parameters, while BIC chooses the model with 7 parameters! How you go about model selection is very much a philosophical decision, and the information criteria tend to reflect those camps of thinking. I'll be moving forward with `autism_lm`.
+
+### Diagnostics {.tabset}
+
+We can use the diagnostic plots to examine missing trends and start to get a sense of the variance modeling we will need.
+
+#### Simple Linear Model
+
+```{r class.source = "fold-hide"}
+par(mfrow = c(2,2))
+plot(autism_lm)
+```
+
+#### Individual Stick Model
+
+```{r warning=FALSE, class.source = "fold-hide"}
+par(mfrow = c(2,2))
+plot(autism_lm_stick_id_slope) # danger with this model is that there are a number of points with leverage one.
+```
+
+### {- .unlisted .unnumbered}
+
+Based on these plots, we see that when we choose the super parameterized models, we are risking overfitting with a number of values with leverage 1.
+
+I would ultimately base modeling decisions on specific research questions the scientist had. If there was greater interest in ages 10 - 13, I may be more hesitant to choose the stick model because it's quite overfit in this domain. If they wanted to summarize "rules of thumb" for presentation or big picture of this trait, I'd likely choose the simple linear model. If they were hoping for prediction applications based on younger children and valued accuracy of predictions, I may opt for the over-parameterized models like quadratic or stick model.
+
+## Modeling the variance
+
+For simplicity, we'll chose the linear functional form, as it is quite simple, and performs reasonably well for the number of parameters that it uses. Note, obviously the variance modeling will depend on your chosen mean model.
+
+Similar to how we modeled the mean, we start with trying to visualize the covariance matrix with as few restrictions as possible, so we fit an unstructured covariance matrix with `gls`.
+
+
+```{r}
+# start with unstructured covariance matrix, and let the optimizer tell us the best estimate with no restrictions.
+autism_gls_un <- gls(vsae~age*sicdegp,
+                     correlation = corSymm(form = ~1 | childid), # unstructured correlation
+                     weights = varIdent(form = ~1 | agef), # parameter for each entry along diagonal
+                     data = autism_complete)
+getVarCov(autism_gls_un)
+```
+
+There are some visual guides that we can use to help us model the covariance:
+
+1. line graph of matrix entries, grouped by row
+2. Variogram
+3. Autocorrelation Function
+
+### 1. Line Graph of matrix entries, grouped by row
+
+I picked up this visualization from Generalized Linear Mixed Models by Walter Stroup, one of the authors of the SAS for Mixed Models book. I like this visualization better than a heat map because instead of using a color channel for the variance, it uses y-position which is much more clear.
+
+<center>
+<figure>
+<img src="img/cov_line_plot.png" style="width:50%"></img>
+<figcaption></figcaption>
+</figure>
+</center>
+
+```{r class.source = "fold-hide"}
+sigmahat <- getVarCov(autism_gls_un)
+
+sigmahat_df <- data.frame(row = rep(1:5, each = 5),
+           col = rep(1:5, 5),
+           age = rep(c(2, 3, 5, 9, 13), 5), # un
+           cov = c(sigmahat)) %>% 
+  filter(row <= col) # pull upper triangle w/ diagonal entries
+
+sigmahat_df %>% 
+  ggplot(aes(col, cov, color = factor(row), group = factor(row))) +
+  geom_point() +
+  geom_line()
+```
+
+
+This graphic is confusing at first, but I think it's one of the more intuitive visualizations once you're used to it. each point in the graph is the estimated covariance/variance. The lines show the trend that is happening in each row, as you move away from the main diagonal. For example, the red line is the first row of $\hat \Sigma$. There are 5 dots because the first row starts in column 1. The main diagonal (all the variances) are the left most point in each of the trend lines.
+
+We see a similar pattern of the estimated covariances increasing as the age increases. column 5 represents age 13, and we can see the estimated variance is ~2500.
+
+Since age has a meaning on a continuous scale, it would be slightly more helpful to visualize the appropriate distances in the x axis when looking at the estimated covariances.
+
+```{r}
+sigmahat_age_plot <- sigmahat_df %>%
+  mutate(diag = col - row) %>% 
+  ggplot(aes(age, cov, color = factor(row), group = factor(row))) +
+  geom_point() +
+  geom_line()
+sigmahat_age_plot
+```
+
+We can see some resemblance of a power relationship for the main diagonal, and there is a pretty clean pattern in the covariance here, so it's likely we can capture most of the trends with just a few extra parameters. I would like to graphically test what i'm thinking, so i'll add a smoothed parametric fit to the left most points of each colored trend (main diagonal).
+
+```{r}
+# hackish way to checking how a power relationship on age might fit for the heterogenous variance function
+sigmahat_age_plot + 
+  geom_line(stat = "smooth",
+            method = "lm",
+              aes(group = diag),
+              formula = (y~ I(x^3)), # can play with this form to visualize how the variance estimates might look. Try exponential here, doesn't fit well! (so AR covariance models probably inappropriate)
+              se = FALSE,
+              size = .2,
+              linetype = 2,
+              alpha = .4,
+              color = "black") 
+```
+
+The main diagonal band here seems like a pretty decent fit, which is primarily what I'm interested in here. The fact that the off-diagonal bands also fit this power relationship pretty well implies that I can probably get away with a fairly simple covariance matrix structure (few parameters for off diagonals, like compound symmetry) and still describe this covariance matrix quite well.
+
+### 2. Semi-(Variogram)
+
+This is another method of visualizing covariances that is popular in spatial statistics. This is more useful when one (or more) of your datapoints have a continuous/spatial interpretation. In this case, we are interested in how the correlation of observations between ages as the distance in age increases.
+
+The semi-variogram is defined as: (for isotropic and stationary processes)
+
+$$
+\begin{aligned}
+\gamma(h) &= \frac{1}{2}Var(\epsilon_{age} - \epsilon_{age+h}) \\
+&= \frac{1}{2}E(\epsilon_{age} - \epsilon_{age+h})^2
+\end{aligned}
+$$
+
+Empirically to estimate this, we take pairs of observations certain distances apart, and average the squared distances of the estimated residuals. 
+
+```{r}
+vario_autism <- Variogram(autism_gls_un, form = ~ age | childid, resType = "response")
+vario_autism
+```
+
+We have oddly spaced age observations, `age = c(2, 3, 5, 9, 13)`, so in this case, it's pretty distinctive that our estimate of $dist = 1$ come from $age = 2,3$, and $dist = 8$ comes from $age = 5, 13$.
+
+```{r}
+plot(vario_autism)
+```
+<center>
+<figure>
+<img src="img/variogram_formulas.png" style="width:47%"></img>
+<img src="img/variogram_graphs.png" style="width:47%"></img>
+<figcaption>Figures from Mixed Effects Models </figcaption>
+</figure>
+</center>
+
+
+### 3. Auto Correlation Functions
+
+(sample) auto correlation functions show the correlation with lagged versions of itself.
+
+$$
+\begin{aligned}
+ACF(k) = \frac{\operatorname{Cov}(\varepsilon, \varepsilon_{lag(k)})}{\operatorname{Var}(\varepsilon)}
+\end{aligned}
+$$
+
+The ACF is most useful when we have data that is more time series like, with many measured timepoints and somewhat equally spaced measurements because we're calculating correlation with itself.
+
+```{r}
+ACF(autism_gls_un, form = ~ age | childid, resType = "response")
+plot(ACF(autism_gls_un, form = ~ age | childid, resType = "response"), alpha = .01) # observed - fitted, not accounting for covariance estimates
+```
+
+
+We can ignore the first bar, but we're looking at the trend made by the top of the bars. An AR1 model would have the tops of the bars decrease exponentially quickly. The fact that the bars poke out from the dotted alpha = .01 curve means that there's likely some sequential correlation happening in our data that we haven't accounted for.
+
+
+```{r class.source = "fold-hide"}
+plot(ACF(autism_gls_un, form = ~ age | childid, resType = "normalized"), alpha = .01) # accounting for our estimated covariance matrix
+```
+
+If we plot the ACF of residuals that account for our unstructured covariance matrix, we can see the sequential correlations drop out of significance.
+
+
+### Fitting variance models
+
+There are many covariance shapes we can try here, and SAS has even more! See [SAS Repeated Statement](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.3/statug/statug_mixed_syntax14.htm).
+
+```{r}
+# heterogeneous, diagonal
+autism_gls_het <- gls(vsae~age*sicdegp,
+                      weights = varIdent(form = ~ 1 | agef),
+                      data = autism_complete)
+
+# should be a bad fit since we already know there is strong heterogeneity
+autism_gls_cs <- gls(vsae~age*sicdegp,
+                     correlation = corCompSymm(form = ~1 | childid),
+                     data = autism_complete)
+
+# heterogeneous, compound symmetry
+autism_gls_csh <- gls(vsae~age*sicdegp,
+                     correlation = corCompSymm(form = ~1 | childid),
+                     weights = varIdent(form = ~ 1 | agef),
+                     data = autism_complete)
+
+# continuous autoregressive
+# correlation = \phi^distance
+autism_gls_carh <- gls(vsae~age*sicdegp,
+                      correlation = corCAR1(form = ~ age | childid), # i.e. exponential decay with distance
+                      weights = varIdent(form = ~1 | agef),
+                      data = autism_complete)
+
+# based on the visualizations, should be decent
+# variance = age^\theta
+autism_gls_pow <- gls(vsae~age*sicdegp,
+                      correlation = corCompSymm(form= ~1 | childid),
+                      weights = varPower(form = ~age), # fit heterogeneous variance function
+                      data = autism_complete)
+
+autism_gls_cpow <- gls(vsae~age*sicdegp,
+                      correlation = corCompSymm(form= ~1 | childid),
+                      weights = varConstPower(form = ~age), # additional constant variable to power relationship
+                      data = autism_complete)
+
+# with linear paramterization of corstruct
+autism_gls_powlin <- gls(vsae~age*sicdegp,
+                      correlation = corLin(form= ~age | childid),
+                      weights = varPower(form = ~age), # fit heterogeneous variance function
+                      data = autism_complete)
+```
+
+
+```{r class.source = "fold-hide"}
+autism_gls_ic <- AIC(
+    autism_gls_het,
+    autism_gls_cs,
+    autism_gls_csh,
+    autism_gls_carh,
+    autism_gls_un,
+    autism_gls_pow,
+    autism_gls_cpow,
+    autism_gls_powlin) %>% 
+  add_column(
+    BIC = BIC(autism_gls_het,
+              autism_gls_cs,
+              autism_gls_csh,
+              autism_gls_carh,
+              autism_gls_un,
+              autism_gls_pow,
+              autism_gls_cpow,
+              autism_gls_powlin)$BIC)
+
+autism_gls_ic %>% kbl(caption = "Information Criteria for ") %>% 
+  kable_classic(full_width = F) %>%
+  column_spec(3, color = c("black", "red")[as.numeric(autism_gls_ic$AIC == min(autism_gls_ic$AIC)) + 1]) %>% 
+  column_spec(4, color = c("black", "red")[as.numeric(autism_gls_ic$BIC == min(autism_gls_ic$BIC)) + 1])
+```
+
+At this stage, it seems the unstructured covariance matrix would fit the best if we follow either AIC or BIC, though notably the power variance structure has a very comparable BIC with only 9 parameters vs 21 parameters total. Since I've already abided by principles of parsimony in choosing to use the very simple linear model, I'd probably elect to use the `autism_gls_pow` as my final model for fixed effects modeling for the same reasons. The model is also very appealing for explaining variance as simply a power function of age (respecting the continuous scale) and similar performance in information criteria.
+
+
+
+## Final Model
+
+```{r}
+plot(autism_gls_pow)
+```
+spread among the residuals looks much better against the fitted values.
+
+Some basic inference from the fixed effect model...
+
+```{r}
+intervals(autism_gls_pow) # asymptotic normal approximation, based on inverse hessian
+```
+
+
+## Weighted Least Squares
+
+I mentioned weighted least squares as a very simple quick fix that give similar qualities of inference as you'd get with more sophisticated fitting procedures (increased variance for larger ages). You can see here that it works decently, but the fact that we're not accounting for measurements from individuals (correlation) means that we can do much better.
+
+```{r}
+gls_un_var <- getVarCov(autism_gls_un, individual = 2) %>% diag()
+
+autism_wls <- lm(vsae~age*sicdegp, weights = 1/(gls_un_var[autism$agef]), data = autism)
+
+AIC(autism_wls)
+BIC(autism_wls)
+```
+
+I believe comparing the information criteria in WLS to GLS is legitimate? but I'm not certain... the former situation we're assuming variance parameters are known which makes this comparison weird.
+
+```{r}
+autism_new <- expand.grid(age = 2:13, sicdegp = factor(1:3))
+
+# from direct lm
+autism_new %>% bind_cols(predict(autism_lm, newdata = autism_new, interval = "confidence")) %>% pivot_longer(cols = fit:upr, names_to = "type") %>% 
+  ggplot(aes(age, value, linetype = type, group = type)) +
+  geom_line() + 
+  facet_wrap(~sicdegp)
+
+# from weighted least squares
+autism_new %>% bind_cols(predict(autism_wls, newdata = autism_new, interval = "confidence")) %>% pivot_longer(cols = fit:upr, names_to = "type") %>%
+  ggplot(aes(age, value, linetype = type, group = type)) +
+  geom_line() + 
+  facet_wrap(~sicdegp)
+```
+
+# Mixed Effect Modeling (part d)
+
+We're working with a different toolbox now, as far as covariance modeling goes. We can now control the covariance matrix directly (R-side) as we did above or implicitly through the use of random effects/coefficients (G-side). 
+
+The advantages:
+
+1. aligns parameter interpretation with the random design matrix $Z$, which is more intuitive.
+2. Allows for rather complex covariance structures with very few parameters
+3. implicit averaging of individual models, and we can pull out the individually fit 
+
+The disadvantages:
+
+1. Harder to visualize what's happening with G-matrix, and effect on final covariance matrix of Y.
+2. More computationally intensive, will probably be slower for larger datasets.
+
+The reason I recommend `lme` over `lmer` is that you have more control over the structure of "G" and "R" matrices in `lme`. `lmer` is only capable of fitting diagonal and unstructured covariances for G, and homogenous diagonal matrix for "R". (And i recommend `SAS` over `lme` because the syntax is much easier!)
+
+## Fitting Models
+
+```{r error=TRUE}
+# random intercept
+autism_lme_id <- lme(fixed = vsae~sicdegp*age,
+    random = ~ 1 | childid,
+    data = autism_complete)
+
+# random slopes model
+# doesn't converge!!
+autism_lme_id_slope <- lme(fixed = vsae~sicdegp*age,
+    random = ~ age | childid,
+    data = autism_complete)
+```
+
+We hit some optimizer problems trying to fit the random slopes model. By default, `lme` uses the outdated `nlminb` optimizer, which is similar to "BFGS", a quasi-newton optimization routine. ^[[Stack Overflow](https://stackoverflow.com/questions/49375840/algorithm-name-in-nlminbs-port-routines) for more details and link to the original paper for nlminb]. It's mostly used for compatibility reasons, and `optim` is the general optimizer that is now preferred. `lmeControl` has the option `opt = "optim"`, which switches the optimizer, and now looks for `optimMethod = "BFGS"` which says to run BFGS algorithm in `optim`.
+
+We can also switch the function call to lmer, because this is a model that can be handled in that library as well. The default callback is `lmer` -> `nloptwrap` (wrapper function) -> `nloptr` (R interface into NLopt) -> `NLopt` ([Free/Open Source library for Nonlinear optimization](https://nlopt.readthedocs.io/en/latest/)) -> `NLOPT_LN_BOBYQA` (BOBYQA routine written in C). BOBYQA is a derivative free optimization program.
+
+I try to avoid diving down the optimizer rabbit hole as much as possible... Fix 2 is normally the route I take, if you're curious, in which I fit successively simpler models until boundary issues don't exist.
+
+```{r collapse = TRUE}
+# Fix 1: change the optimizer to "optim" (BFGW) in lme
+autism_lme_id_slope <- lme(fixed = vsae~sicdegp*age,
+    random = ~ age | childid,
+    data = autism_complete,
+    control = lmeControl(opt = "optim"))
+# summary(autism_lme_id_slope) # note correlation of random effects is _very_ close to boundary -1 (even though fits with no complaints)
+
+# Fix 2: change optimizer to use ------------------
+# lmer fits, but warns about boundary...
+autism_lmer_id_slope <- lmer(vsae~sicdegp*age + (age | childid), data = autism_complete)
+# looking at summary, we see that correlation of random effects is -1 (boundary)
+# summary(autism_lmer_id_slope)
+
+# A useful function is "allFit", which tries to fit the model with "all" appropriate optimizers.
+# they all have boundary warnings.
+# allFit(autism_lmer_id_slope)
+
+# try the uncorrelated model, still boundary w/ intercept variance estimated as 0.
+autism_lmer_id_slope_nocor <- lmer(vsae~sicdegp*age + (age || childid), data = autism_complete)
+# summary(autism_lmer_id_slope_nocor)
+
+# take out random intercept, finally no boundary estimates, and no warnings!
+autism_lmer_id_slope_noint <- lmer(vsae~sicdegp*age + (0 + age | childid), data = autism_complete)
+```
+
+
+Based on these issues, I'm skeptical the optimizer will be able to handle more complicated random coefficient models reliably. But we'll try! We'll try to fit the same gamut of linear/quadratic/stick models that we had fit in the fixed case. Since `lmer` is likely more familiar, I show these fits in `lmer` first, and the `lme` equivalent underneath.
+
+```{r collapse = TRUE}
+### Fitting in lmer ---------------------------------------------------------------------
+## Quadratic Models
+autism_lmer_quad_id <- lmer(vsae ~ age*sicdegp + I(age^2):sicdegp + (1 | childid), # random intercept
+                            data = autism_complete) # no warnings
+
+# quadratic, with random linear term.
+autism_lmer_quad_id_slope1 <- lmer(vsae~age + I(age^2):sicdegp + (1 + age | childid), # random intercept, linear
+                                   data = autism_complete) # boundary warning
+autism_lmer_quad_id_slope1_nocor <- lmer(vsae~age + I(age^2):sicdegp + (1 + age || childid), # random intercept, linear, uncorrelated
+                                   data = autism_complete) # boundary warning
+autism_lmer_quad_id_slope1_noint <- lmer(vsae~age + I(age^2):sicdegp + (0  + age | childid), # random linear, no intercept
+                                   data = autism_complete) # no warnings
+
+# Quadratic: unstructured, heterogenous G matrix, diagonal, homogenous R
+autism_lmer_quad_id_slope2 <- lmer(vsae ~ age*sicdegp + I(age^2):sicdegp + (1 + age + I(age^2) | childid), data = autism_complete) # singular, corr = -1
+
+# Quadratic: diagonal, heterogenous G matrix, diagonal, homogenous R
+autism_lmer_quad_id_slope2_nocor <- lmer(vsae ~ age*sicdegp + I(age^2):sicdegp + (1 + age + I(age^2) || childid), data = autism_complete) # singular, intercept ≈ 0
+
+
+# Quadratic, no intercept: unstructured, heterogenous G matrix, diagonal, homogenous R
+autism_lmer_quad_id_slope2_noint <- lmer(vsae ~ age*sicdegp + I(age^2):sicdegp + (0 + age + I(age^2) | childid), data = autism_complete, 
+                                         control = lmerControl(optimizer = "Nelder_Mead")) # no warnings
+
+# Quadratic, no intercept: diagonal, heterogenous G matrix, diagonal, homogenous R
+# autism_lmer_quad_id_slope2_noint_nocor <- lmer(vsae ~ age*sicdegp + I(age^2):sicdegp + (0 + age + I(age^2) || childid), data = autism_complete) # fail to converge
+autism_lmer_quad_id_slope2_noint_nocor <- lmer(vsae ~ age*sicdegp + I(age^2):sicdegp + (0 + age + I(age^2) || childid), data = autism_complete, 
+                                         control = lmerControl(optimizer = "Nelder_Mead")) # no warnings
+
+## Stick Models
+autism_lmer_stick_id <- lmer(vsae ~ age*sicdegp + age_relu_9:sicdegp + (1 | childid), data = autism_stick) 
+autism_lmer_stick_id_slope <- lmer(vsae ~ age*sicdegp + age_relu_9:sicdegp + (0 + age + age_relu_9 | childid), data = autism_stick)
+```
+
+
+```{r collapse = TRUE}
+# Fitting in lme ---------------------------------------------------------------------
+# Quadratic, random intercept: diagonal, homogenous R
+autism_lme_quad_id <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp, # quadratic 
+                       random = ~ 1 | childid, # random intercept
+                       data = autism_complete,
+                       control = lmeControl(opt = "optim"))
+
+
+# Quadratic, random linear: unstructured, heterogenous G matrix, diagonal, homogenous R
+autism_lme_quad_id_slope1 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = ~ age | childid, # random intercept and linear term
+                       data = autism_complete,
+                       control = lmeControl(opt = "optim"))
+
+# Quadratic, random linear: diagonal, heterogenous G matrix:  diagonal, homogenous R
+autism_lme_quad_id_slope1_nocor <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid = pdDiag(form = ~ age)), # random intercept and linear term, no correlation
+                       data = autism_complete,
+                       control = lmeControl(opt = "optim"))
+
+autism_lme_quad_id_slope1_noint <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid = pdDiag(form = ~ 0 + age)), # random intercept and linear term, no intercept
+                       data = autism_complete,
+                       control = lmeControl(opt = "optim"))
+
+
+# Quadratic, random quadratic: unstructured, heterogenous G matrix:  diagonal, homogenous R
+autism_lme_quad_id_slope2 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = ~ age + I(age^2) | childid, # random intercept, linear and quadratic term
+                       data = autism_complete,
+                       control = lmeControl(opt = "optim"))
+
+# Quadratic, random quadratic: diagonal, heterogenous G matrix:  diagonal, homogenous R
+autism_lme_quad_id_slope2_nocor <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid=pdDiag(form = ~ age + I(age^2))), # random intercept, linear and quadratic term, no correlation
+                       data = autism_complete,
+                       control = lmeControl(opt = "optim"))
+
+# Quadratic, random quadratic (no int): unstructured, heterogenous G matrix:  diagonal, homogenous R
+autism_lme_quad_id_slope2_noint <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid=pdSymm(form = ~ 0 + age + I(age^2))), # Unstructured G
+                       data = autism_complete,
+                       control = lmeControl(opt = "optim"))
+
+# Quadratic, random quadratic (no int): diagonal, heterogenous G matrix:  diagonal, homogenous R
+autism_lme_quad_id_slope2_noint_nocor <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid=pdDiag(form = ~ 0 + age + I(age^2))),
+                       data = autism_complete,
+                       control = lmeControl(opt = "optim"))
+
+## Stick models
+autism_lme_stick_id <- lme(vsae ~ age*sicdegp + age_relu_9:sicdegp,
+                       random = ~ 1 | childid, # random intercept
+                       data = autism_stick,
+                       control = lmeControl(opt = "optim"))
+autism_lme_stick_id_slope <- lme(vsae ~ age*sicdegp + age_relu_9:sicdegp,
+                       random = ~ 0 + age + age_relu_9 | childid, # random linear and quadratic term, no intercept
+                       data = autism_stick,
+                       control = lmeControl(opt = "optim"))
+```
+
+```{r fig.width = 12, fig.height = 10}
+# see predicted values from some random effect models
+autism_random_predict <- autism_complete %>% add_column(yhat_lme_id = predict(autism_lme_id),
+                                 yhat_lme_id_slope = predict(autism_lme_id_slope),
+                                 yhat_lme_quad_id = predict(autism_lme_quad_id),
+                                 yhat_lme_quad_id_slope1 = predict(autism_lme_quad_id_slope1),
+                                 yhat_lme_quad_id_slope2 = predict(autism_lme_quad_id_slope2),
+                                 yhat_lme_stick_id = predict(autism_lme_stick_id),
+                                 yhat_lme_stick_id_slope = predict(autism_lme_stick_id_slope),
+                                 yhat_lmer_quad_id_slope2_noint = predict(autism_lmer_quad_id_slope2_noint),
+                                 yhat_lmer_stick_id = predict(autism_lmer_stick_id),
+                                 yhat_lmer_stick_id_slope = predict(autism_lmer_stick_id_slope))
+
+autism_random_predict %>% pivot_longer(cols = c(vsae, starts_with("yhat")),
+                                names_to = "type",
+                                values_to = "y") %>% 
+  arrange(childid, age) %>% 
+  ggplot(aes(age, y, group = childid, color = type)) +
+  geom_line(alpha = .4) +
+  facet_grid(type~sicdegp)
+```
+
+```{r class.source = "fold-hide"}
+autism_lme_ic <- AIC(
+  autism_lme_id,
+  autism_lme_id_slope, # warning here too, probably because includes individuals that 
+  autism_lme_quad_id,
+  autism_lme_quad_id_slope1,
+  autism_lme_quad_id_slope2,
+  autism_lmer_quad_id_slope2, # lmer version, get warning when included, not quite sure why, maybe refit as ML? but very close to lme counterpart
+  autism_lme_quad_id_slope2_nocor,
+  autism_lmer_quad_id_slope2_nocor, # lmer version
+  autism_lme_quad_id_slope2_noint,
+  autism_lmer_quad_id_slope2_noint, # lmer version
+  autism_lme_quad_id_slope2_noint_nocor,
+  autism_lme_stick_id,
+  autism_lme_stick_id_slope
+    ) %>% 
+  add_column(
+    BIC = BIC(
+      autism_lme_id,
+    autism_lme_id_slope,
+    autism_lme_quad_id,
+    autism_lme_quad_id_slope1,
+    autism_lme_quad_id_slope2,
+    autism_lmer_quad_id_slope2, # lmer version
+    autism_lme_quad_id_slope2_nocor,
+    autism_lmer_quad_id_slope2_nocor, # lmer version
+    autism_lme_quad_id_slope2_noint,
+    autism_lmer_quad_id_slope2_noint, # lmer version
+    autism_lme_quad_id_slope2_noint_nocor,
+    autism_lme_stick_id,
+    autism_lme_stick_id_slope)$BIC)
+
+autism_lme_ic %>% kbl() %>% 
+  kable_classic(full_width = F) %>% 
+  column_spec(3, color = c("black", "red")[as.numeric(autism_lme_ic$AIC == min(autism_lme_ic$AIC)) + 1]) %>% 
+  column_spec(4, color = c("black", "red")[as.numeric(autism_lme_ic$BIC == min(autism_lme_ic$BIC)) + 1])
+```
+
+We've fit all these "intuitive" models, and we can see most of them give pretty intuitive predicted values for our dataset. They capture the main trends we're after pretty well. Given that we're using random coefficient models, we'll probably rule out the models that only vary the intercept. It seems from these predictive plots that we at the very least need to be modeling complexity at the linear or quadratic level (or splines). We'll look further into these models in the diagnostics, as well as the variance modeling in the diagnostics.
+
+The information criteria seems to pick out the "autism_lme_quad_id_slope2", which is the random effect model with random coefficients up to quadratic order, and unstructured correlation matrix in G. thought we remember there were some boundary warnings with that model, so removing the intercept for a model that is not near the boundary may be desired.
+
+## Diagnostics {.tabset}
+
+Let's look at the mean structure with standard residual plots first. We'll just pick out a few plots to look at.
+
+### Quad
+
+```{r}
+plot(autism_lme_quad_id_slope2, form = resid(.,type = "normalized") ~ age | sicdegp) # normalized
+```
+
+In order to study the variance covariance pattern of this, I'll examine how closely it matches up with the unstructured estimate of the covariance. we can also look at the sample covariance for some direction.
+
+
+```{r}
+autism_gls_quad_un <- gls(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       correlation = corSymm(form = ~1 | childid),
+                       weights = varIdent(form = ~ 1 | age),
+                       data = autism_complete)
+
+getVarCov(autism_gls_quad_un)
+getVarCov(autism_lme_quad_id_slope2, type = "marginal") # ZGZ + R
+
+# we can also look at the sample covariance to get a rough sense for how the variances and covariances should be behaving
+
+```
+
+It seems the variance pattern in the random effect model is severely overestimating the variance at age 2. There is also an interesting pattern in which it seems to underestimate the covariance between age 2 and 3. Other than that, the covariance looks to be within reason of capturing the overall trends. there are likely some optimizations in parameterization that can be made, but it's difficult to know exactly how...
+
+
+### Quad simplified, no intercept
+
+```{r}
+plot(autism_lme_quad_id_slope2_noint_nocor, form = resid(.,type = "normalized") ~ age | sicdegp) # normalized
+```
+
+
+```{r}
+getVarCov(autism_gls_quad_un)
+getVarCov(autism_lme_quad_id_slope2_noint_nocor, type = "marginal") # ZGZ + R
+```
+
+The model with the simplified G structure is also lacking in the earlier ages, and also the covariances with age2 seems to be increasing too quickly. The second diagonal band is also both over and underestimated sometimes.
+
+
+## Further covariance adjustments
+
+The mixed effects model already has some complexity in the variance that is modeled, but it's missing some parts of the covariance that we can try to adjust for on the R side of things. I find that there aren't many guardrails when modeling things in this manner, so likelihood is generally my guide. You can try to create plots to clue you in on certain patterns but often it's just faster to fit a bunch of parameterizations and check the results.
+
+For the diagonal of the R matrix, it's useful to know how some of the variance classes can be combined and to know what your options are, you can do this by exploring `?varClasses`. 
+
+- `varIdent` allows for a different level for each variance on the diagonal.
+- `varExp` is a (fitted) exponential relationship to covariate
+- `varPower` is an (fitted) power relationship
+- `varFixed` allows for a constant (fixed) covariate value
+- `varComb` allows combinations of any of the above
+
+For the structure of the R matrix, you can see `?corStructs`
+
+- `corAR1` allows for exponential decay in rows, as measured from distance from diagonal
+- `corCAR1` allows for exponential decay in rows, as measured from distance in continuous covariate
+- `corARMA` allows for exponential decay in rows, as distance from diagonal, AND first q diagonal bands 
+- `corCompSymm` constant off diagonals
+
+For the structure of the G matrix, there are also a number of spatial related matrices, which have a functional form of how correlation drops off in relation to distance.
+
+- `pdDiag` is useful for specifying that you only want a _diagonal_ matrix for G. This is the `(1 + age || childid)` double bar option in `lmer`
+- `pdSymm` specifies that you want to esetimate an _unstructured_ matrix for G. This is `(1 + age | childid)` default option in `lmer`.
+- `pdBlocked` is useful for composing matrix structures for nested effects in the G matrix.
+- `pdCompSymm` _compound symmetry_ in G matrix. Only possible with `flexLambda` branch in `lmer`.
+
+
+```{r error = TRUE, collapse = TRUE}
+# This first model tries to add a parameter to adjust the variance of age=2, since the diagnostics above were close except for this term.
+autism_lme_quad_id_slope2_het2 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                                     random = list(childid = pdSymm(form = ~ 1 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | I(age == 2)),
+                       control = lmeControl(opt = "optim", maxIter = 1000, msMaxIter = 1000, msVerbose = TRUE)) # unfortunately it's a fight with the optimizer, so we need to simplify.
+
+# try removing the intercept, and fit simple model
+autism_lme_quad_id_slope2_noint_het2 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                                     random = list(childid = pdSymm(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | I(age == 2)),
+                       control = lmeControl(opt = "optim", maxIter = 1000, msMaxIter = 1000, msVerbose = TRUE)) # converged w/ warnings
+
+# the more flexible diagonal values
+autism_lme_quad_id_slope2_noint_het <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                                     random = list(childid = pdSymm(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | age),
+                       control = lmeControl(opt = "optim")) # converged w/ warnings
+
+# we'll try more heterogenous matrices, but with the simplified G matrix and without intercept to avoid optimizer issues
+autism_lme_quad_id_slope2_noint_nocor_het <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                                     random = list(childid = pdDiag(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | age),
+                       control = lmeControl(opt = "optim"))
+
+autism_lme_quad_id_slope2_noint_nocor_het2 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                                     random = list(childid = pdDiag(form = ~0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | I(age == 2)),
+                       control = lmeControl(opt = "optim"))
+
+# sincethe model onl
+autism_lme_quad_id_slope2_noint_nocor_het2 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                                     random = list(childid = pdDiag(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | age),
+                       control = lmeControl(opt = "optim"))
+
+autism_lme_quad_id_slope2_noint_nocor_ar1 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                                    random = list(childid = pdDiag(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       correlation = corAR1(form = ~ 1 | childid),
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | age),
+                       control = lmeControl(opt = "optim"))
+
+autism_lme_quad_id_slope2_noint_nocor_ma1 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid = pdDiag(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       correlation = corARMA(p = 0, q = 1),
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | age))
+
+autism_lme_quad_id_slope2_noint_nocor_ma2 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid = pdDiag(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       correlation = corARMA(p = 0, q = 2),
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | age))
+
+autism_lme_quad_id_slope2_noint_nocor_ar1ma2 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid = pdDiag(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       correlation = corARMA(p = 1, q = 2),
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | age))
+
+autism_lme_quad_id_slope2_noint_nocor_car1 <- lme(vsae ~ age*sicdegp + I(age^2):sicdegp,
+                       random = list(childid = pdDiag(form = ~ 0 + age + I(age^2))), # random linear and quadratic term, no intercept
+                       correlation = corCAR1(form = ~ 1 | childid),
+                       data = autism_complete,
+                       weights = varIdent(form = ~ 1 | age))
+```
+
+```{r collapse = TRUE, class.source = "fold-hide"}
+autism_lme_cor_ic <- AIC(
+  autism_lmer_quad_id_slope2,
+  autism_lme_quad_id_slope2_noint_het,
+  autism_lme_quad_id_slope2_noint_het2,
+  autism_lme_quad_id_slope2_noint_nocor,
+  autism_lme_quad_id_slope2_noint_nocor_het,
+  autism_lme_quad_id_slope2_noint_nocor_het2,
+     autism_lme_quad_id_slope2_noint_nocor_ma1,
+     autism_lme_quad_id_slope2_noint_nocor_ma2,
+     autism_lme_quad_id_slope2_noint_nocor_ar1,
+  autism_lme_quad_id_slope2_noint_nocor_ar1ma2,
+     autism_lme_quad_id_slope2_noint_nocor_car1) %>% 
+  add_column(BIC = BIC(
+  autism_lmer_quad_id_slope2,
+  autism_lme_quad_id_slope2_noint_het,
+  autism_lme_quad_id_slope2_noint_het2,
+    autism_lme_quad_id_slope2_noint_nocor,
+    autism_lme_quad_id_slope2_noint_nocor_het,
+  autism_lme_quad_id_slope2_noint_nocor_het2,
+    autism_lme_quad_id_slope2_noint_nocor_ma1,
+    autism_lme_quad_id_slope2_noint_nocor_ma2,
+    autism_lme_quad_id_slope2_noint_nocor_ar1,
+    autism_lme_quad_id_slope2_noint_nocor_ar1ma2,
+    autism_lme_quad_id_slope2_noint_nocor_car1)$BIC)
+
+autism_lme_cor_ic %>% kbl() %>% 
+  kable_classic(full_width=F) %>% 
+  column_spec(3, color = c("black", "red")[as.numeric(autism_lme_cor_ic$AIC == min(autism_lme_cor_ic$AIC)) + 1]) %>%
+  column_spec(4, color = c("black", "red")[as.numeric(autism_lme_cor_ic$BIC == min(autism_lme_cor_ic$BIC)) + 1])
+```
+
+
+It seems like our efforts paid off by improving the model, but some of the parameterizations did not improve the fit as much as we may have been hoping. Many are quite close, so I honestly believe we've done most of the corrections appropriate for this model and we're fighting for scraps now, at least with these modeling techniques. The best fit by both AIC and BIC (among what we tried) is the simplified G model with heterogeneous structure in R.
+
+If you want more formal quantification of model comparisons, use the likelihood ratio test.
+
+```{r}
+anova(autism_lme_quad_id_slope2_noint_nocor, autism_lme_quad_id_slope2_noint_nocor_het)
+```
+
+
+## Final Model
+
+We have probably done enough modeling to come up with a final model, we'll use the best fit from the last iteration of improvements, though our final model that was selected from AIC/BIC still has some singularity issues and troubles with the optimizer. We'll have to spend some extra effort to track down why that's happening.
+
+```{r}
+getVarCov(autism_gls_quad_un)
+getVarCov(autism_lme_quad_id_slope2_noint_nocor_het, type = "marginal") # seems to reflect the pattern in covariance quite well.
+```
+
+
+```{r}
+plot(autism_lme_quad_id_slope2_noint_nocor_het, form = resid(., type = "normalized")~fitted(.) | sicdegp, ylim = c(-8, 8))
+```
+
+
+```{r}
+intervals(autism_lme_quad_id_slope2_noint_nocor_het)
+```
+
+it seems like the variance function confidence interval for age is quite wide, which hints to where the singularity the optimizer was warning about.
+
+```{r}
+plot_redres(autism_lmer_quad_id_slope2, type = "raw_cond")
+plot_redres(autism_lmer_quad_id_slope2, type = "raw_mar")
+plot_redres(autism_lmer_quad_id_slope2, type = "pearson_mar")
+plot_redres(autism_lmer_quad_id_slope2, type = "pearson_cond")
+
+cbind(
+compute_redres(autism_lmer_quad_id_slope2, type = "raw_mar"),
+resid(autism_lmer_quad_id_slope2, type = "response")) %>% head()
+
+
+Z <- getME(autism_lmer_quad_id_slope2, "Z")
+Z %*% compute_redres(autism_lmer_quad_id_slope2, type = "raw_mar")
+
+getME(autism_lmer_quad_id_slope2, "X") # X
+
+
+autism_lmer_quad_id_slope2@resp %>% str()
+str(lmer_mod@pp)
+
+cbind()
+fixef(lmer_mod)
+getME(lmer_mod, "beta")
+
+cbind(getME(lmer_mod, "u"),
+      getME(lmer_mod, "b"))
+
+ranef(lmer_mod, condVar = TRUE)$childid
+```
+
+
+```{r}
+lmer_mod@beta
+
+lmer_mod <- autism_lmer_quad_id_slope2
+
+compute_redres
+redres:::rawres
+
+autism_lmer_quad_id_slope2
+cbind(
+  autism_lmer_quad_id_slope2@pp$X %*% autism_lmer_quad_id_slope2@beta, # redres
+  predict(autism_lmer_quad_id_slope2, re.form = NA))
+
+raw_marginal <- autism_lmer_quad_id_slope2@resp$y - predict(autism_lmer_quad_id_slope2, re.form = NA) 
+the_fitted <- fitted(autism_lmer_quad_id_slope2)
+plot(the_fitted, raw_marginal)
+
+
+tmp <- autism_complete %>% 
+  add_column(yhat_fixed = predict(autism_lmer_quad_id_slope2, re.form = NA),
+             yhat = predict(autism_lmer_quad_id_slope2))
+
+tmp %>%
+  ggplot() +
+  geom_line(aes(age, yhat, group = childid), color = "red", alpha = .5) +
+  geom_line(aes(age, yhat_fixed, group = childid)) +
+  facet_wrap(~sicdegp)
+```
+
+```{r}
+# try this model instead
+alt_mod <- lmer(vsae ~ age*sicdegp + I(age^2):sicdegp + (1 + age + I(age^2) | sicdegp/childid), data = autism_complete) # singular, corr = -1
+
+autism_complete %>% filter(high_idx)
+
+plot_redres(alt_mod, type = "raw_mar", xvar = "age")
+plot_redres(alt_mod, type = "raw_mar")
+
+high_idx <- fitted(alt_mod) > 100
+
+alt_df <- autism_complete %>% 
+  add_column(xb = predict(alt_mod, re.form = NA),
+             xb_zb = predict(alt_mod))
+
+alt_df %>% filter(high_idx) %>% 
+  ggplot() +
+  geom_point(aes(age, xb)) +
+  geom_point(aes(age, vsae), color = "blue") + 
+  geom_point(aes(age, xb_zb), color = "red") +
+  facet_wrap(~sicdegp)
+
+autism_complete %>% filter(high_idx) %>% gglot(d)
+compute_redres(alt_mod, type = "raw_mar")[high_idx]
+```
+
+
+
+```{r}
+autism_complete
+
+fitted(autism_lmer_quad_id_slope2)
+
+predict(autism_lmer_quad_id_slope2)
+
+ranef(autism_lmer_quad_id_slope2)$childid %>% colMeans()
+```
+
+
+# SAS Modeling
+
+```{SAS}
+data autism;
+INFILE "~/cals/training/autism.csv" DLM="," FIRSTOBS=2;
+INPUT age vsae sicdegp childid;
+agef = age;
+
+/* Basic plotting */
+proc sgpanel data=autism;
+panelby sicdegp;
+SERIES x=age y=vsae / group=childid;
+
+/* R Side Modeling */
+proc mixed data=autism IC plots=all method=REML;
+	class sicdegp childid;
+	model vsae=age|sicdegp / ddfm=kr2 solution OutPM=RanPAFit OutP=RanSSFit;
+	repeated / type=un subject=childid rcorr R;
+	ods output covparms = cov;
+	
+/* Visualize UN Covariance Matrix */
+data times;
+	do time1=1 to 5;
+		do time2=1 to time1;
+			output;
+		end;
+	end;
+
+data covplot;
+	merge times cov;
+run;
+
+proc sgplot data=covplot;
+	title "Unstructured Covariance Estimates Line Plot";
+	series x=time1 y=estimate / group=time2;
+
+	
+/* helper for modeling many R matrices */
+%MACRO IC_cov (Rtype=UN);
+	%let tablename=IC_&Rtype;
+	%let modelname=Model_&Rtype;
+	
+	* convert types to usable string in repeated statement;
+	%if &Rtype=ANTE %then %let Rtypename=%str(ANTE(1));
+	%else %if &Rtype=AR %then %let Rtypename=%str(AR(1));
+	%else %if &Rtype=ARH %then %let Rtypename=%str(ARH(1));
+	%else %if &Rtype=SPPOW %then %let Rtypename=%str(SP(POW)(age));
+	%else %let Rtypename=&Rtype;	
+	/* %put &tablename; */
+	/* %put &modelname; */
+	
+	proc mixed data=autism IC plots=all method=REML;
+	class sicdegp childid;
+	model vsae=age|sicdegp / ddfm=kr2;
+	repeated / type=&Rtypename subject=childid rcorr R;
+	ods output InfoCrit=&tablename;
+	
+	data &modelname;
+		length Name $ 10;
+		set &tablename;
+		Name="&Rtype";
+		keep Name Parms Neg2LogLike AIC AICC BIC CAIC HQIC;
+%MEND IC_cov;
+
+/* test different covariance structures */
+%IC_cov(Rtype=UN)
+%IC_cov(Rtype=CS)
+%IC_cov(Rtype=ANTE);
+%IC_cov(Rtype=AR);
+%IC_cov(Rtype=ARH);
+%IC_cov(Rtype=TOEP);
+%IC_cov(Rtype=TOEPH);
+%IC_cov(Rtype=SPPOW); /* not sure how to combine power + diagonal */
+
+/* combine IC results and show table */
+data model_combine;
+	set Model_UN Model_CS Model_ANTE Model_AR Model_ARH Model_TOEP Model_TOEPH Model_SPPOW;
+	keep Name Parms Neg2LogLike AIC AICC BIC CAIC HQIC;
+	
+proc print data=model_combine;
+
+proc mixed data=autism;
+class sicdegp childid;
+model vsae=age|sicdegp age*age|sicdegp / ddfm=kr2;
+repeated / type=UN subject=childid R;
+
+/* G Side Modeling */
+proc mixed data=autism;
+class sicdegp childid;
+model vsae=age|sicdegp / ddfm=kr2;
+random age age*age / type=UN subject=childid G;
+repeated / subject=childid R;
+
+/* helper for modeling many G and R matrices */
+%MACRO IC_G_cov (Rtype=VC, Gtype=VC, id=VCVC);
+	%let tablename=IC_&id;
+	%let modelname=Model_&id;
+	
+	* convert types to usable string in repeated statement;
+	%if &Rtype=ANTE %then %let Rtypename=%str(ANTE(1));
+	%else %if &Rtype=AR %then %let Rtypename=%str(AR(1));
+	%else %if &Rtype=ARH %then %let Rtypename=%str(ARH(1));
+	%else %if &Rtype=SPPOW %then %let Rtypename=%str(SP(POW)(age));
+	%else %let Rtypename=&Rtype;
+
+	proc mixed data=autism IC plots=all method=REML;
+	class sicdegp childid;
+	model vsae=age|sicdegp age*age|sicdegp / ddfm=kr2;
+	random int age age*age / type=&Gtype G;
+	repeated / type=&Rtypename subject=childid rcorr R;
+	ods output InfoCrit=&tablename;
+	
+	data &modelname;
+		length Name $ 10;
+		set &tablename;
+		Name="&id";
+		keep Name Parms Neg2LogLike AIC AICC BIC CAIC HQIC;
+%MEND IC_G_cov;
+
+%IC_G_cov(Rtype=VC, Gtype=UN, id=VC_UN);
+%IC_G_cov(Rtype=VC, Gtype=VC, id=VC_VC);
+/* %IC_G_cov(Rtype=CSH, Gtype=UN, id=CSH_UN); * optimizer issues; */
+
+data model_G_combine;
+	set Model_VC_UN Model_VC_VC;
+	keep Name Parms Neg2LogLike AIC AICC BIC CAIC HQIC;
+	
+/* final model from R, no int, no correlation, SAS has trouble fitting */
+/* proc mixed data=autism IC plots=all method=REML; */
+/* 	class sicdegp childid; */
+/* 	model vsae=age|sicdegp age*age|sicdegp / ddfm=kr2; */
+/* 	random age age*age / type=UN(1) G; */
+/* 	repeated / type=UN(1) subject=childid R; */
+```
+
+
+[HTML SAS Output](sas_results.html)
+
+
+# Other thoughts: Mixed modeling is smart averaging to the pooled model.
+
+Here we'll compare the 
+
+1. individual fixed model (lm fit for each child separately)
+2. pooled fixed model
+3. mixed model (with various assumptions on random effects)
+
+This idea has come up a number of times, and I've mentioned this plot a few times so I thought I'd actually just show the effect that's happening with this dataset.
+
+This will also offer some extra intuition as to how the structure of the G matrix is affecting the effects of the individuals
+
+$$
+\begin{aligned}
+E[u | y] &= GZ'V^{-1}(y - X\beta) \\
+eBLUP(u) &= \hat GZ'\hat V^{-1}(y - X\hat\beta)
+\end{aligned}
+$$
+
+
+
+## G effect on BLUPs
+
+Let's just look at panel 1 for simplicity of visualization.
+
+```{r}
+# the pooled model
+autism_lm_1 <- lm(vsae ~ age, data = autism_complete %>% filter(sicdegp == 1)) # the pooled model
+
+pooled_data <- data.frame(as.list(coef(autism_lm_1)[c(1, 2 )])) %>% 
+  rename("intercept" = 1,
+         "slope" = "age") %>% 
+  add_column(model = "pooled")
+```
+
+
+```{r}
+# the individual model
+autism_lm_id_slope_1 <- lmList(vsae~age | childid, data = autism_complete %>% filter(sicdegp == 1)) # individual slopes model, just easier to extract coefs with this function
+
+# sig1_children <- autism_complete %>% filter(sicdegp == 1) %>% distinct(childid) %>% pull(childid) 
+indiv_data <- coef(autism_lm_id_slope_1) %>% 
+  rownames_to_column(var = "child_id") %>% 
+  rename("intercept" = 2,
+         "slope" = 3) %>% 
+  add_column(model = "indiv", .after = "child_id")
+```
+
+
+```{r}
+# the mixed models
+# G matrix affect shape of pull for "BLUPs"
+# G symm
+autism_lme_id_slope_1_un <-  lme(vsae ~ age,
+                              random = list(childid = pdSymm(form = ~age)),
+                              data =  autism_complete %>% filter(sicdegp == 1),
+                              control = lmeControl(opt = "optim"))
+
+# G diag, het
+autism_lme_id_slope_1_diag <-  lme(vsae ~ age,
+                              random = list(childid = pdDiag(form = ~age)),
+                              data =  autism_complete %>% filter(sicdegp == 1),
+                              control = lmeControl(opt = "optim"))
+
+# G diag, homo
+autism_lme_id_slope_1_ident <- lme(vsae ~ age,
+                                   random = list(childid = pdIdent(form = ~age)),
+                                   data =  autism_complete %>% filter(sicdegp == 1),
+                                   control = lmeControl(opt = "optim"))
+
+# G CS, homo
+autism_lme_id_slope_1_cs <- lme(vsae ~ age,
+                                   random = list(childid = pdCompSymm(form = ~age)),
+                                   data =  autism_complete %>% filter(sicdegp == 1),
+                                   control = lmeControl(opt = "optim"))
+
+
+# list of lme models
+lme_models <-  list(mixed_un = autism_lme_id_slope_1_un, 
+                   mixed_diag = autism_lme_id_slope_1_diag,
+                   mixed_ident = autism_lme_id_slope_1_ident,
+                   mixed_cs = autism_lme_id_slope_1_cs)
+
+# mixed, fixed effects
+mixed_data <- lme_models %>%  
+  map_dfr(~data.frame(as.list(fixed.effects(.x))), # extract fixed effects as data frame
+          .id = "model") %>% 
+  rename("intercept" = 2,
+         "slope" = 3)
+
+# helper function for extracting individual lines
+get_indiv_lines <- function(lme_object) {
+  coef(lme_object) %>% as.matrix() %>% 
+    as.data.frame() %>% 
+    rownames_to_column("child_id") %>% 
+    select("child_id", `(Intercept)`, `age`) %>% 
+    rename("intercept" = 2,
+           "slope" = 3)
+}
+
+# mixed model individuals
+mixed_indiv_data <- lme_models %>% map_dfr(~get_indiv_lines(.x),
+                       .id = "model")
+```
+
+
+```{r}
+combined_indiv_data <- bind_rows(indiv_data, mixed_indiv_data)
+combined_avg_data <- combined_indiv_data %>%
+  group_by(model) %>%
+  summarize(across(intercept:slope, mean, na.rm = T))
+indiv_avg_data <- indiv_data %>% group_by(model) %>%
+  summarize(across(intercept:slope, mean, na.rm = T))
+```
+
+We've done all the fitting, and data extraction so now we're ready to plot and create dataframes for plotting
+
+```{r}
+# hack for each specifying what data goes to which "facet" of ggplot
+# needs to duplicate data that will appear in multiple facets.
+mixed_data_facet <- mixed_data %>% 
+  mutate(facet_id = c("mixed_un" = 1, "mixed_ident" = 2, "mixed_diag" = 3, "mixed_cs" = 4)[model])
+mixed_indiv_data_facet <- mixed_indiv_data %>%
+  mutate(facet_id = c("mixed_un" = 1, "mixed_ident" = 2, "mixed_diag" = 3, "mixed_cs" = 4)[model])
+indiv_data_facet <-  1:4 %>% map_dfr(~add_column(indiv_data, facet_id = .)) # 4 copies of individual data, one for each facet
+combined_indiv_data_facet <- bind_rows(mixed_indiv_data_facet, indiv_data_facet) %>% arrange(model)
+
+# ellipse level curves of G
+mixed_ellipses <- lme_models %>% 
+  map_dfr(
+    function(lme_obj) {
+      G_hat <- getVarCov(lme_obj)
+      mu <- fixed.effects(lme_obj) 
+      ellipse(G_hat, centre = mu) %>% 
+        as_tibble(.name_repair = ~c("intercept", "slope"))
+    },
+    .id = "model") %>% 
+  mutate(facet_id = c("mixed_un" = 1, "mixed_ident" = 2, "mixed_diag" = 3, "mixed_cs" = 4)[model]) # specify which facet for each ellipse 
+```
+
+
+```{r class.source = "fold-hide", fig.height = 8, fig.width = 8}
+ggplot(data = combined_indiv_data_facet) +
+  geom_path(mapping = aes(intercept, slope, group = child_id), # fixed -> mixed
+            arrow = arrow(ends = "last", length = unit(.1, "cm")),
+            alpha =.7) +
+  geom_point(mapping = aes(intercept, slope, color = model, alpha = model), # mixed estimates
+             pch = 16) + 
+  geom_point(mapping = aes(intercept, slope, color = model, alpha = model), # mixed center
+             data = mixed_data_facet, size = 8, shape = 4) +
+  geom_path(mapping = aes(intercept, slope, color = model), # G level ellipses
+            data = mixed_ellipses,
+            linetype = 2,
+            alpha = .4) + 
+  facet_wrap(~facet_id) +
+  scale_color_manual(values = c("#000000", "#E69F00", "#009E73", "#0072B2", "#CC79A7")) +
+  scale_alpha_manual(values = c(.4, rep(.6, 4))) +
+  labs(title = "G structure effect on mixed effect estimation")
+```
+
+```{r}
+# show G hats for each of the models
+lme_models %>% map(getVarCov)
+```
+
+```{r}
+g_mu <- ggplot(mapping = aes(intercept, slope, color = model, alpha = model)) +
+  geom_point(data = indiv_data, pch = 16) + 
+  geom_point(data = mixed_data_facet, shape = 4, size = 4) +
+  geom_point(data = pooled_data, shape = 4, size = 4) + 
+  scale_color_manual(values = c("#000000", "#E69F00", "#009E73", "#0072B2", "#CC79A7", "347827")) +
+  scale_alpha_manual(values = c(.4, rep(.6, 5)))
+g_mu_zoom <- g_mu + coord_cartesian(xlim = c(1,3), ylim = c(2,3.5)) +
+  theme(legend.position = "none")
+
+vp_zoom <- viewport(width = .3, height = .3, x = .67, y = .85)
+
+print(g_mu)
+print(g_mu_zoom, vp = vp_zoom)
+```
+
+
+## R effect on BLUPs
+
+This section we'll play with the estimates through "R" a little, and see how that affects the BLUPs. This should affect the BLUPs by changing the estimate of "V" in the equation:
+
+$$
+\begin{aligned}
+E[u | y] &= GZ'V^{-1}(y - X\beta) \\
+eBLUP(u) &= \hat GZ'\hat V^{-1}(y - X\hat\beta)
+\end{aligned}
+$$
+
+```{r}
+# heterogenous
+autism_lme_id_slope_1_ident_het <- lme(vsae ~ age,
+                                   random = list(childid = pdIdent(form = ~age)),
+                                   data =  autism_complete %>% filter(sicdegp == 1),
+                                   weights = varIdent(form = ~ age),
+                                   control = lmeControl(opt = "optim"))
+
+autism_lme_id_slope_1_ident_cs <- lme(vsae ~ age,
+                                   random = list(childid = pdIdent(form = ~age)),
+                                   data =  autism_complete %>% filter(sicdegp == 1),
+                                   correlation = corCompSymm(form = ~ 1 | childid),
+                                   control = lmeControl(opt = "optim"))
+
+autism_lme_id_slope_1_ident_car <- lme(vsae ~ age,
+                                   random = list(childid = pdIdent(form = ~age)),
+                                   data =  autism_complete %>% filter(sicdegp == 1),
+                                   correlation = corCAR1(form = ~ age | childid),
+                                   weights = varIdent(form = ~ age),
+                                   control = lmeControl(opt = "optim"))
+
+autism_lme_id_slope_1_ident_un <- lme(vsae ~ age,
+                                   random = list(childid = pdIdent(form = ~age)),
+                                   data =  autism_complete %>% filter(sicdegp == 1),
+                                   correlation = corSymm(form = ~ 1 | childid),
+                                   weights = varIdent(form = ~ age),
+                                   control = lmeControl(opt = "optim"))
+```
+
+```{r}
+lme_r_models <- list(mixed_r_ident = autism_lme_id_slope_1_ident,
+                     mixed_r_un = autism_lme_id_slope_1_ident_un,
+                     mixed_r_cs = autism_lme_id_slope_1_ident_cs,
+                     mixed_r_car = autism_lme_id_slope_1_ident_car)
+
+mixed_r_indiv_data <- lme_r_models %>% map_dfr(~get_indiv_lines(.x),
+                       .id = "model")
+```
+
+
+```{r}
+# plotting dfs
+# for faceting
+# can use same one
+# indiv_data_facet <-  1:4 %>% map_dfr(~add_column(indiv_data, facet_id = .)) # 4 copies of individual data, one for each facet
+mixed_r_indiv_data_facet <- mixed_r_indiv_data %>% mutate(facet_id = c("mixed_r_ident" = 1, "mixed_r_un" = 2, "mixed_r_cs" = 3, "mixed_r_car" = 4)[model])
+combined_r_indiv_data_facet <- bind_rows(mixed_r_indiv_data_facet, indiv_data_facet) %>% arrange(model)
+```
+
+```{r}
+combined_r_indiv_data_facet %>% 
+  ggplot(aes(intercept, slope, color = model, alpha = model)) +
+  geom_path(aes(intercept, slope, group = child_id),
+            arrow = arrow(ends = "last", length = unit(.1, "cm")),
+            color = "black",
+            alpha =.7) +
+  geom_point(pch = 16) +
+  scale_color_manual(values = c("#000000", "#E69F00", "#009E73", "#0072B2", "#CC79A7")) +
+  scale_alpha_manual(values = c(.4, rep(.7, 4))) +
+  facet_wrap(~facet_id)
+```
+
+```{r}
+lme_r_models %>% map(getVarCov, type = "marginal")
+```
+
+
+
+
+# Other thoughts: Fixed vs Random
+
+Random effects represent this "middle ground" between fixed effects and error, so there are more decisions into which level effects fall under for modeling. Can you explain the differences between the following models? All of them loosely fall under the category of "fitting line to each child".
+
+```{r collapse=TRUE}
+autism_complete_3 <- autism_complete %>% filter(sicdegp == 3) # just worry about one panel of sicdegp for now
+
+mod0 <- lm(vsae ~ age*childid, data = autism_complete_3)
+mod1 <- lmer(vsae ~ (age | childid), data = autism_complete_3)
+mod2 <- lmer(vsae ~ age + age:childid + (1 | childid), data = autism_complete_3)
+mod3 <- lmer(vsae ~ childid + age + age:childid + (1 | childid), data = autism_complete_3)
+mod4 <- lmer(vsae ~ age + (age | childid), data = autism_complete_3) # the one I would choose
+mod5 <- lmer(vsae ~ childid + age +  (age | childid), data = autism_complete_3)
+mod6 <- lmer(vsae ~ age + age:childid + (age | childid), data = autism_complete_3)
+mod7 <- lmer(vsae ~ childid*age +  (age | childid), data = autism_complete_3)
+```
+
+All give slightly different predictions, but similar enough in terms of functional form and information that is modeled.
+
+
+```{r collapse=TRUE}
+mod_yhat <- autism_complete_3 %>% bind_cols(
+  yhat_mod0 = predict(mod0),
+  yhat_mod1 = predict(mod1),
+  yhat_mod2 = predict(mod2),
+  yhat_mod3 = predict(mod3),
+  yhat_mod4 = predict(mod4),
+  yhat_mod5 = predict(mod5),
+  yhat_mod6 = predict(mod6),
+  yhat_mod7 = predict(mod7), # mostly same as 3
+)
+
+mod_yhat %>% select(starts_with("yhat")) %>% 
+  head()
+```
+
+Note that the predictions are similar between some models, but enough differences that it's probably not "rounding" error. The closest ones are 2,6 and 3,7.
+
+```{r collapse=TRUE}
+mod_yhat %>% pivot_longer(cols = c(vsae, starts_with("yhat"))) %>% 
+  ggplot(aes(age, value, group_id = childid, color = name)) +
+  geom_line() +
+  facet_grid(name~.)
+```
+
+When looking at the predictions at a whole glance though, they are mostly the same, capturing all of the main trends.
+
+```{r collapse=TRUE}
+anova(mod1,
+      mod2,
+      mod3,
+      mod4,
+      mod5,
+      mod6,
+      mod7) %>% as.data.frame() %>% 
+  rownames_to_column() %>% 
+  arrange(rowname) %>% 
+  select(-last_col(), -Chisq) # get rid of test columns
+```
+
+The number of parameters for each of these models is wildly different, and thus the information criteria. What's going on?
+
+I think the differences in modeling are quite a little nuanced, but largely I think of this as a reframing of the fixed vs random debate. The random coefficients just make this even more confusing to me in terms of separation of the two effects... Definitionally, treating something as fixed implies that you're interested in making inferences on those topics, whereas treating something as random is accounting for population randomness _in the population you want to make inferences about_. In experimental designs, the split is somewhat easier, because you have "experimental" components of your design like treatments you wish to distinguish, which really should be fixed effects, and everything else about your experiment, like blocks and the units you randomize your treatments to. Walter Stroup advocates an ANOVA-esque approach to this, and apparently IMS bulletins discuss this approach as "What would Fisher Do?", Stroup calls the blocks and units the "topographical features" and the treatments "treatment features". I think Miliken and Johnson describe a similar split with "experiemental" and "design" components of your study. 
+
+At the end of the day, I consider these things: 
+
+1. "inference spaces" - a matter of what population you are trying to make inferences about. What parts of the design do I truly wish to assign a probability distribution to?
+2. "borrow strength" - due to the shrinkage effect, if you have blocks with complete information, and blocks with very little information, you can recover a lot by making the assumption that blocks with little information are similar to blocks with complete information. I.e, missing data situations are something you'd naturally want to attach a probability distribution to in order to make better inferences.
+3. "variance implications" - modeling random effects carry forward implications about the covariance matrix of observations. Am I willing to accept that, do random effect assumptions capture population well? ^[https://stats.stackexchange.com/questions/366483/why-are-random-effects-assumed-to-follow-a-normal-distribution-in-glmms]
+4. computation...
+
+The models in which `childid` appears as a fixed effect AND a random effect grouping is a little unreasonable, as those fits will be fighting for the same information. Using `age` as both a fixed and random covariate seems appropriate because there will be populational growth rate I'm interested in studying, as well as variation in that among the children I've measured. That leaves model 4.
+
+The "randomness I'm assuming in the population" can be more clearly visualized by just showing random effect components of the estimates. We can also plot the fitted values alongside them to show the split of fixed and random among all these models!
+
+```{r fig.height = 10, fig.width = 10}
+mod_random <- autism_complete_3 %>% bind_cols(
+  # yhat_mod0 = predict(mod0), # not a random effect model
+  yhat_mod1 = predict(mod1, random.only = T),
+  yhat_mod2 = predict(mod2, random.only = T),
+  yhat_mod3 = predict(mod3, random.only = T),
+  yhat_mod4 = predict(mod4, random.only = T),
+  yhat_mod5 = predict(mod5, random.only = T),
+  yhat_mod6 = predict(mod6, random.only = T),
+  yhat_mod7 = predict(mod7, random.only = T), # mostly same as 3
+)
+
+mod_fixed <- autism_complete_3 %>% bind_cols(
+  # yhat_mod0 = predict(mod0), # not a random effect model
+  yhat_mod1 = predict(mod1, re.form = NA),
+  yhat_mod2 = predict(mod2, re.form = NA),
+  yhat_mod3 = predict(mod3, re.form = NA),
+  yhat_mod4 = predict(mod4, re.form = NA),
+  yhat_mod5 = predict(mod5, re.form = NA),
+  yhat_mod6 = predict(mod6, re.form = NA),
+  yhat_mod7 = predict(mod7, re.form = NA), # mostly same as 3
+)
+
+
+mod_fixed_plot <- mod_fixed %>% pivot_longer(cols = c(starts_with("yhat"))) %>% 
+  ggplot(aes(age, value, group_id = childid, color = name)) +
+  geom_line() +
+  facet_grid(name~.) + 
+  labs(title = "Fixed")
+
+mod_random_plot <- mod_random %>% pivot_longer(cols = c(starts_with("yhat"))) %>% 
+  ggplot(aes(age, value, group_id = childid, color = name)) +
+  geom_line() +
+  facet_grid(name~.) +
+  labs(title = "Random")
+
+ggarrange(mod_fixed_plot, mod_random_plot, ncol = 2, common.legend = TRUE, legend = "bottom")
+```
+
+
+Models in which we overparameterize the fixed effects, we see no random variability. Since the whole point of using a random model is to capture the variability of the population, 2, 3, 6, 7 simply don't reflect that distribution. The difference between 1 and 4 is simply whether or not the population randomness is centered around a population trend. In 4, they fan out around 0, because the fixed `age` accounts for the population level trend, whereas model 1 fans out above 0.
+
+
+
+

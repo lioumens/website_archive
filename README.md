@@ -43,3 +43,4 @@ There is a [rakefile](https://github.com/ruby/rake) in this repository (a makefi
 2. Render quarto environment
 
 - [Quarto Github Actions Repository and Examples](https://github.com/quarto-dev/quarto-actions/blob/main/examples/example-01-basics.md)
+

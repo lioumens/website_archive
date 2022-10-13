@@ -1,0 +1,46 @@
+---
+title: "Observable Testing"
+format: html
+execute:
+  echo: false
+---
+
+# Observable
+
+```{ojs}
+data = FileAttachment("penguins.csv").csv({ typed: true })
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
+  }
+)
+```
+
+
+```{ojs}
+filtered = data.filter(function(penguin) {
+  return bill_length_min < penguin.bill_length_mm &&
+         islands.includes(penguin.island);
+})
+```
+
+```{ojs}
+filtered
+```
+
+```{ojs}
+Plot.plot({
+  marks:[
+    Plot.dot(filtered, {x: "body_mass_g", y: "flipper_length_mm", fill: "species"})
+    ],
+  color: {legend: true},
+  marginLeft: 100,
+})
+```
+
+

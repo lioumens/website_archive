@@ -68,8 +68,6 @@ pathotype.disp.anova
 adonis2(P_sojae_survey.matrix.jaccard ~ groups)
 ```
 
-# Primer for Microbiomes
-
 
 ## Corncob
 
