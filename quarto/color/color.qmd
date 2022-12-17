@@ -3,11 +3,15 @@ title: "Colors in R"
 editor: visual
 ---
 
-## Viewing Color Palettes
-
 ```{r}
+#| message: false
+#| code-summary: Libraries Loaded
 library(RColorBrewer)
+library(grid)
+library(raster)
 ```
+
+## Viewing Color Palettes
 
 ```{r}
 hcl.pals(type = "sequential")
@@ -26,44 +30,18 @@ plot(0,
      mar = rep(0, 4),
      frame.plot = F)
 rect(0, .5, .8, 1, col = terrain.colors(256))
-library(grid)
+
 grid.newpage()
-grid.raster(1:10)
+grid.raster(seq(0, 1, .01))
+dev.off()
+```
+
+```{r}
+# you can color the matrix directly as well, and generate the raster that way
 redGradient <- matrix(hcl(0, 80, seq(50, 80, 10)),
                       nrow=4, ncol=5)
-# interpolated
+
 grid.newpage()
-plot(raster(I), breaks = hist(I, breaks = 100, plot = F)$breaks, col = hcl.colors(101, palette = "ag_sunset"),
-     interpolate = T)
-grid.raster(I)
-
-library(signal)
-library(pracma)
-x <- seq(-1, 1, length.out = 11)
-y <- seq(-1, 1, length.out = 11)
-Z <- outer(x, y, {\(x, y) x^2 + y^2})
-xp <- yp <- 
-
-
-# try upsampling
-interp2(x, y, Z, xp, yp, "linear")
-
-# mgrid <- meshgrid(x, y)
-# X <- mgrid$X
-# Y <- mgrid$Y
-# Z <- X^2 + Y^2
-
-library(plot3D)
-library(plotly)
-fig <- plot_ly(z=~Z) |> add_surface()
-
-config(fig, displaylogo = FALSE, scrollZoom = FALSE)
-  
-persp(z = Z, theta = 30, phi = 30, col = hcl.colors(250)[], shade = NA)
-
-
-
-
-
-
+grid.raster(redGradient)
+invisible(dev.off())
 ```

@@ -2,6 +2,7 @@
   # output-dir: _output
 project:
   type: book
+  output-dir: ../mydocs/eac32f09bcb48f97d5f71044b5c8eac7b4bfadc1
 
 book:
   title: "Personal Documentation"
