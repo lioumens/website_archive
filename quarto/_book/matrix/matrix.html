@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.203">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Liou">
+
+<title>Personal Documentation - 2&nbsp; Matrix Math</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../stochastic/stochastic.html" rel="next">
+<link href="../index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Matrix Math</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Personal Documentation</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#basic-matrices" id="toc-basic-matrices" class="nav-link active" data-scroll-target="#basic-matrices"><span class="toc-section-number">3</span>  Basic Matrices</a></li>
+  <li><a href="#adjacency-matrix" id="toc-adjacency-matrix" class="nav-link" data-scroll-target="#adjacency-matrix"><span class="toc-section-number">4</span>  Adjacency Matrix</a>
+  <ul class="collapse">
+  <li><a href="#example-spectrums" id="toc-example-spectrums" class="nav-link" data-scroll-target="#example-spectrums"><span class="toc-section-number">4.1</span>  Example Spectrums</a></li>
+  <li><a href="#spectral-radius-bounds" id="toc-spectral-radius-bounds" class="nav-link" data-scroll-target="#spectral-radius-bounds"><span class="toc-section-number">4.2</span>  Spectral Radius Bounds</a></li>
+  </ul></li>
+  <li><a href="#laplacian" id="toc-laplacian" class="nav-link" data-scroll-target="#laplacian"><span class="toc-section-number">5</span>  Laplacian</a>
+  <ul class="collapse">
+  <li><a href="#example-spectrums-1" id="toc-example-spectrums-1" class="nav-link" data-scroll-target="#example-spectrums-1"><span class="toc-section-number">5.1</span>  Example Spectrums</a></li>
+  <li><a href="#spectral-radius-bounds-1" id="toc-spectral-radius-bounds-1" class="nav-link" data-scroll-target="#spectral-radius-bounds-1"><span class="toc-section-number">5.2</span>  Spectral Radius Bounds</a>
+  <ul class="collapse">
+  <li><a href="#simple" id="toc-simple" class="nav-link" data-scroll-target="#simple"><span class="toc-section-number">5.2.1</span>  Simple</a></li>
+  </ul></li>
+  <li><a href="#laplacian-for-distributed-summation" id="toc-laplacian-for-distributed-summation" class="nav-link" data-scroll-target="#laplacian-for-distributed-summation"><span class="toc-section-number">5.3</span>  Laplacian for Distributed Summation</a></li>
+  <li><a href="#normalized-laplacian" id="toc-normalized-laplacian" class="nav-link" data-scroll-target="#normalized-laplacian"><span class="toc-section-number">5.4</span>  Normalized Laplacian</a>
+  <ul class="collapse">
+  <li><a href="#example-spectrums-of-normalized-laplacian" id="toc-example-spectrums-of-normalized-laplacian" class="nav-link" data-scroll-target="#example-spectrums-of-normalized-laplacian"><span class="toc-section-number">5.4.1</span>  Example Spectrums of Normalized Laplacian</a></li>
+  </ul></li>
+  <li><a href="#fiedler-bounds-normalized-laplacian" id="toc-fiedler-bounds-normalized-laplacian" class="nav-link" data-scroll-target="#fiedler-bounds-normalized-laplacian"><span class="toc-section-number">5.5</span>  Fiedler Bounds (normalized Laplacian)</a>
+  <ul class="collapse">
+  <li><a href="#simple-1" id="toc-simple-1" class="nav-link" data-scroll-target="#simple-1"><span class="toc-section-number">5.5.1</span>  Simple</a></li>
+  <li><a href="#by-volume-global" id="toc-by-volume-global" class="nav-link" data-scroll-target="#by-volume-global"><span class="toc-section-number">5.5.2</span>  By Volume (global)</a></li>
+  <li><a href="#by-cheegers-sparsest-cut" id="toc-by-cheegers-sparsest-cut" class="nav-link" data-scroll-target="#by-cheegers-sparsest-cut"><span class="toc-section-number">5.5.3</span>  By Cheeger’s (Sparsest Cut)</a></li>
+  </ul></li>
+  <li><a href="#laplacian-decomposition-as-incidence-matrix" id="toc-laplacian-decomposition-as-incidence-matrix" class="nav-link" data-scroll-target="#laplacian-decomposition-as-incidence-matrix"><span class="toc-section-number">5.6</span>  Laplacian decomposition as incidence matrix</a></li>
+  <li><a href="#laplacian-stochastic-matrix" id="toc-laplacian-stochastic-matrix" class="nav-link" data-scroll-target="#laplacian-stochastic-matrix"><span class="toc-section-number">5.7</span>  Laplacian Stochastic Matrix</a></li>
+  </ul></li>
+  <li><a href="#stochastic-matrices" id="toc-stochastic-matrices" class="nav-link" data-scroll-target="#stochastic-matrices"><span class="toc-section-number">6</span>  Stochastic Matrices</a></li>
+  <li><a href="#matrix-norms" id="toc-matrix-norms" class="nav-link" data-scroll-target="#matrix-norms"><span class="toc-section-number">7</span>  Matrix Norms</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Matrix Math</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Liou </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-2_fdbc90e0b6c7bd4cde8a369bb4c59f3a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spam)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rgraph6)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fs)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># devtools::install_github("lioumens/Lmisc") # private repo</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Lmisc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="basic-matrices" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Basic Matrices</h1>
+<p>Let <span class="math inline">j</span> be the vector of all 1’s, and <span class="math inline">J</span> be the matrix of all ones.</p>
+<p><span class="math display">
+\begin{aligned}
+jj' &amp;= J \\
+j'x  &amp;= \sum x \\
+j'A  &amp;= \operatorname{rowsums}(A) \\
+Aj &amp;= \operatorname{colsums}(A) \\
+Jx &amp;= \begin{bmatrix}
+  \sum x \\
+  \vdots \\
+  \sum x \\
+\end{bmatrix}
+\end{aligned}
+</span></p>
+</section>
+<section id="adjacency-matrix" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Adjacency Matrix</h1>
+<section id="example-spectrums" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="example-spectrums"><span class="header-section-number">4.1</span> Example Spectrums</h2>
+</section>
+<section id="spectral-radius-bounds" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="spectral-radius-bounds"><span class="header-section-number">4.2</span> Spectral Radius Bounds</h2>
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Theorem 2.3: Adjacency Matrix Spectral Radius Bound <span class="citation" data-cites="hongSharpUpperBound2001">(<a href="#ref-hongSharpUpperBound2001" role="doc-biblioref">Hong, Shu, and Fang 2001</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">
+\begin{aligned}
+\rho(A) \leq \frac{d_{min} -1 + \sqrt{(d_{min} + 1)^2 + 4(2m-nd_{min})}}{2}
+\end{aligned}
+</span></p>
+<ul>
+<li><span class="math inline">d_{min}</span> is minimum degree on the graph</li>
+<li><span class="math inline">n,m</span> is number of nodes, edges in the graph</li>
+<li>equality is reached for regular graphs, or bi-degreed graphs of either <span class="math inline">d_{min}</span> or <span class="math inline">n-1</span></li>
+</ul>
+<p>More simply, for a simply connected graph <span class="math inline">d_{min} = 1</span> we can more simply state:</p>
+<p><span class="math display">
+\begin{align*}
+\rho(A) \leq \sqrt{1 + 2m - n}
+\end{align*}
+</span></p>
+<ul>
+<li>equality reached for complete or star graph</li>
+</ul>
+</div>
+</div>
+<div class="cell" data-hash="matrix_cache/html/hong_upper_adj_spectral_d578ab001c2a33fc239e4e7c4a2c920c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hong_upper_adj_spectral <span class="ot">&lt;-</span> <span class="cf">function</span>(d_min, n, m, <span class="at">easy =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (easy) <span class="fu">return</span>(<span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>m <span class="sc">-</span> n))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  (d_min <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">sqrt</span>((d_min <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">4</span> <span class="sc">*</span> (<span class="dv">2</span> <span class="sc">*</span> m <span class="sc">-</span> n <span class="sc">*</span> d_min))) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-4_b1f4b67129d4b99c9a4a12caffd3a4b0">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>g5_list <span class="ot">&lt;-</span> <span class="fu">read_file6</span>(<span class="st">"data/graph5c.g6"</span>, <span class="at">type =</span> <span class="st">"igraph"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">spectrum</span>(g5_list[[<span class="dv">5</span>]], <span class="at">which =</span> <span class="fu">list</span>(<span class="at">pos =</span> <span class="st">"LM"</span>, <span class="at">howmany =</span> <span class="dv">1</span>))<span class="sc">$</span>values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.135779</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(<span class="fu">as_adj</span>(g5_list[[<span class="dv">2</span>]]))<span class="sc">$</span>values[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.847759</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>g5_hong_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">g =</span> g5_list) <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"g_id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">min_deg =</span> <span class="fu">min</span>(<span class="fu">degree</span>(g)),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">n_edge =</span> <span class="fu">ecount</span>(g),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">n_vertex =</span> <span class="fu">vcount</span>(g),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">spectral_radius =</span> <span class="fu">eigen</span>(<span class="fu">as_adj</span>(g))<span class="sc">$</span>values[<span class="dv">1</span>],</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">upper_spectral =</span> <span class="fu">hong_upper_adj_spectral</span>(min_deg, n_vertex, n_edge),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">easy_upper_spectral =</span> <span class="fu">hong_upper_adj_spectral</span>(min_deg, n_vertex, n_edge, <span class="at">easy =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(upper_spectral, easy_upper_spectral, spectral_radius)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>g5_hong_df <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">factor</span>(g_id, <span class="fu">unique</span>(g_id)), spectral_radius)) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Spectral Radius"</span>)) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> upper_spectral, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"Hong Upper Bound"</span>, <span class="at">linetype =</span> <span class="st">"Hong Upper Bound"</span>)) <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> easy_upper_spectral, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"Hong Easy Upper Bound"</span>, <span class="at">linetype =</span> <span class="st">"Hong Easy Upper Bound"</span>)) <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">shape =</span> <span class="fu">c</span>(<span class="dv">26</span>, <span class="dv">26</span>, <span class="dv">19</span>), <span class="at">linetype =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>)))) <span class="sc">+</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="st">""</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"red"</span>, <span class="st">"black"</span>)) <span class="sc">+</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span> </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_linetype</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"graph"</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Adj. Spectral Radius"</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Hong Spectral Radius of Adjacency for all connected 5-graphs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="laplacian" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Laplacian</h1>
+<section id="example-spectrums-1" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="example-spectrums-1"><span class="header-section-number">5.1</span> Example Spectrums</h2>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Components</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Complete Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Star Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">Bipartite Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">Path</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>If there are 2 connected components, 2 of the eigenvalues will be 0.</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-5_63a2bef6ea953216fe6f84f336c543b3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="sc">~</span><span class="dv">1-2-3-1-4-5-6-4</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>L1 <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g1)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(L1)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.561553 3.000000 3.000000 3.000000 0.438447 0.000000</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="sc">~</span><span class="dv">1-2-3-1</span>, <span class="dv">4-5-6-4</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>L2 <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g2)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(L2)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3 3 3 3 0 0</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-6_49bf9ff49d3659a2733cd60be233bb35">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_full_graph</span>(<span class="dv">5</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(L)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5 5 5 5 0</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-7_304c5eda4fb60c0d1530f56705d25d76">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_star</span>(<span class="dv">5</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(L)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5 1 1 1 0</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-8_b7c31907a47956896cdbe1aee3a9c1ed">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_full_bipartite_graph</span>(<span class="dv">5</span>, <span class="dv">3</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g, <span class="at">normalized =</span> F)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(L)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8 5 5 3 3 3 3 0</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-9_f229cdee2906158228d368b42abe3cbb">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="sc">~</span><span class="dv">1-2-3-4-5-6-7-8-9-10</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g, <span class="at">normalized =</span> F)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(L)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 3.902113 3.618034 3.175571 2.618034 2.000000 1.381966 0.824429 0.381966
+ [9] 0.097887 0.000000</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-include="false" data-eval="false" data-fig-width="6">
+<div class="cell-output-display">
+<div>
+<p>
+</p>
+</div>
+</div>
+</div>
+</section>
+<section id="spectral-radius-bounds-1" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="spectral-radius-bounds-1"><span class="header-section-number">5.2</span> Spectral Radius Bounds</h2>
+<section id="simple" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="simple"><span class="header-section-number">5.2.1</span> Simple</h3>
+<p>There are 3 simple bounds on the Laplacian presented by <span class="citation" data-cites="andersonEigenvaluesLaplacianGraph1985">(<a href="#ref-andersonEigenvaluesLaplacianGraph1985" role="doc-biblioref">Anderson and Morley 1985</a>)</span>,</p>
+<ol type="1">
+<li>number of nodes in graph</li>
+</ol>
+<p><span class="math display"> \lambda_1(L) \leq n</span></p>
+<ul>
+<li>equality reached on complete graph, for example.</li>
+</ul>
+<ol start="2" type="1">
+<li>max degree</li>
+</ol>
+<p><span class="math display"> \lambda_1(L) \leq 2d_{max}</span></p>
+<ul>
+<li>equality nears on a path graph.</li>
+</ul>
+<ol start="3" type="1">
+<li>maximal ends of an edge</li>
+</ol>
+<p><span class="math display"> \lambda_1(L) \leq \max_{i\sim j} w_i + w_j </span></p>
+<ul>
+<li>where maximum is over edges in graph, and <span class="math inline">w_i + w_j</span> is the sum of weights of that edge’s endpoints.</li>
+<li>I believe this is true over any weighted, connected, undirected graph</li>
+<li>equality is reached when bipartite graph</li>
+</ul>
+</section>
+</section>
+<section id="laplacian-for-distributed-summation" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="laplacian-for-distributed-summation"><span class="header-section-number">5.3</span> Laplacian for Distributed Summation</h2>
+<div class="callout-note callout callout-style-simple no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Source
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This insight comes from <a href="https://www.tau.ac.il/~stoledo/Support/ex-distributed-summation.pdf">Sivan Toledo</a>, where he has a nice description of the problem.</p>
+</div>
+</div>
+<p>If the eventual algorithm goal is to have the sum of the graph sitting on every node, the repeated application of a matrix multiplication should converge to the matrix of all ones <span class="math inline">J</span>. The spectrum of <span class="math inline">J</span> is simply <span class="math inline">n</span> and the rest zeros. <span class="math inline">\frac{1}{n}J</span> is special because it sets each node to have the mean, and the single non-zero eigenvalue is 1.</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-11_582b750241a8f3daa085953a8a0d74d8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(<span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="dv">16</span>), <span class="at">nrow =</span> <span class="dv">4</span>))<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 0 0 0</code></pre>
+</div>
+</div>
+<p>Suppose the initial state of the graph <span class="math inline">y</span> is values at each of the <span class="math inline">n</span> nodes of the graph.</p>
+<p><span class="math display">
+\begin{aligned}
+n(I - \frac{1}{n}L)^ky
+\end{aligned}
+</span></p>
+<p>As <span class="math inline">k</span> increases, we’d expect that the matrix spectrum converges to match <span class="math inline">J</span>, since <span class="math inline">L</span> has a zero eigenvalue, one eigen value limit is 1. And since the Laplacian has spectral radius upper bounded by number of nodes,</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-12_d73a174afd7c2a1e26276449925c0c18">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">10</span>, .<span class="dv">5</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> g <span class="sc">%&gt;%</span> <span class="fu">as_adj</span>()</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">Diagonal</span>(<span class="at">x =</span> <span class="fu">rowSums</span>(A)) <span class="sc">-</span> A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-13_2cf08c61a3df412d43d125f746d4f28e">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>J <span class="ot">&lt;-</span> <span class="fu">Matrix</span>(<span class="dv">1</span>, <span class="at">nrow =</span> <span class="dv">10</span>, <span class="at">ncol =</span> <span class="dv">10</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>J <span class="sc">%*%</span> <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>10 x 1 Matrix of class "dgeMatrix"
+      [,1]
+ [1,]   55
+ [2,]   55
+ [3,]   55
+ [4,]   55
+ [5,]   55
+ [6,]   55
+ [7,]   55
+ [8,]   55
+ [9,]   55
+[10,]   55</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-14_a7ae70134b411648a2bd00042fafeb85">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>Je <span class="ot">&lt;-</span> <span class="fu">eigen</span>(J)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>Ln <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(Ln)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>eigen() decomposition
+$values
+ [1] 1.647271e+00 1.467555e+00 1.450327e+00 1.166667e+00 1.084726e+00
+ [6] 1.000000e+00 9.451136e-01 7.853920e-01 4.529494e-01 2.442491e-15
+
+$vectors
+             [,1]        [,2]         [,3]          [,4]        [,5]
+ [1,] -0.16557306 -0.35884141  0.414024644  4.378811e-16 -0.41543869
+ [2,]  0.01245928  0.32716246 -0.261033301  7.071068e-01 -0.26421090
+ [3,]  0.07815309  0.07003764  0.522362456 -2.958733e-16  0.30735544
+ [4,]  0.49476837 -0.29623231 -0.126497326  3.013764e-16 -0.34924549
+ [5,] -0.26126348 -0.45016699 -0.226430018  3.655149e-16 -0.17830741
+ [6,]  0.01453893 -0.34738481 -0.412927706 -6.383782e-16  0.64394097
+ [7,]  0.29116939 -0.06983555  0.410643861 -1.133005e-16  0.11871973
+ [8,]  0.39734608  0.39945650 -0.007375584 -5.551115e-17  0.08547476
+ [9,]  0.01245928  0.32716246 -0.261033301 -7.071068e-01 -0.26421090
+[10,] -0.64049820  0.27700977  0.113930213 -2.030681e-18  0.05918033
+               [,6]        [,7]       [,8]        [,9]      [,10]
+ [1,] -3.131423e-15  0.23529056  0.5901861  0.09578594 -0.2948839
+ [2,] -3.906316e-15  0.22258023 -0.1102821  0.25044926 -0.3611576
+ [3,] -6.324555e-01 -0.02451212 -0.2642891  0.25347743 -0.2948839
+ [4,] -3.162278e-01  0.13949439 -0.2339562 -0.57753213 -0.1474420
+ [5,]  6.578071e-15 -0.66595972 -0.2431392  0.18631243 -0.3296902
+ [6,] -1.421198e-15  0.30002682  0.2257963 -0.02773400 -0.3900947
+ [7,]  7.071068e-01  0.04045948 -0.3410158 -0.03156311 -0.3296902
+ [8,]  6.679915e-15 -0.53861397  0.5160385 -0.17841799 -0.2948839
+ [9,] -2.959103e-15  0.22258023 -0.1102821  0.25044926 -0.3611576
+[10,] -1.665335e-16  0.01531268 -0.1004178 -0.63187856 -0.2948839</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># not correct</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># M &lt;- diag(10) - L / (diag(L) + 1) # direct averaging of over all nodes ***</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># M &lt;- diag(L) - L/2 # average across edges?</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># correct</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">10</span>) <span class="sc">-</span> L <span class="sc">/</span> <span class="dv">10</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>mat_pow <span class="ot">&lt;-</span> <span class="cf">function</span>(M, <span class="at">t =</span> <span class="dv">10</span>) {</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (t <span class="sc">==</span> <span class="dv">1</span>) {<span class="fu">return</span>(M)}</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(M <span class="sc">%*%</span> <span class="fu">mat_pow</span>(M, t <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co"># mat_pow(M, 100)</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>) {</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> M <span class="sc">%*%</span> y</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>10 x 1 Matrix of class "dgeMatrix"
+          [,1]
+ [1,] 5.499981
+ [2,] 5.499980
+ [3,] 5.499978
+ [4,] 5.500109
+ [5,] 5.499981
+ [6,] 5.499988
+ [7,] 5.499989
+ [8,] 5.499992
+ [9,] 5.499980
+[10,] 5.500024</code></pre>
+</div>
+</div>
+</section>
+<section id="normalized-laplacian" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="normalized-laplacian"><span class="header-section-number">5.4</span> Normalized Laplacian</h2>
+<p>The primary reason for looking at the normalized laplacian is because it removes dependence on the number of nodes in the graph, which would change bounds. Rather, the eigenvalues of a normalized laplacian will range from <span class="math inline">0 \leq 2</span>, reaching 2 for bipartite graphs.</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-15_e2c587917978bffd2ddcda34edc85b79">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(L))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>NL <span class="ot">&lt;-</span> <span class="fu">Diagonal</span>(<span class="at">x =</span> D) <span class="sc">%*%</span> L <span class="sc">%*%</span> <span class="fu">Diagonal</span>(<span class="at">x =</span> D)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>NL</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>10 x 10 sparse Matrix of class "dgCMatrix"
+                                                                            
+ [1,]  1.0000000 -0.2041241  .          .    .         -0.1889822  .        
+ [2,] -0.2041241  1.0000000 -0.2041241  .   -0.1825742 -0.1543033 -0.1825742
+ [3,]  .         -0.2041241  1.0000000  .   -0.2236068 -0.1889822  .        
+ [4,]  .          .          .          1.0  .          .          .        
+ [5,]  .         -0.1825742 -0.2236068  .    1.0000000  .         -0.2000000
+ [6,] -0.1889822 -0.1543033 -0.1889822  .    .          1.0000000 -0.1690309
+ [7,]  .         -0.1825742  .          .   -0.2000000 -0.1690309  1.0000000
+ [8,] -0.2500000  .          .          .   -0.2236068 -0.1889822  .        
+ [9,] -0.2041241 -0.1666667 -0.2041241  .   -0.1825742 -0.1543033 -0.1825742
+[10,]  .          .          .         -0.5  .         -0.1889822 -0.2236068
+                                      
+ [1,] -0.2500000 -0.2041241  .        
+ [2,]  .         -0.1666667  .        
+ [3,]  .         -0.2041241  .        
+ [4,]  .          .         -0.5000000
+ [5,] -0.2236068 -0.1825742  .        
+ [6,] -0.1889822 -0.1543033 -0.1889822
+ [7,]  .         -0.1825742 -0.2236068
+ [8,]  1.0000000  .         -0.2500000
+ [9,]  .          1.0000000  .        
+[10,] -0.2500000  .          1.0000000</code></pre>
+</div>
+</div>
+<section id="example-spectrums-of-normalized-laplacian" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="example-spectrums-of-normalized-laplacian"><span class="header-section-number">5.4.1</span> Example Spectrums of Normalized Laplacian</h3>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Ring</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Path</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Complete</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">Bipartite</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-16_d945377c12261fa77f2145404bc60491">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_ring</span>(<span class="dv">5</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - cos(2 * pi * 0:4 / 5) |&gt; sort() # exact</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(N)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.809017 1.809017 0.690983 0.690983 0.000000</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-17_f8e9dd2bd73ff727c87bd034d3aa5256">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="sc">~</span><span class="dv">1-2-3-4-5</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - cos(pi * 0:4 / 4) |&gt; sort() # exact</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(N)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.0000000 1.7071068 1.0000000 0.2928932 0.0000000</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-18_3423b53abc9fced950fb5b0d08234320">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_full_graph</span>(<span class="dv">5</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(N)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>() <span class="co"># n / n-1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.25 1.25 1.25 1.25 0.00</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-19_111c2ca67364ddddf7c8f693825dbf57">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_full_bipartite_graph</span>(<span class="dv">6</span>, <span class="dv">4</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(N)<span class="sc">$</span>values <span class="sc">|&gt;</span> <span class="fu">zapsmall</span>() <span class="co"># 0, 1 (n + m - 2), 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 2 1 1 1 1 1 1 1 1 0</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="fiedler-bounds-normalized-laplacian" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="fiedler-bounds-normalized-laplacian"><span class="header-section-number">5.5</span> Fiedler Bounds (normalized Laplacian)</h2>
+<p>Fiedler Eigenvalue is the smallest non-zero eigenvalue.</p>
+<section id="simple-1" class="level3" data-number="5.5.1">
+<h3 data-number="5.5.1" class="anchored" data-anchor-id="simple-1"><span class="header-section-number">5.5.1</span> Simple</h3>
+<p>For k-regular graph, and diameter &gt; 4, we have</p>
+<p><span class="math display">
+\begin{aligned}
+\limsup \lambda_{n-1} \leq 1 - 2\frac{\sqrt{k-1}}{k}
+\end{aligned}
+</span></p>
+<ul>
+<li>equality is reached for ramanujan graphs</li>
+<li>note that the conditions exclude bipartite graphs</li>
+<li>the fact that it’s “lim sup” makes this quite useless, because it’s asymptotically toward infinity”. In fact, for some regular 4 graphs, 14 node, diameter 5 graphs, the Fiedler value is still well above this bound.</li>
+</ul>
+<p>Rather, a more general (and useful upper bound):</p>
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Lemma 1.14: Fiedler Upper Bound (dia <span class="math inline">\geq</span> 4) <span class="citation" data-cites="chungSpectralGraphTheory1997">(<a href="#ref-chungSpectralGraphTheory1997" role="doc-biblioref">Chung 1997</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">G</span> be a graph with diameter <span class="math inline">D \geq 4</span>, and let <span class="math inline">k</span> denote the maximum degree of <span class="math inline">G</span>. Then,</p>
+<p><span class="math display">
+\begin{aligned}
+\lambda_{n-1} \leq 1 - 2\frac{\sqrt{k-1}}{k}\left(1 - \frac{2}{D}\right) + \frac{2}{D}
+\end{aligned}
+</span></p>
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>By contracting weighted graphs, and using Rayleigh quotient to upper bound.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Note that the original reference <span class="citation" data-cites="nilliSecondEigenvalueGraph1991">(<a href="#ref-nilliSecondEigenvalueGraph1991" role="doc-biblioref">Nilli 1991</a>)</span> , studies this problem for non-standardized Laplacian.</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-20_15da0b17121e030faf762f097a370293">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>upper_fiedler_nilli <span class="ot">&lt;-</span> <span class="cf">function</span>(k, D) {</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (D <span class="sc">&lt;</span> <span class="dv">4</span>) <span class="fu">abort</span>(<span class="st">"upper bound only valid when diameter greater than 4"</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(k <span class="sc">-</span><span class="dv">1</span>) <span class="sc">/</span> k <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">/</span> D) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">/</span> D)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s generate all permutations of connected 8 graphs, and pick out those with diameter greater than 4. All graph generation is done with the program <code>geng</code> and filtered with <code>pickg</code> <span class="citation" data-cites="mckayPracticalGraphIsomorphism2013">(<a href="#ref-mckayPracticalGraphIsomorphism2013" role="doc-biblioref">McKay and Piperno 2013</a>)</span>.</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-23_4d6150230be032e7207860c7217c8756">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>g8_dia4plus_list <span class="ot">&lt;-</span> <span class="fu">read_file6</span>(<span class="st">"data/graph8cdia4p.g6"</span>, <span class="at">type =</span> <span class="st">"igraph"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>g8_dia4plus_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">g =</span> g8_dia4plus_list) <span class="sc">|&gt;</span> </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"g_id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fiedler =</span> <span class="fu">net_fiedler</span>(g, <span class="at">normalize =</span> T),</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">k =</span> <span class="fu">max</span>(<span class="fu">degree</span>(g)),</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">D =</span> <span class="fu">diameter</span>(g),</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">upper_fiedler =</span> <span class="fu">upper_fiedler_nilli</span>(k, D)) <span class="sc">|&gt;</span> </span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(upper_fiedler), <span class="fu">desc</span>(fiedler))</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>g8_dia4plus_df <span class="sc">|&gt;</span> </span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(g_id, <span class="at">levels =</span> <span class="fu">unique</span>(g_id)),</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> fiedler, <span class="at">color =</span> <span class="st">"Fiedler Value"</span>)) <span class="sc">+</span></span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> .<span class="dv">5</span>, <span class="at">alpha =</span> .<span class="dv">7</span>) <span class="sc">+</span></span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> upper_fiedler, <span class="at">group =</span> upper_fiedler, <span class="at">color =</span> <span class="st">"Upper Bound"</span>)) <span class="sc">+</span></span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"Color"</span>,</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Nilli Bound on Fiedler Value for connected-8 Graphs"</span>,</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Unique Graph Combinations"</span>,</span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Fiedler Value"</span>) <span class="sc">+</span></span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"red"</span>)) <span class="sc">+</span></span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">breaks =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> <span class="cn">NULL</span>) <span class="sc">+</span> </span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-24_63e302406a3d5bce61af0795a53a4d3c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># files with regular, diameter larger than 4</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co"># These are all 4 regular graphs, connected, 13/14 nodes, d</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>reg4_dia4plus_files <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"data/reg4c13dia4.g6"</span>, <span class="st">"data/reg4c13dia5.g6"</span>, <span class="st">"data/reg4c14dia4.g6"</span>, <span class="st">"data/reg4c14dia5.g6"</span>) </span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>reg4_dia4plus_list <span class="ot">&lt;-</span> reg4_dia4plus_files <span class="sc">|&gt;</span> </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(read_file6, <span class="at">type =</span> <span class="st">"igraph"</span>)</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>reg4_dia4plus_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">g =</span> reg4_dia4plus_list, <span class="at">path =</span> reg4_dia4plus_files)  <span class="sc">|&gt;</span> </span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_longer</span>(g, <span class="at">indices_include =</span> <span class="cn">TRUE</span>, <span class="at">indices_to =</span> <span class="st">"graph_id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">match =</span> <span class="fu">list</span>(<span class="fu">str_match</span>(path, <span class="st">"data/reg4c(</span><span class="sc">\\</span><span class="st">d*)dia(</span><span class="sc">\\</span><span class="st">d*)"</span>)),</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">nodes =</span> match[<span class="dv">2</span>],</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">dia =</span> match[<span class="dv">3</span>],</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">k =</span> <span class="dv">4</span>,</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">fiedler =</span> <span class="fu">net_fiedler</span>(g, <span class="at">normalized =</span> T),</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">upper_fiedler =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">4-1</span>) <span class="sc">/</span> <span class="dv">4</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(match, path)) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(dia), nodes)</span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>reg4_dia4plus_df <span class="ot">&lt;-</span> reg4_dia4plus_df <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">dia =</span> <span class="fu">as.numeric</span>(dia),</span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>                           <span class="at">islower =</span> upper_fiedler <span class="sc">&gt;</span> fiedler,</span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>                           <span class="at">other_upper =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">4</span> <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">/</span><span class="dv">4</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">/</span> dia) <span class="sc">+</span> <span class="dv">2</span><span class="sc">/</span>dia,</span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>                           <span class="at">other_islower =</span> other_upper <span class="sc">&gt;</span> fiedler) <span class="sc">|&gt;</span> </span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(islower, other_islower, <span class="fu">desc</span>(dia))</span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a><span class="co"># among regular graphs, 13-14 nodes, 4+ diameter</span></span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>reg4_dia4plus_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,271 × 10
+# Rowwise: 
+   g        graph_id nodes   dia     k fiedler upper_f…¹ islower other…² other…³
+   &lt;list&gt;      &lt;int&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;lgl&gt;     &lt;dbl&gt; &lt;lgl&gt;  
+ 1 &lt;igraph&gt;        1 13        4     4   0.203     0.134 FALSE      1.07 TRUE   
+ 2 &lt;igraph&gt;        2 13        4     4   0.250     0.134 FALSE      1.07 TRUE   
+ 3 &lt;igraph&gt;        3 13        4     4   0.207     0.134 FALSE      1.07 TRUE   
+ 4 &lt;igraph&gt;        4 13        4     4   0.205     0.134 FALSE      1.07 TRUE   
+ 5 &lt;igraph&gt;        5 13        4     4   0.204     0.134 FALSE      1.07 TRUE   
+ 6 &lt;igraph&gt;        6 13        4     4   0.257     0.134 FALSE      1.07 TRUE   
+ 7 &lt;igraph&gt;        7 13        4     4   0.255     0.134 FALSE      1.07 TRUE   
+ 8 &lt;igraph&gt;        8 13        4     4   0.257     0.134 FALSE      1.07 TRUE   
+ 9 &lt;igraph&gt;        9 13        4     4   0.188     0.134 FALSE      1.07 TRUE   
+10 &lt;igraph&gt;       10 13        4     4   0.192     0.134 FALSE      1.07 TRUE   
+# … with 4,261 more rows, and abbreviated variable names ¹​upper_fiedler,
+#   ²​other_upper, ³​other_islower
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>reg4_dia4plus_df <span class="sc">|&gt;</span> <span class="fu">unite</span>(<span class="at">col =</span> <span class="st">"g_uid"</span>, <span class="sc">!!!</span><span class="fu">c</span>(<span class="st">"nodes"</span>, <span class="st">"dia"</span>, <span class="st">"graph_id"</span>), <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">fct_reorder2</span>(g_uid, fiedler, dia, <span class="at">.desc =</span> T), fiedler)) <span class="sc">+</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> upper_fiedler), <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> other_upper), <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># reg4_dia4plus_df</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co"># reg4_dia4plus_df # well... they are all lower bounded? if it's an infinite family of regular graphs... it should get closer right? b/c it's lim sup?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="by-volume-global" class="level3" data-number="5.5.2">
+<h3 data-number="5.5.2" class="anchored" data-anchor-id="by-volume-global"><span class="header-section-number">5.5.2</span> By Volume (global)</h3>
+<p>A loose lower bound for the smallest non-trivial eigenvalue <span class="citation" data-cites="chungSpectralGraphTheory1997">(<a href="#ref-chungSpectralGraphTheory1997" role="doc-biblioref">Chung 1997, 7</a>)</span>:</p>
+<p><span class="math display">
+\begin{aligned}
+\lambda_{n-1} \geq \frac{1}{D\operatorname{vol}(G)}
+\end{aligned}
+</span> where <span class="math inline">D</span> is the diameter of the graph, and volume of the graph is the sum of degrees for each node.</p>
+<div class="callout-warning callout callout-style-simple no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition of Volume
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that <span class="citation" data-cites="chungSpectralGraphTheory1997">Chung (<a href="#ref-chungSpectralGraphTheory1997" role="doc-biblioref">1997</a>)</span> uses the definition <span class="math inline">\operatorname{vol}(G) = \sum_{x\in S}d_x</span> where <span class="math inline">d_x</span> is the degree of vertex <span class="math inline">x</span>. Other references use <span class="math inline">\operatorname{vol}(G) = |G|</span> which is the number of nodes, or giving each node weight 1.</p>
+</div>
+</div>
+<p>Let’s find the Fiedler value of every graph of size 5 and graph them against the bound,</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-25_4d4cb01ba03b5e48c889264c424981aa">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>g5_list <span class="ot">&lt;-</span> <span class="fu">read_file6</span>(<span class="st">"data/graph5c.g6"</span>, <span class="at">type =</span> <span class="st">"igraph"</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fiedler values</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>fiedler5 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(g5_list, <span class="cf">function</span>(g) {</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  vol <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">degree</span>(g)) <span class="co"># conservative</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># vol &lt;- vcount(g)</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">&lt;-</span> <span class="fu">laplacian_matrix</span>(g, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  dia <span class="ot">&lt;-</span> <span class="fu">diameter</span>(g, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">g =</span> <span class="fu">list</span>(g),</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">fiedler =</span> <span class="fu">eigen</span>(M)<span class="sc">$</span>values[<span class="dv">4</span>],</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">vol =</span> vol,</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">dia =</span> dia)</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>graph_fiedler <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">gg =</span> fiedler5) <span class="sc">|&gt;</span> <span class="fu">unnest_wider</span>(gg) <span class="sc">|&gt;</span> <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">c</span>(g)) <span class="sc">|&gt;</span> </span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bound =</span> <span class="dv">1</span><span class="sc">/</span> (dia <span class="sc">*</span> vol),</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">diff =</span> fiedler <span class="sc">-</span> bound) <span class="sc">|&gt;</span> </span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(diff)</span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the lower bound.</span></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>fiedler_bound_line <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">dia =</span> <span class="fu">rep</span>(<span class="fu">list</span>(<span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">4</span>, .<span class="dv">1</span>)), <span class="dv">3</span>), <span class="at">vol =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>)) <span class="sc">|&gt;</span> <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bound =</span> <span class="fu">list</span>(<span class="dv">1</span> <span class="sc">/</span> vol <span class="sc">/</span> dia)) <span class="sc">|&gt;</span> </span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_longer</span>(<span class="at">col =</span> <span class="fu">c</span>(dia, bound))</span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a><span class="co"># The bound is generally quite bad for graphs </span></span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a>graph_fiedler <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(dia, fiedler, <span class="at">color =</span> vol)) <span class="sc">+</span></span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> fiedler_bound_line, <span class="at">mapping =</span> <span class="fu">aes</span>(dia, bound, <span class="at">color =</span> vol, <span class="at">group =</span> vol)) <span class="sc">+</span></span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Simple Fiedler Bound"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Even using the vertex count definition for volume (less conservative), the bound is quite low for most of the Fiedler values.</p>
+</section>
+<section id="by-cheegers-sparsest-cut" class="level3" data-number="5.5.3">
+<h3 data-number="5.5.3" class="anchored" data-anchor-id="by-cheegers-sparsest-cut"><span class="header-section-number">5.5.3</span> By Cheeger’s (Sparsest Cut)</h3>
+<p>Cheeger’s constant is loosely defined in english, as the minimal ratio, of cost of cutting edges, to the size of sets it cuts off. That is, a “dumbbell” shape graph, where large vertex sets are on both side, and only cutting 1 edge in the middle would have a very very low cheeger constant.</p>
+<p><span class="math display">
+\begin{aligned}
+h_G &amp;= \min_S \frac{|\delta S|}{\min \{|S|,|\bar S| \}} \\&amp;= \frac{\text{cutting edges cost}}{\text{vertex set volume}}
+\end{aligned}
+</span></p>
+<p>Calculating Cheeger’s constant is an <a href="https://cstheory.stackexchange.com/questions/8615/computing-the-cheeger-constant-feasible-for-which-classes">NP-Hard problem</a>, meaning that the problem is likely non-polynomial for solution and checking.</p>
+<p>The bounds on Fiedler’s value, with cheegers constants have the form,</p>
+<p><span class="math display">
+\begin{aligned}
+\frac{h_G^2}{2d_{max}} \leq \lambda_{n-1}  \leq 2h_G
+\end{aligned}
+</span></p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-26_b609996b7269b888b080bf41d477127d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># graph_boundary_edges &lt;- function(g, vs) {</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   if(!inherits(g, "igraph")) {</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     abort("`g` must be of class `igraph`")</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   inc_edges &lt;- igraph::incident_edges(g, vs)</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   purrr::reduce()</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a><span class="co"># graph_interior_edges &lt;- function(g, vs) {</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   if(!inherits(g, "igraph")) {</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     abort("`g` must be of class `igraph`")</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   inc_edges &lt;- igraph:incident_edges(g, vs)</span></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a><span class="co"># forget the functions... just do on matrices</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-28_1e8be7595b8a67ae7eba1b6f40bae78d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">#TODO: implemented assuming undirected graph, generalize?</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>cheeger <span class="ot">&lt;-</span> <span class="cf">function</span>(A, S) {</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate vertex boundary by taking neighbors minus initial set</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  adj_vec_set <span class="ot">&lt;-</span> A[S,, drop <span class="ot">=</span> F] <span class="sc">|&gt;</span> <span class="fu">colSums</span>()</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  ego1 <span class="ot">&lt;-</span> <span class="fu">which</span>(adj_vec_set <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  dS <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(ego1, S) <span class="co"># vertex boundary</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate edge boundary by subsetting matrix from S to !S</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  bridge_matrix <span class="ot">&lt;-</span> A[S, dS, drop <span class="ot">=</span> F]</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>  bridge_edges <span class="ot">&lt;-</span> bridge_matrix <span class="sc">|&gt;</span> </span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as</span>(<span class="st">"lgCMatrix"</span>) <span class="sc">|&gt;</span> <span class="co"># also assumes unweighted here when converting to logical</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">which</span>(<span class="at">arr.ind =</span> T) </span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>  bridge_edges[,<span class="st">"row"</span>] <span class="ot">&lt;-</span> S[bridge_edges[,<span class="st">"row"</span>]] <span class="co"># convert indices</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>  bridge_edges[,<span class="st">"col"</span>] <span class="ot">&lt;-</span> dS[bridge_edges[,<span class="st">"col"</span>]]</span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>  vol_dS <span class="ot">&lt;-</span> <span class="fu">sum</span>(bridge_matrix)</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>  min_vol_S <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">length</span>(S), <span class="fu">nrow</span>(A) <span class="sc">-</span> <span class="fu">length</span>(S)) <span class="co"># use length as volume metric</span></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(vol_dS <span class="sc">/</span> min_vol_S)</span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a><span class="co"># generate subsets for each graph</span></span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a>all_comb <span class="ot">&lt;-</span> <span class="fu">mapply</span>(<span class="cf">function</span>(x) <span class="fu">combn</span>(<span class="dv">5</span>, x, <span class="at">simplify =</span> F), <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a>all_comb_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">elem =</span> all_comb) <span class="sc">|&gt;</span></span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_longer</span>(elem)</span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a>graph_df <span class="ot">&lt;-</span> g5_list <span class="sc">|&gt;</span> <span class="fu">lapply</span>(as_adj) <span class="sc">|&gt;</span></span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">A =</span> _) <span class="sc">|&gt;</span> <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">as.numeric</span>(id))</span>
+<span id="cb54-29"><a href="#cb54-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-30"><a href="#cb54-30" aria-hidden="true" tabindex="-1"></a>cheeger_df <span class="ot">&lt;-</span> <span class="fu">full_join</span>(graph_df, all_comb_df, <span class="at">by =</span> <span class="fu">character</span>()) <span class="sc">|&gt;</span> <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cheeger_values =</span> <span class="fu">cheeger</span>(A, elem))</span>
+<span id="cb54-32"><a href="#cb54-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-33"><a href="#cb54-33" aria-hidden="true" tabindex="-1"></a>cheeger_constant_df <span class="ot">&lt;-</span> cheeger_df <span class="sc">|&gt;</span> <span class="fu">filter</span>(cheeger_values <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span>  <span class="fu">group_by</span>(id) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(id, cheeger_values) <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">ungroup</span>()</span>
+<span id="cb54-34"><a href="#cb54-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-35"><a href="#cb54-35" aria-hidden="true" tabindex="-1"></a><span class="co"># cheeger_constant_df |&gt; slice(2) |&gt; unlist()</span></span>
+<span id="cb54-36"><a href="#cb54-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-37"><a href="#cb54-37" aria-hidden="true" tabindex="-1"></a>fiedler_value_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">gg =</span> fiedler5) <span class="sc">|&gt;</span> <span class="fu">unnest_wider</span>(gg) <span class="sc">|&gt;</span> <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">c</span>(g)) <span class="sc">|&gt;</span> </span>
+<span id="cb54-38"><a href="#cb54-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb54-39"><a href="#cb54-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb54-40"><a href="#cb54-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">as.numeric</span>(id),</span>
+<span id="cb54-41"><a href="#cb54-41" aria-hidden="true" tabindex="-1"></a>         <span class="at">max_deg =</span> <span class="fu">max</span>(<span class="fu">degree</span>(g))) <span class="sc">|&gt;</span> </span>
+<span id="cb54-42"><a href="#cb54-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, fiedler, dia, vol, max_deg) <span class="sc">|&gt;</span> </span>
+<span id="cb54-43"><a href="#cb54-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb54-44"><a href="#cb54-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-45"><a href="#cb54-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-46"><a href="#cb54-46" aria-hidden="true" tabindex="-1"></a>cheeger_fiedler_df <span class="ot">&lt;-</span> cheeger_constant_df <span class="sc">|&gt;</span> <span class="fu">select</span>(id, elem, cheeger_values) <span class="sc">|&gt;</span> <span class="fu">left_join</span>(fiedler_value_df, <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb54-47"><a href="#cb54-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">upper_cheeger =</span> cheeger_values <span class="sc">*</span> <span class="dv">2</span>,</span>
+<span id="cb54-48"><a href="#cb54-48" aria-hidden="true" tabindex="-1"></a>         <span class="at">lower_cheeger =</span> cheeger_values<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span><span class="sc">/</span> max_deg) <span class="co"># dividing by max deg</span></span>
+<span id="cb54-49"><a href="#cb54-49" aria-hidden="true" tabindex="-1"></a><span class="co"># cheeger_fiedler_df |&gt; mutate(inbound = fiedler &gt; lower_cheeger &amp; fiedler &lt; upper_cheeger)</span></span>
+<span id="cb54-50"><a href="#cb54-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-51"><a href="#cb54-51" aria-hidden="true" tabindex="-1"></a>cheeger_fiedler_df <span class="sc">|&gt;</span></span>
+<span id="cb54-52"><a href="#cb54-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb54-53"><a href="#cb54-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(id, lower_cheeger), <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb54-54"><a href="#cb54-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(id, fiedler, <span class="at">color =</span> vol)) <span class="sc">+</span></span>
+<span id="cb54-55"><a href="#cb54-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(id, upper_cheeger), <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb54-56"><a href="#cb54-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Eigenvalue"</span>,</span>
+<span id="cb54-57"><a href="#cb54-57" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Graph ID"</span>,</span>
+<span id="cb54-58"><a href="#cb54-58" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># many variations of cheeger's unfortunately</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co"># seems incorrect for</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="laplacian-decomposition-as-incidence-matrix" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="laplacian-decomposition-as-incidence-matrix"><span class="header-section-number">5.6</span> Laplacian decomposition as incidence matrix</h2>
+<p>If we define an incidence matrix as a <span class="math inline">|V| \times |E|</span> matrix, in which each column has a 1 and -1 for in positions the edge connects the vertices,</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-29_45d4f8b5bde6a1d295f59a299ed9cc11">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ve_incidence &lt;- function(g) {</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   stopifnot(class(g) == "igraph")</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   g %&gt;% get.adjedgelist() %&gt;% map_dbl(~-onehot(.x, n = ecount(g)))</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>onehot <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">n =</span> <span class="fu">max</span>(x)) {</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>,<span class="at">length =</span> n)</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  y[x] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a><span class="co"># edge list</span></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>ve_incidence_matrix <span class="ot">&lt;-</span> <span class="cf">function</span>(g) {</span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">class</span>(g) <span class="sc">==</span> <span class="st">"igraph"</span>)</span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a>  onehot_edge <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">n =</span> <span class="fu">max</span>(x)) {</span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>,<span class="at">length =</span> n)</span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>    y[x <span class="sc">*</span> <span class="fu">sign</span>(x)] <span class="ot">&lt;-</span> <span class="fu">sign</span>(x)</span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(y)</span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a>  g_el <span class="ot">&lt;-</span> <span class="fu">get.edgelist</span>(g) </span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a>  g_el[,<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="sc">-</span>g_el[,<span class="dv">2</span>]</span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a>  g_el <span class="sc">%&gt;%</span> <span class="fu">apply</span>(<span class="dv">1</span>, onehot_edge, <span class="at">n =</span> <span class="fu">vcount</span>(g))</span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb56-28"><a href="#cb56-28" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">10</span>, .<span class="dv">5</span>)</span>
+<span id="cb56-29"><a href="#cb56-29" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> g <span class="sc">%&gt;%</span> <span class="fu">as_adj</span>()</span>
+<span id="cb56-30"><a href="#cb56-30" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">Diagonal</span>(<span class="at">x =</span> <span class="fu">rowSums</span>(A)) <span class="sc">-</span> A</span>
+<span id="cb56-31"><a href="#cb56-31" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">ve_incidence_matrix</span>(g) <span class="co"># incidence matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Our incidence matrix <span class="math inline">B</span> looks like</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-30_bdb5187fd15b129bacc236fa283eab41">
+<div class="cell-output-display">
+<p><span class="math display">B = \begin{bmatrix} 1 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 \\-1 &amp;1 &amp;1 &amp;0 &amp;0 &amp;1 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 \\0 &amp;-1 &amp;0 &amp;1 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 \\0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 \\0 &amp;0 &amp;-1 &amp;-1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 \\0 &amp;0 &amp;0 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 \\0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;1 &amp;0 \\0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;1 \\0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;-1 &amp;-1 &amp;-1 &amp;0 &amp;0 &amp;0 &amp;0 \\0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;-1 \\ \end{bmatrix}</span></p>
+</div>
+</div>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-31_cbdedeed7b78112694936ca868973751">
+<div class="cell-output-display">
+<p><span class="math display">L= \begin{bmatrix} 4 &amp;-1 &amp;0 &amp;0 &amp;0 &amp;-1 &amp;0 &amp;-1 &amp;-1 &amp;0 \\-1 &amp;6 &amp;-1 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;0 &amp;-1 &amp;0 \\0 &amp;-1 &amp;4 &amp;0 &amp;-1 &amp;-1 &amp;0 &amp;0 &amp;-1 &amp;0 \\0 &amp;0 &amp;0 &amp;1 &amp;0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;-1 \\0 &amp;-1 &amp;-1 &amp;0 &amp;5 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;0 \\-1 &amp;-1 &amp;-1 &amp;0 &amp;0 &amp;7 &amp;-1 &amp;-1 &amp;-1 &amp;-1 \\0 &amp;-1 &amp;0 &amp;0 &amp;-1 &amp;-1 &amp;5 &amp;0 &amp;-1 &amp;-1 \\-1 &amp;0 &amp;0 &amp;0 &amp;-1 &amp;-1 &amp;0 &amp;4 &amp;0 &amp;-1 \\-1 &amp;-1 &amp;-1 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;0 &amp;6 &amp;0 \\0 &amp;0 &amp;0 &amp;-1 &amp;0 &amp;-1 &amp;-1 &amp;-1 &amp;0 &amp;4 \\ \end{bmatrix}</span></p>
+</div>
+</div>
+<p>Just to see the sparsity pattern of B, (we try spam’s display routine)</p>
+<div class="cell" data-hash="matrix_cache/html/unnamed-chunk-32_f2fa5230a2cf26db32e5b1631805273e">
+<div class="cell-output-display">
+<p><img src="matrix_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="laplacian-stochastic-matrix" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="laplacian-stochastic-matrix"><span class="header-section-number">5.7</span> Laplacian Stochastic Matrix</h2>
+<p><span class="math inline">I - D^{\dagger}A</span></p>
+</section>
+</section>
+<section id="stochastic-matrices" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Stochastic Matrices</h1>
+<p>matrices in which each matrix row sums to 1.</p>
+</section>
+<section id="matrix-norms" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Matrix Norms</h1>
+<p>This section aims to quantify and give intuition behind the following matrix norms.</p>
+<ul>
+<li>spectral</li>
+<li>frobenius</li>
+<li><span class="math inline">L^n</span></li>
+</ul>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-andersonEigenvaluesLaplacianGraph1985" class="csl-entry" role="doc-biblioentry">
+Anderson, William N., and Thomas D. Morley. 1985. <span>“Eigenvalues of the <span>Laplacian</span> of a Graph.”</span> <em>Linear and Multilinear Algebra</em> 18 (2): 141–45. <a href="https://doi.org/10.1080/03081088508817681">https://doi.org/10.1080/03081088508817681</a>.
+</div>
+<div id="ref-chungSpectralGraphTheory1997" class="csl-entry" role="doc-biblioentry">
+Chung, Fan R. K. 1997. <em>Spectral <span>Graph Theory</span></em>. <span>American Mathematical Soc.</span> <a href="https://books.google.com?id=YUc38_MCuhAC">https://books.google.com?id=YUc38_MCuhAC</a>.
+</div>
+<div id="ref-hongSharpUpperBound2001" class="csl-entry" role="doc-biblioentry">
+Hong, Yuan, Jin-Long Shu, and Kunfu Fang. 2001. <span>“A Sharp Upper Bound of the Spectral Radius of Graphs.”</span> <em>Journal of Combinatorial Theory, Series B</em> 81 (2): 177–83. <a href="https://doi.org/10.1006/jctb.2000.1997">https://doi.org/10.1006/jctb.2000.1997</a>.
+</div>
+<div id="ref-mckayPracticalGraphIsomorphism2013" class="csl-entry" role="doc-biblioentry">
+McKay, Brendan D., and Adolfo Piperno. 2013. <span>“Practical Graph Isomorphism, <span>II</span>.”</span> <span>arXiv</span>. <a href="https://doi.org/10.48550/arXiv.1301.1493">https://doi.org/10.48550/arXiv.1301.1493</a>.
+</div>
+<div id="ref-nilliSecondEigenvalueGraph1991" class="csl-entry" role="doc-biblioentry">
+Nilli, A. 1991. <span>“On the Second Eigenvalue of a Graph.”</span> <em>Discrete Mathematics</em> 91 (2): 207–10. <a href="https://doi.org/10.1016/0012-365X(91)90112-F">https://doi.org/10.1016/0012-365X(91)90112-F</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../stochastic/stochastic.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">stochastic</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

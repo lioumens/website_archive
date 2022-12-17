@@ -1,0 +1,297 @@
+---
+title: "CARBayes"
+author: "Michael Liou"
+format: html
+---
+
+
+
+```{r}
+#| code-summary: Libraries
+#| message: false
+
+library(MASS)
+library(tidyverse)
+library(CARBayes)
+library(igraph)
+library(mvtnorm)
+library(sparseMVN)
+library(ellipse) # for ellipse plotting
+library(Matrix)
+library(ggraph)
+library(purrr)
+```
+
+The spatial variability and correlation is modeled as an intrinsic Gaussian Markov Random Field. 
+
+Suppose we have some model that looks like,
+
+$$
+\begin{aligned}
+\eta_i = \mu + \mathbf{x}_i'\beta + b_i
+\end{aligned}
+$$
+
+ - $x_i$ is the vector of covariates $(x_{i1}, x_{i2}, \dots, x_{ip})$
+ - $b_i$ is the spatial random effect
+ 
+ It is natural to specify $b_i$ as a conditional distribution.
+ 
+ $$
+ \begin{aligned}
+ b_i | \mathbf{b_{-i}}, \tau^2_i \sim \mathcal{N}\big(\sum_{j:i\sim j} c_{ij}b_j, \tau^2_i\big)
+ \end{aligned}
+ $$
+
+This conditional specification can be shown to be equivalent to the joint specification,
+
+$$
+\begin{aligned}
+\mathbf{b} | \tau^2 \sim \mathcal{N} \big(0, D_{\tau^2}^{-1}(I - C)\big)
+\end{aligned}
+$$
+
+
+The requirement that we impose here is that the covariance matrix is symmetric, Since $D_{\tau^2}$ and $I$ are symmetric, this results in the requirement that
+
+$$
+\begin{aligned}
+\frac{c_{ij}}{c_{ji}} = \frac{\tau_i^2}{\tau_j^2}
+\end{aligned}
+$$
+
+$C$ is the matrix that controls the amount of correlation between the nodes. So how do we interpret $C$ or how do we create it? The most direct interpretation of $c_{ij}$ is that it signifies the strength of averaging from its neighbor, conditional on the strength of the neighbor.
+
+How do we create $C$? We normally start with some symmetric distance matrix $W$, and then row standardize it. In some cases, we just start with the simple adjacency matrix.
+
+
+$$
+\begin{aligned}
+W &= \begin{pmatrix}
+0 & w_{12} & w_{13} \\
+w_{21} & 0 & w_{23} \\
+w_{31} & w_{32} & 0
+\end{pmatrix} \qquad \text{weighted distance matrix}\\
+
+C &= \begin{pmatrix}
+0 & w_{12}/w_{1+} & w_{13}/w_{1+} \\
+w_{21}/w_{2+} & 0 & w_{23}/w_{2+} \\
+w_{31}/w_{3+} & w_{32}/w_{3+} & 0
+\end{pmatrix} \qquad \text{row standardized distance matrix}\\ 
+
+D_{\tau^2} &= \begin{pmatrix}
+\sigma^2 / w_{1+} & & \\
+& \sigma^2 / w_{2+} & \\
+& & \sigma^2 / w_{3+}
+\end{pmatrix} \\
+
+Q &=  D_{\tau^2}^{-1}(I - C) \\
+&=\frac{1}{\sigma^2} \left[\begin{pmatrix}
+w_{1+} & & \\
+&w_{2+} & \\
+& &w_{3+}
+\end{pmatrix} - \begin{pmatrix}
+0 & w_{12} & w_{13} \\
+w_{21} & 0 & w_{23} \\
+w_{31} & w_{32} & w_{33}
+\end{pmatrix}\right]
+\end{aligned}
+$$
+
+# A simple example
+
+We'll use the lollipop graph, and suppose that we observe some random process on the graph.
+
+
+```{r}
+
+W <- matrix(c(0, 1, 1, 0,
+              1, 0, 1, 0,
+              1, 1, 0, 1,
+              0, 0, 1, 0), nrow = 4, byrow = T)
+
+g <- graph_from_adjacency_matrix(W)
+par(oma = c(0, 0, 0, 0),
+    mar = c(0, 0, 0, 0))
+plot(g)
+
+```
+
+```{r}
+# return the standard Laplacian matrix from CAR
+Qcar <- function(W, rho = 1, sigma2 = 1) {
+  DW <- diag(rowSums(W))
+  return((DW - rho*W) / sigma2)
+}
+```
+
+```{r}
+#| collapse: true
+# CAR(1, \sigma^2)
+C <- diag(1/rowSums(W)) %*% W # row standardize the matrix
+
+sigma2 <- 2
+Dtau2 <- diag(sigma2 / rowSums(W))
+
+DW <- diag(rowSums(W)) # diagonal of out degree
+
+L <- DW - W # weighted laplacian
+
+(DW - W) / sigma2 #  precision = L / sigma2
+solve(Dtau2) %*% (diag(4) - C) # precision = D_tau^{-1}(I-C)
+
+```
+
+### Aside: Sampling from a singular multivariate matrix
+
+See [sampling from singular normal (blog post)](http://www.statsathome.com/2018/10/27/sampling-from-the-singular-normal/#fnref2)
+
+::: {.panel-tabset}
+
+### 1. Generalized Inverse
+
+```{r}
+set.seed(1)
+Sigma <- ginv(L)
+X_gi <- mvtnorm::rmvnorm(300, sigma = Sigma)
+
+
+# scatter plot with ellipses
+scatter.ellipse <- function(x, y) {
+  points(x, y, pch = 20)
+  lines(ellipse(cov(cbind(x, y))), col = 2)
+}
+
+pairs(X_gi, upper.panel = NULL, lower.panel = scatter.ellipse,
+      main = "SPLOM of Generalized Inverse Method")
+```
+
+
+### 2. SVD
+
+The idea of this method is to take SVD, and truncate the matrix null values
+
+$$
+\begin{aligned}
+Cov(X) &= \Sigma = UDV
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\Sigma^{-1} = V'D^{-1}U'
+\end{aligned}
+$$
+
+One of these principle components has eigenvalue 0, thus, we can form a positive definite matrix by truncating.
+
+
+```{r}
+set.seed(1)
+
+L_svd <- svd(L) # UDV
+
+# zapsmall(L_svd$v[,1:3] %*% diag(L_svd$d[1:3]) %*% t(L_svd$u[,1:3])) # V'DU
+Sigma <- L_svd$v[,1:3] %*% diag(1/L_svd$d[1:3]) %*% t(L_svd$u[,1:3]) # U'D^{-1}V
+
+
+X_svd <- mvtnorm::rmvnorm(300, sigma = Sigma)
+pairs(X_svd, upper.panel = NULL, lower.panel = scatter.ellipse,
+      main = "SPLOM of Generalized Inverse Method")
+```
+
+
+```{r}
+#| include: false
+# Cholesky aside
+# Q <- chol(L, pivot = TRUE)
+# attr(Q, "pivot")
+# oo <- order(attr(Q, "pivot"))
+# t(Q[, oo]) %*% Q[,oo] # original L 
+```
+
+:::
+
+## Cressie parameterization
+
+Cressie's parameterization gives another parameter to control the degree of spatial averaging in the
+
+The variable is $\rho$, which will take values between $0 < \rho 1$. As $\rho \rightarrow 0$, then the spatial variability disappears.
+
+$$
+\begin{aligned}
+\phi_i | \phi_{-i} \sim N(0, (I-\rho C)^{-1}D)
+\end{aligned}
+$$
+
+Let
+
+$$
+\begin{aligned}
+Y = \mu + \phi
+\end{aligned}
+$$
+
+```{r}
+# CAR(rho, sigma2)
+cressieCAR <- function(nsamples = 10, W, rho = .5, sigma2=1) {
+  DW <- diag(rowSums(W))
+  Q <- (DW - rho * W) / sigma2
+  print(solve(Q))
+  mvtnorm::rmvnorm(nsamples, sigma = solve(Q))
+}
+
+library(tidyverse)
+cressie_sim <- data.frame(rho = c(0, .1, .4, .8, .9)) %>% 
+  rowwise() %>% 
+  mutate(x = list(data.frame(cressieCAR(10, W, rho, sigma2 = 2))))
+
+
+cressie_sim  %>% unnest_wider(x) %>% unnest(X1:X4) %>% 
+  pivot_longer(X1:X4) %>% 
+  ggplot(aes(name, value)) +
+  geom_boxplot()
+
+W <- make_star(5, mode = "undirected") %>% as_adj()
+
+Qcar(W) # not symmetric when the weight matrix is not symmetric
+```
+
+## Conclusions about Besag model
+
+I don't think using the graph laplacian for spatial random effects is very powerful, using a laplacian matrix for the normal distribution does not induce a very strong effect, and also presupposes the spatial dependencies in the model. I think that it's not very economical use of the parameters in the model. There's not nearly the degree of spatial averaging that you'd expect
+
+## Simulations of CAR models
+
+Here we use libraries to visualize the process, and thus the richness of our modeling space.
+
+```{r}
+library(mclcar)
+```
+
+```{r}
+set.seed(33)
+n.torus <- 10
+rho <- 0.2
+sigma <- 1.5
+prec <- 1/sigma
+beta <- c(1, 1)
+XX <- cbind(rep(1, n.torus^2), sample(log(1:n.torus^2)/5))
+mydata1 <- CAR.simTorus(n1 = n.torus, n2 = n.torus, rho = rho, prec = prec)
+
+CAR.simTorus
+
+Wmat <- mydata1$W
+
+mydata2 <- CAR.simWmat(rho = .2, prec = prec, W = Wmat)
+```
+
+```{r}
+tmp <- graph_from_adjacency_matrix(Wmat, mode = "undirected")
+plot(tmp, layout = layout.grid(tmp))
+```
+
+
+## BYM Model
+
+To better fit the data, we split up the spatial effects into spatial components and independent errors for each of the locations. Now it's more like a mixed model, where we can add some level of independent noise to each observation

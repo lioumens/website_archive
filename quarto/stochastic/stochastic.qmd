@@ -1,0 +1,935 @@
+---
+title: "stochastic"
+author: "Michael Liou"
+format: html
+editor: visual
+resources: "vid/*"
+---
+
+```{r}
+#| code-summary: Libraries and Setup
+#| echo: false
+#| message: false
+library(tidyverse)
+library(sde)
+library(deSolve) # standard ode solver
+library(ReacTran) # 1d heat transfer
+library(animation) # save gifs
+library(raster) # plotting raster figures
+library(Sim.DiffProc) # simulate Diffusion processes, OU
+library(Rcpp) # Rcpp
+library(EBImage) # for convolution
+library(rlang)
+library(progressr)
+```
+
+## Gamblers Ruin
+
+The random walk we're simulating is a symmetric random walk from some initial location, and calculating the expected hitting time of crossing some upper or lower boundary
+
+```{r echo = FALSE}
+#| echo: false
+# parameterization
+b <- 20 # upper bound
+a <- 0 # lower bound
+k <- 1 # initial state
+p <- .5 # probability of increase
+
+# random walk simulation for hitting times
+rw_sim <- function(a, b, p, k, return_path = FALSE){
+  t <- 0 
+  ks <- NULL
+  if (return_path) {
+    ks <- c(k)
+  }
+  while(k < b & k > a) {
+    k <- ifelse(rbinom(1, 1, p) == 1, k + 1, k - 1)
+    ks <- c(ks, k)
+    t <- t + 1
+  }
+  if (return_path) return(ks)
+  return(t) # hitting time
+}
+```
+
+```{r}
+set.seed(20)
+k <- 10
+rw <- rw_sim(a, b, p, k, return_path = TRUE)
+
+qplot(0:(length(rw) - 1), rw, geom = "line", xlab = "time", ylab = "state", linetype = "random walk path") + 
+  geom_hline(yintercept = b, color = "tomato1") + 
+  geom_hline(yintercept = a, color = "tomato1") +
+  annotate("point", x = 0, y = 10, size = 2, color = "lightblue") +
+  annotate("label", label = "k - initial state", x = 3, y = 9, fill = "lightblue", size = 2) +
+  annotate("point", x = 44, y = 0, size = 2, color = "lightblue") +
+  annotate("label", label = "T - hitting time", x = 41, y = 1, fill = "lightblue", size = 2) +
+  scale_linetype_manual(values = c(3)) + 
+  labs(linetype = "",
+       title = "Hitting Times of Random Walk") + 
+  lims(y = c(a, b)) + 
+  theme_minimal() + 
+  theme(legend.position = "bottom")
+  
+```
+
+By theory, for the symmetric random walk, (see Durrett)
+
+$$
+\begin{aligned}
+E[T|X_0 = k] = (k - a)(b - k)
+\end{aligned}
+$$
+
+```{r}
+hitting_times <- replicate(10000,
+                           rw_sim(a,b,p, k))
+mean(hitting_times)
+```
+
+## Stochastic Processes
+
+A great overview of Differential Equations in R is covered by
+
+-   "sde" - stochastic differential equations
+
+-   "Sim.DiffProc"- simulate diffusion processes
+
+-   "ReacTran" - functions for generating finite differences on a grid
+
+### Wiener Process
+
+The most basic wiener process takes the form, which describes Brownian motion. This differential equation models 1 dimensional diffusion, and to see this, we can imagine the probability distribution over time. Each of the sample paths are a random walk with gaussian increment with proportional
+
+$$
+dx = dW
+$$
+
+-   $x$ is the position, which is a function of time
+-   $dW$ is the Wiener Noise, gaussian distribution with
+
+```{r}
+x0 <- 0 # initial position
+t0 <- 0 # initial time
+dt <- .01
+nt <- 100 # how many time steps to take, 
+dx <- rnorm(nt, 0, dt) # sample steps
+x <- cumsum(c(x0, dx)) # sample path
+
+rwiener <- function(x0 = 0, t0 = 0, dt = .01, nt = 100) {
+  dx <- rnorm(nt, 0, sqrt(dt)) # sample steps
+  cumsum(c(x0, dx)) # sample path
+}
+
+set.seed(1)
+wiener_paths <- replicate(2000, rwiener())
+wiener_ts <- ts(wiener_paths, start = t0, deltat = dt)
+ts.plot(wiener_ts, col = rgb(0,0,0,alpha = .03), ylim = c(-4, 4), main = "Wiener Sample Paths")
+```
+
+Instead of the sample path approach, if we instead think about the probability density of our position as a function of time, we can see that the probability function becomes more diffuse over time. Thus, it's not surprising that we can describe the diffusion with a PDE through the Fokker-Plank Equation.
+
+```{r}
+#| eval: false
+# code to create animations
+x <- seq(-3, 3, by = .01)
+# animation of density
+saveGIF({
+    for (i in 2:100)  {
+      hist(wiener_ts[i,], xlim = c(-3, 3), ylim = c(0, 10),
+           freq = F,
+           breaks = 40,
+           main = paste0("Density of Sample Paths, Time = ", i*dt),
+           xlab = "x")
+      lines(x, dnorm(x, sd = sqrt(dt * i)), col = "red")
+      legend("topright", legend = c("theoretical density"), col = 2, lty = 1, bty = "n")
+    }
+}, movie.name = "test.gif", loop = T, interval = .01)
+
+# along the sample paths
+saveGIF({
+    for (i in 2:100)  {
+      ts.plot(wiener_ts, col = rgb(0,0,0,alpha = .03), ylim = c(-4, 4), main = "Wiener Sample Paths")
+      abline(v = i * dt, col = "red")
+    }
+}, movie.name = "sample.gif", loop = T, interval = .01)
+```
+
+::: {layout-ncol="2"}
+![](sample.gif)
+
+![](test.gif)
+:::
+
+The associated Fokker Plank equation associated with this stochastic differential equation, is simply the heat equation.
+
+$$
+\frac{\partial}{\partial t} P(x, t) =\frac{1}{2}\frac{\partial^2}{\partial x^2}P(x,t)
+$$
+
+-   Initial condition: $P(x, 0) = \delta(x)$
+-   $\delta(x)$ is the delta-dirac function, which has infinite mass at 0.
+-   Boundary Condition: $P(a, t) = P(b, t) = 0$
+    -   since our simulation has to occur on some bounded region $[a,b]$, we just set the simulation to have absorbing boundaries.
+
+Solving the PDE with initial value conditions analytically, we find that the solution to this eigenvalue problem is
+
+$$
+\begin{aligned}
+P(x, t) = \frac{1}{\sqrt{2\pi t}}\exp \left(\frac{x^2}{2t}\right)
+\end{aligned}
+$$
+
+We can also calculate the solution by finite differencing. We can solve the PDE and show that our solutions match the rate given by the SDE formulation of the PDE. We use code from the [vignette of the `ReacTran` R package](https://rdrr.io/rforge/diffEq/f/inst/doc/PDEinR.pdf). `ReacTran` package uses the method of lines for solving PDE's, in which we set up a discretized grid, and solve the ODE as a vector
+
+```{r}
+# ReacTran uses the
+N <- 601
+xgrid <- setup.grid.1D(x.up = -3, x.down = 3, N = N) # grid of values
+x <- xgrid$x.mid
+D.coeff <- .5 # diffusion coefficient from solving FP
+
+# defines the diffusion (the derivative with respect to time)
+# Since our function has no time dependence, we only need to calculate the derivatives for the next step
+Diffusion <- function (t, Y, parms){
+  tran <- tran.1D(C = Y, C.up = 0, C.down = 0, # dirchlet boundary conditions, set to 0
+                D = D.coeff, dx = xgrid)
+  list(dY = tran$dC)
+}
+
+# Set initial condition of the differential equation, we approximate the 
+Yini <- c(rep(0, 300), 100, rep(0, 300)) # very tall initial mass
+tt <- seq(t0, dt * nt, dt) #times to simulate
+
+# solve heat equation
+out <- ode.1D(y = Yini, times = tt, func = Diffusion, parms = NULL, dimens = N)
+
+# library(tidyverse)
+colorBreaks = 10^(seq(-2, 2, length.out = 255)) # different
+plot(raster(t(out[,-1]), xmn =0, xmx = 1, ymn = -3, ymx = 3),
+     asp = NA,
+     breaks = colorBreaks,
+     col = rev(hcl.colors(length(colorBreaks) - 1L, palette = "Rocket")), legend = FALSE,
+     xlab = "time", ylab = "x", interpolate = TRUE)
+```
+
+### Ornstein-Uhlenbeck Process
+
+Adding a drift term to the stochastic equation, gives the stochastic equation a mean. The negative in front of the drift implies that it will always regress to 0, because it's a function of $x$ (kind of like a spring constant). The $\theta$ parameter controls how strong the restoring force is.
+
+$$
+dx = -\theta x\, dt + \sigma \, dW
+$$
+
+-   $x$ is position, which is a function of time.
+-   $dW$ is the wiener process.
+-   $\theta$ is the rate of return to the mean (0)
+-   Variance of
+
+The following shows the effect of the parameters $\theta = 3$ and $\sigma = .5$ with initial state $x_0 = 5$. We also show the process with a different initial state $x_0 = -3$ to show the restoring effect to the mean.
+
+```{r}
+#| include: false
+#| eval: false
+# section is incorrect bc of https://github.com/acguidoum/Sim.DiffProc/issues/6
+theta <- 3
+sig <- .5
+y0 <- 5
+
+set.seed(1)
+ou_ts <- OU(N = 100, M = 2000, x0 = y0, t0 = 0, mu = theta, sigma = sig) # confusingly, they use the paramterization that theta is the asymp mean, and mu is restoring force
+ts.plot(ou_ts, col = rgb(0,0,0, alpha = .02), ylim = c(-2, 6)) # the variance of the OU process is too large... must be a bug... it is.
+
+hist(ou_ts[101, ])
+x <- seq(0,1, .01)
+theory_mean <- y0*exp(-theta*x)
+lines(x, theory_mean, col = "red")
+theory_var <- sig^2 / 2 / theta * (1 - exp(-2 * theta * x))fir
+# theory_var <- sig^2 / 2 / theta
+lines(x, theory_mean + 2 * sqrt(theory_var), lty = 2, col = "red")
+lines(x, theory_mean - 2 * sqrt(theory_var), lty = 2, col = "red")
+# sum(ou_ts[101,] > theory_mean[101] - 2 * sqrt(theory_var[101]) &
+#   ou_ts[101,] < theory_mean[101] + 2 * sqrt(theory_var[101]))
+# a <- (-2 * 3 + .5^2)
+```
+
+```{r}
+# OU function
+ou_paths <- function(npaths = 1, theta = 3, sigma = .5, x0 = 5, nt = 100, t0 = 0, dt = .01) {
+  sde_path_ou <- function() {
+    x <- vector(mode = "numeric", length = nt + 1)
+    x[1] <- x0
+    wiener_noise <- rnorm(nt, sd = sqrt(dt))
+    for (i in 1:nt) {
+      dx <- -theta * x[i] * dt + sigma * wiener_noise[i]
+      x[i+1] <- x[i] + dx
+    }
+    return(x)
+  }
+  ts(replicate(npaths, sde_path_ou()), start = t0, deltat = dt)
+}
+
+theta <- 3
+sig <- .5
+y0 <- 5
+nt <- 100
+dt <- .01
+t0 <- 0
+
+set.seed(1)
+ou_ts <- ou_paths(npaths = 500, theta = theta, sigma = sig, x0 = y0, nt = nt, t0 = t0, dt = dt)
+
+ts.plot(ou_ts, col = rgb(0,0,0,alpha = .05)) # plot
+
+tt <- seq(0, 1, .01)
+theory_mean <- y0*exp(-theta*tt)
+theory_var <- sig^2 / 2 / theta * (1 - exp(-2 * theta * tt))
+
+lines(tt, theory_mean, col = "red")
+lines(tt, theory_mean + 2 * sqrt(theory_var), lty = 2, col = "red")
+lines(tt, theory_mean - 2 * sqrt(theory_var), lty = 2, col = "red")
+legend("topright", legend = c("mean", "\u00B1 2sd"), col = 2, lty = 1:2)
+```
+
+Because of this restoring property to the mean, a closely related stochastic process is known as the Vasicek model (commonly used to model interest rates), which adds another parameter to control what the mean is.
+
+$$
+dx = \theta(\mu - x)\, dt + \sigma \, dW
+$$
+
+-   reduces to the 0 mean OU process when $\mu = 0$.
+
+-   The long term variance of this model is also
+
+```{r}
+#| include: false
+#| eval: false
+
+# diagnositics
+# microbenchmark::microbenchmark(
+#   replicate(100, my_ou(3, .5, x0 = y0, nt = 100, dt = .01)), # my basic version is much faster
+#   OU(N = 100, M = 100, x0 = y0, t0 = 0, mu = theta, sigma = sig))
+
+# begin reprex ---
+library(Sim.DiffProc)
+
+# parameters
+x0 <- 5
+t0 <- 0
+mu <- 3
+sigma = .5
+N <- 100
+M <- 2000
+
+set.seed(1)
+ou_ts <- OU(N = N, M = M, x0 = x0, t0 = t0, mu = 3, sigma = sigma)
+
+x <- seq(-2, 2, .01)
+theoretical_sd <- sqrt(sigma^2 / 2/mu *( 1- exp(-2 * mu))) # at T = 1
+theoretical_mean <- x0 * exp(-mu) # at T = 1
+theory_dens <- dnorm(x, theoretical_mean, theoretical_sd)
+hist(ou_ts[N+1,], freq = F, breaks = 30)
+lines(x, theory_dens, col = "red")
+# end reprex ---
+```
+
+This process is important because it's the continuous time analogue of a discrete time AR1 process.
+
+Similarly, the associated Fokker-Plank Equation for this SDE is:
+
+$$
+\begin{aligned}
+\frac{\partial P(x, t)}{\partial t} = -\mu \frac{\partial P(x, t)}{\partial x} + \frac{\sigma^2}{2}\frac{\partial^2P(x, t)}{\partial x^2}
+\end{aligned}
+$$
+
+```{r}
+# simulation parameters
+t0 <- 0                       # time start
+dt <- .01                     # time step 
+tn <- 1                       # time end
+nt <- tn/dt                   # number of time steps
+tgrid <- seq(t0, nt * dt, dt) # time grid
+
+x0 <- 6                       # space start
+xn <- -2                    # space end
+nx <- 800                     # number of grid points
+xgrid <- setup.grid.1D(x.up = x0, x.down = xn, N = nx) # space grid
+x <- xgrid$x.int
+
+sig <- .5            # Parameters from OU simulation
+mu <- -3             # Parameters from OU simulation  
+D_coef <- sig^2 / 2  # Diffusion function
+
+y0 <- c(rep(0, 100), 100, rep(0, 699))                 # initial condition
+
+# advection-diffusion (method of lines)
+advec <- function(t, Y, parms) {
+  trans <- tran.1D(C = Y, D = D_coef, v = mu*x, C.up = 0, C.down = 0, dx = xgrid)
+  return(list(dY = trans$dC))
+}
+
+# solve advec/diffusion equation
+out <- ode.1D(y = y0, times = tgrid, func = advec, parms = NULL, dimens = nx)
+
+# plot solution
+colorBreaks = 10^(seq(-3, 3, length.out = 255)) # different to capture more drift in lower parameters
+plot(raster(t(out[,-1]), xmn = 0, xmx = 1, ymn = xn, ymx = x0),
+     asp = NA,
+     breaks = colorBreaks,
+     col = rev(hcl.colors(length(colorBreaks) - 1L, palette = "Rocket")), legend = FALSE,
+     xlab = "time", ylab = "x", interpolate = TRUE)
+
+# rcOU(n=1, Dt=0.1, x0=1, theta=c(0,2,1))
+
+```
+
+::: {.callout-note appearance="minimal" icon="false"}
+### ODE for Mean/Variance of OU process
+
+We can get a First Order ODE characterization of the mean and variance for the Ornstein-Uhlenbeck process.
+
+```{=tex}
+\begin{aligned}
+\frac{d\langle x \rangle}{dt} = -\theta \langle x \rangle \\
+\langle x\rangle = \langle x_0 \rangle e^{-\theta t}
+\end{aligned}
+```
+$$
+\frac{dV}{dt} = -2 \theta V + \sigma^2
+$$
+
+::: {.callout-note collapse="true" appearance="minimal" icon="false"}
+### Proof
+
+$$
+dx = -\theta x\, dt + \sigma\, dW
+$$ First we note the expression for the derivative of variance, and calculate the necessary components.
+
+$$
+\begin{align*}
+\frac{dV}{dt} &= \frac{d\langle x^2\rangle}{dt} - \frac{d \langle x\rangle^2}{dt} \\
+&= \frac{d\langle x^2\rangle}{dt} - 2 \langle x\rangle \frac{d \langle x\rangle}{dt}
+\end{align*}
+$$
+
+Hence, we need to evaluate the mean differentials to the second order, from
+
+$$
+\begin{align}
+d\langle x\rangle &= -\theta \langle x\rangle \, dt\\
+dx^2 &= (x + dx)^2 - x^2 \\
+&=2x\,dx + (dx)^2 \\
+&= (-2\theta x^2 + \sigma^2)\,dt + \sigma \, dW \\
+d\langle x^2\rangle &= (-2\theta \langle x^2\rangle + \sigma^2)\, dt
+\end{align}
+$$
+
+We've used that the rules of Ito's calculus, that $dt\,dW = 0, (dW)^2 = dt, (dt)^2 =0$. Plugging in the values and simplifying gives us the desired result.
+:::
+:::
+
+```{r}
+theta <- 3
+sig <- .5
+
+# simplest first order ode
+ou_mean <- function(t, y, parms) {
+  dy <- -theta * y
+  return(list(dy))
+}
+
+
+x0 <- 5 # initial mean
+tt <- seq(0, 1, by = .01)
+out_mean <- ode(x0, tt, ou_mean, parms = NULL)
+
+cbind(out_mean[,2],
+      5 * exp(-3* tt)) |> head() # matches
+
+# function coding differential equation 
+ou_var <- function(t, v, parms) {
+  dv <- -2 * theta * v + sig^2
+  return(list(dv))
+}
+
+y0 <- 0 # initial variance
+tt <- seq(0, 1, by = .01)
+
+out <- ode(y0, tt, ou_var, parms = NULL)
+
+cbind(out[,2],
+      sig^2 / 2 / theta * (1 - exp(-2 * theta * tt))) |> head() # matches!
+```
+
+### General Linear SDE
+
+$$
+dx = -\gamma x \, dt + g x\, dW
+$$
+
+## Reaction Diffusion Equations
+
+These are non-linear differential equations, and a system of them. We can start describing the reactions of SIR model as sets of nonlinear differential equations. There are a number of famous examples of these, we'll study the Grey-Scott system, then the SIR system, and hopefully we'll see the reaction diffusion nonlinearity around the boundaries of the different stable sets.
+
+### Grey-Scott Model
+
+A really cool web simulation of the phenomena I want to recreate can be found by [Karl Sims, Reaction Diffusion Tutorial](https://www.karlsims.com/rd.html). Luckily, someone else has already implemented a version of this, and we'll just borrow [their code (Fronkonstin)](https://github.com/aschinchon/reaction-diffusion).
+
+![](https://thumbs.gfycat.com/SeveralIncomparableChupacabra-size_restricted.gif){width="296"}
+
+The Grey-Scott Model describes the following irreversible, reactions of three compound $U, V, P$ and $P$ is an inert product.
+
+$$
+\begin{align*}
+U + 2V &\rightarrow 3V \\
+V &\rightarrow P
+\end{align*}
+$$
+
+We will use the simulation parameters from @pearsonComplexPatternsSimple1993, in particular, the equations that result from this reaction diffusion is
+
+$$
+\frac{\partial U}{\partial t} = D_u \nabla^2U - UV^2 + F(1 - U) \\
+\frac{\partial V}{\partial t} = D_v \nabla^2V + UV^2 - (F + k)V
+$$
+
+-   $D_u = 2 \times 10^{-5}$
+
+-   $D_v = 10^{-5}$
+
+-   periodic boundary condition
+
+-   $F$ and $k$ are known as the feed and kill rates of the reactants. since concentration ranges between 0 and 1, the reaction term in the first equation is positive, and then F controls how much of reactant $U$ is being introduced.
+
+```{r}
+#| echo: false
+#| eval: false
+#| include: false
+N <- 256 # grid points
+k <- .053 # kill rate
+f <-  .0283 # feed rate
+D.u <- 1
+D.v <- .5
+
+tN <- 4000 # number of time steps
+
+# initialize simulation grid manually
+X0 <- array(c(
+  rep(1,N^2), # U = 1
+  rep(0, N^2)), # V = 0
+  dim = c(N, N, 2))
+
+# randomize center of the grid
+# set.seed(1)
+# mid_square <- (floor(N/2) - 10):(floor(N/2) + 9)
+# X0[mid_square, mid_square, 1] <- 1/2 + rnorm(400, sd = .01)
+# X0[mid_square, mid_square, 2] <- 1/4 + rnorm(400, sd = .01)
+
+# randomly set some of V concentration
+
+set.seed(7)
+U <- X0[,,1]
+V <- X0[,,2]
+V[sample(N^2, 4000)] <- 1
+
+```
+
+```{r}
+#| echo: false
+#| eval: false
+#| include: false
+# 9 point stencil for Laplacian
+L <- matrix(c(0.05, 0.2, 0.05, 
+               0.2,  -1, 0.2, 
+              0.05, 0.2, 0.05), nrow = 3)
+
+# periodic boundary conditions
+# U_brick <- brick()
+ptm <- proc.time()
+for (i in 1:tN) {
+    dU <- D.u * filter2(U, L) - U * V^2 + f * (1 - U)
+    dV <- D.v * filter2(V, L) + U * V^2 - (f + k) * V
+    U <- U + dU
+    V <- V + dV
+    if (i %% 10 == 0) {
+      # save frames for movie
+      # U_brick <- addLayer(U_brick, raster(U))
+      jpeg(sprintf("~/Downloads/test_gray/jpg/plot%06d.jpg", i))
+      plot(raster(V))
+      dev.off()
+    }
+}
+
+proc.time() - ptm # elapsed wall time
+```
+
+```{r}
+wheredafuck <- function(foo = "aaa/bbb") {
+  new_dir <- fs::dir_create(foo)
+  new_jpeg <- fs::path(new_dir, "jpegherenow", ext = "jpg")
+  jpeg(new_jpeg)
+  plot(1:10)
+  dev.off()
+  system("pwd")
+}
+wheredafuck()
+fs::path_dir("gray_scott.mp4")
+video_file <- fs::path_wd(video_file)
+```
+
+```{r}
+#| eval: false
+gray_scott <- function(U0 = NULL, V0 = NULL,
+                       feed_rate = 0.0545,
+                       kill_rate = 0.062,
+                       N = 256,
+                       tN = 2000,
+                       D.u = 1,
+                       D.v = .5,
+                       save_frame_freq = 20,
+                       video_file = "gray_scott.mp4",
+                       pic_dir = NULL,
+                       init_strategy = c("random"),
+                       seed = 1,
+                       ...) {
+  set.seed(seed)
+  pct <- proc.time()
+  init_strategy <- match.arg(init_strategy)
+  if (missing(U0) | missing(V0)) {
+    #TODO: implement different initialization strategies for different patterns
+    U0 <- matrix(1, nrow = N, ncol = N)
+    V0 <- matrix(0, nrow = N, ncol = N)
+    V0[sample(N^2, ceiling(N^2 / 20))] <- 1 # 10% of cells
+    } else if (!all(c(dim(U0), dim(V0)) == N)) {
+      rlang::abort("Initial Matrix must be a grid with dimension N")
+    }
+  
+  U <- U0
+  V <- V0
+  # 9 point stencil for Laplacian
+  # yuvj420p pix format used: https://superuser.com/questions/1273920/deprecated-pixel-format-used-make-sure-you-did-set-range-correctly
+  L <- matrix(c(0.05, 0.2, 0.05, 
+                0.2,  -1, 0.2,
+                0.05, 0.2, 0.05), nrow = 3)
+  
+  
+  if (missing(pic_dir))
+    pic_dir <- tempdir() 
+  else 
+    pic_dir <- fs::dir_create(fs::path_wd(pic_dir))
+
+  # clean directory  
+  if (length(Sys.glob(fs::path(pic_dir, "*.jpg"))) > 0 ) {
+    rlang::abort(sprintf("%s not empty, please clean out *.jpg files to prevent overwriting!", pic_dir))
+  }
+
+  jpeg_file <- fs::path(pic_dir, sprintf("plot%06d.jpg", 0))
+  jpeg(jpeg_file)
+      # setup base plot graphical parameters
+      par(bty = "n", oma = rep(0, 4), mar = rep(0, 4))
+      plot(raster(V0),
+           axes = F, bty = "n", frame.plot = F,
+           interpolate = F,
+           breaks = hist(V0, breaks = 256, plot = F)$breaks,
+           col = hcl.colors(256,  palette = "ag_sunset"),
+           legend = FALSE)
+      
+      dev.off()
+  
+  p <- progressr::progressor(tN / save_frame_freq)
+  for (i in 1:tN) {
+    dU <- D.u * filter2(U, L) - U * V^2 + feed_rate * (1 - U)
+    dV <- D.v * filter2(V, L) + U * V^2 - (feed_rate + kill_rate) * V
+    U <- U + dU
+    V <- V + dV
+    # save frame in temp folder
+    if (i %% save_frame_freq == 0) {
+      p(message = sprintf("Timestep: %g", i))
+      jpeg_file <- fs::path(pic_dir,
+                            sprintf("plot%06d.jpg", i))
+      jpeg(jpeg_file)
+      # setup base plot graphical parameters
+      par(bty = "n", oma = rep(0, 4), mar = rep(0, 4))
+      plot(raster(V),
+           axes = F, bty = "n", frame.plot = F,
+           interpolate = T,
+           breaks = hist(V, breaks = 256, plot = F)$breaks,
+           col = hcl.colors(256,  palette = "ag_sunset"),
+           legend = FALSE)
+      dev.off()
+    }
+  }
+  
+  # create video directory
+  fs::dir_create(fs::path_wd(fs::path_dir(video_file)))
+  
+  #TODO: check if ffmpeg available on system?
+  ffmpeg_cmd <- sprintf('ffmpeg -y -f image2 -pattern_type glob -i "%s/*.jpg" -framerate 60 -c:v libx264 -crf 20 -filter:v "format=yuvj420p" %s', pic_dir, fs::path_wd(video_file))
+  # run ffmpeg command
+  system(ffmpeg_cmd)
+  cat(paste0("Running command: ", ffmpeg_cmd, "\n"))
+  proc.time() - pct # elapsed wall time
+}
+# relative to this script (when running commands in notebook)
+with_progress(
+  gray_scott(video_file = "vid/gray_scott.mp4", pic_dir = "gray_pic"), handlers = handlers("progress")) # for text updates
+```
+
+<figure class="figure">
+
+<video loop autoplay >
+
+<source src="vid/gray_scott.mp4" type="video/mp4">
+
+</video>
+
+<figcaption>Gray Scott Reaction Diffusion, $f=.0545, k=.062$</figcaption>
+
+</figure>
+
+```{r}
+#| eval: false
+#| include: false
+
+# transvection version, currently simulation running away and I'm not quite sure why. It seems like solving the system is more difficult than just running the simulation code, so for now I'll just explore with the reaction diffusion cpp code.
+
+# alpha simulation
+k <- .05 # kill rate
+f <- .02 # feed rate
+D.u <- .00002
+D.v <- .00001
+N <- 256 # grid points
+
+# setup grid
+xgrid <- setup.grid.1D(x.up = 1, x.down = 0, N = N)
+ygrid <- setup.grid.1D(x.up = 1, x.down = 0, N = N)
+xygrid <- setup.grid.2D(xgrid, ygrid)
+
+## setup transport functions
+# vectorize first and create grid
+# state holds 3 x N x N, two matrices for U, V and P concentration
+grey_scott <- function(t, state, parms) {
+  # unpack state
+  U <- matrix(state[1:N^2], nrow = N) 
+  V <- matrix(state[(N^2 + 1):(2*N^2)], nrow = N)
+  # P <- matrix(state[(2*N^2 + 1):(3*N^2)], nrow = N) # oh, maybe not needed
+  
+  # the diffusion term
+  U_flux <- tran.2D(C = U,
+                    D.x = 1, D.y = 1, # even spread
+                    flux.x.down = 0, flux.x.up = 0, flux.y.down = 0, flux.y.up = 0, dx =N, dy = N) # reflecting boundary
+  V_flux <- tran.2D(C = V, 
+                    D.x = 1, D.y = 1, # even spread
+                    flux.x.down = 0, flux.x.up = 0, flux.y.down = 0, flux.y.up = 0, dx = N, dy = N) # reflecting boundary
+  
+  # C.x.up <- U[1,]
+  # C.x.down <- U[nrow(U)]
+  # rbind(C.x.up, U, C.x.down)
+  dU <- D.u * U_flux$dC - U*V^2 + f*(1 - U)
+  dV <- D.v * V_flux$dC + U*V^2 - (f + k)*V
+  return(list(c(as.vector(dU), as.vector(dV))))
+}
+
+my_grey_scott <- function(t, state, parms) {
+    # unpack state
+  U <- matrix(state[1:N^2], nrow = N) 
+  V <- matrix(state[(N^2 + 1):(2*N^2)], nrow = N)
+  
+  U_flux <- 
+
+  dU <- D.u * U_flux - U*V^2 + f*(1 - U)
+  dV <- D.v * V_flux + U*V^2 - (f + k)*V
+  return(c(dU, dV))
+}
+
+# initial conditions
+state0 <- array(c(
+  rep(1,N^2), # U = 1
+  rep(0, N^2)), # V = 0
+  dim = c(N, N, 2))
+
+# perturb center
+set.seed(1)
+mid_square <- (floor(N/2) - 10):(floor(N/2) + 9)
+state0[mid_square, mid_square, 1] <- 1/2 + rnorm(400, sd = .01)
+state0[mid_square, mid_square, 2] <- 1/4 + rnorm(400, sd = .01)
+
+# time
+tt <- 0:1000
+
+# solve
+out <- ode.2D(as.vector(state0), times = tt, grey_scott, parms = NULL, dimens = c(N, N), lrw = 22012173)
+
+
+U0 <- matrix(out[1, 1:N^2], nrow = N)
+final_U <- matrix(out[1001, 1:N^2], nrow = N)
+U_mid <- matrix(out[10,1:N^2], nrow = N)
+filled.contour(U_mid)
+filled.contour(U0)
+```
+
+### SIR Diffusion
+
+```{r}
+#| echo: false
+#| eval: false
+sir_diffusion <- function(S0 = NULL, I0 = NULL,
+                       feed_rate = 0.0545,
+                       kill_rate = 0.062,
+                       N = 256,
+                       tN = 2000,
+                       D.u = 1,
+                       D.v = .5,
+                       save_frame_freq = 20,
+                       video_file = "sir_diffusion.mp4",
+                       pic_dir = NULL,
+                       init_strategy = c("random"),
+                       seed = 1,
+                       ...) {
+  set.seed(seed)
+  pct <- proc.time()
+  init_strategy <- match.arg(init_strategy)
+  if (missing(S0) | missing(I0)) {
+    #TODO: implement different initialization strategies
+    S0 <- matrix(1, nrow = N, ncol = N)
+    I0 <- matrix(0, nrow = N, ncol = N)
+    I0[sample(N^2, ceiling(N^2 / 20))] <- 1 # 10% of cells
+  } else if (!all(c(dim(S0), dim(I0)) == N)) {
+    rlang::abort("Initial Matrix must be a grid with dimension N")
+  }
+  
+  # save intermediate pictures if directory given
+  if (missing(pic_dir)) {
+    pic_dir <- tempdir()
+  }
+  
+  S <- S0
+  I <- I0
+  # 9 point stencil for Laplacian
+  # yuvj420p pix format used: https://superuser.com/questions/1273920/deprecated-pixel-format-used-make-sure-you-did-set-range-correctly
+  L <- matrix(c(0.05, 0.2, 0.05, 
+                0.2,  -1, 0.2,
+                0.05, 0.2, 0.05), nrow = 3)
+  
+  # save initial state plot
+  jpeg(sprintf("%s/plot%06d.jpg", pic_dir, 0))
+  # setup base plot graphical parameters
+  # par(bty = "n", oma = c(0, 2, 0, 0), mar = c(0, 0, 0, 2))
+  #   plot(raster(I), interpolate = T)
+  par(bty = "n", oma = rep(0, 4), mar = rep(0, 4))
+  plot(raster(I0),
+       axes = F, bty = "n", frame.plot = F,
+       interpolate = T,
+       breaks = hist(I0, breaks = 100, plot = F)$breaks,
+       col = hcl.colors(101,  palette = "ag_sunset"),
+       legend = FALSE)
+  dev.off()
+  
+  p <- progressr::progressor(tN / save_frame_freq)
+  for (i in 1:tN) {
+    dS <- D.u * EBImage::filter2(S, L) - S * I + feed_rate * (1 - S)
+    dI <- D.v * EBImage::filter2(I, L) + S * I - (feed_rate + kill_rate) * I
+    S <- S + dS
+    I <- I + dI
+    # save frame in temp folder
+    if (i %% save_frame_freq == 0) {
+      p(message = sprintf("Timestep: %g", i))
+      jpeg(sprintf("%s/plot%06d.jpg", pic_dir, i))
+      # setup base plot graphical parameters
+      # par(bty = "n", oma = c(0, 2, 0, 0), mar = c(0, 0, 0, 2))
+    #   plot(raster(I), interpolate = T)
+      par(bty = "n", oma = rep(0, 4), mar = rep(0, 4))
+      plot(raster(I),
+           axes = F, bty = "n", frame.plot = F,
+           interpolate = T,
+           breaks = hist(I, breaks = 100, plot = F)$breaks,
+           col = hcl.colors(101,  palette = "ag_sunset"),
+           legend = FALSE)
+      dev.off()
+    }
+  }
+
+  #TODO: check if ffmpeg available on system?
+  ffmpeg_cmd <- sprintf('ffmpeg -y -f image2 -pattern_type glob -i "%s/*.jpg" -framerate 60 -c:v libx264 -crf 20 -filter:v "format=yuvj420p" %s', pic_dir, video_file)
+  # run ffmpeg command 
+  system(ffmpeg_cmd)
+  proc.time() - pct # elapsed wall time
+}
+
+# plot(raster(I), breaks = hist(I, breaks = 100, plot = F)$breaks, col = hcl.colors(101, palette = "ag_sunset"),
+     # interpolate = T)
+
+plot_ly(z=~I) |> add_surface()
+
+library(progressr)
+library(EBImage)
+library(raster)
+with_progress(
+  sir_diffusion(video_file = "vid/sir_diffusion.mp4", pic_dir = "pic", N = 400), handlers = handlers("progress")) # for text updates
+```
+
+```{r}
+plot(raster(I), axes = F, bty = "n", frame.plot = F,
+     interpolate = T)
+```
+
+```{r}
+#| include: false
+#| eval: false
+
+# testing interpolation functions for rasters
+# https://www.rdocumentation.org/packages/raster/versions/3.6-3/topics/interpolate
+r <- raster(system.file("external/test.grd", package="raster"))
+ra <- aggregate(r, 10)
+c(ra@ncols, ra@nrows)
+c(r@ncols, r@nrows)
+
+r <- raster(matrix(1:25, nrow = 5))
+ra <- aggregate(r, 2)
+xy <- data.frame(xyFromCell(r, 1:ncell(r)))
+xy <- data.frame(xyFromCell(ra, 1:ncell(ra)))
+v <- getValues(ra)
+i <- !is.na(v)
+xy <- xy[i,]
+v <- v[i]
+
+
+r <- raster(system.file("external/test.grd", package="raster"))
+ra <- aggregate(r, 10)
+xy <- data.frame(xyFromCell(ra, 1:ncell(ra)))
+v <- getValues(ra)
+# remove NAs
+i <- !is.na(v)
+xy <- xy[i,]
+v <- v[i]
+
+library(fields)
+tps <- Tps(xy, v)
+p <- raster(r)
+ir <- interpolate(p, tps)
+```
+
+here's we're trying to upsample the values that come out of the
+
+The SIR image has a slightly different quality to it in that the lines around the image are thinner
+
+<figure class="figure">
+
+<video loop autoplay >
+
+<source src="vid/sir_diffusion.mp4" type="video/mp4">
+
+</video>
+
+<figcaption>SIR Reaction Diffusion, $f=.0545, k=.062$</figcaption>
+
+</figure>
+
+### SIS system
+
+I'm curious if the SIS system without vital dynamics will show any interesting patterns. We know there must be an absorbing state, but this system can also reach an endemic state based on the reproduction number. If we add diffusion into the system we should get interesting results, at the very least some cool videos.
+
+### Brusselator
+
+### Lorentz Attractor
