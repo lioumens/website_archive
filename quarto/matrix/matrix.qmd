@@ -1,0 +1,794 @@
+---
+title: "Matrix Math"
+author: "Michael Liou"
+format: 
+  html: 
+    page-layout: full
+bibliography: ../references.bib
+---
+
+```{r}
+#| include: false
+
+# https://stackoverflow.com/questions/45591286/for-r-markdown-how-do-i-display-a-matrix-from-r-variable
+
+# Define a generic method that transforms an object x in a LaTeX string
+as_latex = function(x, ...) {
+  UseMethod('as_latex', x)
+}
+
+# Define a class latex for LaTeX expressions
+as_latex.character = function(x) {
+  structure(
+    paste(x, collapse = ' '), 
+    class = c('latex', 'character')
+  )
+}
+
+# define addition of latex, to be concatenation of strings
+`+.latex` <- function(e1, e2) {
+  structure(paste0(e1, e2), class = c("latex", "character"))
+}
+
+
+# A character string of class latex is rendered in display mode
+# Define a knit_print() method for the latex class
+knit_print.latex = function(x, ...) {
+  knitr::asis_output(
+    paste0('$$', x, '$$')
+  )
+} 
+
+# Now, define a method as_latex for matrix
+as_latex.matrix = function(x, ...) {
+  as_latex(c(
+    '\\begin{bmatrix}',
+    paste(
+      t(x),
+      rep(c(rep('&', ncol(x) - 1), '\\\\'), nrow(x)),
+      collapse = ''
+    ),
+    '\\end{bmatrix}'
+  ))
+}
+
+# Indicate to knitr that matrix are rendered as latex
+knit_print.matrix = function(x, ...) {
+  knitr::knit_print(as_latex(x))
+}
+
+# Build a knitr inline hook to display inline latex in inline mode
+default_inline_hook = knitr::knit_hooks$get('inline')
+knitr::knit_hooks$set(inline = function(x) {
+  x = paste(gsub('\\$\\$', '$', x))
+  default_inline_hook(x)
+})
+
+`%times%` = function(x, y) {
+  as_latex(sapply(list(x, '\\times', y), as_latex))  
+}
+
+`%add%` = function(x, y) {
+  as_latex(sapply(list(x, '+', y), as_latex))  
+}
+```
+
+```{r}
+#| message: false
+library(igraph)
+library(Matrix)
+library(spam)
+library(tidyverse)
+library(purrr)
+library(rgraph6)
+library(fs)
+library(forcats)
+
+
+# devtools::install_github("lioumens/Lmisc") # private repo
+library(Lmisc)
+```
+
+# Basic Matrices
+
+Let $j$ be the vector of all 1's, and $J$ be the matrix of all ones.
+
+$$
+\begin{aligned}
+jj' &= J \\
+j'x  &= \sum x \\
+j'A  &= \operatorname{colsums}(A) \\
+Aj &= \operatorname{rowsums}(A) \\
+Jx &= \begin{bmatrix}
+  \sum x \\
+  \vdots \\
+  \sum x \\
+\end{bmatrix}
+\end{aligned}
+$$
+
+# Adjacency Matrix
+
+## Example Spectrums
+
+## Spectral Radius Bounds
+
+::: {.callout-note icon="false"}
+#### Theorem 2.3: Adjacency Matrix Spectral Radius Bound [@hongSharpUpperBound2001]
+
+$$
+\begin{aligned}
+\rho(A) \leq \frac{d_{min} -1 + \sqrt{(d_{min} + 1)^2 + 4(2m-nd_{min})}}{2}
+\end{aligned}
+$$
+
+-   $d_{min}$ is minimum degree on the graph
+-   $n,m$ is number of nodes, edges in the graph
+-   equality is reached for regular graphs, or bi-degreed graphs of either $d_{min}$ or $n-1$
+
+More simply, for a simply connected graph $d_{min} = 1$ the expression simplifies
+
+$$
+\begin{align*}
+\rho(A) \leq \sqrt{1 + 2m - n}
+\end{align*}
+$$ {#eq-easy-hong-adj-spectral}
+
+-   equality reached for complete or star graph
+:::
+
+```{r}
+#| label: hong_upper_adj_spectral
+hong_upper_adj_spectral <- function(d_min, n, m, easy = FALSE) {
+  if (easy) return(sqrt(1 + 2*m - n))
+  (d_min - 1 + sqrt((d_min + 1)^2 + 4 * (2 * m - n * d_min))) / 2
+}
+
+```
+
+```{r}
+#| warning: false
+g5_list <- read_file6("data/graph5c.g6", type = "igraph")
+
+spectrum(g5_list[[5]], which = list(pos = "LM", howmany = 1))$values
+
+eigen(as_adj(g5_list[[2]]))$values[1]
+
+g5_hong_df <- tibble(g = g5_list) |> 
+  rownames_to_column("g_id") |> 
+  rowwise() |> 
+  mutate(min_deg = min(degree(g)),
+         n_edge = ecount(g),
+         n_vertex = vcount(g),
+         spectral_radius = eigen(as_adj(g))$values[1],
+         upper_spectral = hong_upper_adj_spectral(min_deg, n_vertex, n_edge),
+         easy_upper_spectral = hong_upper_adj_spectral(min_deg, n_vertex, n_edge, easy = TRUE)) |> 
+  arrange(upper_spectral, easy_upper_spectral, spectral_radius)
+
+g5_hong_df |> ggplot(aes(factor(g_id, unique(g_id)), spectral_radius)) +
+  geom_point(aes(color = "Spectral Radius")) +
+  geom_line(aes(y = upper_spectral, group = 1, color = "Hong Upper Bound", linetype = "Hong Upper Bound")) +
+  geom_line(aes(y = easy_upper_spectral, group = 1, color = "Hong Easy Upper Bound", linetype = "Hong Easy Upper Bound")) +
+  guides(colour = guide_legend(override.aes = list(shape = c(26, 26, 19), linetype = c(1, 2, 0)))) +
+  scale_color_manual("", values = c("red", "red", "black")) +
+  scale_shape(guide = "none") + 
+  scale_linetype(guide = "none") +
+  labs(x = "graph",
+       y = "Adj. Spectral Radius",
+       title = "Hong Spectral Radius of Adjacency for all connected 5-graphs")
+  
+```
+
+# Laplacian
+
+## Example Spectrums
+
+::: panel-tabset
+### Components
+
+If there are 2 connected components, 2 of the eigenvalues will be 0.
+
+```{r}
+g1 <- graph(~1-2-3-1-4-5-6-4)
+L1 <- laplacian_matrix(g1)
+plot(g1)
+eigen(L1)$values |> zapsmall()
+
+
+g2 <- graph(~1-2-3-1, 4-5-6-4)
+plot(g2)
+L2 <- laplacian_matrix(g2)
+eigen(L2)$values |> zapsmall()
+
+```
+
+### Complete Graph
+
+```{r}
+g <- make_full_graph(5)
+L <- laplacian_matrix(g)
+plot(g)
+eigen(L)$values |> zapsmall()
+```
+
+### Star Graph
+
+```{r}
+g <- make_star(5, mode = "undirected")
+L <- laplacian_matrix(g)
+plot(g)
+eigen(L)$values |> zapsmall()
+```
+
+### Bipartite Graph
+
+```{r}
+g <- make_full_bipartite_graph(5, 3)
+L <- laplacian_matrix(g, normalized = F)
+plot(g)
+eigen(L)$values |> zapsmall()
+```
+
+### Path
+
+```{r}
+g <- make_graph(~1-2-3-4-5-6-7-8-9-10)
+L <- laplacian_matrix(g, normalized = F)
+plot(g)
+eigen(L)$values |> zapsmall()
+```
+:::
+
+```{mermaid}
+%%| include: false
+%%| eval: false
+%%| fig-width: 6
+
+%% works better outside of a tabset for some reason
+flowchart LR
+  a --- b
+  b --- c
+```
+
+## Spectral Radius Bounds
+
+### Simple
+
+There are 3 simple bounds on the Laplacian presented by [@andersonEigenvaluesLaplacianGraph1985],
+
+1.  number of nodes in graph
+
+$$ \lambda_1(L) \leq n$$
+
+-   equality reached on complete graph, for example.
+
+2.  max degree
+
+$$ \lambda_1(L) \leq 2d_{max}$$
+
+-   equality nears on a path graph.
+
+3.  maximal ends of an edge
+
+$$ \lambda_1(L) \leq \max_{i\sim j} w_i + w_j $$
+
+-   where maximum is over edges in graph, and $w_i + w_j$ is the sum of weights of that edge's endpoints.
+-   I believe this is true over any weighted, connected, undirected graph
+-   equality is reached when bipartite graph
+
+## Laplacian for Distributed Summation
+
+::: {.callout-note appearance="minimal"}
+### Source
+
+This insight comes from [Sivan Toledo](https://www.tau.ac.il/~stoledo/Support/ex-distributed-summation.pdf), where he has a nice description of the problem.
+:::
+
+If the eventual algorithm goal is to have the sum of the graph sitting on every node, the repeated application of a matrix multiplication should converge to the matrix of all ones $J$. The spectrum of $J$ is simply $n$ and the rest zeros. $\frac{1}{n}J$ is special because it sets each node to have the mean, and the single non-zero eigenvalue is 1.
+
+```{r}
+eigen(matrix(rep(1/4, 16), nrow = 4))$values |> zapsmall()
+```
+
+Suppose the initial state of the graph $y$ is values at each of the $n$ nodes of the graph.
+
+$$
+\begin{aligned}
+n(I - \frac{1}{n}L)^ky
+\end{aligned}
+$$
+
+As $k$ increases, we'd expect that the matrix spectrum converges to match $J$, since $L$ has a zero eigenvalue, one eigen value limit is 1. And since the Laplacian has spectral radius upper bounded by number of nodes,
+
+```{r}
+set.seed(1)
+g <- sample_gnp(10, .5)
+A <- g %>% as_adj()
+L <- Diagonal(x = rowSums(A)) - A
+```
+
+```{r}
+J <- Matrix(1, nrow = 10, ncol = 10)
+J %*% cbind(1:10)
+```
+
+```{r}
+Je <- eigen(J)
+Ln <- laplacian_matrix(g, normalized = TRUE)
+eigen(Ln)
+
+
+# not correct
+# M <- diag(10) - L / (diag(L) + 1) # direct averaging of over all nodes ***
+# M <- diag(L) - L/2 # average across edges?
+
+# correct
+M <- diag(10) - L / 10
+
+mat_pow <- function(M, t = 10) {
+  if (t == 1) {return(M)}
+  return(M %*% mat_pow(M, t - 1))
+}
+# mat_pow(M, 100)
+
+y <- cbind(1:10)
+for (i in 1:100) {
+  y <- M %*% y
+}
+y
+```
+
+## Normalized Laplacian
+
+The primary reason for looking at the normalized laplacian is because it removes dependence on the number of nodes in the graph, which would change bounds. Rather, the eigenvalues of a normalized laplacian will range from $0 \leq 2$, reaching 2 for bipartite graphs.
+
+```{r}
+D <- 1 / sqrt(diag(L))
+NL <- Diagonal(x = D) %*% L %*% Diagonal(x = D)
+NL
+```
+
+### Example Spectrums of Normalized Laplacian
+
+::: panel-tabset
+#### Ring
+
+```{r}
+g <- make_ring(5)
+plot(g)
+N <- laplacian_matrix(g, normalized = TRUE)
+# 1 - cos(2 * pi * 0:4 / 5) |> sort() # exact
+eigen(N)$values |> zapsmall()
+
+```
+
+#### Path
+
+```{r}
+g <- graph(~1-2-3-4-5)
+N <- laplacian_matrix(g, normalized = TRUE)
+# 1 - cos(pi * 0:4 / 4) |> sort() # exact
+eigen(N)$values |> zapsmall()
+
+```
+
+#### Complete
+
+```{r}
+g <- make_full_graph(5)
+N <- laplacian_matrix(g, normalized = TRUE)
+eigen(N)$values |> zapsmall() # n / n-1
+```
+
+#### Bipartite
+
+```{r}
+g <- make_full_bipartite_graph(6, 4)
+N <- laplacian_matrix(g, normalized = TRUE)
+eigen(N)$values |> zapsmall() # 0, 1 (n + m - 2), 2
+```
+:::
+
+## Fiedler Bounds (normalized Laplacian)
+
+Fiedler Eigenvalue is the smallest non-zero eigenvalue.
+
+### Simple
+
+For k-regular graph, and diameter \> 4, we have
+
+$$
+\begin{aligned}
+\limsup \lambda_{n-1} \leq 1 - 2\frac{\sqrt{k-1}}{k}
+\end{aligned}
+$$
+
+-   equality is reached for ramanujan graphs
+-   note that the conditions exclude bipartite graphs
+-   the fact that it's "lim sup" makes this quite useless, because it's asymptotically toward infinity". In fact, for some regular 4 graphs, 14 node, diameter 5 graphs, the Fiedler value is still well above this bound.
+
+Rather, a more general (and useful upper bound):
+
+::: {.callout-note icon="false"}
+#### Lemma 1.14: Fiedler Upper Bound (dia $\geq$ 4) [@chungSpectralGraphTheory1997]
+
+Let $G$ be a graph with diameter $D \geq 4$, and let $k$ denote the maximum degree of $G$. Then,
+
+$$
+\begin{aligned}
+\lambda_{n-1} \leq 1 - 2\frac{\sqrt{k-1}}{k}\left(1 - \frac{2}{D}\right) + \frac{2}{D}
+\end{aligned}
+$$
+
+::: {.callout-note icon="false" collapse="true"}
+#### Proof
+
+By contracting weighted graphs, and using Rayleigh quotient to upper bound.
+:::
+:::
+
+Note that the original reference [@nilliSecondEigenvalueGraph1991] , studies this problem for non-standardized Laplacian.
+
+```{r}
+upper_fiedler_nilli <- function(k, D) {
+  if (D < 4) abort("upper bound only valid when diameter greater than 4")
+  return(1 - 2 * sqrt(k -1) / k * (1 - 2 / D) + 2 / D)
+}
+```
+
+```{r}
+#| include: false
+# From library Lmisc
+net_fiedler <- function(x, ...) {
+  UseMethod("net_fiedler", x)
+}
+
+#' @describeIn net_fiedler direct eigenvalue decomposition
+#' @export
+net_fiedler.matrix <- function(x, ...) {
+  n <- nrow(x)
+  eigen(x)$values[n-1]
+}
+
+#' @describeIn net_fiedler direct eigenvalue decomposition
+#' @export
+net_fiedler.Matrix <- function(x, ...) {
+  n <- nrow(x)
+  eigen(x)$values[n-1]
+}
+
+#' @describeIn net_fiedler Fiedler of associated graph laplacian
+#' @param normalized whether to use the normalized laplacian, default: `F`
+#' @export
+net_fiedler.igraph <- function(x, normalized = FALSE, ...) {
+  L <- igraph::laplacian_matrix(x, normalized = normalized) # not normalized
+  net_fiedler(L)
+}
+
+```
+
+```{r}
+#| include: false
+#| eval: false
+# ARPACK seems useful for igraph items
+
+```
+
+Let's generate all permutations of connected 8 graphs, and pick out those with diameter greater than 4. All graph generation is done with the program `geng` and filtered with `pickg` [@mckayPracticalGraphIsomorphism2013].
+
+```{r}
+g8_dia4plus_list <- read_file6("data/graph8cdia4p.g6", type = "igraph")
+
+g8_dia4plus_df <- tibble(g = g8_dia4plus_list) |> 
+  rownames_to_column("g_id") |> 
+  rowwise() |> 
+  mutate(fiedler = net_fiedler(g, normalize = T),
+         k = max(degree(g)),
+         D = diameter(g),
+         upper_fiedler = upper_fiedler_nilli(k, D)) |> 
+  arrange(desc(upper_fiedler), desc(fiedler))
+  
+g8_dia4plus_df |> 
+  ggplot(aes(x = factor(g_id, levels = unique(g_id)),
+             y = fiedler, color = "Fiedler Value")) +
+  geom_point(size = .5, alpha = .7) +
+  geom_line(aes(y = upper_fiedler, group = upper_fiedler, color = "Upper Bound")) +
+  labs(color = "Color",
+       title = "Nilli Bound on Fiedler Value for connected-8 Graphs",
+       x = "Unique Graph Combinations",
+       y = "Fiedler Value") +
+  scale_color_manual(values = c("black", "red")) +
+  scale_x_discrete(breaks = NULL, labels = NULL) + 
+  theme_minimal()
+
+```
+
+```{r}
+# files with regular, diameter larger than 4
+# These are all 4 regular graphs, connected, 13/14 nodes, d
+reg4_dia4plus_files <- c("data/reg4c13dia4.g6", "data/reg4c13dia5.g6", "data/reg4c14dia4.g6", "data/reg4c14dia5.g6") 
+reg4_dia4plus_list <- reg4_dia4plus_files |> 
+  map(read_file6, type = "igraph")
+
+reg4_dia4plus_df <- tibble(g = reg4_dia4plus_list, path = reg4_dia4plus_files)  |> 
+  unnest_longer(g, indices_include = TRUE, indices_to = "graph_id") |> 
+  rowwise() |> 
+  mutate(match = list(str_match(path, "data/reg4c(\\d*)dia(\\d*)")),
+         nodes = match[2],
+         dia = match[3],
+         k = 4,
+         fiedler = net_fiedler(g, normalized = T),
+         upper_fiedler = 1 - 2*sqrt(4-1) / 4) |> 
+  select(-c(match, path)) |> arrange(desc(dia), nodes)
+
+reg4_dia4plus_df <- reg4_dia4plus_df |> mutate(dia = as.numeric(dia),
+                           islower = upper_fiedler > fiedler,
+                           other_upper = 1 - 2 * sqrt(4 - 1)/4 * (1 - 2 / dia) + 2/dia,
+                           other_islower = other_upper > fiedler) |> 
+  arrange(islower, other_islower, desc(dia))
+
+# among regular graphs, 13-14 nodes, 4+ diameter
+reg4_dia4plus_df
+reg4_dia4plus_df |> unite(col = "g_uid", !!!c("nodes", "dia", "graph_id"), remove = FALSE) |>
+  ggplot(aes(fct_reorder2(g_uid, fiedler, dia, .desc = T), fiedler)) +
+  geom_point() + 
+  geom_point(aes(y = upper_fiedler), color = "red") +
+  geom_point(aes(y = other_upper), color = "red")
+
+
+# reg4_dia4plus_df
+# reg4_dia4plus_df # well... they are all lower bounded? if it's an infinite family of regular graphs... it should get closer right? b/c it's lim sup?
+```
+
+### By Volume (global)
+
+A loose lower bound for the smallest non-trivial eigenvalue [@chungSpectralGraphTheory1997 pp. 7]:
+
+$$
+\begin{aligned}
+\lambda_{n-1} \geq \frac{1}{D\operatorname{vol}(G)}
+\end{aligned}
+$$ where $D$ is the diameter of the graph, and volume of the graph is the sum of degrees for each node.
+
+::: {.callout-warning appearance="minimal"}
+#### Definition of Volume
+
+Note that @chungSpectralGraphTheory1997 uses the definition $\operatorname{vol}(G) = \sum_{x\in S}d_x$ where $d_x$ is the degree of vertex $x$. Other references use $\operatorname{vol}(G) = |G|$ which is the number of nodes, or giving each node weight 1.
+:::
+
+Let's find the Fiedler value of every graph of size 5 and graph them against the bound,
+
+```{r}
+g5_list <- read_file6("data/graph5c.g6", type = "igraph")
+
+# fiedler values
+fiedler5 <- lapply(g5_list, function(g) {
+  vol <- sum(degree(g)) # conservative
+  # vol <- vcount(g)
+  M <- laplacian_matrix(g, normalized = TRUE)
+  dia <- diameter(g, directed = FALSE)
+  list(g = list(g),
+       fiedler = eigen(M)$values[4],
+       vol = vol,
+       dia = dia)
+})
+
+graph_fiedler <- tibble(gg = fiedler5) |> unnest_wider(gg) |> unnest(cols = c(g)) |> 
+  mutate(bound = 1/ (dia * vol),
+         diff = fiedler - bound) |> 
+  arrange(diff)
+
+
+# calculate the lower bound.
+fiedler_bound_line <- tibble(dia = rep(list(seq(1, 4, .1)), 3), vol = c(5, 10, 20)) |> rowwise() |> 
+  mutate(bound = list(1 / vol / dia)) |> 
+  unnest_longer(col = c(dia, bound))
+
+
+# The bound is generally quite bad for graphs 
+graph_fiedler |> ggplot(aes(dia, fiedler, color = vol)) +
+  geom_line(data = fiedler_bound_line, mapping = aes(dia, bound, color = vol, group = vol)) +
+  geom_point() +
+  labs(title = "Simple Fiedler Bound")
+```
+
+Even using the vertex count definition for volume (less conservative), the bound is quite low for most of the Fiedler values.
+
+### By Cheeger's (Sparsest Cut)
+
+Cheeger's constant is loosely defined in english, as the minimal ratio, of cost of cutting edges, to the size of sets it cuts off. That is, a "dumbbell" shape graph, where large vertex sets are on both side, and only cutting 1 edge in the middle would have a very very low cheeger constant.
+
+$$
+\begin{aligned}
+h_G &= \min_S \frac{|\delta S|}{\min \{|S|,|\bar S| \}} \\&= \frac{\text{cutting edges cost}}{\text{vertex set volume}}
+\end{aligned}
+$$
+
+Calculating Cheeger's constant is an [NP-Hard problem](https://cstheory.stackexchange.com/questions/8615/computing-the-cheeger-constant-feasible-for-which-classes), meaning that the problem is likely non-polynomial for solution and checking.
+
+The bounds on Fiedler's value, with cheegers constants have the form,
+
+$$
+\begin{aligned}
+\frac{h_G^2}{2d_{max}} \leq \lambda_{n-1}  \leq 2h_G 
+\end{aligned}
+$$
+
+```{r}
+# graph_boundary_edges <- function(g, vs) {
+#   if(!inherits(g, "igraph")) {
+#     abort("`g` must be of class `igraph`")
+#   }
+#   inc_edges <- igraph::incident_edges(g, vs)
+#   purrr::reduce()
+# }
+
+# graph_interior_edges <- function(g, vs) {
+#   if(!inherits(g, "igraph")) {
+#     abort("`g` must be of class `igraph`")
+#   }
+#   inc_edges <- igraph:incident_edges(g, vs)
+# }
+
+
+# forget the functions... just do on matrices
+```
+
+```{r}
+#| include: false
+#| eval: false
+# Testing
+A <- as_adj(g)
+vts <- 1:3
+
+adj_vec_set <- A[1:3,] |> colSums()
+ego1 <- which(adj_vec_set > 0) # ego1
+
+vb <- setdiff(ego1, vts) # vertex boundary
+
+bridge_edges <- which(A[vts, vb] |> as("lgCMatrix"), arr.ind = T)
+bridge_edges[,"row"] <- vts[bridge_edges[,"row"]]
+bridge_edges[,"col"] <- vb[bridge_edges[,"col"]]
+
+bridge_edges # edges on boundary
+
+edge_cut_cost <- sum(A[vts, vb]) # sum of edge weights on adjacency from S to !S
+```
+
+```{r}
+#TODO: implemented assuming undirected graph, generalize?
+cheeger <- function(A, S) {
+  # calculate vertex boundary by taking neighbors minus initial set
+  adj_vec_set <- A[S,, drop = F] |> colSums()
+  ego1 <- which(adj_vec_set > 0)
+  dS <- setdiff(ego1, S) # vertex boundary
+  
+  # calculate edge boundary by subsetting matrix from S to !S
+  bridge_matrix <- A[S, dS, drop = F]
+  
+  bridge_edges <- bridge_matrix |> 
+    as("lgCMatrix") |> # also assumes unweighted here when converting to logical
+    which(arr.ind = T) 
+  bridge_edges[,"row"] <- S[bridge_edges[,"row"]] # convert indices
+  bridge_edges[,"col"] <- dS[bridge_edges[,"col"]]
+  vol_dS <- sum(bridge_matrix)
+  min_vol_S <- min(length(S), nrow(A) - length(S)) # use length as volume metric
+  return(vol_dS / min_vol_S)
+}
+
+# generate subsets for each graph
+all_comb <- mapply(function(x) combn(5, x, simplify = F), 1:5)
+all_comb_df <- tibble(elem = all_comb) |>
+  unnest_longer(elem)
+
+graph_df <- g5_list |> lapply(as_adj) |>
+  tibble(A = _) |> rownames_to_column(var = "id") |> 
+  mutate(id = as.numeric(id))
+
+cheeger_df <- full_join(graph_df, all_comb_df, by = character()) |> rowwise() |> 
+  mutate(cheeger_values = cheeger(A, elem))
+
+cheeger_constant_df <- cheeger_df |> filter(cheeger_values > 0) |>  group_by(id) |> arrange(id, cheeger_values) |> slice(1) |> ungroup()
+
+# cheeger_constant_df |> slice(2) |> unlist()
+
+fiedler_value_df <- tibble(gg = fiedler5) |> unnest_wider(gg) |> unnest(cols = c(g)) |> 
+  rownames_to_column(var = "id") |> 
+  rowwise() |> 
+  mutate(id = as.numeric(id),
+         max_deg = max(degree(g))) |> 
+  select(id, fiedler, dia, vol, max_deg) |> 
+  ungroup()
+
+
+cheeger_fiedler_df <- cheeger_constant_df |> select(id, elem, cheeger_values) |> left_join(fiedler_value_df, by = "id") |> 
+  mutate(upper_cheeger = cheeger_values * 2,
+         lower_cheeger = cheeger_values^2 / 2/ max_deg) # dividing by max deg
+# cheeger_fiedler_df |> mutate(inbound = fiedler > lower_cheeger & fiedler < upper_cheeger)
+
+cheeger_fiedler_df |>
+  ggplot() +
+  geom_point(aes(id, lower_cheeger), color = "red") +
+  geom_point(aes(id, fiedler, color = vol)) +
+  geom_point(aes(id, upper_cheeger), color = "red") +
+  labs(y = "Eigenvalue",
+       x = "Graph ID",
+       title = "")
+
+
+# many variations of cheeger's unfortunately
+# seems incorrect for
+```
+
+## Laplacian decomposition as incidence matrix
+
+If we define an incidence matrix as a $|V| \times |E|$ matrix, in which each column has a 1 and -1 for in positions the edge connects the vertices,
+
+```{r}
+# ve_incidence <- function(g) {
+#   stopifnot(class(g) == "igraph")
+#   g %>% get.adjedgelist() %>% map_dbl(~-onehot(.x, n = ecount(g)))
+# }
+
+
+onehot <- function(x, n = max(x)) {
+  y <- vector(mode = "numeric",length = n)
+  y[x] <- 1
+  return(y)
+}
+
+
+# edge list
+ve_incidence_matrix <- function(g) {
+  stopifnot(class(g) == "igraph")
+  onehot_edge <- function(x, n = max(x)) {
+    y <- vector(mode = "numeric",length = n)
+    y[x * sign(x)] <- sign(x)
+    return(y)
+  }
+  g_el <- get.edgelist(g) 
+  g_el[,2] <- -g_el[,2]
+  g_el %>% apply(1, onehot_edge, n = vcount(g))
+}
+
+set.seed(1)
+g <- sample_gnp(10, .5)
+A <- g %>% as_adj()
+L <- Diagonal(x = rowSums(A)) - A
+B <- ve_incidence_matrix(g) # incidence matrix
+```
+
+Our incidence matrix $B$ looks like
+
+```{r}
+#| echo: false
+as_latex("B = ") + as_latex(B)
+```
+
+```{r}
+#| echo: false
+as_latex("L= ") + as_latex(B %*% t(B))
+```
+
+Just to see the sparsity pattern of B, (we try spam's display routine)
+
+```{r}
+#| echo: false
+display(as.spam(B))
+```
+
+## Laplacian Stochastic Matrix
+
+$I - D^{\dagger}A$
+
+# Stochastic Matrices
+
+matrices in which each matrix row sums to 1.
+
+# Matrix Norms
+
+This section aims to quantify and give intuition behind the following matrix norms.
+
+-   spectral
+-   frobenius
+-   $L^n$

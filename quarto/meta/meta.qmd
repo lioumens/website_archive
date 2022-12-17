@@ -1,0 +1,597 @@
+---
+title: "Meta Analysis"
+author: "Michael Liou"
+date: "`r Sys.Date()`"
+title-block-categories: true
+title-block-style: default
+format: html
+editor: visual
+bibliography: references.bib
+---
+
+```{r}
+#| message: false
+#| code-summary: Libraries and Setup
+library(purrr)
+library(tidyverse)
+library(rlang)
+library(plotly)
+
+
+# Bootstrapping Packages
+library(boot)
+library(bootstrap)
+library(nptest)
+
+# Meta Analysis Packages
+library(meta)
+library(metafor)
+library(dmetar) # companion package for "Doing Meta Analysis in R"
+library(esc)
+
+# Entropy Packages
+library(simboot)
+library(entropy)
+library(entropart)
+library(EntropyEstimation)
+
+# Diversity Index
+library(Rarefy)
+library(vegan)
+```
+
+This document is an overview of the key characteristics involved in a meta analysis. An introduction to the statistical components of a meta analysis. Standard errors become quite important for meta analysis because we need to back calculate summarized information and standardize things across studies. We no longer have access to the raw data anymore.
+
+# Effect Size
+
+In order to pool studies, the most important item is the effect size. Largely effect size can be categorized into relative or absolute. Another breakdown is whether the effect size is standardized or not.
+
+## Mean
+
+## Median
+
+## Proportion
+
+## Logit Proportion
+
+## Correlation
+
+Standard error formulas are *not* trivial. Even something like the correlation coefficients have been glossed over and never revisited. We've said "good enough"! The commonly reported values are given here:
+
+1.  $(1 - \rho^2)^2 / n$ is reported by @haldHistoryParametricStatistical2008 pp. 126
+2.  $\frac{(1-\rho^2)^2}{n-1}$ is reported by @dingmanComparisonAccuracyFormula1956
+3.  $\frac{(1-\rho^2)^2}{n-2}$ is reported by
+4.  $\frac{\rho^2}{n}\left(\frac{M_{22}}{\rho^2\sigma_x^2 \sigma_y^2} + \frac{M_{40}}{4\sigma_x^4} + \frac{M_{04}}{4\sigma_y^4} - \frac{M_{13}}{\rho \sigma_x\sigma_y^3} - \frac{M_{31}}{\rho \sigma_x^3\sigma_y1} + \frac{M_{22}}{\rho \sigma_x^2\sigma_y^2}\right)$ is reported by @sheppardIIIApplicationTheory1899 (in the bivariate normal case, this reduces to the first case)
+
+```{r}
+sample_cor_norm <- function(mean1, mean2, sd1, sd2, n) {
+  x <- rnorm(n, mean1, sd2)
+  y <- rnorm(n, mean2, sd2)
+  cor(x, y)
+}
+sample_cor_norm_std <- partial(sample_cor_norm, mean1 = 0, mean2=0, sd1=1, sd2=1)
+
+# resampling simulation, (for n = 10, 20, 30, repeat the sampling 10 times.)
+dat_resample_cor_norm_std <- seq(10, 410, 20) |> 
+  enframe(name = NULL, value = "n") |> 
+  rowwise() |> 
+  mutate(sample_cor = list(replicate(10, sample_cor_norm_std(n))), # increase replicates to make it closer to truth
+         sample_cor_se = sd(sample_cor))
+
+theoretical_resample_cor_se <- tibble(x = seq(3, 410),
+                             y = 1/sqrt(x),
+                             y1 = 1/sqrt(x -1),
+                             y2 = 1/sqrt(x-2)) |> 
+  pivot_longer(cols = y:y2)
+
+dat_resample_cor_norm_std |> ggplot() +
+  geom_point(aes(n, sample_cor_se)) +
+  geom_line(data = theoretical_resample_cor_se,
+            aes(x, value, linetype = name), color = "red")
+
+```
+
+It doesn't really matter the denominator, it's not a big difference. This looks at the actual values of sampling correlation coefficient as $n$ increases.
+
+```{r}
+# Alternative way of looking at the drop off...
+dat_cor_norm_std <- 5:200 |> 
+  enframe(name = NULL, value = "n") |> 
+  rowwise() |> 
+  mutate(sample_cor = sample_cor_norm_std(n))
+
+theoretical_cor_se <- tibble(x = seq(5,200, .5),
+                             y2 = 2/sqrt(x),
+                             y_2 = -2/sqrt(x)) |> 
+  pivot_longer(y2:y_2)
+dat_cor_norm_std |> ggplot(aes(n, sample_cor)) +
+    geom_line(data = theoretical_cor_se,
+            mapping = aes(x, value, group = name), linetype = 2, color = "red") +
+  geom_line(color = "grey50") +
+  theme_minimal() +
+  lims(y = c(-.8, .8)) +
+  labs(y = "Sample Pearson Correlation",
+       title = "2-SE Envelope of Sample Correlation as function of n")
+```
+
+We have the luxury of just resampling from our target population, so we don't really have to bootstrap, but evaluating how good the bootstrap is in various situations is probably worth looking into as well.
+
+Now we're curious how bad these distributions can get if the distributions are skewed. Let's do a correlated example with exponential distributions.
+
+```{r}
+# simulating function for correlated variables
+sample_cor_exp <- function(lambda1, lambda2, n) {
+  x <- rexp(n, lambda1)
+  y <- rexp(n, lambda2)
+  cor(x, x + y) # expected correlation is 1/lambda1 + 1/lambda2
+}
+
+dat_resample_cor_exp <- seq(10, 410, 20) |> 
+  enframe(name = NULL, value = "n") |> 
+  rowwise() |> 
+  mutate(sample_cor = list(replicate(50, sample_cor_exp(2, 3, n))), # increase replicates to make it closer to truth
+         sample_cor_se = sd(sample_cor))
+
+rho <- 5/6
+theoretical_resample_cor_se <- tibble(x = seq(3, 410),
+                             y = (1 - rho^2)/sqrt(x))
+
+theoretical_resample_cor_se |> ggplot() +
+  geom_line(mapping = aes(x = x, y = y), 
+            color = "red",
+            linetype = 2) +
+  geom_point(data = dat_resample_cor_exp,
+             mapping = aes(n, sample_cor_se)) +
+  labs(y="standard error",
+       title = "Standard Errors vs \u03C1 = 5/6")
+
+
+```
+
+Overall, when the distribution is skewed, we're notably underestimating the standard error almost across the board.
+
+```{r}
+# envelope graph
+dat_sample_cor_exp <- 5:200 |> 
+  enframe(name = NULL, value = "n") |> 
+  rowwise() |> 
+  mutate(sample_cor = sample_cor_exp(2, 3, n)) # 5/6 cor theoretical
+
+# theoretical envelop, upper lower 2nd std dev, around (d)
+rho <- 5/6
+theoretical_cor_se <- tibble(x = seq(5,200, .5),
+                             y_upper = 2 * (1 - rho^2)/sqrt(x) + rho,
+                             y_lower = -2 * (1 - rho^2)/sqrt(x) + rho) |> 
+  pivot_longer(starts_with("y"))
+
+dat_sample_cor_exp |> ggplot() +
+  geom_line(aes(x = n, y= sample_cor), color = "grey50") +
+  geom_line(data = theoretical_cor_se, 
+            mapping = aes(x = x, value, group = name),
+            color = "red") +
+  theme_minimal() +
+  labs(title = "2-SE Envelope of Sample Correlation of Exponential RV when \u03C1 = 5/6")
+```
+
+When the distributions are skewed, it seems they peak the bottom a little more, but this matches the story above in which we are underestimating the standard error a little, because it's poking out a little more all over.\
+
+### Z transformed Pearson
+
+## Diversity Indices
+
+-   Shannon diversity
+-   Hill Diversity Indices
+
+It has been noted that there are biases when bootstrapping these diversity indices.[^1] Furthermore, there have been attempts to quantify the standard error as well.[^2]
+
+[^1]: https://stats.stackexchange.com/questions/156235/biased-bootstrap-is-it-okay-to-center-the-ci-around-the-observed-statistic
+
+[^2]: https://stats.stackexchange.com/questions/188869/standard-error-for-shannons-index-in-r
+
+### Hill/Renyi Diversity
+
+$$
+\begin{align*}
+D_a &= \left(\sum_i^S p_i^a\right)^{\frac{1}{1-a}} \\
+D_0 &= \sum_i^S p_i^0 = S & \text{Species Richness}\\
+D_1 &= \exp\left(-\sum_i p_i \log p_i\right) & \text{Exp(Shannon-Wiener Entropy Index)} \\
+D_2 &= \frac{1}{\sum_i^S p_i^2} & \text{Simpson's Reciprocol Index}
+\end{align*}
+$$
+
+::: {.alert-secondary style="border-radius: 1rem;"}
+<details style="padding: .5rem .5rem .5rem .5rem;">
+
+<summary>Limit details for $D_1$</summary>
+
+When $a = 1$, the exponent becomes $1/0$, so we must use the limiting definition as $a\rightarrow 1$ to see how the diversity metric reduces to entropy.
+
+$$
+\begin{align*}
+\lim_{a\rightarrow 1} \left(\sum_{i}^S p_i^a\right)^{\frac{1}{1-a}} &= \lim_{a\rightarrow 1} \exp\left(\frac{1}{1-a}\log\left(\sum_{i}^S p_i^a\right)\right) \\
+&= \exp\left(\lim_{a\rightarrow 1}\frac{\log\left(\sum_{i}^S p_i^a\right)}{1-a}\right) \\
+&= \exp\left(\lim_{a\rightarrow 1}\frac{\sum_i^S p^a_i \log_i p_i}{-\sum_i^S p_i^a}\right) \\
+&= \exp\left(-\sum_i^S p \log_i p_i\right)
+\end{align*}
+$$
+
+where we've used L'hopitals rule in step 2, and $\sum_i^S p_i = 1$ in step 3.
+
+</details>
+:::
+
+### Species Diversity
+
+The most basic metric, basically binarizing the counts, and saying these are all the species that we see.
+
+### Shannon diversity
+
+Shannon diversity is defined as:
+
+$$
+\begin{align*}
+H = -\sum p_i \log p_i
+\end{align*}
+$$
+
+-   $p_i$ is the proportion among all the species, so $\sum p_i = 1$.
+
+-   H is maximized when proportions are the same among proportions
+
+-   Species with count 0 do not contribute to entropy (they also don't change the proportion of existing species).
+
+    -   However if using Shannon Equitability Index, the total species count does matter.
+
+Is Shannon diversity dependent on number of species? Assume uniform distribution.
+
+```{r}
+S <- 2:200
+H <- S |> map_dbl(~entropy(rep(20, .x)))
+H_equitable <- H / log(S)
+tibble(S, H, H_equitable) |> ggplot() +
+  geom_line(aes(S, H, color = "Shannon Index (H)")) +
+  geom_line(aes(S, H_equitable, color = "Equitable Shannon Index")) +
+  theme_minimal() +
+  labs(y = "Entropy",
+       title = "Uniform distribution of species")
+  
+```
+
+What's the sampling distribution of Shannon's diversity index?
+
+```{r}
+#' simulate uniform counts
+#'
+#' @param S number of species
+#' @param n sequencing depth
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sim_uniform_species <- function(S, n = S*5){
+  y <- rdunif(n, S)
+  table(y)[as.character(1:S)] %|% 0L |> as.numeric()
+}
+
+# gives sample community matrix, with uniform distribution across both margins.
+sim_uniform_community_matrix <- function(S, sample_n = 10, sample_min = 100, sample_max = 400) {
+  # sequencing effort will vary between samples
+  n <- runif(sample_n, sample_min, sample_max)
+
+  # each line is a count from samples
+  mapply(n, FUN = sim_uniform_species, S = S) |> 
+    t()
+}
+
+
+# Bias of entropy estimation as a function of sequencing depth.
+entropy_uniform_se <- expand.grid(n = c(2, 5, 10, 50, 200, 500, 1000),
+                                  S = 2:200) |> rowwise() |> 
+  mutate(H = entropy(sim_uniform_species(S, n)))
+
+S <- seq(2:200)
+H_theoretical <- S |> map_dbl(~entropy(rep(10, .x)))
+theoretical_entropy_uniform <- tibble(S, H_theoretical)
+
+entropy_uniform_se |> ggplot() +
+  geom_line(aes(S, H, color = n, group = n)) +
+  geom_line(data = theoretical_entropy_uniform,
+            mapping = aes(S, H_theoretical)) +
+  scale_color_gradient(trans = "log", breaks = c(2, 10, 100, 1000))
+```
+
+The bias it seems can be quite massive if you choose different sequencing efforts. Thus, we must standardize our metric before comparing alpha diversity.
+
+Normalization Techniques (Slides with more[^3])
+
+[^3]: https://evolution.unibas.ch/walser/bacteria_community_analysis/2015-02-10_MBM_tutorial_combined.pdf
+
+-   Subsampling to a common depth (rarefaction)
+
+-   Equalize depths by scaling OTU counts to common depth (different from rarefaction, scaling vs subsampling)
+
+-   Transform counts into relative abundance (denominator is each sample)
+
+-   Normalize data based on 16S
+
+Now we'll try to quantify this bias in the Shannon Diversity Metric, using different estimators of the uniform.
+
+```{r}
+# Chao Shen entropy estimator
+S <- 100
+n <- 50:1000
+
+set.seed(1)
+dat_entropy_bias <- expand_grid(n, S) |> 
+  rowwise() |> 
+  mutate(y = list(sim_uniform_species(S, n)),
+         entropy_est = list(list(H_ML = entropy(y),
+                            H_MM = entropy(y, method = "MM"),
+                            H_Jeffreys = entropy(y, method = "Jeffreys"),
+                            H_Laplace = entropy(y, method = "Laplace"),
+                            H_minimax = entropy(y, method = "minimax"),
+                            H_CS = entropy(y, method = "CS"),
+                            H_shrink = entropy(y, method = "shrink", verbose = FALSE))),
+         H_Z = Entropy.z(y)) |> 
+  unnest_wider(entropy_est) |> 
+  pivot_longer(cols = starts_with("H"), names_to = "H_type" , values_to = "H")
+
+dat_entropy_true <- tibble(n, H_theory = entropy(rep(1, 100)))
+
+g <- dat_entropy_bias |> ggplot() +
+  geom_line(data = dat_entropy_true,
+            mapping = aes(n, H_theory), color = "red") + 
+  geom_line(aes(n, H, color = H_type), alpha = .5)
+
+config(ggplotly(g), modeBarButtonsToRemove = c("zoom", "pan", "select", "zoomIn", "zoomOut",
+                                               "autoScale", "select2d", "hoverClosestCartesian", "hoverCompareCartesian"), displaylogo = FALSE)
+```
+
+The `H_ML` is the standard plug in estimator of the entropy. We can see that most of them underestimate the true entropy, but the shrinkage estimator does surprisingly well. This is something to look into, I think it shrinks toward the uniform distribution anyway, so it's not really a fair comparison. overall we note that:
+
+-   H_CS probably has the highest standard error
+
+```{r}
+#| eval: false
+#| include: false
+#
+H_theoretical <- entropy(rep(1, 100)) # 4.6
+
+# generate sample counts
+set.seed(1)
+y <- sim_uniform_species(S, 100)
+
+# plugin estimate
+
+c("ML", "MM", "Jeffreys", "MM", "Jeffreys") |> map_dbl(~entropy(y, method = .x))
+Entropy.z(y) 
+entropy.ChaoShen(y)
+entropy(y, method = "SG")
+```
+
+### Rarefaction (aside)
+
+There is a difference in terminology *rarefaction* and *rarifying.* Rarefaction curves are the curves, plotting affect of the alpha diversity metric against the sampling effort. rarifying is the practice of subsampling to a similar depth.
+
+The main idea, is that having more sample counts means that more species are likely to be represented. Thus, in order to make samples comparable, we should calculate an "expected species" count with some sort of common effort. Rarefied estimators for species counts are statistically inadmissable [@mcmurdieWasteNotWant2014], due to the simple fact that we're throwing away data, and thus artificially increasing standard error when we don't need to. However, it still remains a common technique so understanding why it's not optimal is still relevant. Since rarefying is basically based on hypergeometric subsampling, exact formulas for standard error and expected value exist.
+
+In general, this is what rarefied curves look like:
+
+```{r}
+data(BCI)
+rarecurve(BCI)
+abline(v=300, col = 2)
+```
+
+A single curve is one sample (row), and plots the expected species count as a function of sub-sampling depth.
+
+```{r}
+set.seed(1)
+uniform_cm <- sim_uniform_community_matrix(100)
+# rarefying gives expected species diversity.
+rarefy(uniform_cm, 118, se = T)
+
+# sum(uniform_cm[10,] != 0) # 69, since this is actual data for 10, the se is zero.
+uniform_drare <- drarefy(uniform_cm, 118) # margin sums are the expected species count, so each cell is the probability of seeing that species 
+
+# subsample first one 179 down to 118.
+cbind(uniform_drare[1, ],
+      1 - exp(lchoose(179 - uniform_cm[1,], 118) - lchoose(179, 118))) |> head()
+```
+
+`drarify` formula counts subsampling arrangements without replacement. Let's say sample 1 had 200 counts total, and we wanted to subsample down to 120. Then, we the total number of subsamples is taking those 120 of those 200 counts. We can imagine that we're pulling from a pool of $S_1, S_2, S_2, S_3$, for which the sample counts would be `c(1, 2, 1)`.
+
+$$
+\begin{align*}
+P(\text{at least one }S_1 \text{ sampled}) =1 - \frac{\binom{200 - S_1}{120}}{\binom{200}{120}}
+\end{align*}
+$$
+
+```{r}
+rarecurve(uniform_cm, sample = 118)
+```
+
+When all the curves are coming from the same distribution, it's reasonable that the rarefied curves will all look the same.
+
+## Estimators for Species Diversity
+
+-   [`breakaway`](https://adw96.github.io/breakaway/articles/intro-diversity-estimation.html) - estimates through nonlinear regression of probability ratios, fraction of singleton's to empty, doubles to singles, etc. Kemp has characterized the distribution of these ratios.
+
+-   [DivNet Paper](https://www.biorxiv.org/content/10.1101/305045v1)
+
+-   Entropy Estimators
+
+    -   [Asymptotic Normality of Entropy Estimator](https://ieeexplore-ieee-org.ezproxy.library.wisc.edu/stamp/stamp.jsp?arnumber=6296713)
+
+    -   [Entropic Representation and Estimation of Diversity Indices](https://arxiv.org/pdf/1403.3031.pdf)
+
+## Entropy
+
+```{r}
+# se calculated by delta method (for binomial at least)
+entropy_delta_se <- function(n, p) {
+  sqrt(p * (1 - p) / n * (1 + log(p))^2)
+}
+
+p <- c(.01, .1, .3, .5)
+n <- seq(5, 200, 15)
+sim_df <- expand_grid(n, p)
+entropy_se_df <- sim_df |> rowwise() |> 
+  mutate(y = list(rbinom(200, n, p)),
+         p_hat = list(y / n),
+         sample_entropy = list(p_hat * log(p_hat)),
+         se_sample_entropy = sd(sample_entropy, na.rm = TRUE),
+         delta_se = entropy_delta_se(n, p))
+
+# deltamethod(~ 1 / (x1 + x2))
+# deriv(expression(x * log(x)), "x", function.arg = TRUE)
+# deriv(~x * log(x), "x")
+
+
+entropy_se_df |> ggplot(aes(n, se_sample_entropy, color = factor(p))) +
+  geom_point() +
+  geom_line(mapping = aes(n, delta_se),
+            linetype = 2) +
+  facet_wrap(~p, nrow = 2)
+```
+
+## Group Differences
+
+There's a lot of these, so here's a quick list
+
+### Mean Difference
+
+### Standardized Mean Difference (Cohen's d)
+
+Note that the standard $t$ statistic is defined as $\frac{\sqrt{n}(\bar x_2 - \bar x_1)}{s_p}$ which differs from $d$ by a factor of $\sqrt{n}$.
+
++----------------------------+-----------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| Name                       |           | Estimator                                | SE                                                                                                                             |
++============================+===========+==========================================+================================================================================================================================+
+| MD                         |           | $\bar x_2 - \bar x_1$                    | $$                                                                                                                             |
+|                            |           |                                          | s_p\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}                                                                                        |
+|                            |           |                                          | $$                                                                                                                             |
++----------------------------+-----------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| SMD                        | Cohen's d | $\frac{\bar x_2 - \bar x_1}{s_{p}}$      | $$                                                                                                                             |
+|                            |           |                                          | \sqrt{\frac{n_1 + n_2}{n_1n_2} + \frac{d^2}{2(n_1 + n_2)}}                                                                     |
+|                            |           |                                          | $$                                                                                                                             |
+|                            |           |                                          |                                                                                                                                |
+|                            |           |                                          | [SO Derivation of SE](https://stats.stackexchange.com/questions/495015/what-is-the-formula-for-the-standard-error-of-cohens-d) |
++----------------------------+-----------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+|                            | Hedge's g |                                          |                                                                                                                                |
++----------------------------+-----------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| (log) Risk Ratio           |           | $\log\left(\frac{a/n_{1}}{b/n_2}\right)$ |                                                                                                                                |
++----------------------------+-----------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| (log) Odds Ratio           |           | $\log\left(\frac{a/b}{c/d}\right)$       |                                                                                                                                |
++----------------------------+-----------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| (log) Incidence Risk Ratio |           |                                          |                                                                                                                                |
++----------------------------+-----------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| Hazard Ratio               |           |                                          |                                                                                                                                |
++----------------------------+-----------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+
+: Adjustments
+
+-   reliability / test-retest / attenuated/ error in measurement models
+
+    -   These types of estimators standardize by $\sqrt{r_{xx}}$, when available and many variants thereafter
+
+-   Small Sample Adjustments
+
+    -   Generally small samples have quite a large bias
+
+# Pooling Effect Size
+
+Now that we have an understanding of how effect sizes matter for different variables, how do we actually pool the studies?
+
+::: {.callout-caution appearance="minimal" icon="false"}
+## Don't use `lme` or `lm`
+
+Although `lme()` and `lm()` have a weights argument, they are NOT (directly) appropriate for meta analyses. The weights that are provided to those arguments are *relative*, and thus still estimate an additional error component. The (inverse) weights from the meta analyses are different in that they should fully specify the error variance, and they should be treated as fixed variance. This class of models falls under "small area estimation" or Fay-Harriot models.
+
+Viechtbauer (author of `metafor` R package) has a [great post](https://www.metafor-project.org/doku.php/faq#why_can_i_not_just_use_the_lm) about this topic.
+:::
+
+We'll follow along with the [Chapter 4: Doing Meta Analysis in R](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/pooling-es.html).
+
+```{r}
+## Fixed Efffect estimating
+data(SuicidePrevention)
+# Since all raw data, need to calculate standardized effect size metrics
+SP_calc <- esc_mean_sd(grp1m = SuicidePrevention$mean.e,
+                       grp1sd = SuicidePrevention$sd.e,
+                       grp1n = SuicidePrevention$n.e,
+                       grp2m = SuicidePrevention$mean.c,
+                       grp2sd = SuicidePrevention$sd.c,
+                       grp2n = SuicidePrevention$n.c,
+                       study = SuicidePrevention$author,
+                       es.type = "g") %>% 
+                     as.data.frame()
+
+cbind(SP_calc$weight, 
+1/ SP_calc$se^2) # weights are calculated by inverse se^2
+fe_est <- with(SP_calc, sum(es * weight) / sum(weight)) # pooled estimate 
+```
+
+Random effect weighting adds and additional
+
+Consider a @knappImprovedTestsRandom2003 adjustment, changing tests to use t-distribution for the extra parameter estimated in the random effect model. @sidikNoteVarianceEstimation2005 evaluates the estimators and finds Knapp Hartung variance estimates to be the best protection against error. The main problem is estimating the weights used in the meta-analyses.
+
+```{r}
+## Random effect
+library(meta)
+data(ThirdWave)
+m.gen <- metagen(TE = TE,
+                 seTE = seTE,
+                 studlab = Author,
+                 data = ThirdWave,
+                 sm = "SMD",
+                 fixed = FALSE,
+                 random = TRUE,
+                 method.tau = "REML",
+                 hakn = TRUE,
+                 title = "Third Wave Psychotherapies")
+
+m.gen <- metagen(TE = TE,
+                 seTE = seTE,
+                 studlab = Author,
+                 data = ThirdWave,
+                 sm = "SMD",
+                 fixed = FALSE,
+                 random = TRUE,
+                 method.tau = "DL",
+                 hakn = FALSE,
+                 title = "Third Wave Psychotherapies")
+
+summary(m.gen)
+```
+
+```{r}
+weights <- 1/(ThirdWave$seTE^2)
+fe_est <- with(ThirdWave, sum(TE * weights) / sum(weights)) # pooled estimate 
+Q <- sum(with(ThirdWave, (TE - fe_est)^2 / seTE^2))
+
+
+
+```
+
+```{r}
+k <- nrow(ThirdWave)
+max(0, (Q - (k - 1))/  (sum(weights) - sum(weights^2) / sum(weights))) # DL estimator
+```
+
+```{r}
+library(esc)
+# Define the data we need to calculate SMD/d
+grp1m <- 50   # mean of group 1
+grp2m <- 60   # mean of group 2
+grp1sd <- 10  # sd of group 1
+grp2sd <- 10  # sd of group 2
+grp1n <- 100  # n of group1
+grp2n <- 100  # n of group2
+
+# Calculate effect size
+esc_mean_sd(grp1m = grp1m, grp2m = grp2m, 
+            grp1sd = grp1sd, grp2sd = grp2sd, 
+            grp1n = grp1n, grp2n = grp2n)
+```

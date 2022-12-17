@@ -145,10 +145,6 @@ dv_analysis <- differentialTest(formula = ~ DayAmdmt,
 ?abbreviate(c("a", "aa", "aaaaaaaaaaaaaaaaaaaaa", "bbbbbbbbbbbbb", "aasdlfjas;ldkfja;sdixckvjlsdjfiosjdlk")) # can be useful for plotting long names
 ```
 
-```{r}
-
-```
-
 
 ```{r}
 # model selection

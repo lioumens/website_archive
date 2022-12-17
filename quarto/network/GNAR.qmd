@@ -1,0 +1,124 @@
+---
+title: "GNAR"
+author: "Michael Liou"
+format: html
+---
+
+```{r}
+#| include: false
+
+# https://stackoverflow.com/questions/45591286/for-r-markdown-how-do-i-display-a-matrix-from-r-variable
+
+# Define a generic method that transforms an object x in a LaTeX string
+as_latex = function(x, ...) {
+  UseMethod('as_latex', x)
+}
+
+# Define a class latex for LaTeX expressions
+as_latex.character = function(x) {
+  structure(
+    paste(x, collapse = ' '), 
+    class = c('latex', 'character')
+  )
+}
+
+# adding for latex strings, S4, mixing?
+Ops.latex <- function(e1, e2) {structure(paste0(e1,e2), class = c("latex", "character"))}
+
+
+
+# A character string of class latex is rendered in display mode
+# Define a knit_print() method for the latex class
+knit_print.latex = function(x, ...) {
+  knitr::asis_output(
+    paste0('$$', x, '$$')
+  )
+} 
+
+# Now, define a method as_latex for matrix
+as_latex.matrix = function(x, ...) {
+  as_latex(c(
+    '\\begin{bmatrix}',
+    paste(
+      t(x),
+      rep(c(rep('&', ncol(x) - 1), '\\\\'), nrow(x)),
+      collapse = ''
+    ),
+    '\\end{bmatrix}'
+  ))
+}
+
+# Indicate to knitr that matrix are rendered as latex
+knit_print.matrix = function(x, ...) {
+  knitr::knit_print(as_latex(x))
+}
+
+# Build a knitr inline hook to display inline latex in inline mode
+default_inline_hook = knitr::knit_hooks$get('inline')
+knitr::knit_hooks$set(inline = function(x) {
+  x = paste(gsub('\\$\\$', '$', x))
+  default_inline_hook(x)
+})
+
+`%times%` = function(x, y) {
+  as_latex(sapply(list(x, '\\times', y), as_latex))  
+}
+
+`%add%` = function(x, y) {
+  as_latex(sapply(list(x, '+', y), as_latex))  
+}
+
+```
+
+```{r}
+#| echo: false
+library(GNAR)
+library(igraph)
+```
+
+## Tutorial
+
+```{r}
+#| echo = FALSE
+plot(fiveNet, vertex.label = LETTERS[1:5])
+```
+
+```{r}
+# make_graph(~1-2-3-1, 1-4-5) # make igraph
+# fiveVTS
+five_gnar <- GNARfit(vts = fiveVTS, net = fiveNet, alphaOrder = 2)
+# alphaOrder gives time lag
+```
+
+
+```{r}
+plot(fiveVTS[,1], ylab = "Node A time series")
+lines(fitted(five_gnar)[,1], col = 2)
+```
+
+The residuals are examined as follows
+
+
+```{r}
+layout(matrix(c(1,2), 2, 1))
+par(mar = c(4.1, 4.1, 1, 2.1), cex.axis = 0.9)
+plot(ts(residuals(five_gnar)[,1]), ylab = "model residuals")
+hist(residuals(five_gnar)[,1], main = "", xlab = "model residuals")
+```
+
+
+Show that GNAR does not have a problem with missing data,
+
+```{r}
+fiveVTS0 <- fiveVTS
+
+fiveVTS0[50:150, 3] <- NA
+nafit <- GNARfit(vts = fiveVTS0, net = fiveNet, alphaOrder = 2, betaOrder = c(1, 1))
+layout(matrix(c(1, 2), 2, 1))
+par(mar = c(4.1, 4.1, 0.75, 2.1), cex.axis = 0.75)
+plot(ts(fitted(nafit)[, 3]), ylab = "Node C fitted values")
+par(mar = c(4.1, 4.1, 0.75, 2.1), cex.axis = 0.75)
+plot(ts(fitted(nafit)[, 4]), ylab = "Node D fitted values")
+```
+
+

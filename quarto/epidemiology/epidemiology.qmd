@@ -1,0 +1,25 @@
+---
+title: "Epidemiology"
+author: "Michael Liou"
+format: html
+---
+
+# Contagion Process on Time-Varying Networks
+
+This section will explore some of the results of the paper [Temporal Gillespie Algorithm: Fast Simulation of Contagion Processes on Time-Varying Networks](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004579).
+
+There are some included files for the algorithms described in the paper. There doesn't seem to be too much special about these programs, but well work the time component into the network. I think the major disadvantages of these data is
+
+```
+./SIR <data> dt beta mu T_simulation ensembleSize outputTimeResolution
+where:
+  <data> - path of text file containing contact data (temporal network);
+  dt - time-resolution of recorded contact data (time-step length);
+  beta - probability per time-step of infection when in contact with an
+    infected node;
+  mu - probability per time-step of recovery for an infected node;
+  T_simulation - length of simulation in number of time-steps;
+  ensembleSize - number of independent realizations of the SIR process;
+  outputTimeResolution - time-resolution of the average number of infected
+    and recovered nodes that the program gives as output.
+```
