@@ -16,3 +16,4 @@ quarto/.quarto
 quarto/_freeze
 quarto/*/*_files
 quarto/*/*_cache
+.Rproj.user

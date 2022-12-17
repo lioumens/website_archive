@@ -55,4 +55,7 @@ resources when necessary and elaborate when I find fit.
 
 * [FAQ about Generalized Linear Mixed Models in R](https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html)
 
+## Personal Documentation
+
+* [Password Protected](mydocs)
 
