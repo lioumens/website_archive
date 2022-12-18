@@ -1,0 +1,32 @@
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+name: Quarto Render Mydocs
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render Quarto Project
+        uses: quarto-dev/quarto-actions/render@v2
+        with:
+          to: html
+          path: quarto
+
+      - name: Push Rendered Files
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add mydocs
+          git commit -m "github actions push"
+          git push

@@ -1,0 +1,23 @@
+_site/**
+*Thumbs.db
+Gemfile.lock
+_site
+*.DS_Store
+*.Rhistory
+*.jekyll-metadata
+
+# R Related
+rmd/*/*_cache
+rmd/*/*_files
+*.Rhistory
+*.swp
+
+## Quarto Related
+quarto/.quarto/
+quarto/*/*_files
+quarto/*/*_cache
+quarto/_book/*
+.Rproj.user
+
+# managed by github actions
+mydocs/*

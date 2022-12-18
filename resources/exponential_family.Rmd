@@ -1,0 +1,123 @@
+---
+title: "Exponential Families"
+author: "Michael Liou"
+date: "July 14, 2018"
+output:
+  html_document:
+    theme: lumen
+    highlight: haddock
+    toc: true
+    df_print: default
+    number_sections: false
+    toc_float:
+      collapsed: true
+---
+
+\newcommand{\expect}[1]{\mathbf{E}\left[ #1 \right]}
+\newcommand{\variance}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\covariance}[1]{\mathrm{Cov}\left( #1 \right)}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+```
+
+# Overview
+
+Exponential families play a convenient role in many areas of statistics. There are many aspects and properties that will be covered here.
+
+Maybe bit off more than I can chew here, but I will slowly add to this to make it a complete reference! Check back!
+
+# Definition
+
+The general form of the exponential family is given here.
+
+$$
+\begin{aligned}
+f(x) &= h(x)\exp{ \left(\eta \cdot T(x) - A(\eta)\right)}
+\end{aligned}
+$$
+where
+
+* $h(x)$ is the base measure
+* $\eta$ is the natural parameter
+* $T(x)$ is the sufficient statistic
+* $A(\eta)$ is the log-partition function
+
+Note, the exponential form is not unique, for example, we can move constants from the base measure into the log-partition function. Even the *canonical* representation is not unique for this reason, despite what the name implies.
+
+# Examples
+## Multivariate Normal
+
+Let random variable $\mathbf{X}\sim \text{MVN}(\mathbf{\mu}, \mathbf{\Sigma})$. Before starting to find the natural parameters. Let's determine how many parameters we are expecting for a $p$ dimensional $X$.
+
+| Dimension | Identifiable Parameters |
+|:-:|:-|
+|$1$ | 2 |
+|$2$ | 5 |
+|$3$ | 9 |
+|$p$ | $p + \frac{p^2 + p}{2}$ |
+
+The first $p$ parameters correspond to the mean vector, and a $(p^2 + p)/2$ corresponds to the triangular matrix (including diagonal) for the covariance matrix, because we force the covariance matrix to be symmetric.
+
+We have that,
+
+$$
+\begin{aligned}
+f(\mathbf{x}| \mathbf{\mu, \Sigma}) &= (2\pi)^{-p/2}\det{|\mathbf{\Sigma}|}^{-1/2} \exp{ \left(-\frac{1}{2} \mathbf{\left(x - \mu\right)^{\mathrm{T}}\Sigma^{-1}\left(x-\mu\right)}\right)} \\
+&=(2\pi)^{-p/2}\exp{ \left(-\frac{1}{2} \mathbf{x^T\Sigma^{-1}x + x^T\Sigma^{-1}\mu - \mathrm{\frac{1}{2}} \mu\Sigma^{-1}\mu} - \frac{1}{2} \log \left(\det |\Sigma|\right)\right)} \\
+&=(2\pi)^{-p/2}\exp{ \left(-\frac{1}{2} \mathbf{x^T\Sigma^{-1}x + (\Sigma^{-1}\mu)^Tx - \mathrm{\frac{1}{2}} \mu\Sigma^{-1}\mu} + \frac{1}{2} \log \left(\det |\Sigma^{-1}|\right)\right)}
+\end{aligned}
+$$
+
+
+In the last step, we use the fact that $x^T\Sigma^{-1}\mu$ is a constant, and that the reciprocal of a determinant is the determinant of the inverse. This is technically already in exponential form, but some work needs to be done to change $x^T\Sigma^{-1}x$ into the form $\eta \cdot T(x)$. Let $K_{ij} = \Sigma^{-1}$ denote $ij$-th entry in $\Sigma^{-1}$ $x^T\Sigma^{-1}x = \sum_{ij}  K_{ij}x_ix_j$. Because $\Sigma^{-1}$ is symmetric, and multiplication is commutative, the $\frac{p^2 + p}{2}$ parameters we get from this term are $A_{ij:i\leq j}$ (the upper triangle of $K$) and the $\frac{p^2 + p}{2}$ sufficient statistics is $x_ix_j$ where $i\leq j$.
+
+Thus in total, we have our $T(x) \in \mathbb{R}^{p + (p^2 + p)/2}$ where $T(x)$ are components of $\mathbf{x}$ and the upper triangle of $xx^T$, 
+
+$$T(x) = \begin{bmatrix}x_1 & x_2 & \ldots & x_p & x_1x_1 & x_1x_2 \ldots & x_px_p\end{bmatrix}^T$$.
+
+Analogously, $\eta \in \mathbb{R}^{p + (p^2 + p)/2}$ where $\eta$ is the components of $\Sigma^{-1}\mu$ and the upper triangle of $\Sigma^{-1}$. 
+
+$$\eta = \begin{bmatrix}\text{row}_1(K)\cdot\mu_1 & \text{row}_2(K)\cdot \mu_2 & \ldots & \text{row}_p(K)\cdot\mu_p & - \frac{1}{2}K_{11} & -K_{12} & \ldots & -\frac{1}{2}K_{pp}\end{bmatrix}^T$$.
+
+In an abuse of notation (but very convenient), nearly all references [^1] [^2] from googling will use,
+
+$$
+\begin{aligned}
+\eta &= \begin{bmatrix}\eta_1 \\ \eta_2\end{bmatrix}
+ =  \begin{bmatrix}\Sigma^{-1}\mu \\
+- \frac{1}{2}\Sigma^{-1}\end{bmatrix} \\
+T(x) &= \begin{bmatrix}T_1 \\ T_2\end{bmatrix}
+ \begin{bmatrix}x \\ xx^T\end{bmatrix}
+\end{aligned}
+$$
+
+This doesn't really make sense because $\eta \cdot T(x)$ is supposed to give us a scalar (but it returns a matrix?), and also, combining a vector $x$ with a matrix $xx^T$ is ambiguous, to say the least. This stack overflow post explains the confusion and rectifies it by using the vectorizing notation relation to the Frobenius product. [^3] Here I would emphasize that $xx^T$ and $\Sigma^{-1}$ are symmetric, so these representations are **minimal** because the $pxp$ matrices actually correspond 1-1 to parameter vectors in $\mathbb{R}^{(p^2 + p)/2}$ and there isn't a linear dependence between the parameters. Also, because the natural parameters contain an open set in $\mathbb{R}^{p +(p^2 + p)/2}$, the representation is **full rank**. 
+
+We continue forward with this notation, and extract out the log-partition function as well. In our original (moment) parameterization, 
+
+$$
+\begin{aligned}
+\mu & = - \frac{1}{2}\eta_2^{-1} \eta_1\\
+\Sigma & = - \frac{1}{2}\eta_2^{-1}
+\end{aligned}
+$$
+Thus, the log-partition function $A(\eta)$ and base measure is,
+
+$$
+\begin{aligned}
+A(\mu, \Sigma) &= \frac{1}{2}\mu^T\Sigma^{-1}\mu - \frac{1}{2}\log|\Sigma^{-1}| \\
+&= -\frac{1}{4}(\eta_2^{-1} \eta_1)^{T}\eta_1 - \frac{1}{2}\log\det(-2\eta_2) \\
+&= A(\mathbf{\eta}) \\
+h(x) &= (2\pi)^{-p/2}
+\end{aligned}
+$$
+
+It matches up with Wikipedia! Now isn't that a confidence booster? [^4]
+
+# References
+
+[^1]: https://www.cs.princeton.edu/~bee/courses/scribe/lec_09_09_2013.pdf
+[^2]: https://pure.au.dk/ws/files/51499534/Mon_52.pdf
+[^3]: https://math.stackexchange.com/questions/26648/exponential-family-representation-of-multi-variate-gaussians
+[^4]: https://en.wikipedia.org/wiki/Exponential_family#Table_of_distributions
