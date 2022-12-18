@@ -13,9 +13,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+
+      - name: Set gh pages to main
         run: |
           git switch gh-pages
           git reset --hard "origin/main"
+
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
