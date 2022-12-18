@@ -57,5 +57,5 @@ resources when necessary and elaborate when I find fit.
 
 ## Personal Documentation
 
-* [Password Protected](mydocs)
+* [Password Protected]({{ site.BASE_PATH }}/mydocs)
 
