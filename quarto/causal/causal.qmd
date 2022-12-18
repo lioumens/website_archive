@@ -3,7 +3,7 @@ title: "Causal Statistics"
 editor: visual
 ---
 
-# Propensity Scores
+## Propensity Scores
 
 What are propensity scores? A propensity score is defined as the probability of a treatment assignment conditional on some background observed covariates.
 
@@ -13,13 +13,13 @@ $$
 \begin{aligned}
 \Pr(T = 1 \, | X=x )
 \end{aligned}
-$$
-For more background information see [Matching Methods][jhu_match].
+$$ For more background information see [Matching Methods](http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf).
 
-# Matching
+## Matching
 
 There are many ways to match:
 
+```{=tex}
 \begin{enumerate}
 \item Exact
 \item Subclassification
@@ -29,13 +29,9 @@ There are many ways to match:
 \item Genetic Matching
 \item Corsened Exact Matching
 \end{enumerate}
+```
 
 
-# R Implementation
+## R Implementation
 
-The package MatchIt provides the function `matchit` to attempt matching of covariates automatically. There are many methods to matching covariates. The main page of the package can be found [here][matchit]. The package also uses [Zelig][zelig] for additional features.
-
-
-[jhu_match]: http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf
-[matchit]: https://gking.harvard.edu/matchit
-[zelig]: https://zeligproject.org/about
+The package MatchIt provides the function `matchit` to attempt matching of covariates automatically. There are many methods to matching covariates. The main page of the package can be found [here](https://gking.harvard.edu/matchit). The package also uses [Zelig](https://zeligproject.org/about) for additional features.
