@@ -1,0 +1,37 @@
+---
+title: "Bootstrap"
+author: "Michael Liou"
+editor: visual
+---
+
+## Estimating Bias
+
+$$
+\begin{aligned}
+\text{Bias}_F(\hat \theta, \theta) = E_F[\hat \theta] - \theta
+\end{aligned}
+$$
+
+We note that $\hat\theta = s(\mathbf{x})$ is function of the data $\hat\theta = s(\mathbf{x})$, whereas $\theta = t(F)$ is a function of the underlying true distribution. In order to use bootstrap to estimate the bias of an estimator, we use average of bootstrap samples to estimate the expected value, while we use the empirical distribution to estimate the true parameter.
+
+### Example (sample standard deviation)
+
+```{r}
+set.seed(1)
+x <- rnorm(30) # "Empirical Distribution" from normal distribution
+B <- 1000 # Number of bootstrap samples to take.
+gen_boot <- function(x) {
+  xb <- sample(x, replace = TRUE)
+  sum((xb - mean(xb))^2 / length(xb)) 
+}
+
+# bootstrap expected value
+thetahat <- mean(replicate(B, gen_boot(x)))
+theta <- sum((x - mean(x))^2 / length(x)) # Distributional "real value"
+
+cbind(thetahat - theta,
+      1/30) # Pretty close to theoretical "bias"
+
+```
+
+I'm sure if you increase the number of replicates

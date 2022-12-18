@@ -8,16 +8,25 @@ book:
   title: "Personal Documentation"
   author: "Michael Liou"
   date: "11/14/2022"
+  search:
+    location: navbar
+    type: overlay
   chapters:
     - "index.qmd"
     - "matrix/matrix.qmd"
     - "stochastic/stochastic.qmd"
     - "meta/meta.qmd"
+    - part: "From Informational"
+      chapters:
+        - "bootstrap/bootstrap.qmd"
+        - "causal/causal.qmd"
+  appendices:
     - "color/color.qmd"
 
 author: "Michael Liou"
 toc: true
 toc-depth: 3
+number-depth: 3
 format:
   html:
     mainfont: Palitino
@@ -29,6 +38,6 @@ format:
 
 execute:
   cache: true
-  freeze: true
+  freeze: auto
 
 bibliography: references.bib

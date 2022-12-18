@@ -4,11 +4,9 @@ editor: visual
 ---
 
 ```{r}
-#| message: false
-#| code-summary: Libraries Loaded
 library(RColorBrewer)
-library(grid)
 library(raster)
+library(grid)
 ```
 
 ## Viewing Color Palettes
@@ -30,10 +28,10 @@ plot(0,
      mar = rep(0, 4),
      frame.plot = F)
 rect(0, .5, .8, 1, col = terrain.colors(256))
+```
 
-grid.newpage()
+```{r}
 grid.raster(seq(0, 1, .01))
-dev.off()
 ```
 
 ```{r}
@@ -41,7 +39,5 @@ dev.off()
 redGradient <- matrix(hcl(0, 80, seq(50, 80, 10)),
                       nrow=4, ncol=5)
 
-grid.newpage()
 grid.raster(redGradient)
-invisible(dev.off())
 ```

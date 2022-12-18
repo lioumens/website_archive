@@ -1,5 +1,5 @@
 ---
-title: "stochastic"
+title: "Stochastic"
 author: "Michael Liou"
 format: html
 editor: visual
@@ -565,20 +565,6 @@ proc.time() - ptm # elapsed wall time
 ```
 
 ```{r}
-wheredafuck <- function(foo = "aaa/bbb") {
-  new_dir <- fs::dir_create(foo)
-  new_jpeg <- fs::path(new_dir, "jpegherenow", ext = "jpg")
-  jpeg(new_jpeg)
-  plot(1:10)
-  dev.off()
-  system("pwd")
-}
-wheredafuck()
-fs::path_dir("gray_scott.mp4")
-video_file <- fs::path_wd(video_file)
-```
-
-```{r}
 #| eval: false
 gray_scott <- function(U0 = NULL, V0 = NULL,
                        feed_rate = 0.0545,
@@ -869,10 +855,7 @@ with_progress(
   sir_diffusion(video_file = "vid/sir_diffusion.mp4", pic_dir = "pic", N = 400), handlers = handlers("progress")) # for text updates
 ```
 
-```{r}
-plot(raster(I), axes = F, bty = "n", frame.plot = F,
-     interpolate = T)
-```
+
 
 ```{r}
 #| include: false
