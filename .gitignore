@@ -19,5 +19,5 @@ quarto/*/*_cache
 quarto/_book/*
 .Rproj.user
 
-# for some reason mydocs is getting ignored
-!mydocs/
+# managed by github actions
+mydocs/*
