@@ -24,3 +24,10 @@ There is a [rakefile](https://github.com/ruby/rake) in this repository (a makefi
 * `_posts/`: contains the published blog posts. Without dates means that it's a [draft](https://jekyllrb.com/docs/posts/).
 * '_layouts/': contains further information about how the posts should look.
 
+## Github Actions
+
+0. Pull current branch
+1. Setups quarto environment
+2. Render quarto environment
+
+- [Quarto Github Actions Repository and Examples](https://github.com/quarto-dev/quarto-actions/blob/main/examples/example-01-basics.md)
