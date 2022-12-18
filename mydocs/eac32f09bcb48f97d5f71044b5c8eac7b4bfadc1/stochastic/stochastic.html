@@ -8,7 +8,7 @@
 
 <meta name="author" content="Michael Liou">
 
-<title>Personal Documentation - 3&nbsp; stochastic</title>
+<title>Personal Documentation - 3&nbsp; Stochastic</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -125,11 +125,11 @@ div.csl-indent {
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
+  "panel-placement": "end",
+  "type": "overlay",
   "limit": 20,
   "language": {
     "search-no-results-text": "No results",
@@ -169,7 +169,7 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">stochastic</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stochastic</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -204,7 +204,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">stochastic</span></a>
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -212,11 +212,41 @@ div.csl-indent {
   <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">From Informational</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -236,8 +266,10 @@ div.csl-indent {
   <li><a href="#reaction-diffusion-equations" id="toc-reaction-diffusion-equations" class="nav-link" data-scroll-target="#reaction-diffusion-equations"><span class="toc-section-number">3.3</span>  Reaction Diffusion Equations</a>
   <ul class="collapse">
   <li><a href="#grey-scott-model" id="toc-grey-scott-model" class="nav-link" data-scroll-target="#grey-scott-model"><span class="toc-section-number">3.3.1</span>  Grey-Scott Model</a></li>
-  <li><a href="#brusselator" id="toc-brusselator" class="nav-link" data-scroll-target="#brusselator"><span class="toc-section-number">3.3.2</span>  Brusselator</a></li>
-  <li><a href="#lorentz-attractor" id="toc-lorentz-attractor" class="nav-link" data-scroll-target="#lorentz-attractor"><span class="toc-section-number">3.3.3</span>  Lorentz Attractor</a></li>
+  <li><a href="#sir-diffusion" id="toc-sir-diffusion" class="nav-link" data-scroll-target="#sir-diffusion"><span class="toc-section-number">3.3.2</span>  SIR Diffusion</a></li>
+  <li><a href="#sis-system" id="toc-sis-system" class="nav-link" data-scroll-target="#sis-system"><span class="toc-section-number">3.3.3</span>  SIS system</a></li>
+  <li><a href="#brusselator" id="toc-brusselator" class="nav-link" data-scroll-target="#brusselator"><span class="toc-section-number">3.3.4</span>  Brusselator</a></li>
+  <li><a href="#lorentz-attractor" id="toc-lorentz-attractor" class="nav-link" data-scroll-target="#lorentz-attractor"><span class="toc-section-number">3.3.5</span>  Lorentz Attractor</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -247,7 +279,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">stochastic</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stochastic</span></h1>
 </div>
 
 
@@ -717,7 +749,7 @@ V &amp;\rightarrow P
 <li><p>periodic boundary condition</p></li>
 <li><p><span class="math inline">F</span> and <span class="math inline">k</span> are known as the feed and kill rates of the reactants. since concentration ranges between 0 and 1, the reaction term in the first equation is positive, and then F controls how much of reactant <span class="math inline">U</span> is being introduced.</p></li>
 </ul>
-<div class="cell" data-hash="stochastic_cache/html/unnamed-chunk-15_8d11ee1523a86dd4a3ee7cc80b402f4f">
+<div class="cell" data-hash="stochastic_cache/html/unnamed-chunk-15_6cd608d40047ba8981a787f912fc0faa">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>gray_scott <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">U0 =</span> <span class="cn">NULL</span>, <span class="at">V0 =</span> <span class="cn">NULL</span>,</span>
@@ -729,57 +761,91 @@ V &amp;\rightarrow P
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">D.v =</span> .<span class="dv">5</span>,</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">save_frame_freq =</span> <span class="dv">20</span>,</span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">video_file =</span> <span class="st">"gray_scott.mp4"</span>,</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">init_strategy =</span> <span class="fu">c</span>(<span class="st">"random"</span>),</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">seed =</span> <span class="dv">1</span>,</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                       ...) {</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  pct <span class="ot">&lt;-</span> <span class="fu">proc.time</span>()</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  init_strategy <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(init_strategy)</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">missing</span>(U0) <span class="sc">|</span> <span class="fu">missing</span>(V0)) {</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">#TODO: implement different initialization strategies</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    U0 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow =</span> N, <span class="at">ncol =</span> N)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    V0 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> N, <span class="at">ncol =</span> N)</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    V0[<span class="fu">sample</span>(N<span class="sc">^</span><span class="dv">2</span>, <span class="fu">ceiling</span>(N<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">20</span>))] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># 10% of cells</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(<span class="fu">c</span>(<span class="fu">dim</span>(U0), <span class="fu">dim</span>(V0)) <span class="sc">==</span> N)) {</span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>      rlang<span class="sc">::</span><span class="fu">abort</span>(<span class="st">"Initial Matrix must be a grid with dimension N"</span>)</span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  U <span class="ot">&lt;-</span> U0</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">&lt;-</span> V0</span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 9 point stencil for Laplacian</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># yuvj420p pix format used: https://superuser.com/questions/1273920/deprecated-pixel-format-used-make-sure-you-did-set-range-correctly</span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>, </span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>                <span class="fl">0.2</span>,  <span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.2</span>,</span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>                <span class="fl">0.05</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>), <span class="at">nrow =</span> <span class="dv">3</span>)</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">pic_dir =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">init_strategy =</span> <span class="fu">c</span>(<span class="st">"random"</span>),</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">seed =</span> <span class="dv">1</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>                       ...) {</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  pct <span class="ot">&lt;-</span> <span class="fu">proc.time</span>()</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  init_strategy <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(init_strategy)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">missing</span>(U0) <span class="sc">|</span> <span class="fu">missing</span>(V0)) {</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">#TODO: implement different initialization strategies for different patterns</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    U0 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow =</span> N, <span class="at">ncol =</span> N)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    V0 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> N, <span class="at">ncol =</span> N)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    V0[<span class="fu">sample</span>(N<span class="sc">^</span><span class="dv">2</span>, <span class="fu">ceiling</span>(N<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">20</span>))] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># 10% of cells</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(<span class="fu">c</span>(<span class="fu">dim</span>(U0), <span class="fu">dim</span>(V0)) <span class="sc">==</span> N)) {</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>      rlang<span class="sc">::</span><span class="fu">abort</span>(<span class="st">"Initial Matrix must be a grid with dimension N"</span>)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  U <span class="ot">&lt;-</span> U0</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">&lt;-</span> V0</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 9 point stencil for Laplacian</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># yuvj420p pix format used: https://superuser.com/questions/1273920/deprecated-pixel-format-used-make-sure-you-did-set-range-correctly</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>, </span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>                <span class="fl">0.2</span>,  <span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.2</span>,</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>                <span class="fl">0.05</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>), <span class="at">nrow =</span> <span class="dv">3</span>)</span>
 <span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>  frame_dir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> progressr<span class="sc">::</span><span class="fu">progressor</span>(tN <span class="sc">/</span> save_frame_freq)</span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>tN) {</span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    dU <span class="ot">&lt;-</span> D.u <span class="sc">*</span> <span class="fu">filter2</span>(U, L) <span class="sc">-</span> U <span class="sc">*</span> V<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> feed_rate <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> U)</span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    dV <span class="ot">&lt;-</span> D.v <span class="sc">*</span> <span class="fu">filter2</span>(V, L) <span class="sc">+</span> U <span class="sc">*</span> V<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> (feed_rate <span class="sc">+</span> kill_rate) <span class="sc">*</span> V</span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>    U <span class="ot">&lt;-</span> U <span class="sc">+</span> dU</span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>    V <span class="ot">&lt;-</span> V <span class="sc">+</span> dV</span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># save frame in temp folder</span></span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i <span class="sc">%%</span> save_frame_freq <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">p</span>(<span class="at">message =</span> <span class="fu">sprintf</span>(<span class="st">"Timestep: %g"</span>, i))</span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>      <span class="fu">jpeg</span>(<span class="fu">sprintf</span>(<span class="st">"%s/plot%06d.jpg"</span>, frame_dir, i))</span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>      <span class="co"># setup base plot graphical parameters</span></span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>      <span class="fu">par</span>(<span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>))</span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plot</span>(<span class="fu">raster</span>(V))</span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>      <span class="fu">dev.off</span>()</span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>  <span class="co">#TODO: check if ffmpeg available on system?</span></span>
-<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>  ffmpeg_cmd <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">'ffmpeg -y -f image2 -pattern_type glob -i "%s/*.jpg" -framerate 60 -c:v libx264 -crf 20 -filter:v "format=yuvj420p" %s'</span>, frame_dir, video_file)</span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>  <span class="co"># run ffmpeg command</span></span>
-<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system</span>(ffmpeg_cmd)</span>
-<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">proc.time</span>() <span class="sc">-</span> pct <span class="co"># elapsed wall time</span></span>
-<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a><span class="fu">with_progress</span>(</span>
-<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gray_scott</span>(<span class="at">video_file =</span> <span class="st">"vid/gray_scott.mp4"</span>), <span class="at">handlers =</span> <span class="fu">handlers</span>(<span class="st">"progress"</span>)) <span class="co"># for text updates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">missing</span>(pic_dir))</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>    pic_dir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>() </span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> </span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    pic_dir <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_create</span>(fs<span class="sc">::</span><span class="fu">path_wd</span>(pic_dir))</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># clean directory  </span></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(<span class="fu">Sys.glob</span>(fs<span class="sc">::</span><span class="fu">path</span>(pic_dir, <span class="st">"*.jpg"</span>))) <span class="sc">&gt;</span> <span class="dv">0</span> ) {</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>    rlang<span class="sc">::</span><span class="fu">abort</span>(<span class="fu">sprintf</span>(<span class="st">"%s not empty, please clean out *.jpg files to prevent overwriting!"</span>, pic_dir))</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>  jpeg_file <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(pic_dir, <span class="fu">sprintf</span>(<span class="st">"plot%06d.jpg"</span>, <span class="dv">0</span>))</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">jpeg</span>(jpeg_file)</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>      <span class="co"># setup base plot graphical parameters</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">par</span>(<span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">oma =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">mar =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>))</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plot</span>(<span class="fu">raster</span>(V0),</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>           <span class="at">axes =</span> F, <span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">frame.plot =</span> F,</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>           <span class="at">interpolate =</span> F,</span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>           <span class="at">breaks =</span> <span class="fu">hist</span>(V0, <span class="at">breaks =</span> <span class="dv">256</span>, <span class="at">plot =</span> F)<span class="sc">$</span>breaks,</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>           <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">256</span>,  <span class="at">palette =</span> <span class="st">"ag_sunset"</span>),</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>      <span class="fu">dev.off</span>()</span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> progressr<span class="sc">::</span><span class="fu">progressor</span>(tN <span class="sc">/</span> save_frame_freq)</span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>tN) {</span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>    dU <span class="ot">&lt;-</span> D.u <span class="sc">*</span> <span class="fu">filter2</span>(U, L) <span class="sc">-</span> U <span class="sc">*</span> V<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> feed_rate <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> U)</span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>    dV <span class="ot">&lt;-</span> D.v <span class="sc">*</span> <span class="fu">filter2</span>(V, L) <span class="sc">+</span> U <span class="sc">*</span> V<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> (feed_rate <span class="sc">+</span> kill_rate) <span class="sc">*</span> V</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>    U <span class="ot">&lt;-</span> U <span class="sc">+</span> dU</span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>    V <span class="ot">&lt;-</span> V <span class="sc">+</span> dV</span>
+<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>    <span class="co"># save frame in temp folder</span></span>
+<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i <span class="sc">%%</span> save_frame_freq <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>      <span class="fu">p</span>(<span class="at">message =</span> <span class="fu">sprintf</span>(<span class="st">"Timestep: %g"</span>, i))</span>
+<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>      jpeg_file <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(pic_dir,</span>
+<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">sprintf</span>(<span class="st">"plot%06d.jpg"</span>, i))</span>
+<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>      <span class="fu">jpeg</span>(jpeg_file)</span>
+<span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a>      <span class="co"># setup base plot graphical parameters</span></span>
+<span id="cb14-71"><a href="#cb14-71" aria-hidden="true" tabindex="-1"></a>      <span class="fu">par</span>(<span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">oma =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">mar =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>))</span>
+<span id="cb14-72"><a href="#cb14-72" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plot</span>(<span class="fu">raster</span>(V),</span>
+<span id="cb14-73"><a href="#cb14-73" aria-hidden="true" tabindex="-1"></a>           <span class="at">axes =</span> F, <span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">frame.plot =</span> F,</span>
+<span id="cb14-74"><a href="#cb14-74" aria-hidden="true" tabindex="-1"></a>           <span class="at">interpolate =</span> T,</span>
+<span id="cb14-75"><a href="#cb14-75" aria-hidden="true" tabindex="-1"></a>           <span class="at">breaks =</span> <span class="fu">hist</span>(V, <span class="at">breaks =</span> <span class="dv">256</span>, <span class="at">plot =</span> F)<span class="sc">$</span>breaks,</span>
+<span id="cb14-76"><a href="#cb14-76" aria-hidden="true" tabindex="-1"></a>           <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">256</span>,  <span class="at">palette =</span> <span class="st">"ag_sunset"</span>),</span>
+<span id="cb14-77"><a href="#cb14-77" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-78"><a href="#cb14-78" aria-hidden="true" tabindex="-1"></a>      <span class="fu">dev.off</span>()</span>
+<span id="cb14-79"><a href="#cb14-79" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-80"><a href="#cb14-80" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-81"><a href="#cb14-81" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-82"><a href="#cb14-82" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create video directory</span></span>
+<span id="cb14-83"><a href="#cb14-83" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">dir_create</span>(fs<span class="sc">::</span><span class="fu">path_wd</span>(fs<span class="sc">::</span><span class="fu">path_dir</span>(video_file)))</span>
+<span id="cb14-84"><a href="#cb14-84" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-85"><a href="#cb14-85" aria-hidden="true" tabindex="-1"></a>  <span class="co">#TODO: check if ffmpeg available on system?</span></span>
+<span id="cb14-86"><a href="#cb14-86" aria-hidden="true" tabindex="-1"></a>  ffmpeg_cmd <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">'ffmpeg -y -f image2 -pattern_type glob -i "%s/*.jpg" -framerate 60 -c:v libx264 -crf 20 -filter:v "format=yuvj420p" %s'</span>, pic_dir, fs<span class="sc">::</span><span class="fu">path_wd</span>(video_file))</span>
+<span id="cb14-87"><a href="#cb14-87" aria-hidden="true" tabindex="-1"></a>  <span class="co"># run ffmpeg command</span></span>
+<span id="cb14-88"><a href="#cb14-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system</span>(ffmpeg_cmd)</span>
+<span id="cb14-89"><a href="#cb14-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"Running command: "</span>, ffmpeg_cmd, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
+<span id="cb14-90"><a href="#cb14-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">proc.time</span>() <span class="sc">-</span> pct <span class="co"># elapsed wall time</span></span>
+<span id="cb14-91"><a href="#cb14-91" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-92"><a href="#cb14-92" aria-hidden="true" tabindex="-1"></a><span class="co"># relative to this script (when running commands in notebook)</span></span>
+<span id="cb14-93"><a href="#cb14-93" aria-hidden="true" tabindex="-1"></a><span class="fu">with_progress</span>(</span>
+<span id="cb14-94"><a href="#cb14-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gray_scott</span>(<span class="at">video_file =</span> <span class="st">"vid/gray_scott.mp4"</span>, <span class="at">pic_dir =</span> <span class="st">"gray_pic"</span>), <span class="at">handlers =</span> <span class="fu">handlers</span>(<span class="st">"progress"</span>)) <span class="co"># for text updates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <figure class="figure">
@@ -791,11 +857,31 @@ Gray Scott Reaction Diffusion, <span class="math inline">f=.0545, k=.062</span>
 </figcaption>
 </figure>
 </section>
-<section id="brusselator" class="level3" data-number="3.3.2">
-<h3 data-number="3.3.2" class="anchored" data-anchor-id="brusselator"><span class="header-section-number">3.3.2</span> Brusselator</h3>
+<section id="sir-diffusion" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="sir-diffusion"><span class="header-section-number">3.3.2</span> SIR Diffusion</h3>
+<div class="cell" data-hash="stochastic_cache/html/unnamed-chunk-17_46c0d52b022de8b7863ccc4f4592c7ae">
+
+</div>
+<p>here’s we’re trying to upsample the values that come out of the</p>
+<p>The SIR image has a slightly different quality to it in that the lines around the image are thinner</p>
+<figure class="figure">
+<video loop="" autoplay="">
+<source src="vid/sir_diffusion.mp4" type="video/mp4">
+</video>
+<figcaption class="figure-caption">
+SIR Reaction Diffusion, <span class="math inline">f=.0545, k=.062</span>
+</figcaption>
+</figure>
 </section>
-<section id="lorentz-attractor" class="level3" data-number="3.3.3">
-<h3 data-number="3.3.3" class="anchored" data-anchor-id="lorentz-attractor"><span class="header-section-number">3.3.3</span> Lorentz Attractor</h3>
+<section id="sis-system" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="sis-system"><span class="header-section-number">3.3.3</span> SIS system</h3>
+<p>I’m curious if the SIS system without vital dynamics will show any interesting patterns. We know there must be an absorbing state, but this system can also reach an endemic state based on the reproduction number. If we add diffusion into the system we should get interesting results, at the very least some cool videos.</p>
+</section>
+<section id="brusselator" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="brusselator"><span class="header-section-number">3.3.4</span> Brusselator</h3>
+</section>
+<section id="lorentz-attractor" class="level3" data-number="3.3.5">
+<h3 data-number="3.3.5" class="anchored" data-anchor-id="lorentz-attractor"><span class="header-section-number">3.3.5</span> Lorentz Attractor</h3>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">

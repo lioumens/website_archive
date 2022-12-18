@@ -125,11 +125,11 @@ div.csl-indent {
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
+  "panel-placement": "end",
+  "type": "overlay",
   "limit": 20,
   "language": {
     "search-no-results-text": "No results",
@@ -207,7 +207,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">stochastic</span></a>
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -215,11 +215,41 @@ div.csl-indent {
   <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">From Informational</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -311,8 +341,8 @@ div.csl-indent {
 \begin{aligned}
 jj' &amp;= J \\
 j'x  &amp;= \sum x \\
-j'A  &amp;= \operatorname{rowsums}(A) \\
-Aj &amp;= \operatorname{colsums}(A) \\
+j'A  &amp;= \operatorname{colsums}(A) \\
+Aj &amp;= \operatorname{rowsums}(A) \\
 Jx &amp;= \begin{bmatrix}
   \sum x \\
   \vdots \\
@@ -348,12 +378,12 @@ Theorem 2.3: Adjacency Matrix Spectral Radius Bound <span class="citation" data-
 <li><span class="math inline">n,m</span> is number of nodes, edges in the graph</li>
 <li>equality is reached for regular graphs, or bi-degreed graphs of either <span class="math inline">d_{min}</span> or <span class="math inline">n-1</span></li>
 </ul>
-<p>More simply, for a simply connected graph <span class="math inline">d_{min} = 1</span> we can more simply state:</p>
-<p><span class="math display">
+<p>More simply, for a simply connected graph <span class="math inline">d_{min} = 1</span> the expression simplifies</p>
+<p><span id="eq-easy-hong-adj-spectral"><span class="math display">
 \begin{align*}
 \rho(A) \leq \sqrt{1 + 2m - n}
 \end{align*}
-</span></p>
+\tag{4.1}</span></span></p>
 <ul>
 <li>equality reached for complete or star graph</li>
 </ul>
@@ -421,7 +451,7 @@ Theorem 2.3: Adjacency Matrix Spectral Radius Bound <span class="citation" data-
 <section id="example-spectrums-1" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="example-spectrums-1"><span class="header-section-number">5.1</span> Example Spectrums</h2>
 <div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Components</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Complete Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Star Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">Bipartite Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">Path</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">Components</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Complete Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Star Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">Bipartite Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">Path</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>If there are 2 connected components, 2 of the eigenvalues will be 0.</p>
@@ -1393,7 +1423,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="../stochastic/stochastic.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">stochastic</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stochastic</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
