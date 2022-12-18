@@ -16,7 +16,7 @@ jobs:
 
       - name: Set gh pages to main
         run: |
-          git switch gh-pages
+          git switch --force-create gh-pages origin/gh-pages
           git reset --hard "origin/main"
 
       - name: Set up Quarto
@@ -34,4 +34,4 @@ jobs:
           git config user.email github-actions@github.com
           git add mydocs
           git diff-index --quiet HEAD || git commit -m "github actions push"
-          git push
+          git push origin gh-pages -f
