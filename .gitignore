@@ -14,7 +14,6 @@ rmd/*/*_files
 
 ## Quarto Related
 quarto/.quarto/
-quarto/_freeze
 quarto/*/*_files
 quarto/*/*_cache
 quarto/_book/*

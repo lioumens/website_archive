@@ -1,0 +1,14 @@
+{
+  "hash": "f80c2be5c239a55b1200f02387a05746",
+  "result": {
+    "markdown": "---\ntitle: \"Bootstrap\"\nauthor: \"Michael Liou\"\neditor: visual\n---\n\n\n## Estimating Bias\n\n$$\n\\begin{aligned}\n\\text{Bias}_F(\\hat \\theta, \\theta) = E_F[\\hat \\theta] - \\theta\n\\end{aligned}\n$$\n\nWe note that $\\hat\\theta = s(\\mathbf{x})$ is function of the data $\\hat\\theta = s(\\mathbf{x})$, whereas $\\theta = t(F)$ is a function of the underlying true distribution. In order to use bootstrap to estimate the bias of an estimator, we use average of bootstrap samples to estimate the expected value, while we use the empirical distribution to estimate the true parameter.\n\n### Example (sample standard deviation)\n\n\n::: {.cell hash='bootstrap_cache/html/unnamed-chunk-1_3fff00b155b9eb83e59336d02d6e586e'}\n\n```{.r .cell-code}\nset.seed(1)\nx <- rnorm(30) # \"Empirical Distribution\" from normal distribution\nB <- 1000 # Number of bootstrap samples to take.\ngen_boot <- function(x) {\n  xb <- sample(x, replace = TRUE)\n  sum((xb - mean(xb))^2 / length(xb)) \n}\n\n# bootstrap expected value\nthetahat <- mean(replicate(B, gen_boot(x)))\ntheta <- sum((x - mean(x))^2 / length(x)) # Distributional \"real value\"\n\ncbind(thetahat - theta,\n      1/30) # Pretty close to theoretical \"bias\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n           [,1]       [,2]\n[1,] -0.0298494 0.03333333\n```\n:::\n:::\n\n\nI'm sure if you increase the number of replicates\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
