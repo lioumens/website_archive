@@ -5,7 +5,7 @@ execute:
   echo: false
 ---
 
-# Observable
+## Observable
 
 ```{ojs}
 data = FileAttachment("penguins.csv").csv({ typed: true })

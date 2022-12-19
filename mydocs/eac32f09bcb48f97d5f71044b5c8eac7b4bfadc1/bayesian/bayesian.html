@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.203">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Liou">
+<meta name="dcterms.date" content="2021-12-06">
+
+<title>Personal Documentation - 4&nbsp; Bayesian</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../categorical/categorical.html" rel="next">
+<link href="../approximation/approximation.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Personal Documentation</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../advanced/advanced.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Advanced R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../approximation/approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Approximation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bayesian/bayesian.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../categorical/categorical.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">From Informational</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-bayesian-modeling" id="toc-introduction-to-bayesian-modeling" class="nav-link active" data-scroll-target="#introduction-to-bayesian-modeling"><span class="toc-section-number">4.1</span>  Introduction to Bayesian Modeling</a>
+  <ul class="collapse">
+  <li><a href="#software-ecosystem" id="toc-software-ecosystem" class="nav-link" data-scroll-target="#software-ecosystem"><span class="toc-section-number">4.1.1</span>  Software Ecosystem</a></li>
+  </ul></li>
+  <li><a href="#inla" id="toc-inla" class="nav-link" data-scroll-target="#inla"><span class="toc-section-number">4.2</span>  INLA</a>
+  <ul class="collapse">
+  <li><a href="#installation-issues" id="toc-installation-issues" class="nav-link" data-scroll-target="#installation-issues"><span class="toc-section-number">4.2.1</span>  Installation Issues</a></li>
+  <li><a href="#inla-basics" id="toc-inla-basics" class="nav-link" data-scroll-target="#inla-basics"><span class="toc-section-number">4.2.2</span>  INLA Basics</a></li>
+  <li><a href="#inla-examples-simulated" id="toc-inla-examples-simulated" class="nav-link" data-scroll-target="#inla-examples-simulated"><span class="toc-section-number">4.2.3</span>  INLA Examples (simulated)</a></li>
+  <li><a href="#laplace-approximation" id="toc-laplace-approximation" class="nav-link" data-scroll-target="#laplace-approximation"><span class="toc-section-number">4.2.4</span>  Laplace Approximation</a></li>
+  <li><a href="#resources-for-inla" id="toc-resources-for-inla" class="nav-link" data-scroll-target="#resources-for-inla"><span class="toc-section-number">4.2.5</span>  Resources for INLA</a></li>
+  </ul></li>
+  <li><a href="#stan" id="toc-stan" class="nav-link" data-scroll-target="#stan"><span class="toc-section-number">4.3</span>  STAN</a>
+  <ul class="collapse">
+  <li><a href="#rstanarm" id="toc-rstanarm" class="nav-link" data-scroll-target="#rstanarm"><span class="toc-section-number">4.3.1</span>  rstanarm</a></li>
+  <li><a href="#resources-for-stan" id="toc-resources-for-stan" class="nav-link" data-scroll-target="#resources-for-stan"><span class="toc-section-number">4.3.2</span>  Resources for STAN</a></li>
+  </ul></li>
+  <li><a href="#jags" id="toc-jags" class="nav-link" data-scroll-target="#jags"><span class="toc-section-number">4.4</span>  JAGS</a>
+  <ul class="collapse">
+  <li><a href="#worked-examples" id="toc-worked-examples" class="nav-link" data-scroll-target="#worked-examples"><span class="toc-section-number">4.4.1</span>  Worked Examples</a></li>
+  </ul></li>
+  <li><a href="#cookbook" id="toc-cookbook" class="nav-link" data-scroll-target="#cookbook"><span class="toc-section-number">4.5</span>  Cookbook</a>
+  <ul class="collapse">
+  <li><a href="#conditional-logistic-regression-model" id="toc-conditional-logistic-regression-model" class="nav-link" data-scroll-target="#conditional-logistic-regression-model"><span class="toc-section-number">4.5.1</span>  Conditional Logistic Regression Model</a></li>
+  <li><a href="#conditional-sampling" id="toc-conditional-sampling" class="nav-link" data-scroll-target="#conditional-sampling"><span class="toc-section-number">4.5.2</span>  Conditional Sampling</a></li>
+  </ul></li>
+  <li><a href="#additional-resources" id="toc-additional-resources" class="nav-link" data-scroll-target="#additional-resources"><span class="toc-section-number">4.6</span>  Additional Resources</a>
+  <ul class="collapse">
+  <li><a href="#inla-related-beginner" id="toc-inla-related-beginner" class="nav-link" data-scroll-target="#inla-related-beginner"><span class="toc-section-number">4.6.1</span>  INLA Related (beginner)</a></li>
+  <li><a href="#advanced-spatial-stochastic-pde-modeling-with-inla" id="toc-advanced-spatial-stochastic-pde-modeling-with-inla" class="nav-link" data-scroll-target="#advanced-spatial-stochastic-pde-modeling-with-inla"><span class="toc-section-number">4.6.2</span>  Advanced (spatial, stochastic pde) Modeling with INLA</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Liou </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 6, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-1_d5cd9b441e0ec30a9776cf5564235536">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(INLA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: sp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: parallel</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is INLA_19.09.03 built 2022-05-17 20:58:09 UTC.
+See www.r-inla.org/contact-us for how to get help.
+To enable PARDISO sparse library; see inla.pardiso()</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+✔ tibble  3.1.8     ✔ dplyr   1.0.9
+✔ tidyr   1.2.0     ✔ stringr 1.4.0
+✔ readr   2.1.2     ✔ forcats 0.5.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ tidyr::expand() masks Matrix::expand()
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+✖ tidyr::pack()   masks Matrix::pack()
+✖ tidyr::unpack() masks Matrix::unpack()</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjags)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: coda</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linked to JAGS 4.3.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded modules: basemod,bugs</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm) <span class="co"># regression modeling with rstan backend</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Rcpp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is rstanarm version 2.21.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- See https://mc-stan.org/rstanarm/articles/priors for changes to default priors!</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- Default priors may change, so it's safest to specify priors, even if equivalent to the defaults.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- For execution on a local, multicore CPU with excess RAM we recommend calling</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  options(mc.cores = parallel::detectCores())</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sjPlot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Install package "strengejacke" from GitHub (`devtools::install_github("strengejacke/strengejacke")`) to load all sj-packages at once!</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: carData</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>lattice theme set by effectsTheme()
+See ?effectsTheme for details.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sjPlot)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="introduction-to-bayesian-modeling" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="introduction-to-bayesian-modeling"><span class="header-section-number">4.1</span> Introduction to Bayesian Modeling</h2>
+<section id="software-ecosystem" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="software-ecosystem"><span class="header-section-number">4.1.1</span> Software Ecosystem</h3>
+<p>The software mostly is split up by the methodology that each method uses. Seems like results will vary, and syntax also will vary. Trade-offs on speed and use cases.</p>
+<section id="r-software" class="level4">
+<h4 class="anchored" data-anchor-id="r-software">R Software</h4>
+<ul>
+<li><strong>INLA</strong> - integrated nested laplace approximations. Uses R formula syntax
+<ul>
+<li>not on CRAN because it uses a C library that is machine dependent</li>
+<li>option to use pardiso optimizer, for which you need a license.</li>
+</ul></li>
+<li><strong>BUGS</strong> - MCMC based sampling
+<ul>
+<li>has many different versions, seems easier to install on windows</li>
+</ul></li>
+<li><strong>JAGS</strong>
+<ul>
+<li>the original MCMC based solutions, has an R implementation with “rjags”</li>
+<li>Stands for “Just Another Gibbs Sampler”</li>
+<li>text file specification of the model</li>
+<li>reimplementation of “BUGS”</li>
+</ul></li>
+<li><strong>rstan</strong> - does some magical Hamiltonion Monte Carlo, which supp
+<ul>
+<li><strong>brms</strong> - uses STAN as backend, but allows linear and nonlinear models with R formula syntax. Offers <a href="https://m-clark.github.io/easy-bayes/comparison-to-rstanarm.html">more flexibility than rstanarm</a></li>
+<li><strong>rstanarm</strong> - meant as a drop in replacement using STAN for many base R and lme4 models. The main difference is that these models are precompiled in STAN code, while brms will compile everytime into new STAN code, thus will be slower for basic models. However, what you trade in slowness you get flexibility.</li>
+<li><strong>blavaan</strong> - latent variable modeling, like SEM modeling, latent growth curve models, confirmatory factor analysis.</li>
+</ul></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="inla" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="inla"><span class="header-section-number">4.2</span> INLA</h2>
+<p>Broadly speaking, INLA is for a broad class of models used for Guassian markov random fields (GMRF). INLA tends to be faster than other methods, because the software is based on Laplace Approximation. Because of that, it is also a deterministic method unlike stochastic MCMC based software like STAN or BUGS/JAGS</p>
+<section id="installation-issues" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="installation-issues"><span class="header-section-number">4.2.1</span> Installation Issues</h3>
+<p>The <a href="https://www.r-inla.org/download-install">standard installation as recommended by the website</a> is:</p>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-2_9345568fdc60bd98cd3444b5bc24b1d5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"INLA"</span>,<span class="at">repos=</span><span class="fu">c</span>(<span class="fu">getOption</span>(<span class="st">"repos"</span>),<span class="at">INLA=</span><span class="st">"https://inla.r-inla-download.org/R/testing"</span>), <span class="at">dep=</span><span class="cn">TRUE</span>) <span class="co"># R &gt; 4.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>But I keep getting an error:</p>
+<blockquote class="blockquote">
+<p>Error in inla.call.builtin() : INLA installation error; no such file</p>
+</blockquote>
+<p>so i tried installing directly from github with devtools.</p>
+<blockquote class="blockquote">
+<p>/usr/local/lib/R/4.1/site-library/INLA/bin/mac/64bit/inla.run: line 125: /usr/local/lib/R/4.1/site-library/INLA/bin/mac/64bit/inla: No such file or directory</p>
+</blockquote>
+<p>The “devel” version unfortunately gives the following error, so trying the stable version.</p>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-3_eb46a062e208d823b3e29def22cc76c3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">"https://github.com/hrue/r-inla"</span>, <span class="at">ref =</span> <span class="st">"stable"</span>, <span class="at">subdir =</span> <span class="st">"rinla"</span>, <span class="at">build =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The stable version also didn’t work, was giving some dynamic library errors, finally tried installing manually and it seemed to work. <a href="http://inla.r-inla-download.org/R/testing/bin/macosx/contrib/4.1/">INLA Binaries for R 4.1</a>. <a href="https://groups.google.com/g/r-inla-discussion-group/c/X7VsO41DnGA/m/TSMD3NQeCAAJ">The thread that gave me idea of installing manually</a>.</p>
+<p>In order to install it manually,</p>
+<ol type="1">
+<li>Download the precompiled binary here: https://inla.r-inla-download.org/R/testing/bin/macosx/contrib/4.1/</li>
+</ol>
+<ul>
+<li>back up directories if you need a different binary</li>
+</ul>
+<ol start="2" type="1">
+<li>From R, run <code>install.packages("pathtobinary.tgz", repos = NULL)</code></li>
+</ol>
+<section id="pardiso-license" class="level4">
+<h4 class="anchored" data-anchor-id="pardiso-license">Pardiso License</h4>
+<p>Pardiso is parallel computing library, stands for “Parallel Sparse Direct Solver”, and academics can get a license, just need to set the <code>$PARDISO_LIC_PATH</code> to where you download the license</p>
+<p>There might be some useful documentation on how R finds its matrix libraries.</p>
+<p>See the Advanced R sections for more on how R finds its libraries. Ultimnately, after some permissioning issues, we have a working example.</p>
+</section>
+</section>
+<section id="inla-basics" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="inla-basics"><span class="header-section-number">4.2.2</span> INLA Basics</h3>
+<p><code>inla()</code> - this is the main function that is used from the package.</p>
+<ul>
+<li><code>formula</code> - formula object</li>
+<li><code>data</code> - the dataframe</li>
+<li><code>family</code> - string or vector to</li>
+</ul>
+</section>
+<section id="inla-examples-simulated" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="inla-examples-simulated"><span class="header-section-number">4.2.3</span> INLA Examples (simulated)</h3>
+<section id="linear-regression" class="level4">
+<h4 class="anchored" data-anchor-id="linear-regression">Linear Regression</h4>
+<p>We first simulate some data, and plot the points that</p>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-4_0aff2a687a456ab65f867f2860b6eab0">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the simulated data</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># 500, 5000, 25000, 100000</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">6</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> x, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>dat_simple <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">N =</span> N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-5_3e30d4591859452c30c300c57d38800a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic fit of model, assuming gaussian link</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">inla</span>(y <span class="sc">~</span> x,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"gaussian"</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat_simple,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control.predictor =</span> <span class="fu">list</span>(<span class="at">link =</span> <span class="dv">1</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>You can plot the posterior mean for each of the observations, but this plot is not particularly useful.</p>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-6_1f9ba5d6e9f94c14b93a529cb3909c09">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># attributes(mod)</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ?plot.inla</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># methods("inla")</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod, <span class="at">plot.prior =</span> <span class="cn">TRUE</span>, <span class="at">single=</span><span class="cn">TRUE</span>) <span class="co"># Plotting the posterior mean for fitted values, with index on axis.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>In order to access the estimated coefficients and standard deviations of each parameter, we can use</p>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-7_078f813eff79b44d47fab97e68fd0647">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>mod<span class="sc">$</span>summary.fixed</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>mod<span class="sc">$</span>summary.random</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>mod<span class="sc">$</span>summary.fitted.values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-8_e7e89224ee3ff0a93ac911bd748354b9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot solution from INLA, with prediction bounds</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>g_inla_slr <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(dat_simple) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y)) <span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">y =</span> mean, <span class="at">ymin =</span> <span class="st">`</span><span class="at">0.025quant</span><span class="st">`</span>, <span class="at">ymax=</span><span class="st">`</span><span class="at">0.975quant</span><span class="st">`</span>),</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> mod<span class="sc">$</span>summary.fitted.values,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">y =</span> mean), <span class="at">formula =</span> y<span class="sc">~</span>x, <span class="at">method=</span><span class="st">"lm"</span>, <span class="at">data =</span> mod<span class="sc">$</span>summary.fitted.values) <span class="sc">+</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"INLA"</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot solution from lm</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>g_smooth_slr <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(dat_simple) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">formula =</span> y<span class="sc">~</span>x, <span class="at">method=</span><span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"LM"</span>)</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>g_inla_slr <span class="sc">+</span> g_smooth_slr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayesian_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Clearly the INLA solution is very very similar to the one produced by LM as we expected.</p>
+</section>
+</section>
+<section id="laplace-approximation" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="laplace-approximation"><span class="header-section-number">4.2.4</span> Laplace Approximation</h3>
+<p>Let’s see an example with a closed form solution conjugate families. A good example of one is the Poisson-Gamma.</p>
+<p><span class="math display">
+\begin{aligned}
+Y | \lambda &amp;\sim Poisson(\lambda) \\
+\lambda &amp;\sim \Gamma(\alpha, \beta)
+\end{aligned}
+</span> Suppose we observe that <span class="math inline">y = 6</span>, and we set a prior <span class="math inline">\alpha=\beta=1</span>.</p>
+<p>The update for poisson-gamma upon observing <span class="math inline">y_1, y_2, y_3, \dots, y_n</span>, (note this is using the rate parameterization, <span class="math inline">\beta^\alpha</span> in the numerator)</p>
+<p><span class="math display">
+\begin{aligned}
+\Gamma(\alpha, \beta) \longrightarrow \Gamma(\alpha + \sum_i y_i \, , \beta + n)
+\end{aligned}
+</span> Hence, the true posterior is <span class="math inline">\Gamma(1+6, 1 +1)</span>, which has density,</p>
+<p><span class="math display">
+\begin{aligned}
+p(\lambda | Y=6) = \frac{2^7}{\Gamma(2)}\exp(-2 \lambda)\lambda^{7 - 1}
+\end{aligned}
+</span> If we didn’t know this, then we would be trying to approximate the integral in the denominator of bayes rule, we do this with Laplace’s Approximation,</p>
+<p><span class="math display">
+\begin{aligned}
+p(\lambda|y) &amp;= \frac{f(y|\lambda) \xi(\lambda)}{\int f(y|\lambda)\xi(\lambda)\, d\lambda} \\
+\end{aligned}
+</span> to approximate the bottom, we have</p>
+<p><span class="math display">
+\begin{aligned}
+\int f(y|\lambda)\xi(\lambda)\, d\lambda \approx f(y|\lambda_0)\xi(\lambda_0)\sqrt{\frac{2\pi}{-h''(\lambda_0)}}
+\end{aligned}
+</span></p>
+<p>where <span class="math inline">h = \log \left[f(y|\lambda) \xi(\lambda)\right]</span>, and <span class="math inline">h''(\lambda_0)</span> is the second derivative evaluated at <span class="math inline">\lambda_0</span>, the maximum of the integrand <span class="math inline">f(y|\lambda) \xi(\lambda)</span>. Finding the maximum can be done with an optimization procedure, <code>optim</code> or it can be done analytically.</p>
+<p>Here’s a dump of the calculations!</p>
+<p><span class="math display">
+\begin{aligned}
+f(y=6|\lambda)\xi(\lambda) &amp;= \frac{e^{-\lambda} \lambda^6}{6!}\exp(-\lambda) \\
+h(\lambda) &amp;= -\log 6! -2\lambda + 6 \log \lambda \\
+h'(\lambda) &amp;= \frac{6}{\lambda} -2
+\end{aligned}
+</span></p>
+<p>Setting <span class="math inline">h'(\lambda) = 0</span>, we find the maximum of the integrand to be <span class="math inline">\lambda_0 = 3</span></p>
+<p><span class="math display">
+\begin{aligned}
+h''(\lambda) &amp;= -\frac{6}{\lambda^2} \\
+-h''(\lambda)^{-1} &amp;= \frac{\lambda^2}{6}
+\end{aligned}
+</span> Evaluating the maximum, we get <span class="math inline">-h''(\lambda_0)^{-1} = 1.5</span>. Now we’re ready to code it up!</p>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-9_4bd018b3ce2255d98d8b64dc0eda199d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Poisson-Gamma Update</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gamma(a, b) -&gt; gamma(a + \sum_i x_i, b + n)</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Let prior be gamma(1, 1)</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Observe y = 6</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># True Posterior is gamma(1 + 6, 1 + 1)</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>lgrid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, .<span class="dv">01</span>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lgrid, <span class="fu">dgamma</span>(lgrid, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"lambda"</span>, <span class="at">ylab=</span><span class="st">"density"</span>)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(lgrid,<span class="fu">dgamma</span>(lgrid, <span class="dv">7</span>, <span class="dv">2</span>), <span class="at">type=</span><span class="st">"l"</span>, <span class="at">col=</span><span class="dv">2</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,<span class="at">legend =</span>  <span class="fu">c</span>(<span class="st">"Prior"</span>, <span class="st">"Posterior"</span>),  <span class="at">col =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),<span class="at">lty=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayesian_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-10_493265a12b105df35e936594225f1bf2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>est_mode <span class="ot">&lt;-</span> (<span class="dv">6</span>) <span class="sc">/</span> <span class="dv">2</span> <span class="co"># (alpha + x) / beta</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>est_cov <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> ((<span class="dv">1</span> <span class="sc">+</span> <span class="dv">6</span> <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> est_mode<span class="sc">^</span><span class="dv">2</span>) <span class="co"># (alpha + x - 1) / mode^2</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>est_cov</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.5</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># integral approximation is</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># likelihood * prior * constant based on curvurature of function</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The constant in the denominator of Bayes rule, also the integral approximation</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">dpois</span>(<span class="dv">6</span>, <span class="at">lambda =</span> est_mode) <span class="sc">*</span> <span class="fu">dgamma</span>(est_mode, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> est_cov)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(lambda) {</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dpois</span>(<span class="dv">6</span>, <span class="at">lambda =</span> lambda) <span class="sc">*</span> <span class="fu">dgamma</span>(lambda, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">/</span> Z</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-11_a2e38d08219181193ea4a9b9a33bc390">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lgrid, <span class="fu">dgamma</span>(lgrid, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"lambda"</span>, <span class="at">ylab=</span><span class="st">"density"</span>,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Poisson-Gamma Example with Laplace Approximation"</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(lgrid,<span class="fu">dgamma</span>(lgrid, <span class="dv">7</span>, <span class="dv">2</span>), <span class="at">type=</span><span class="st">"l"</span>, <span class="at">col=</span><span class="dv">2</span>, <span class="at">lwd=</span><span class="dv">3</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(lgrid, <span class="fu">posterior</span>(lgrid), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col=</span><span class="dv">3</span>)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(lgrid, <span class="fu">dnorm</span>(lgrid, <span class="at">mean=</span>est_mode, <span class="at">sd =</span> <span class="fu">sqrt</span>(est_cov)), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col=</span><span class="dv">3</span>, <span class="at">lty=</span><span class="dv">2</span>) <span class="co"># The approximating normal distribution used in laplace approximation, centered on posterior mean</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Prior"</span>, <span class="st">"True Posterior"</span>, <span class="st">"Posterior with Laplace approximated Integral"</span>, <span class="st">"Laplace Approximation"</span>), </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>),</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">cex =</span> .<span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayesian_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-12_63b08ffe14dfabc3ec4437062a054bc8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A different way of visualizing the above information</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">dgamma</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">7</span>, <span class="dv">2</span>), <span class="fu">posterior</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">10</span>), <span class="at">pch=</span><span class="dv">19</span>, <span class="at">cex=</span>.<span class="dv">2</span>, <span class="at">xlab =</span> <span class="st">"True Posterior density, Gamma(7,2)"</span>,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"posterior density by laplace approximation"</span>,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Comparison of True Posterior and Laplace Approximation"</span>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>, <span class="at">col=</span><span class="dv">2</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">pch =</span> <span class="fu">c</span>(<span class="dv">19</span>,<span class="sc">-</span><span class="dv">1</span>), <span class="at">lty=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"evaluated densities"</span>, <span class="st">"line of equality"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Resources used when writing this section - https://www.sumsar.net/blog/2013/11/easy-laplace-approximation/ - https://bookdown.org/rdpeng/advstatcomp/laplace-approximation.html - https://en.wikipedia.org/wiki/Laplace%27s_method</p>
+</section>
+<section id="resources-for-inla" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="resources-for-inla"><span class="header-section-number">4.2.5</span> Resources for INLA</h3>
+<ul>
+<li><a href="https://julianfaraway.github.io/brinla/examples/">Worked Examples for Bayesian Analysis with INLA from Faraway</a> - author of the “Extending the Linear Model” book, this site also includes many mixed effects model examples.</li>
+</ul>
+</section>
+</section>
+<section id="stan" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="stan"><span class="header-section-number">4.3</span> STAN</h2>
+<p>STAN is sophisticated because it uses the No U-Turn Sampling (NUTS), and thus has a faster convergence.</p>
+<ul>
+<li>there’s a “warm-up” rather than a “burn-in” for the sampling.</li>
+<li>faster for a complex model</li>
+</ul>
+<section id="rstanarm" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="rstanarm"><span class="header-section-number">4.3.1</span> rstanarm</h3>
+<p>The functions offered in rstanarm, and quick explanation</p>
+<ul>
+<li><code>stan_lm</code> - basic linear model</li>
+<li><code>stan_aov</code> - calls <code>stan_lm</code> in the backend</li>
+<li><code>stan_lmer</code> - calls</li>
+</ul>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-13_7dbeb5af85ea7c7d8f6c0fb2576a8caf">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"weightgain"</span>, <span class="at">package =</span> <span class="st">"HSAUR3"</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Frequentist Method</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>fmod <span class="ot">&lt;-</span> <span class="fu">aov</span>(weightgain <span class="sc">~</span> source <span class="sc">*</span> type, <span class="at">data =</span> weightgain)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Bayesian aov</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>bmod <span class="ot">&lt;-</span> <span class="fu">stan_aov</span>(weightgain <span class="sc">~</span> source <span class="sc">*</span> type, <span class="at">data =</span> weightgain,</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">prior =</span> <span class="fu">R2</span>(<span class="at">location =</span> .<span class="dv">5</span>),</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">adapt_delta =</span> .<span class="dv">999</span>,</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">seed =</span> <span class="dv">1234</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+SAMPLING FOR MODEL 'lm' NOW (CHAIN 1).
+Chain 1: 
+Chain 1: Gradient evaluation took 5.5e-05 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.55 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 0.286155 seconds (Warm-up)
+Chain 1:                0.22461 seconds (Sampling)
+Chain 1:                0.510765 seconds (Total)
+Chain 1: 
+
+SAMPLING FOR MODEL 'lm' NOW (CHAIN 2).
+Chain 2: 
+Chain 2: Gradient evaluation took 9e-06 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 0.276645 seconds (Warm-up)
+Chain 2:                0.263396 seconds (Sampling)
+Chain 2:                0.540041 seconds (Total)
+Chain 2: 
+
+SAMPLING FOR MODEL 'lm' NOW (CHAIN 3).
+Chain 3: 
+Chain 3: Gradient evaluation took 1e-05 seconds
+Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+Chain 3: Adjust your expectations accordingly!
+Chain 3: 
+Chain 3: 
+Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 3: 
+Chain 3:  Elapsed Time: 0.322498 seconds (Warm-up)
+Chain 3:                0.182252 seconds (Sampling)
+Chain 3:                0.50475 seconds (Total)
+Chain 3: 
+
+SAMPLING FOR MODEL 'lm' NOW (CHAIN 4).
+Chain 4: 
+Chain 4: Gradient evaluation took 9e-06 seconds
+Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+Chain 4: Adjust your expectations accordingly!
+Chain 4: 
+Chain 4: 
+Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 4: 
+Chain 4:  Elapsed Time: 0.30836 seconds (Warm-up)
+Chain 4:                0.199297 seconds (Sampling)
+Chain 4:                0.507657 seconds (Total)
+Chain 4: </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bmod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Model Info:
+ function:     stan_aov
+ family:       gaussian [identity]
+ formula:      weightgain ~ source * type
+ algorithm:    sampling
+ sample:       4000 (posterior sample size)
+ priors:       see help('prior_summary')
+ observations: 40
+
+Estimates:
+                       mean   sd    10%   50%   90%
+(Intercept)           98.7    4.4  93.1  98.7 104.4
+sourceCereal         -12.7    6.2 -20.6 -12.7  -4.8
+typeLow              -18.7    6.2 -26.4 -18.8 -10.4
+sourceCereal:typeLow  16.9    8.8   5.4  17.1  27.8
+sigma                 14.8    1.8  12.8  14.7  17.2
+log-fit_ratio          0.0    0.1  -0.1   0.0   0.2
+R2                     0.2    0.1   0.1   0.2   0.3
+
+Fit Diagnostics:
+           mean   sd   10%   50%   90%
+mean_PPD 87.3    3.4 83.0  87.2  91.6 
+
+The mean_ppd is the sample average posterior predictive distribution of the outcome variable (for details see help('summary.stanreg')).
+
+MCMC diagnostics
+                     mcse Rhat n_eff
+(Intercept)          0.1  1.0  1492 
+sourceCereal         0.1  1.0  1853 
+typeLow              0.2  1.0  1422 
+sourceCereal:typeLow 0.2  1.0  2093 
+sigma                0.0  1.0  2533 
+log-fit_ratio        0.0  1.0  2240 
+R2                   0.0  1.0  1733 
+mean_PPD             0.1  1.0  4009 
+log-posterior        0.1  1.0   850 
+
+For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bayesian lmer method</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>bmmod <span class="ot">&lt;-</span> <span class="fu">stan_lmer</span>(weightgain <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>source) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> type) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> source<span class="sc">:</span>type),</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> weightgain,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">prior_intercept =</span> <span class="fu">cauchy</span>(),</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">prior_covariance =</span> <span class="fu">decov</span>(<span class="at">shape =</span> <span class="dv">2</span>, <span class="at">scale =</span> <span class="dv">2</span>),</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">adapt_delta =</span> <span class="fl">0.999</span>, <span class="at">seed =</span> <span class="dv">12345</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+SAMPLING FOR MODEL 'continuous' NOW (CHAIN 1).
+Chain 1: 
+Chain 1: Gradient evaluation took 7.8e-05 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.78 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 6.87361 seconds (Warm-up)
+Chain 1:                5.0979 seconds (Sampling)
+Chain 1:                11.9715 seconds (Total)
+Chain 1: 
+
+SAMPLING FOR MODEL 'continuous' NOW (CHAIN 2).
+Chain 2: 
+Chain 2: Gradient evaluation took 2e-05 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 6.09438 seconds (Warm-up)
+Chain 2:                5.36233 seconds (Sampling)
+Chain 2:                11.4567 seconds (Total)
+Chain 2: 
+
+SAMPLING FOR MODEL 'continuous' NOW (CHAIN 3).
+Chain 3: 
+Chain 3: Gradient evaluation took 2.8e-05 seconds
+Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.28 seconds.
+Chain 3: Adjust your expectations accordingly!
+Chain 3: 
+Chain 3: 
+Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 3: 
+Chain 3:  Elapsed Time: 7.68205 seconds (Warm-up)
+Chain 3:                7.34715 seconds (Sampling)
+Chain 3:                15.0292 seconds (Total)
+Chain 3: 
+
+SAMPLING FOR MODEL 'continuous' NOW (CHAIN 4).
+Chain 4: 
+Chain 4: Gradient evaluation took 1.5e-05 seconds
+Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
+Chain 4: Adjust your expectations accordingly!
+Chain 4: 
+Chain 4: 
+Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 4: 
+Chain 4:  Elapsed Time: 6.01372 seconds (Warm-up)
+Chain 4:                7.2315 seconds (Sampling)
+Chain 4:                13.2452 seconds (Total)
+Chain 4: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+Running the chains for more iterations may help. See
+https://mc-stan.org/misc/warnings.html#tail-ess</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">freq =</span> <span class="fu">coef</span>(fmod),</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">bayes =</span> <span class="fu">coef</span>(bmod))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+   freq bayes
+  &lt;dbl&gt; &lt;dbl&gt;
+1 100    98.7
+2 -14.1 -12.7
+3 -20.8 -18.8
+4  18.8  17.1</code></pre>
+</div>
+</div>
+</section>
+<section id="resources-for-stan" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="resources-for-stan"><span class="header-section-number">4.3.2</span> Resources for STAN</h3>
+<ul>
+<li><a href="https://people.bath.ac.uk/jjf23/stan/index.html">Faraway worked examples in STAN</a> - largely examples from his books, and pretty basic analyses.</li>
+</ul>
+</section>
+</section>
+<section id="jags" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="jags"><span class="header-section-number">4.4</span> JAGS</h2>
+<p>JAGS stands for “Just another Gibbs Sampler”, and operates by MCMC.</p>
+<section id="worked-examples" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="worked-examples"><span class="header-section-number">4.4.1</span> Worked Examples</h3>
+<section id="linear-regression-simulated" class="level4">
+<h4 class="anchored" data-anchor-id="linear-regression-simulated">Linear Regression (simulated)</h4>
+<p>We’ll run the same model that did for INLA, a SLR.</p>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-14_464ebc0b00d05d55a9d6c51c5d40dc26">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://www.precision-analytics.ca/articles/a-gentle-inla-tutorial/</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># 500, 5000, 25000, 100000</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.1</span>)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> x <span class="sc">+</span> nu)</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rpois</span>(N, mu)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-15_288726eecf218bc7e91f1b576ab1f103">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://www.precision-analytics.ca/articles/a-gentle-inla-tutorial/</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Save BUGS style specification to .txt file</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"model {</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="st">  for(i in 1:N) {</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="st">    y[i] ~ dnorm(mu[i], tau)</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="st">    mu[i] &lt;- alpha + beta * x[i]</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="st">  alpha ~ dnorm(0, 0.001)</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="st">  beta  ~ dnorm(0, 0.001)</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="st">  tau   ~ dgamma(0.01, 0.01)</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span>, <span class="at">file=</span><span class="st">"jags_slr.txt"</span>)</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the Model </span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>jags_mod_slr <span class="ot">&lt;-</span> <span class="fu">jags.model</span>(</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"jags_slr.txt"</span>,</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat_simple,</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.chains =</span> <span class="dv">3</span>,</span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 100
+   Unobserved stochastic nodes: 3
+   Total graph size: 407
+
+Initializing model</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run Jags and save posterior samples</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"alpha"</span>, <span class="st">"beta"</span>, <span class="st">"tau"</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>samps <span class="ot">&lt;-</span> <span class="fu">coda.samples</span>(jags_mod_slr, params, <span class="at">n.iter=</span><span class="dv">1000</span>)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(samps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 3 
+Sample size per chain = 1000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+        Mean      SD Naive SE Time-series SE
+alpha 0.2382 0.50615 0.009241       0.039769
+beta  0.9858 0.08229 0.001502       0.006511
+tau   0.9590 0.14776 0.002698       0.004212
+
+2. Quantiles for each variable:
+
+         2.5%      25%    50%    75%  97.5%
+alpha -0.4555 -0.02924 0.2080 0.4334 0.9664
+beta   0.8656  0.95217 0.9898 1.0312 1.1020
+tau    0.6885  0.86472 0.9578 1.0522 1.2467</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="bayesian_cache/html/unnamed-chunk-16_ad5c78264058677a77c9edfa0167480d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(samps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayesian_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>These are the mixing plots and show posterior sample draws, as well as the density of those draws. We can see that the mixing times, and such stabilize quite quickly. We can see in the trace three dotted lines, because we requested three chains.</p>
+</section>
+</section>
+</section>
+<section id="cookbook" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="cookbook"><span class="header-section-number">4.5</span> Cookbook</h2>
+<section id="conditional-logistic-regression-model" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="conditional-logistic-regression-model"><span class="header-section-number">4.5.1</span> Conditional Logistic Regression Model</h3>
+<p><a href="https://inla.r-inla-download.org/r-inla.org/doc/vignettes/conditional_logit.pdf">Conditional Logistic Regression Example with INLA</a></p>
+</section>
+<section id="conditional-sampling" class="level3" data-number="4.5.2">
+<h3 data-number="4.5.2" class="anchored" data-anchor-id="conditional-sampling"><span class="header-section-number">4.5.2</span> Conditional Sampling</h3>
+<p><a href="https://inla.r-inla-download.org/r-inla.org/doc/vignettes/conditional-sampling.pdf">Conditional Sampling from INLA</a></p>
+</section>
+</section>
+<section id="additional-resources" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="additional-resources"><span class="header-section-number">4.6</span> Additional Resources</h2>
+<section id="inla-related-beginner" class="level3" data-number="4.6.1">
+<h3 data-number="4.6.1" class="anchored" data-anchor-id="inla-related-beginner"><span class="header-section-number">4.6.1</span> INLA Related (beginner)</h3>
+<ul>
+<li><a href="https://www.precision-analytics.ca/articles/a-gentle-inla-tutorial/">Best introduction blog post of INLA</a> with some comparisons to MCMC methods</li>
+<li><a href="https://becarioprecario.bitbucket.io/inla-gitbook/index.html">A whole book about INLA, introduction level</a> with heavy emphasis on applied examples, and organized very intuitively for applied statisticians.</li>
+<li><a href="https://haakonbakkagit.github.io/alltopics.html">Miscellaneous list of INLA tutorials</a></li>
+</ul>
+</section>
+<section id="advanced-spatial-stochastic-pde-modeling-with-inla" class="level3" data-number="4.6.2">
+<h3 data-number="4.6.2" class="anchored" data-anchor-id="advanced-spatial-stochastic-pde-modeling-with-inla"><span class="header-section-number">4.6.2</span> Advanced (spatial, stochastic pde) Modeling with INLA</h3>
+<ul>
+<li><a href="https://becarioprecario.bitbucket.io/spde-gitbook/">Advanced Spatial Modeling with Stochastic Partial Differential Equations Using R and INLA</a></li>
+<li><a href="https://www.paulamoraga.com/book-geospatial/sec-spatialdataandCRS.html">Geospatial Health Data: Modeling and Visualization with R-INLA and Shiny</a></li>
+</ul>
+<p>Software Comparisons - <a href="https://arxiv.org/pdf/2107.09357.pdf">Comparing NIMBLE, JAGS, Stan</a> - upshot is to learn Stan for best balance of flexibility and speed.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../approximation/approximation.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Approximation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../categorical/categorical.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,132 @@
+---
+title: "Network Centrality"
+author: "Michael Liou"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(igraph)
+library(ggraph)
+library(tidygraph)
+library(netrankr)
+library(dplyr)
+library(tidyr)
+library(ergm)
+```
+
+## Introduction
+
+Several types of measuring centrality
+
+1.  Degree
+
+Counting the number of in/out edges. summing by weight
+
+2.  Eigenvalue
+
+Captures the idea that being connected to someone else important means that you yourself are important.
+
+3.  Katz
+
+4.  PageRank
+
+## Network Fixtures
+
+```{r}
+set.seed(1)
+# ER random graph, 20 nodes, average 5/20 connections, directed
+g_uni <- sample_gnp(20, 5/20, directed=TRUE)
+
+# Simple 1,1, 2, 3 graph
+g_simple_adj_matrix <- matrix(c(0, 1, 1, 1,
+                     1, 0, 0, 1,
+                     1, 0, 0, 0,
+                     1, 1, 0, 0),
+                     nrow = 4, ncol = 4)
+
+g_simple <- graph_from_adjacency_matrix(g_simple_adj_matrix, mode = "undirected")
+# g_simple %>% set_vertex_attr("name", value = letters[1:4]) # label with alphabet
+
+# ER random graph, 20 nodes, average 5/20, undirected
+
+g_uni_bi <- sample_gnp(20, 5/20, directed=TRUE)
+
+
+# Simple Directed graph, acyclic
+g_simple_dir_adj_matrix <- matrix(c(0, 1, 1, 0, 1, 0, 0, 0,
+                                    0, 0, 1, 1, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 1, 0, 0,
+                                    0, 0, 0, 0, 1, 0, 1, 0,
+                                    0, 0, 0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 1, 0, 0),
+                                  nrow = 8,
+                                  ncol = 8,
+                                  byrow = TRUE)
+
+g_simple_dir <- graph_from_adjacency_matrix(g_simple_dir_adj_matrix, mode = "directed")
+
+
+```
+
+## Eigenvalue centrality
+
+```{r}
+# The graph we look at
+ggraph(g_simple, layout = "kk") +
+  geom_edge_fan() +
+  geom_node_label(aes(label = 1:4))
+```
+
+```{r}
+# Eigenvector centrality through igraph
+cent_eig_igraph <- eigen_centrality(g_simple)$vector
+# Through eigenvector decomp
+cent_eig_manual <- eigen(g_simple_adj_matrix)$vectors[,1] / eigen(g_simple_adj_matrix)$vectors[1,1]
+
+# They are the same!
+cbind(
+  cent_eig_igraph, # Eigencentrality
+  cent_eig_manual # eig centrality calculation
+)
+  
+```
+
+```{r}
+# Note how
+eigen_centrality
+eigen_centrality(g_simple_dir)$vector
+eigen(g_simple_dir_adj_matrix)$vectors[,1] / eigen(g_simple_adj_matrix)$vectors[1,1]
+```
+
+## Katz Centrality
+
+```{r}
+length(V(g_simple_dir))
+
+ggraph(g_simple_dir, layout = "kk") +
+  geom_edge_fan(arrow = arrow(length = unit(4, "mm")),
+                end_cap = circle(3, "mm")) +
+  geom_node_label(aes(label = 1:length(V(g_simple_dir))))
+```
+
+```{r}
+# Calculating Katz Centrality with tidygraph (rank ordered?)
+# Only undirected?
+as_tbl_graph(g_simple) %>% 
+  mutate(centrality = centrality_katz())
+```
+
+```{r}
+alpha_centrality(g_simple_dir, alpha = 1)
+```
+
+## PageRank
+
+```{r}
+page_rank(g_simple)$vector
+```

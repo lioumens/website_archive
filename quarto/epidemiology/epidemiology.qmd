@@ -4,7 +4,7 @@ author: "Michael Liou"
 format: html
 ---
 
-# Contagion Process on Time-Varying Networks
+## Contagion Process on Time-Varying Networks
 
 This section will explore some of the results of the paper [Temporal Gillespie Algorithm: Fast Simulation of Contagion Processes on Time-Varying Networks](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004579).
 

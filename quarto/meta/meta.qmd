@@ -42,19 +42,19 @@ library(vegan)
 
 This document is an overview of the key characteristics involved in a meta analysis. An introduction to the statistical components of a meta analysis. Standard errors become quite important for meta analysis because we need to back calculate summarized information and standardize things across studies. We no longer have access to the raw data anymore.
 
-# Effect Size
+## Effect Size
 
 In order to pool studies, the most important item is the effect size. Largely effect size can be categorized into relative or absolute. Another breakdown is whether the effect size is standardized or not.
 
-## Mean
+### Mean
 
-## Median
+### Median
 
-## Proportion
+### Proportion
 
-## Logit Proportion
+### Logit Proportion
 
-## Correlation
+### Correlation
 
 Standard error formulas are *not* trivial. Even something like the correlation coefficients have been glossed over and never revisited. We've said "good enough"! The commonly reported values are given here:
 
@@ -175,18 +175,18 @@ dat_sample_cor_exp |> ggplot() +
 
 When the distributions are skewed, it seems they peak the bottom a little more, but this matches the story above in which we are underestimating the standard error a little, because it's poking out a little more all over.\
 
-### Z transformed Pearson
+#### Z transformed Pearson
 
 ## Diversity Indices
 
 -   Shannon diversity
 -   Hill Diversity Indices
 
-It has been noted that there are biases when bootstrapping these diversity indices.[^1] Furthermore, there have been attempts to quantify the standard error as well.[^2]
+It has been noted that there are biases when bootstrapping these diversity indices.[^meta-1] Furthermore, there have been attempts to quantify the standard error as well.[^meta-2]
 
-[^1]: https://stats.stackexchange.com/questions/156235/biased-bootstrap-is-it-okay-to-center-the-ci-around-the-observed-statistic
+[^meta-1]: https://stats.stackexchange.com/questions/156235/biased-bootstrap-is-it-okay-to-center-the-ci-around-the-observed-statistic
 
-[^2]: https://stats.stackexchange.com/questions/188869/standard-error-for-shannons-index-in-r
+[^meta-2]: https://stats.stackexchange.com/questions/188869/standard-error-for-shannons-index-in-r
 
 ### Hill/Renyi Diversity
 
@@ -303,9 +303,9 @@ entropy_uniform_se |> ggplot() +
 
 The bias it seems can be quite massive if you choose different sequencing efforts. Thus, we must standardize our metric before comparing alpha diversity.
 
-Normalization Techniques (Slides with more[^3])
+Normalization Techniques (Slides with more[^meta-3])
 
-[^3]: https://evolution.unibas.ch/walser/bacteria_community_analysis/2015-02-10_MBM_tutorial_combined.pdf
+[^meta-3]: https://evolution.unibas.ch/walser/bacteria_community_analysis/2015-02-10_MBM_tutorial_combined.pdf
 
 -   Subsampling to a common depth (rarefaction)
 
@@ -500,7 +500,7 @@ Note that the standard $t$ statistic is defined as $\frac{\sqrt{n}(\bar x_2 - \b
 
     -   Generally small samples have quite a large bias
 
-# Pooling Effect Size
+## Pooling Effect Size
 
 Now that we have an understanding of how effect sizes matter for different variables, how do we actually pool the studies?
 

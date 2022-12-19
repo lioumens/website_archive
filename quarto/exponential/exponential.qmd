@@ -1,0 +1,110 @@
+---
+title: "Exponential Modeling"
+author: "Michael Liou"
+format: html
+editor: visual
+---
+
+```{r}
+library(beeswarm)
+library(purrr)
+library(tidyverse)
+library(MASS, exclude = c("select", "area"))
+```
+
+## Exponential Modeling
+
+There are many ways to fit an exponential model
+
+```{r}
+# Simulate data
+star_count <- function(d, a = 500, b = .7) {
+  a * exp(-d * b)
+}
+
+set.seed(1)
+x <- 0:19
+y <- rnegbin(20, mu = star_count(0:19), theta = 100000)
+
+# simulate distance position of stars
+bin_offsets <- y |> map(~sort(runif(.x))) |> reduce(c)
+bin_start <- map2(x, y, .f = ~rep(.x, .y)) |> reduce(c)
+star_pos <- bin_start + bin_offsets
+
+diff(star_pos)
+plot(log(star_pos), log(c(0, diff(star_pos)) + 1))
+
+beeswarm(star_pos, horizontal = TRUE, method = "center")
+
+plot(x, y)
+
+
+
+# log method
+mod_loglm <- lm(log(y + 1) ~ x)
+
+mod_loglm |> summary()
+exp(coef(mod_loglm)[2]) # decay param
+
+# nls
+mod_nls <- nls(y~a * exp(-b * x), data = tibble(x, y),
+               start = list(a = 300, b = .5))
+summary(mod_nls)
+
+# poisson method
+mod_glm <- glm(y ~ x, data = tibble(x, y), family = poisson(link = "log"))
+summary(mod_glm)
+
+# now if I sample the same stars, but with half the bin width...
+x_half <- seq(0, 19, .5)
+y_half <- table(cut(star_pos,breaks = x_half, include.lowest = T))
+
+
+# nls method, can't adjust for the bin size, and residual errors
+mod_nls_half <- nls(y_half ~ a * exp(-b * x_half[-length(x_half)]),
+                    data = tibble(x_half[-length(x_half)], y_half),
+                    start = list(a = 200, b = .5))
+
+summary(mod_nls_half)
+
+mod_glm_half <- glm(y_half ~ x_half[-length(x_half)], family = poisson(link = "log"), offset = rep(log(1/2), length(y_half)))
+
+summary(mod_glm_half);sigma(mod_glm_half)
+
+```
+
+```{r}
+summary(mod_glm);sigma(mod_glm)
+```
+
+```{r}
+anova(mod_glm_half)
+```
+
+```{r}
+mod_quasi_glm <- glm(y~x, family = quasipoisson(link = "log"))
+
+mod_quasi_glm_half <- update(mod_glm_half, family = quasipoisson(link = "log"))
+summary(mod_quasi_glm)
+summary(mod_quasi_glm_half)
+```
+
+```{r}
+plot(x, y)
+# lines(x, exp(coef(mod_loglm)[1] + coef(mod_loglm)[2]*x) - 1) # bad model...
+lines(x, predict(mod_glm, type = "response"))
+lines(x, predict(mod_nls, type = "response"), col = 2)
+points(x_half[-length(x_half)], y_half, pch = 16)
+lines(x_half[-length(x_half)], predict(mod_glm_half, type = "response"), col = 3)
+lines(x_half[-length(x_half)], predict(mod_nls_half, type = "response"), col = 2, lty = 2)
+```
+
+This seems like a difficult thing to grapple with.. the rate of decrease is not the same. It seems if you halve the exposure time, you'd expect similar rates of decrease, but you should end up with the same estimate of the mean poisson value.
+
+```{r}
+predict(mod_glm_half) |> as.numeric()
+predict(mod_glm)[2]
+# 4.994005 vs 5.5
+```
+
+The values are quite different... for the rate parameters, which is a little uncomfortable, and I'm not sure why.

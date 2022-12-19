@@ -1,0 +1,162 @@
+---
+title: "Approximation"
+author: "Michael Liou"
+date: "12/22/2021"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(EQL)
+```
+
+## Edgeworth Expansion
+
+Edgeworth expansion is an improvement to the normal approximation that includes skewness (degree 2) and kurtosis (degree three). The first degree approximation amounts to the normal approximation.
+
+Suppose we have a general distribution $X_i$ with mean $\mu$ and variance $\sigma^2$. If we standardize the sum, we have a statistic that is approximately N$(0, 1)$
+
+$$
+\begin{aligned}
+Z = \frac{1}{\sqrt{n}} \sum_i \frac{X_i - \mu}{\sigma}
+\end{aligned}
+$$
+Edgeworth expansion of the pdf of $Z$ is
+
+$$
+\begin{aligned}
+f_Z(z) = \underbrace{\underbrace{\underbrace{\phi(z)}_{\text{degree 1}} + \frac{\lambda_3}{6\sqrt{n}}H_3(z)\phi(z)}_{\text{degree 2}} + \left(\frac{\lambda_4}{24n}H_4(z)\phi(z) + \frac{\lambda_3^2}{72n}H_6(z)\phi(z)\right)}_{\text{degree 3}} + o\left(\frac{1}{n}\right)
+\end{aligned}
+$$
+where: 
+
+* $\lambda_r$ denotes the cumulant of Z, related to the cumulants of $X_i$ by $\lambda_r = \kappa_r / \sigma^r$ if cumulants of $X_i$ are represented by $\kappa_r$
+* $H_r$ are hermite polynomials.
+
+We look at how well this approximation works for the sum of chisq random variables. The cumulants of the chisq variables.
+
+Suppose $X_i \sim \chi^2_2$
+
+If we study the mean, the true distribution is $\bar{X_i} \sim \Gamma(\frac{n *   df}{2}, \frac{n}{2})$.
+
+```{r}
+set.seed(1)
+n <- 3
+
+# Sampled distribution
+rand_x <- rchisq(1000, 2) + rchisq(1000, 2) + rchisq(1000, 2)
+rand_x_mean <- rand_x / n
+
+# True distribution
+# Gamma(3, 3/2)
+x <- seq(0, 10, by=.1)
+true_y <- dgamma(x, 3, 3/2)
+
+# Normal Approximation
+# N(2, 4/3)
+norm_approx_y <- dnorm(x, mean = 2, sd = sqrt(4/3))
+```
+
+
+For the edgeworth expansion, since we're studying the mean $\bar X$, this is a transformation of $Z$, that is,
+
+$$
+\begin{aligned}
+\bar X = \frac{(Z\sqrt{n\sigma^2} + n\mu)}{n}
+\end{aligned}
+$$
+so the inverse formula that we use in the pdf transformation formula, 
+
+$$
+\begin{aligned}
+Z = \frac{n\bar X - n\mu}{\sqrt{n\sigma^2}}
+\end{aligned}
+$$
+The transformation formula would then say,
+
+$$
+\begin{aligned}
+f_{\bar X}(x) &= \underbrace{f_Z\left(\frac{nx - n\mu}{\sqrt{n\sigma^2}}\right)}_{\text{approximated by Edgeworth}} \left| \frac{\sqrt{n}}{\sigma}\right|
+\end{aligned}
+$$
+
+
+```{r}
+herm <- Vectorize(function(x, degree = 1 ) {
+  switch(degree,
+         x,
+         x^2 -1,
+         x^3 - 3*x,
+         x^4 - 6*x^2 + 3,
+         x^5 - 10 * x^3 + 15 * x,
+         x^6 - 15*x^4 + 45*x^2 - 15)
+}, "x")
+
+
+# Edgeworth expansion, degree 2
+edgeworth_mean2 <- function(x, n, mu, sigma2, lambda3){
+  z <- sqrt(n) * (x - mu) / sqrt(sigma2)
+  sqrt(n / sigma2) * dnorm(z) * (1 + lambda3 / (6 * sqrt(n)) * herm(z, 3))
+}
+
+# Edgeworth expansion, degree 3
+edgeworth_mean3 <- function(x, n, mu, sigma2, lambda3, lambda4) {
+  z <- sqrt(n) * (x - mu) / sqrt(sigma2) # transformation
+  sqrt(n / sigma2) * # transformation scaling
+    dnorm(z) * (1 +  # degree 1 terms
+      lambda3 / (6 * sqrt(n)) * herm(z, 3) + # degree 2 terms
+      lambda4 / (24 * n) * herm(z, 4) + # degree 3 terms
+      lambda3^2 / (72 * n) * herm(z, 6)) # degree 3 terms
+}
+```
+
+
+```{r}
+# Creating unified plot with all the 
+hist(rand_x_mean, breaks=50, freq = FALSE, main = "Mean of chisq (Edgeworth)", xlab = "x")
+lines(x, true_y, lwd = 2)
+lines(x, norm_approx_y, lty = 2, col = 2, lwd = 2)
+lines(x, edgeworth_mean2(x, 3, 2, 4, 2), lty = 2, col = 3, lwd = 2)
+lines(x, edgeworth_mean3(x, 3, 2, 4, 2, 6), lty = 2, col = 4, lwd = 2)
+legend("topright", 
+       legend = c("True Distribution", 
+                  "Normal Approximation", 
+                  "Edgeworth (2 deg)", 
+                  "Edgeworth (3 deg)"),
+       col = c(1, 2, 3, 4), 
+       lty = c(1, 2, 2, 2))
+```
+
+### R Packages
+
+- EW
+  - does finite differencing for the moment estimators
+  - only two functions, edgeworth and saddlepoint approximations
+- EQL (extended quasi likelihood)
+  - does extended quasi-likelihood and saddlepoint approximations too
+  - in my opinion, very well written and clear readable code. Used source code to figure out my own errors.
+  
+```{r}
+library(EQL)
+# Usage for our example
+ew <- edgeworth(x, n = 3, mu = 2, sigma2 = 4, rho3 = 2, rho4 = 6, type = "mean", deg = 3)
+
+# They match with our results
+hist(rand_x_mean, breaks=50, freq = FALSE, main = "Mean of chisq (Edgeworth)", xlab = "x")
+lines(x, true_y)
+lines(x, edgeworth_mean3(x, 3, 2, 4, 2, 6), col = 2)
+lines(x, ew$approx, lty = 2, lwd = 2, col = 3)
+```
+
+### Further Resources
+
+- http://personal.psu.edu/drh20/asymp/fall2004/lectures/edgeworth.pdf
+- [Writing Projects](https://math.montana.edu/grad_students/writing-projects/2004/04sondrggr.pdf)
+
+## Saddlepoint Approximation
+
+- https://stats.stackexchange.com/questions/191492/how-does-saddlepoint-approximation-work/191781
+- [Preliminary Asymptotics](https://warwick.ac.uk/fac/sci/statistics/apts/students/resources-1314/stat_asymp_prelim.pdf)
+
+
+
+

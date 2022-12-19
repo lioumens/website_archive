@@ -89,7 +89,7 @@ library(forcats)
 library(Lmisc)
 ```
 
-# Basic Matrices
+## Basic Matrices
 
 Let $j$ be the vector of all 1's, and $J$ be the matrix of all ones.
 
@@ -107,11 +107,11 @@ Jx &= \begin{bmatrix}
 \end{aligned}
 $$
 
-# Adjacency Matrix
+## Adjacency Matrix
 
-## Example Spectrums
+### Example Spectrums
 
-## Spectral Radius Bounds
+### Spectral Radius Bounds
 
 ::: {.callout-note icon="false"}
 #### Theorem 2.3: Adjacency Matrix Spectral Radius Bound [@hongSharpUpperBound2001]
@@ -179,12 +179,12 @@ g5_hong_df |> ggplot(aes(factor(g_id, unique(g_id)), spectral_radius)) +
   
 ```
 
-# Laplacian
+## Laplacian
 
-## Example Spectrums
+### Example Spectrums
 
 ::: panel-tabset
-### Components
+#### Components
 
 If there are 2 connected components, 2 of the eigenvalues will be 0.
 
@@ -202,7 +202,7 @@ eigen(L2)$values |> zapsmall()
 
 ```
 
-### Complete Graph
+#### Complete Graph
 
 ```{r}
 g <- make_full_graph(5)
@@ -211,7 +211,7 @@ plot(g)
 eigen(L)$values |> zapsmall()
 ```
 
-### Star Graph
+#### Star Graph
 
 ```{r}
 g <- make_star(5, mode = "undirected")
@@ -220,7 +220,7 @@ plot(g)
 eigen(L)$values |> zapsmall()
 ```
 
-### Bipartite Graph
+#### Bipartite Graph
 
 ```{r}
 g <- make_full_bipartite_graph(5, 3)
@@ -229,7 +229,7 @@ plot(g)
 eigen(L)$values |> zapsmall()
 ```
 
-### Path
+#### Path
 
 ```{r}
 g <- make_graph(~1-2-3-4-5-6-7-8-9-10)
@@ -250,9 +250,9 @@ flowchart LR
   b --- c
 ```
 
-## Spectral Radius Bounds
+### Spectral Radius Bounds
 
-### Simple
+#### Simple
 
 There are 3 simple bounds on the Laplacian presented by [@andersonEigenvaluesLaplacianGraph1985],
 
@@ -276,10 +276,10 @@ $$ \lambda_1(L) \leq \max_{i\sim j} w_i + w_j $$
 -   I believe this is true over any weighted, connected, undirected graph
 -   equality is reached when bipartite graph
 
-## Laplacian for Distributed Summation
+### Laplacian for Distributed Summation
 
 ::: {.callout-note appearance="minimal"}
-### Source
+#### Source
 
 This insight comes from [Sivan Toledo](https://www.tau.ac.il/~stoledo/Support/ex-distributed-summation.pdf), where he has a nice description of the problem.
 :::
@@ -338,7 +338,7 @@ for (i in 1:100) {
 y
 ```
 
-## Normalized Laplacian
+### Normalized Laplacian
 
 The primary reason for looking at the normalized laplacian is because it removes dependence on the number of nodes in the graph, which would change bounds. Rather, the eigenvalues of a normalized laplacian will range from $0 \leq 2$, reaching 2 for bipartite graphs.
 
@@ -348,7 +348,7 @@ NL <- Diagonal(x = D) %*% L %*% Diagonal(x = D)
 NL
 ```
 
-### Example Spectrums of Normalized Laplacian
+#### Example Spectrums of Normalized Laplacian
 
 ::: panel-tabset
 #### Ring
@@ -389,11 +389,11 @@ eigen(N)$values |> zapsmall() # 0, 1 (n + m - 2), 2
 ```
 :::
 
-## Fiedler Bounds (normalized Laplacian)
+### Fiedler Bounds (normalized Laplacian)
 
 Fiedler Eigenvalue is the smallest non-zero eigenvalue.
 
-### Simple
+#### Simple
 
 For k-regular graph, and diameter \> 4, we have
 
@@ -540,7 +540,7 @@ reg4_dia4plus_df |> unite(col = "g_uid", !!!c("nodes", "dia", "graph_id"), remov
 # reg4_dia4plus_df # well... they are all lower bounded? if it's an infinite family of regular graphs... it should get closer right? b/c it's lim sup?
 ```
 
-### By Volume (global)
+#### By Volume (global)
 
 A loose lower bound for the smallest non-trivial eigenvalue [@chungSpectralGraphTheory1997 pp. 7]:
 
@@ -594,7 +594,7 @@ graph_fiedler |> ggplot(aes(dia, fiedler, color = vol)) +
 
 Even using the vertex count definition for volume (less conservative), the bound is quite low for most of the Fiedler values.
 
-### By Cheeger's (Sparsest Cut)
+#### By Cheeger's (Sparsest Cut)
 
 Cheeger's constant is loosely defined in english, as the minimal ratio, of cost of cutting edges, to the size of sets it cuts off. That is, a "dumbbell" shape graph, where large vertex sets are on both side, and only cutting 1 edge in the middle would have a very very low cheeger constant.
 
@@ -720,7 +720,7 @@ cheeger_fiedler_df |>
 # seems incorrect for
 ```
 
-## Laplacian decomposition as incidence matrix
+### Laplacian decomposition as incidence matrix
 
 If we define an incidence matrix as a $|V| \times |E|$ matrix, in which each column has a 1 and -1 for in positions the edge connects the vertices,
 
@@ -777,15 +777,15 @@ Just to see the sparsity pattern of B, (we try spam's display routine)
 display(as.spam(B))
 ```
 
-## Laplacian Stochastic Matrix
+### Laplacian Stochastic Matrix
 
 $I - D^{\dagger}A$
 
-# Stochastic Matrices
+## Stochastic Matrices
 
 matrices in which each matrix row sums to 1.
 
-# Matrix Norms
+## Matrix Norms
 
 This section aims to quantify and give intuition behind the following matrix norms.
 

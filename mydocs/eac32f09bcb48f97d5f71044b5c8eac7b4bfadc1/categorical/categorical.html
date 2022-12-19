@@ -1,0 +1,2549 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.203">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Liou">
+<meta name="dcterms.date" content="2022-12-18">
+
+<title>Personal Documentation - 5&nbsp; Categorical Data Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../matrix/matrix.html" rel="next">
+<link href="../bayesian/bayesian.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Personal Documentation</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../advanced/advanced.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Advanced R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../approximation/approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Approximation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bayesian/bayesian.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../categorical/categorical.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">From Informational</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">5.1</span>  Overview</a></li>
+  <li><a href="#x2-sampling-mechanisms" id="toc-x2-sampling-mechanisms" class="nav-link" data-scroll-target="#x2-sampling-mechanisms"><span class="toc-section-number">5.2</span>  2x2 sampling mechanisms</a>
+  <ul class="collapse">
+  <li><a href="#poisson-cell-means" id="toc-poisson-cell-means" class="nav-link" data-scroll-target="#poisson-cell-means"><span class="toc-section-number">5.3.1</span>  Poisson (cell means)</a></li>
+  <li><a href="#multinomial-grand-total-fixed" id="toc-multinomial-grand-total-fixed" class="nav-link" data-scroll-target="#multinomial-grand-total-fixed"><span class="toc-section-number">5.3.2</span>  Multinomial (Grand Total Fixed)</a></li>
+  <li><a href="#binomial-two-sample-one-fixed-margin" id="toc-binomial-two-sample-one-fixed-margin" class="nav-link" data-scroll-target="#binomial-two-sample-one-fixed-margin"><span class="toc-section-number">5.3.3</span>  Binomial Two Sample (One fixed margin)</a></li>
+  <li><a href="#hypergeometric" id="toc-hypergeometric" class="nav-link" data-scroll-target="#hypergeometric"><span class="toc-section-number">5.3.4</span>  Hypergeometric</a></li>
+  </ul></li>
+  <li><a href="#measures-of-association" id="toc-measures-of-association" class="nav-link" data-scroll-target="#measures-of-association"><span class="toc-section-number">5.4</span>  Measures of Association</a></li>
+  <li><a href="#testing" id="toc-testing" class="nav-link" data-scroll-target="#testing"><span class="toc-section-number">5.5</span>  Testing</a>
+  <ul class="collapse">
+  <li><a href="#pearson" id="toc-pearson" class="nav-link" data-scroll-target="#pearson"><span class="toc-section-number">5.5.1</span>  Pearson</a></li>
+  <li><a href="#barnard-exact-test" id="toc-barnard-exact-test" class="nav-link" data-scroll-target="#barnard-exact-test"><span class="toc-section-number">5.5.2</span>  Barnard Exact Test</a></li>
+  <li><a href="#mcnemar" id="toc-mcnemar" class="nav-link" data-scroll-target="#mcnemar"><span class="toc-section-number">5.5.3</span>  McNemar</a></li>
+  <li><a href="#breslow-day-test" id="toc-breslow-day-test" class="nav-link" data-scroll-target="#breslow-day-test"><span class="toc-section-number">5.5.4</span>  Breslow-Day Test</a></li>
+  <li><a href="#cmh-testing" id="toc-cmh-testing" class="nav-link" data-scroll-target="#cmh-testing"><span class="toc-section-number">5.5.5</span>  CMH testing</a></li>
+  <li><a href="#x2-tables-comparison" id="toc-x2-tables-comparison" class="nav-link" data-scroll-target="#x2-tables-comparison"><span class="toc-section-number">5.5.6</span>  2x2 tables Comparison</a></li>
+  </ul></li>
+  <li><a href="#more-than-two-categories" id="toc-more-than-two-categories" class="nav-link" data-scroll-target="#more-than-two-categories"><span class="toc-section-number">5.6</span>  More than two categories</a>
+  <ul class="collapse">
+  <li><a href="#poisson-glm-modeling" id="toc-poisson-glm-modeling" class="nav-link" data-scroll-target="#poisson-glm-modeling"><span class="toc-section-number">5.6.1</span>  Poisson GLM Modeling</a></li>
+  <li><a href="#log-linear-models" id="toc-log-linear-models" class="nav-link" data-scroll-target="#log-linear-models"><span class="toc-section-number">5.6.2</span>  Log Linear Models</a></li>
+  <li><a href="#multinomial-models" id="toc-multinomial-models" class="nav-link" data-scroll-target="#multinomial-models"><span class="toc-section-number">5.6.3</span>  Multinomial Models</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Liou </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 18, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-1_b07ef10cd66a77cb3b25fd5211f2d7ef">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+✔ tibble  3.1.8     ✔ dplyr   1.0.9
+✔ tidyr   1.2.0     ✔ stringr 1.4.0
+✔ readr   2.1.2     ✔ forcats 0.5.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AMR)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'DescTools'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:AMR':
+
+    %like%</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'kableExtra'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    group_rows</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VGAM)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: stats4</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: splines</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'VGAM'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:DescTools':
+
+    Rank</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:tidyr':
+
+    fill</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="overview" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">5.1</span> Overview</h2>
+<p>This is a very broad area, but I feel like it’s also super confusing because it’s all very confouded in terms of all the chisq tests that are scattered throughout the place. I’m trying to organize everything for myself here.</p>
+<ul>
+<li>CMH test</li>
+<li>score test for table</li>
+<li>Pearson</li>
+<li>Yates (continuity correction of Pearson)</li>
+<li>Barnard test (based on fixing 1 margin)</li>
+<li>fisher exact (based on fixing all margins)</li>
+<li>McNemar Test</li>
+<li>Generalized CMH test</li>
+</ul>
+</section>
+<section id="x2-sampling-mechanisms" class="level2 tabset" data-number="5.2">
+<h2 class="tabset anchored" data-number="5.2" data-anchor-id="x2-sampling-mechanisms"><span class="header-section-number">5.2</span> 2x2 sampling mechanisms</h2>
+<p>The many different sampling mechanisms arise from different study designs, and are critical to the assumptions of the population you are studying.</p>
+<p>In an epidemiological context, the data is given as</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: left;">disease</th>
+<th style="text-align: left;">no disease</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>exposure</td>
+<td style="text-align: left;">a</td>
+<td style="text-align: left;">b</td>
+<td>n1</td>
+</tr>
+<tr class="even">
+<td>no exposure</td>
+<td style="text-align: left;">c</td>
+<td style="text-align: left;">d</td>
+<td>n0</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td style="text-align: left;">m1</td>
+<td style="text-align: left;">m0</td>
+<td>N</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Poisson (nothing fixed)</li>
+<li>Multinomial (N) is fixed
+<ul>
+<li>“Cross Sectional” studies</li>
+</ul></li>
+<li>Two-sample Binomial (1 margin fixed)
+<ul>
+<li>“Cohort Study” = n1, n0 fixed</li>
+<li>“Case Control Study” = m1, m0 fixed
+<ul>
+<li>a type of “retrospective” study.</li>
+</ul></li>
+</ul></li>
+<li><h2 id="hypergeometric-2-margins-fixed" data-number="5.3" class="anchored"><span class="header-section-number">5.3</span> Hypergeometric (2 margins fixed)</h2></li>
+</ul>
+<section id="poisson-cell-means" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="poisson-cell-means"><span class="header-section-number">5.3.1</span> Poisson (cell means)</h3>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-2_78c66ff36d26381e919c0184912fd42c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Independent Poisson</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' When specifying the mean, they can be specified cellwise, or by table, grouped by the nrow*ncol, in order of the columns</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param mean means of the cells. If 1 number, all cells will have same </span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>rpoisson_table <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">num_tables =</span> <span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">nrow =</span> <span class="dv">2</span>,  <span class="at">ncol =</span> <span class="dv">2</span>) {</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  cells <span class="ot">&lt;-</span> <span class="fu">rpois</span>(ncol <span class="sc">*</span> nrow <span class="sc">*</span> num_tables, <span class="at">lambda =</span> mean)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  vec_table <span class="ot">&lt;-</span> <span class="fu">split</span>(cells, <span class="fu">gl</span>(num_tables, ncol<span class="sc">*</span>nrow))</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vapply</span>(vec_table, matrix, <span class="at">nrow =</span> nrow, <span class="at">ncol =</span> ncol, <span class="at">byrow =</span> <span class="cn">FALSE</span>, <span class="at">FUN.VALUE =</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span>(ncol<span class="sc">*</span>nrow), <span class="at">nrow =</span> nrow))</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-3_0483e179efbd34ff3137285069c1f736">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2x2 examples</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>poisson_table_examples <span class="ot">&lt;-</span> <span class="fu">rpoisson_table</span>(<span class="dv">5</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(poisson_table_examples,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">FUN =</span> addmargins,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">simplify =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`1`
+          Sum
+     5  4   9
+     5  7  12
+Sum 10 11  21
+
+$`2`
+         Sum
+     9 3  12
+     8 6  14
+Sum 17 9  26
+
+$`3`
+         Sum
+    3  8  11
+    1  8   9
+Sum 4 16  20
+
+$`4`
+        Sum
+    3 3   6
+    4 3   7
+Sum 7 6  13
+
+$`5`
+         Sum
+    4  6  10
+    2  4   6
+Sum 6 10  16</code></pre>
+</div>
+</div>
+</section>
+<section id="multinomial-grand-total-fixed" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="multinomial-grand-total-fixed"><span class="header-section-number">5.3.2</span> Multinomial (Grand Total Fixed)</h3>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-4_c11e96c258c884864d951ecdb0f55fa8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># grand total fixed</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>rmultinom_table <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">num_tables =</span> <span class="dv">1</span>, <span class="at">N =</span> <span class="dv">20</span>, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">p =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)) {</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(p) <span class="sc">==</span> nrow <span class="sc">*</span> ncol)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># p is internally standardized by rmultinom</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  cells <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(num_tables, N, p)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dim</span>(cells) <span class="ot">&lt;-</span> <span class="fu">c</span>(nrow, ncol, num_tables)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  cells</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-5_5344641b9879696b0a265bb762bb10f5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examples</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>multinom_table_examples <span class="ot">&lt;-</span> <span class="fu">rmultinom_table</span>(<span class="dv">5</span>, <span class="at">N =</span> <span class="dv">20</span>, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">p =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(multinom_table_examples,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">FUN =</span> addmargins,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">simplify =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+         Sum
+     4 3   7
+     8 5  13
+Sum 12 8  20
+
+[[2]]
+         Sum
+    6  8  14
+    2  4   6
+Sum 8 12  20
+
+[[3]]
+         Sum
+     9 7  16
+     3 1   4
+Sum 12 8  20
+
+[[4]]
+         Sum
+     6 4  10
+     7 3  10
+Sum 13 7  20
+
+[[5]]
+         Sum
+    1  7   8
+    7  5  12
+Sum 8 12  20</code></pre>
+</div>
+</div>
+</section>
+<section id="binomial-two-sample-one-fixed-margin" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="binomial-two-sample-one-fixed-margin"><span class="header-section-number">5.3.3</span> Binomial Two Sample (One fixed margin)</h3>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-6_41335d1615271d743dc2503e9141092b">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample a 2x2 table</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>rbinom_table <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">num_tables =</span> <span class="dv">1</span>, <span class="at">row_n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="at">p =</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">5</span>)) {</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vapply</span>(<span class="dv">1</span><span class="sc">:</span>num_tables, </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">FUN =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>         a <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">length</span>(row_n), row_n, p) <span class="co"># fix margins</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>         binom_table <span class="ot">&lt;-</span> <span class="fu">cbind</span>(a, <span class="at">b =</span> row_n<span class="sc">-</span>a) <span class="co"># make other column by subtraction and combine</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>         <span class="fu">colnames</span>(binom_table) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>         binom_table}, </span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">FUN.VALUE =</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="fl">1.1</span>, <span class="dv">4</span>), <span class="at">nrow =</span><span class="dv">2</span>)) <span class="co"># expected 2x2 table</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-7_0696221651dc0bf9188277a1b2fc1859">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>binom_table_examples <span class="ot">&lt;-</span> <span class="fu">rbinom_table</span>(<span class="dv">5</span>, <span class="at">row_n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="at">p =</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">5</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(binom_table_examples,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">FUN =</span> addmargins,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">simplify =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+         Sum
+    3  7  10
+    6  4  10
+Sum 9 11  20
+
+[[2]]
+         Sum
+     7 3  10
+     5 5  10
+Sum 12 8  20
+
+[[3]]
+         Sum
+     6 4  10
+     7 3  10
+Sum 13 7  20
+
+[[4]]
+         Sum
+    3  7  10
+    5  5  10
+Sum 8 12  20
+
+[[5]]
+         Sum
+     6 4  10
+     6 4  10
+Sum 12 8  20</code></pre>
+</div>
+</div>
+</section>
+<section id="hypergeometric" class="level3" data-number="5.3.4">
+<h3 data-number="5.3.4" class="anchored" data-anchor-id="hypergeometric"><span class="header-section-number">5.3.4</span> Hypergeometric</h3>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-8_9c5c3049d16156cf89c02a694d85e974">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed margins</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># one hypergeometrical deviate will determine the entire table.</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># only doing 2x2 tables with sampling method</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>rhyper_table <span class="ot">&lt;-</span> <span class="cf">function</span>(num_tables, <span class="at">row_n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="at">col_n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>))  {</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">rhyper</span>(num_tables, row_n[<span class="dv">1</span>], row_n[<span class="dv">2</span>], col_n[<span class="dv">1</span>])</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vapply</span>(a, </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">FUN =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>         col1 <span class="ot">&lt;-</span> <span class="fu">c</span>(x, col_n[<span class="dv">1</span>] <span class="sc">-</span> x)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>         col2 <span class="ot">&lt;-</span> row_n <span class="sc">-</span> col1</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>         contingency_table <span class="ot">&lt;-</span> <span class="fu">cbind</span>(col1, col2)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>         <span class="fu">colnames</span>(contingency_table) <span class="ot">&lt;-</span> <span class="cn">NULL</span> <span class="co"># get rid of column names</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>         contingency_table</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>       },</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">FUN.VALUE =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">1.1</span>), <span class="at">nrow =</span> <span class="dv">2</span>))}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-9_d84ae26130ec489a187733f7a2a80fa2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examples</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>hyper_table_examples <span class="ot">&lt;-</span> <span class="fu">rhyper_table</span>(<span class="at">num_tables =</span> <span class="dv">5</span>, <span class="at">row_n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="at">col_n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(hyper_table_examples,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">FUN =</span> addmargins,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">simplify =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+          Sum
+     4  6  10
+     6  4  10
+Sum 10 10  20
+
+[[2]]
+          Sum
+     6  4  10
+     4  6  10
+Sum 10 10  20
+
+[[3]]
+          Sum
+     6  4  10
+     4  6  10
+Sum 10 10  20
+
+[[4]]
+          Sum
+     6  4  10
+     4  6  10
+Sum 10 10  20
+
+[[5]]
+          Sum
+     5  5  10
+     5  5  10
+Sum 10 10  20</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="measures-of-association" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="measures-of-association"><span class="header-section-number">5.4</span> Measures of Association</h2>
+<p>Given tables, it’s important to distinguish the properties of how to make comparisons, and summarize the information given. When dealing with percentages and ratios, it’s sometimes difficult to have an intuitive understanding of meaning on the percentage scale. The example Professor Guanhua Chen gives to stimulate you for this thinking is from <a href="https://www.cartalk.com/radio/puzzler/porch-potatoes">cartalk</a>:</p>
+<blockquote class="blockquote">
+<p>RAY: Potatoes are 99 percent water and one percent what? Potato. So say you take a bunch of potatoes, like 100 pounds of potatoes and you set them out on your back porch to dry out. TOM: Yeah, when they are dry they should weigh about a pound. RAY: Well, we’re not drying out completely. And as the potatoes dry out the water begins to evaporate. And after a while, enough water has evaporated so that they are now 98 percent water. If you were to weigh those potatoes at that moment… TOM: They’d be lighter. RAY: Yes, how much lighter? That’s the question. Now you can solve this puzzler algebraically, and if you don’t solve it algebraically, you are going to get the wrong answer. TOM: Really? RAY: Really.What’s your answer, off the top of your head? TOM: 99 pounds. RAY: You are wrong. Answer: RAY: Now, unencumbered by the thought process as usual, my brother guessed 99 pounds. TOM: Yeah. RAY: Now, when I guessed, off the top of my head, I guessed about 90 pounds. TOM: ’Cause it just feels right. RAY: But if you do the math, 1 percent of 100 –which is what the potato is– is one pound. As we told you, that’s 1 percent. So 2 percent, when it’s 98 percent water, two percent of the new weight of the mass is still going to be equal to that one pound, and 2 percent of 50 pounds is a pound. So the potato weight is now 50 pounds, not 100.</p>
+</blockquote>
+<ul>
+<li>Risk Ratio:
+<ul>
+<li>not symmetric</li>
+</ul></li>
+<li>Odds Ratio
+<ul>
+<li>symmetric, exposure gives information about disease and vice versa</li>
+</ul></li>
+</ul>
+</section>
+<section id="testing" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="testing"><span class="header-section-number">5.5</span> Testing</h2>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-10_09e40b24ce9bdb691aba3cd2fa7d3e23">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(<span class="sc">~</span>test, <span class="sc">~</span>parameter, <span class="sc">~</span>sampling, <span class="sc">~</span>pvalue, <span class="sc">~</span>hypothesis,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"pearson"</span>, <span class="st">"parameter"</span>,<span class="st">"two sample z proportion"</span>, <span class="st">"approximate"</span>, <span class="st">"association"</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"cochran"</span>, <span class="st">"cell"</span>, <span class="st">"unconditional two sample"</span>, <span class="st">"approximate"</span>, <span class="st">"association"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  test    parameter sampling                 pvalue      hypothesis 
+  &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt;       &lt;chr&gt;      
+1 pearson parameter two sample z proportion  approximate association
+2 cochran cell      unconditional two sample approximate association</code></pre>
+</div>
+</div>
+<p>A list of tests:</p>
+<ul>
+<li>Cochran summary test</li>
+<li>(Cochran)-Mantel-Haenszel summary test</li>
+<li>Generalized CMH Test</li>
+<li>Cochran’s Q test</li>
+<li>Pearson Chi Squared</li>
+<li>Cochran-Armitrage Trend Test</li>
+<li>Mann-Whitney U test (Wilcoxon Rank Sum)</li>
+<li>Wilcoson Signed Rank Test (paired samples)</li>
+<li>Krustkal Wallis</li>
+</ul>
+<p>Exact tests</p>
+<ul>
+<li>Fisher Exact Test</li>
+<li>Barnard Exact Test</li>
+</ul>
+<p>Dependent “Matched pairs” tests</p>
+<ul>
+<li>McNemar Test</li>
+</ul>
+<section id="pearson" class="level3" data-number="5.5.1">
+<h3 data-number="5.5.1" class="anchored" data-anchor-id="pearson"><span class="header-section-number">5.5.1</span> Pearson</h3>
+<p>Given the following table,</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-11_b495eaf1f3b0d1898d07d438bf5a27ba">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(<span class="sc">~</span><span class="st">""</span>, <span class="sc">~</span><span class="st">"Disease"</span>, <span class="sc">~</span><span class="st">"No Disease"</span>, <span class="sc">~</span><span class="st">""</span>,</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Exposed"</span>, <span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">$n_1</span><span class="sc">\\</span><span class="st">$"</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Not Exposed"</span> , <span class="st">"c"</span>, <span class="st">"d"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">$n_2</span><span class="sc">\\</span><span class="st">$"</span>,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">""</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">$m_1</span><span class="sc">\\</span><span class="st">$"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">$m_2</span><span class="sc">\\</span><span class="st">$"</span>, <span class="st">"N"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="st">"html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">  </th>
+   <th style="text-align:left;"> Disease </th>
+   <th style="text-align:left;"> No Disease </th>
+   <th style="text-align:left;">  </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Exposed </td>
+   <td style="text-align:left;"> a </td>
+   <td style="text-align:left;"> b </td>
+   <td style="text-align:left;"> \$n_1\$ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Not Exposed </td>
+   <td style="text-align:left;"> c </td>
+   <td style="text-align:left;"> d </td>
+   <td style="text-align:left;"> \$n_2\$ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> \$m_1\$ </td>
+   <td style="text-align:left;"> \$m_2\$ </td>
+   <td style="text-align:left;"> N </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Assume two sample proportional sampling model: A derivation from 2 sample proportion (pooled) z-test:</p>
+<p><span class="math display">
+\begin{aligned}
+z^2 &amp;= \frac{(\hat p_1 - \hat p_2)^2}{\hat p(1 - \hat p)(\frac{1}{n_1} + \frac{1}{n_2})}
+&amp;=
+\end{aligned}
+</span></p>
+<p><span class="math display">
+\begin{aligned}
+X^2 = \sum_i^c \frac{|O_i - E_i|}{E_i} \sim \chi^2_{c-1}
+\end{aligned}
+</span></p>
+<p>Resources: - <a href="https://projecteuclid.org/download/pdf_1/euclid.lnms/1215091138">Pearson as Score Test</a> - <a href="https://arxiv.org/pdf/1808.09171.pdf">7 proofs of independence test</a></p>
+</section>
+<section id="barnard-exact-test" class="level3" data-number="5.5.2">
+<h3 data-number="5.5.2" class="anchored" data-anchor-id="barnard-exact-test"><span class="header-section-number">5.5.2</span> Barnard Exact Test</h3>
+<p>Barnard is considered an “unconditional” approach to exact testing. contrast to Fisher exact test which is a “conditional” approach to testing the p-value</p>
+<p>Barnard is effectively a 2 stage test, given some observed table X, a “p-value” is the probability of observing a table more extreme than the observed.</p>
+<p>The two stages are thus:</p>
+<ol type="1">
+<li>determine which tables are more “extreme”</li>
+<li>calculated probability of those tables</li>
+</ol>
+<p>Thus, the “exactness” part of the description refers to how a probability is calculated.</p>
+<p>Many methods have been proposed for stage 1</p>
+<ul>
+<li>Suissa and Shuster (1985) use pooled and unpooled z statistic for two proportions.</li>
+<li>Booschloo (1970) used the p-value from fisher’s exact test to determine extremeness…</li>
+<li>Santner Snell - difference in proportion</li>
+</ul>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-12_ba46be0c368de4469010af02f2d9a76f">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">3</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># row is fixed</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">BarnardTest</span>(X, <span class="at">method =</span> <span class="st">"z-pooled"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Z-pooled Exact Test
+
+data:  3 out of 3 vs. 0 out of 3
+test statistic = 2.4495, first sample size = 3, second sample size = 3,
+p-value = 0.03125
+alternative hypothesis: true difference in proportion is not equal to 0
+sample estimates:
+difference in proportion 
+                       1 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># z-pooled observed is...</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(.<span class="dv">25</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>)) <span class="co"># observed test statistic</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.44949</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how to calculate p-value from this test statistic, sum of binomial products from extreme tables,</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the null is that pi_1 = pi_2 = pi, since we don't know the actual value of pi, we take the supremum of these values</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>true_pi <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, .<span class="dv">01</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>possible_p <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="at">prob =</span> true_pi) <span class="sc">*</span> <span class="fu">dbinom</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">prob =</span> true_pi) <span class="sc">+</span> <span class="fu">dbinom</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">prob =</span> true_pi) <span class="sc">*</span> <span class="fu">dbinom</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="at">prob =</span> true_pi)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co"># maximum occurs at .5</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>true_pi[<span class="fu">which.max</span>(possible_p)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># thus, overall p-value is</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(possible_p) <span class="co"># .03125</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03125</code></pre>
+</div>
+</div>
+<p>Now we compare the methods for choosing “extremeness” with the assumed sampling mechanism.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-13_6bb86242f14b344408c1d30bd2e5d943">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="fu">rbinom_table</span>(<span class="dv">1000</span>, <span class="at">row_n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="at">p =</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">5</span>)) <span class="co"># null is no association</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co"># z pooled (score)</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>barnard_pooled <span class="ot">&lt;-</span> <span class="fu">apply</span>(foo, <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">FUN =</span> <span class="cf">function</span> (x) {<span class="fu">BarnardTest</span>(x, <span class="at">method =</span> <span class="st">"z-pooled"</span>)<span class="sc">$</span>p.value})</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>barnard_unpooled <span class="ot">&lt;-</span> <span class="fu">apply</span>(foo, <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">FUN =</span> <span class="cf">function</span> (x) {<span class="fu">BarnardTest</span>(x, <span class="at">method =</span> <span class="st">"z-unpooled"</span>)<span class="sc">$</span>p.value})</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>barnard_boschloo <span class="ot">&lt;-</span> <span class="fu">apply</span>(foo, </span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>                          <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>                          <span class="at">FUN =</span> <span class="cf">function</span> (x) {<span class="fu">BarnardTest</span>(x, <span class="at">method =</span> <span class="st">"boschloo"</span>)<span class="sc">$</span>p.value})</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>barnard_csm <span class="ot">&lt;-</span> <span class="fu">apply</span>(foo, </span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>                          <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>                          <span class="at">FUN =</span> <span class="cf">function</span> (x) {<span class="fu">BarnardTest</span>(x, <span class="at">method =</span> <span class="st">"csm"</span>)<span class="sc">$</span>p.value})</span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>barnard_santner_snell <span class="ot">&lt;-</span> <span class="fu">apply</span>(foo, </span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>                               <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>                               <span class="at">FUN =</span> <span class="cf">function</span> (x) {<span class="fu">BarnardTest</span>(x, <span class="at">method =</span> <span class="st">"santner and snell"</span>)<span class="sc">$</span>p.value})</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a><span class="co"># for reference</span></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>fisher_exact <span class="ot">&lt;-</span>  <span class="fu">apply</span>(foo, </span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>                               <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>                               <span class="at">FUN =</span> <span class="cf">function</span> (x) {<span class="fu">fisher.test</span>(x)<span class="sc">$</span>p.value})</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a><span class="co"># comment out any that you don't want to appear in the plot</span></span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a>barnard <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(<span class="at">pooled =</span> barnard_pooled,</span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a>                     <span class="at">unpooled =</span> barnard_unpooled,</span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a>                     <span class="at">boschloo =</span> barnard_boschloo,</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a>                     <span class="at">csm =</span> barnard_csm,</span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a>                     <span class="at">santner_snell =</span> barnard_santner_snell,</span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>                     <span class="at">fisher_exact =</span> fisher_exact) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"type"</span>, <span class="at">values_to =</span> <span class="st">"p"</span>)</span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a><span class="co"># there's some overplotting happening, dodge doesn't seem to work well for ecdf's</span></span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a>barnard <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">color =</span> type)) <span class="sc">+</span></span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>()  <span class="sc">+</span></span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Barnard extremeness method comparison"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>For accuracy of the size of the test, it seems that csm is the most accurate, but also the most computationally intensive. We not that all the tests have more approriate “size” than the fisher_exact test.</p>
+<p>Resources</p>
+<ul>
+<li><a href="https://www.researchgate.net/publication/242179503_Conditional_versus_Unconditional_Exact_Tests_for_Comparing_Two_Binomials">Explanation of difference between unconditional and conditional</a></li>
+<li><a href="https://cran.r-project.org/web/packages/Exact/Exact.pdf">Exact Test Package Documentation</a> - <code>exact.test</code> function documentation has more information about barnard implmenetation.</li>
+</ul>
+</section>
+<section id="mcnemar" class="level3" data-number="5.5.3">
+<h3 data-number="5.5.3" class="anchored" data-anchor-id="mcnemar"><span class="header-section-number">5.5.3</span> McNemar</h3>
+<p>McNemar tests are used when there is some “dichotomous trait”, for matched pairs. This means that the responses are statistically dependent. This is common for some longitudinal studies in which a single individual is asked two questions, and their answers are coded as locations in the table. Thus, the grand total, should be the number of pairs of data, not the total number of observations.</p>
+<p>For example, suppose a person is asked if they voted democrat</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-14_3a2a4e7eaf0829a49b18367a87b6c2d8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(<span class="sc">~</span><span class="st">""</span>, <span class="sc">~</span><span class="st">"2008 democrat"</span>, <span class="sc">~</span><span class="st">"2008 republican"</span>,</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"2004 democrat"</span>, <span class="dv">175</span>, <span class="dv">16</span>,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"2004 republican"</span>, <span class="dv">54</span>, <span class="dv">188</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">  </th>
+   <th style="text-align:right;"> 2008 democrat </th>
+   <th style="text-align:right;"> 2008 republican </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 2004 democrat </td>
+   <td style="text-align:right;"> 175 </td>
+   <td style="text-align:right;"> 16 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2004 republican </td>
+   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 188 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>McNemar tests “Marginal Homogeneity”, meaning that the probabilities of the margins are the same. <span class="math inline">p_a + p_b = p_a + p_c</span> and <span class="math inline">p_c + p_d = p_b + p_d</span>. Thus, this means that we are testing <span class="math inline">H_0: p_b = p_c</span>, <span class="math inline">H_A: p_b \neq p_c</span>. The score statistic is:</p>
+<p><span class="math display">
+\begin{aligned}
+z_0^2 = \frac{(b-c)^2}{b+c} \sim \chi^2_1
+\end{aligned}
+</span></p>
+<!-- This section needs clarification... -->
+<p>Variance is</p>
+<p><span class="math display">
+\begin{aligned}
+\hat\sigma_0 (d) = \frac{b + c}{N^2}
+\end{aligned}
+</span></p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-15_de586ae654bf404b79ad0a5d95bbb2b8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Presidential election, dependent table</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>pres <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">175</span>, <span class="dv">16</span>,</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                      <span class="dv">54</span>, <span class="dv">188</span>),</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol =</span> <span class="dv">2</span>,</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>pres_mcnemar <span class="ot">&lt;-</span> <span class="fu">mcnemar.test</span>(pres, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (54 - 16)^2 / (54 + 16) # 20.629</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>pres_mcnemar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    McNemar's Chi-squared test
+
+data:  pres
+McNemar's chi-squared = 20.629, df = 1, p-value = 5.576e-06</code></pre>
+</div>
+</div>
+<p>Notes</p>
+<ul>
+<li>only the off diagonal matters for significance, where as the main diagonal</li>
+</ul>
+<p>A good reference is 11.1 in Categorical Data Analysis, 3rd edition by Agresti</p>
+</section>
+<section id="breslow-day-test" class="level3" data-number="5.5.4">
+<h3 data-number="5.5.4" class="anchored" data-anchor-id="breslow-day-test"><span class="header-section-number">5.5.4</span> Breslow-Day Test</h3>
+<p>a test of homogeneity.</p>
+</section>
+<section id="cmh-testing" class="level3" data-number="5.5.5">
+<h3 data-number="5.5.5" class="anchored" data-anchor-id="cmh-testing"><span class="header-section-number">5.5.5</span> CMH testing</h3>
+<p>The CMH testing is technically supposed to be done on tables in strata. the data type is an I X J X K, in which we have K strata and an I X J contingency table in each.</p>
+<ul>
+<li>you are not penalized for adding tables with sparse data with the CMH test statistic</li>
+<li>this reduces to the N-1 adjusted pearson chisquared statistic for 1 strata</li>
+<li>the test assumes that there is a common odds ratio to estimate, but in order to test the hypothesis we can use a Breslow-Day Test of Homogeneity</li>
+<li>Conditional logistic regression gives a similar answer, <code>clogit</code> in package <code>survival</code> because similar to cox model as well.</li>
+</ul>
+<section id="cmh---mcnemar-equivalence" class="level4">
+<h4 class="anchored" data-anchor-id="cmh---mcnemar-equivalence">CMH - McNemar Equivalence</h4>
+<p>If you express the “population averaged” table and run McNemar, you will get the same statistic as expressing the data as a “subject specific” table for an individual per stratum.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-16_484ec5473848d727cf69bbedcc82b281">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(test, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in chisq.test(test, correct = FALSE): Chi-squared approximation may be
+incorrect</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  test
+X-squared = 0.0025703, df = 1, p-value = 0.9596</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0.0025703</span> <span class="sc">/</span> <span class="dv">19</span> <span class="sc">*</span> <span class="dv">18</span> <span class="co"># the "N-1" chisq statistic in a 2 x 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.002435021</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">3</span>, <span class="dv">4</span>,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>               <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mantelhaen.test</span>(foo, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Mantel-Haenszel chi-squared test without continuity correction
+
+data:  foo
+Mantel-Haenszel X-squared = 0.0024351, df = 1, p-value = 0.9606
+alternative hypothesis: true common odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1444191 6.2805369
+sample estimates:
+common odds ratio 
+         0.952381 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>bar <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">3</span>, <span class="dv">4</span>,</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>               <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>               <span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>))</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mantelhaen.test</span>(bar, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Mantel-Haenszel chi-squared test without continuity correction
+
+data:  bar
+Mantel-Haenszel X-squared = 0.0024351, df = 1, p-value = 0.9606
+alternative hypothesis: true common odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1444191 6.2805369
+sample estimates:
+common odds ratio 
+         0.952381 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>mantelhaen_2by2 <span class="ot">&lt;-</span>  <span class="cf">function</span>(x) {</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mantelhaen.test</span>(<span class="fu">array</span>(<span class="fu">c</span>(x, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>)), <span class="at">correct =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="x2-tables-comparison" class="level3 tabset" data-number="5.5.6">
+<h3 class="tabset anchored" data-number="5.5.6" data-anchor-id="x2-tables-comparison"><span class="header-section-number">5.5.6</span> 2x2 tables Comparison</h3>
+<section id="poisson-sampling" class="level4">
+<h4 class="anchored" data-anchor-id="poisson-sampling">Poisson Sampling</h4>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-17_bee2a42b3d5e2984069aef91f3b1fbc6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># random poisson</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="fu">rpoisson_table</span>(<span class="at">num_tables =</span> <span class="dv">1000</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co"># pearson uncorrected</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>pearson_uncorrected_p <span class="ot">&lt;-</span> </span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo, </span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) {</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">suppressWarnings</span>(<span class="fu">chisq.test</span>(x, <span class="at">correct =</span> <span class="cn">FALSE</span>))<span class="sc">$</span>p.value})</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a><span class="co"># pearson corrected</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>pearson_corrected_p <span class="ot">&lt;-</span> </span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">chisq.test</span>(x, <span class="at">correct =</span> <span class="cn">TRUE</span>))<span class="sc">$</span>p.value})</span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>fisher_exact_p <span class="ot">&lt;-</span> </span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">fisher.test</span>(x))<span class="sc">$</span>p.value})</span>
+<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Pearson N-1 correction equivalent</span></span>
+<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a>cmh_p <span class="ot">&lt;-</span> </span>
+<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mantelhaen_2by2</span>(x)<span class="sc">$</span>p.value</span>
+<span id="cb55-30"><a href="#cb55-30" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb55-31"><a href="#cb55-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-32"><a href="#cb55-32" aria-hidden="true" tabindex="-1"></a><span class="co"># G-test (LRT)</span></span>
+<span id="cb55-33"><a href="#cb55-33" aria-hidden="true" tabindex="-1"></a>lrt_p <span class="ot">&lt;-</span> </span>
+<span id="cb55-34"><a href="#cb55-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb55-35"><a href="#cb55-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb55-36"><a href="#cb55-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb55-37"><a href="#cb55-37" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">g.test</span>(x))<span class="sc">$</span>p.value</span>
+<span id="cb55-38"><a href="#cb55-38" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb55-39"><a href="#cb55-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-40"><a href="#cb55-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-41"><a href="#cb55-41" aria-hidden="true" tabindex="-1"></a>contingency_p <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(<span class="at">uncorrected =</span> pearson_uncorrected_p,</span>
+<span id="cb55-42"><a href="#cb55-42" aria-hidden="true" tabindex="-1"></a>          <span class="at">corrected =</span> pearson_corrected_p,</span>
+<span id="cb55-43"><a href="#cb55-43" aria-hidden="true" tabindex="-1"></a>          <span class="at">exact =</span> fisher_exact_p,</span>
+<span id="cb55-44"><a href="#cb55-44" aria-hidden="true" tabindex="-1"></a>          <span class="at">cmh =</span> cmh_p,</span>
+<span id="cb55-45"><a href="#cb55-45" aria-hidden="true" tabindex="-1"></a>          <span class="at">lrt =</span> lrt_p)</span>
+<span id="cb55-46"><a href="#cb55-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-47"><a href="#cb55-47" aria-hidden="true" tabindex="-1"></a>contingency_p <span class="sc">%&gt;%</span> </span>
+<span id="cb55-48"><a href="#cb55-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"test"</span>, <span class="at">values_to =</span> <span class="st">"p"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-49"><a href="#cb55-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(p, <span class="at">color =</span> test)) <span class="sc">+</span></span>
+<span id="cb55-50"><a href="#cb55-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>(<span class="at">geom =</span> <span class="st">"step"</span>) <span class="sc">+</span></span>
+<span id="cb55-51"><a href="#cb55-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb55-52"><a href="#cb55-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Tests of association"</span>) <span class="co">#+</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>)) <span class="co"># for zooming in</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ggproto object: Class CoordCartesian, Coord, gg&gt;
+    aspect: function
+    backtransform_range: function
+    clip: on
+    default: FALSE
+    distance: function
+    expand: TRUE
+    is_free: function
+    is_linear: function
+    labels: function
+    limits: list
+    modify_scales: function
+    range: function
+    render_axis_h: function
+    render_axis_v: function
+    render_bg: function
+    render_fg: function
+    setup_data: function
+    setup_layout: function
+    setup_panel_guides: function
+    setup_panel_params: function
+    setup_params: function
+    train_panel_guides: function
+    transform: function
+    super:  &lt;ggproto object: Class CoordCartesian, Coord, gg&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="binomial-sampling" class="level4">
+<h4 class="anchored" data-anchor-id="binomial-sampling">Binomial Sampling</h4>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-18_d7811cfb529fea6e8419c22402ede039">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="fu">rbinom_table</span>(<span class="at">num_tables =</span> <span class="dv">9000</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pearson uncorrected</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>pearson_uncorrected_p <span class="ot">&lt;-</span> </span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo, </span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) {</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">suppressWarnings</span>(<span class="fu">chisq.test</span>(x, <span class="at">correct =</span> <span class="cn">FALSE</span>))<span class="sc">$</span>p.value})</span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="co"># pearson corrected</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>pearson_corrected_p <span class="ot">&lt;-</span> </span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">chisq.test</span>(x, <span class="at">correct =</span> <span class="cn">TRUE</span>))<span class="sc">$</span>p.value})</span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>fisher_exact_p <span class="ot">&lt;-</span> </span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">fisher.test</span>(x))<span class="sc">$</span>p.value})</span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Pearson N-1 correction equivalent</span></span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a>cmh_p <span class="ot">&lt;-</span> </span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb58-27"><a href="#cb58-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb58-28"><a href="#cb58-28" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mantelhaen_2by2</span>(x)<span class="sc">$</span>p.value</span>
+<span id="cb58-29"><a href="#cb58-29" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb58-30"><a href="#cb58-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-31"><a href="#cb58-31" aria-hidden="true" tabindex="-1"></a><span class="co"># G-test (LRT)</span></span>
+<span id="cb58-32"><a href="#cb58-32" aria-hidden="true" tabindex="-1"></a>lrt_p <span class="ot">&lt;-</span> </span>
+<span id="cb58-33"><a href="#cb58-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb58-34"><a href="#cb58-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb58-35"><a href="#cb58-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb58-36"><a href="#cb58-36" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">g.test</span>(x))<span class="sc">$</span>p.value</span>
+<span id="cb58-37"><a href="#cb58-37" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb58-38"><a href="#cb58-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-39"><a href="#cb58-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-40"><a href="#cb58-40" aria-hidden="true" tabindex="-1"></a>contingency_p <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(<span class="at">uncorrected =</span> pearson_uncorrected_p,</span>
+<span id="cb58-41"><a href="#cb58-41" aria-hidden="true" tabindex="-1"></a>          <span class="at">corrected =</span> pearson_corrected_p,</span>
+<span id="cb58-42"><a href="#cb58-42" aria-hidden="true" tabindex="-1"></a>          <span class="at">exact =</span> fisher_exact_p,</span>
+<span id="cb58-43"><a href="#cb58-43" aria-hidden="true" tabindex="-1"></a>          <span class="at">cmh =</span> cmh_p,</span>
+<span id="cb58-44"><a href="#cb58-44" aria-hidden="true" tabindex="-1"></a>          <span class="at">lrt =</span> lrt_p)</span>
+<span id="cb58-45"><a href="#cb58-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-46"><a href="#cb58-46" aria-hidden="true" tabindex="-1"></a>contingency_p <span class="sc">%&gt;%</span> </span>
+<span id="cb58-47"><a href="#cb58-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"test"</span>, <span class="at">values_to =</span> <span class="st">"p"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb58-48"><a href="#cb58-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(p, <span class="at">color =</span> test)) <span class="sc">+</span></span>
+<span id="cb58-49"><a href="#cb58-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>(<span class="at">geom =</span> <span class="st">"step"</span>) <span class="sc">+</span></span>
+<span id="cb58-50"><a href="#cb58-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">4</span>) <span class="co">#+</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>)) <span class="co"># for zooming in</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ggproto object: Class CoordCartesian, Coord, gg&gt;
+    aspect: function
+    backtransform_range: function
+    clip: on
+    default: FALSE
+    distance: function
+    expand: TRUE
+    is_free: function
+    is_linear: function
+    labels: function
+    limits: list
+    modify_scales: function
+    range: function
+    render_axis_h: function
+    render_axis_v: function
+    render_bg: function
+    render_fg: function
+    setup_data: function
+    setup_layout: function
+    setup_panel_guides: function
+    setup_panel_params: function
+    setup_params: function
+    train_panel_guides: function
+    transform: function
+    super:  &lt;ggproto object: Class CoordCartesian, Coord, gg&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="multinomial-sampling" class="level4">
+<h4 class="anchored" data-anchor-id="multinomial-sampling">Multinomial Sampling</h4>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-19_45434e72c7e01b593e625bb66cafa599">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="fu">rmultinom_table</span>(<span class="at">num_tables =</span> <span class="dv">1000</span>)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pearson uncorrected</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>pearson_uncorrected_p <span class="ot">&lt;-</span> </span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo, </span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) {</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">suppressWarnings</span>(<span class="fu">chisq.test</span>(x, <span class="at">correct =</span> <span class="cn">FALSE</span>))<span class="sc">$</span>p.value})</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a><span class="co"># pearson corrected</span></span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>pearson_corrected_p <span class="ot">&lt;-</span> </span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">chisq.test</span>(x, <span class="at">correct =</span> <span class="cn">TRUE</span>))<span class="sc">$</span>p.value})</span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a>fisher_exact_p <span class="ot">&lt;-</span> </span>
+<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">fisher.test</span>(x))<span class="sc">$</span>p.value})</span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Pearson N-1 correction equivalent</span></span>
+<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a>cmh_p <span class="ot">&lt;-</span> </span>
+<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mantelhaen_2by2</span>(x)<span class="sc">$</span>p.value</span>
+<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a><span class="co"># G-test (LRT)</span></span>
+<span id="cb61-32"><a href="#cb61-32" aria-hidden="true" tabindex="-1"></a>lrt_p <span class="ot">&lt;-</span> </span>
+<span id="cb61-33"><a href="#cb61-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb61-34"><a href="#cb61-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb61-35"><a href="#cb61-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb61-36"><a href="#cb61-36" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">g.test</span>(x))<span class="sc">$</span>p.value</span>
+<span id="cb61-37"><a href="#cb61-37" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb61-38"><a href="#cb61-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-39"><a href="#cb61-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-40"><a href="#cb61-40" aria-hidden="true" tabindex="-1"></a>contingency_p <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(<span class="at">uncorrected =</span> pearson_uncorrected_p,</span>
+<span id="cb61-41"><a href="#cb61-41" aria-hidden="true" tabindex="-1"></a>          <span class="at">corrected =</span> pearson_corrected_p,</span>
+<span id="cb61-42"><a href="#cb61-42" aria-hidden="true" tabindex="-1"></a>          <span class="at">exact =</span> fisher_exact_p,</span>
+<span id="cb61-43"><a href="#cb61-43" aria-hidden="true" tabindex="-1"></a>          <span class="at">cmh =</span> cmh_p,</span>
+<span id="cb61-44"><a href="#cb61-44" aria-hidden="true" tabindex="-1"></a>          <span class="at">lrt =</span> lrt_p)</span>
+<span id="cb61-45"><a href="#cb61-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-46"><a href="#cb61-46" aria-hidden="true" tabindex="-1"></a>contingency_p <span class="sc">%&gt;%</span> </span>
+<span id="cb61-47"><a href="#cb61-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"test"</span>, <span class="at">values_to =</span> <span class="st">"p"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-48"><a href="#cb61-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(p, <span class="at">color =</span> test)) <span class="sc">+</span></span>
+<span id="cb61-49"><a href="#cb61-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>(<span class="at">geom =</span> <span class="st">"step"</span>) <span class="sc">+</span></span>
+<span id="cb61-50"><a href="#cb61-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">4</span>) <span class="co">#+</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>)) <span class="co"># for zooming in</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ggproto object: Class CoordCartesian, Coord, gg&gt;
+    aspect: function
+    backtransform_range: function
+    clip: on
+    default: FALSE
+    distance: function
+    expand: TRUE
+    is_free: function
+    is_linear: function
+    labels: function
+    limits: list
+    modify_scales: function
+    range: function
+    render_axis_h: function
+    render_axis_v: function
+    render_bg: function
+    render_fg: function
+    setup_data: function
+    setup_layout: function
+    setup_panel_guides: function
+    setup_panel_params: function
+    setup_params: function
+    train_panel_guides: function
+    transform: function
+    super:  &lt;ggproto object: Class CoordCartesian, Coord, gg&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="hypergeometric-sampling" class="level4">
+<h4 class="anchored" data-anchor-id="hypergeometric-sampling">Hypergeometric Sampling</h4>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-20_1b0fec05d979c42bd1e55e7057e214f5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="fu">rhyper_table</span>(<span class="at">num_tables =</span> <span class="dv">1000</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pearson uncorrected</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>pearson_uncorrected_p <span class="ot">&lt;-</span> </span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo, </span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) {</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">suppressWarnings</span>(<span class="fu">chisq.test</span>(x, <span class="at">correct =</span> <span class="cn">FALSE</span>))<span class="sc">$</span>p.value})</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a><span class="co"># pearson corrected</span></span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>pearson_corrected_p <span class="ot">&lt;-</span> </span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">chisq.test</span>(x, <span class="at">correct =</span> <span class="cn">TRUE</span>))<span class="sc">$</span>p.value})</span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a>fisher_exact_p <span class="ot">&lt;-</span> </span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">fisher.test</span>(x))<span class="sc">$</span>p.value})</span>
+<span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-23"><a href="#cb64-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Pearson N-1 correction equivalent</span></span>
+<span id="cb64-24"><a href="#cb64-24" aria-hidden="true" tabindex="-1"></a>cmh_p <span class="ot">&lt;-</span> </span>
+<span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb64-27"><a href="#cb64-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mantelhaen_2by2</span>(x)<span class="sc">$</span>p.value</span>
+<span id="cb64-29"><a href="#cb64-29" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb64-30"><a href="#cb64-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-31"><a href="#cb64-31" aria-hidden="true" tabindex="-1"></a><span class="co"># G-test (LRT)</span></span>
+<span id="cb64-32"><a href="#cb64-32" aria-hidden="true" tabindex="-1"></a>lrt_p <span class="ot">&lt;-</span> </span>
+<span id="cb64-33"><a href="#cb64-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(foo,</span>
+<span id="cb64-34"><a href="#cb64-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">3</span>,</span>
+<span id="cb64-35"><a href="#cb64-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
+<span id="cb64-36"><a href="#cb64-36" aria-hidden="true" tabindex="-1"></a>          <span class="fu">suppressWarnings</span>(<span class="fu">g.test</span>(x))<span class="sc">$</span>p.value</span>
+<span id="cb64-37"><a href="#cb64-37" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb64-38"><a href="#cb64-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-39"><a href="#cb64-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-40"><a href="#cb64-40" aria-hidden="true" tabindex="-1"></a>contingency_p <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(<span class="at">uncorrected =</span> pearson_uncorrected_p,</span>
+<span id="cb64-41"><a href="#cb64-41" aria-hidden="true" tabindex="-1"></a>          <span class="at">corrected =</span> pearson_corrected_p,</span>
+<span id="cb64-42"><a href="#cb64-42" aria-hidden="true" tabindex="-1"></a>          <span class="at">exact =</span> fisher_exact_p,</span>
+<span id="cb64-43"><a href="#cb64-43" aria-hidden="true" tabindex="-1"></a>          <span class="at">cmh =</span> cmh_p,</span>
+<span id="cb64-44"><a href="#cb64-44" aria-hidden="true" tabindex="-1"></a>          <span class="at">lrt =</span> lrt_p)</span>
+<span id="cb64-45"><a href="#cb64-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-46"><a href="#cb64-46" aria-hidden="true" tabindex="-1"></a>contingency_p <span class="sc">%&gt;%</span> </span>
+<span id="cb64-47"><a href="#cb64-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"test"</span>, <span class="at">values_to =</span> <span class="st">"p"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb64-48"><a href="#cb64-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(p, <span class="at">color =</span> test)) <span class="sc">+</span></span>
+<span id="cb64-49"><a href="#cb64-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>(<span class="at">geom =</span> <span class="st">"step"</span>) <span class="sc">+</span></span>
+<span id="cb64-50"><a href="#cb64-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">4</span>) <span class="co">#+</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r fold-hide code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>)) <span class="co"># for zooming in</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ggproto object: Class CoordCartesian, Coord, gg&gt;
+    aspect: function
+    backtransform_range: function
+    clip: on
+    default: FALSE
+    distance: function
+    expand: TRUE
+    is_free: function
+    is_linear: function
+    labels: function
+    limits: list
+    modify_scales: function
+    range: function
+    render_axis_h: function
+    render_axis_v: function
+    render_bg: function
+    render_fg: function
+    setup_data: function
+    setup_layout: function
+    setup_panel_guides: function
+    setup_panel_params: function
+    setup_params: function
+    train_panel_guides: function
+    transform: function
+    super:  &lt;ggproto object: Class CoordCartesian, Coord, gg&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="more-than-two-categories" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="more-than-two-categories"><span class="header-section-number">5.6</span> More than two categories</h2>
+<p>This section starts to get into 2 x I tables, and even more dimensions like, I X J X K tables, and how we analyze those tables. We’ll start with an overview of the multinomial theory, which is fundamental in extending the binomial (2 categories) into multiple categories. The binomial is a special case of the multinomial distribution</p>
+<ul>
+<li><code>nnet::multinom</code></li>
+<li><code>VGAM::vglm(family = multinom)</code></li>
+<li><code>mlogit::mlogit</code></li>
+</ul>
+<p>A common example we see in this exposition is housing data from library <code>MASS</code></p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-21_25213e8b018d1a46af8706c2a8a3c00c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'MASS'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    select</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(housing)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The array version</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>housing_arr <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq<span class="sc">~</span>Sat <span class="sc">+</span> Infl <span class="sc">+</span> Type <span class="sc">+</span> Cont, <span class="at">data =</span> housing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="poisson-glm-modeling" class="level3" data-number="5.6.1">
+<h3 data-number="5.6.1" class="anchored" data-anchor-id="poisson-glm-modeling"><span class="header-section-number">5.6.1</span> Poisson GLM Modeling</h3>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-22_862128fca7f8d8cb155c028b75837cf5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simple glm model (satisfaction independent of Infl, Type, Cont)</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>house_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(Freq <span class="sc">~</span> Infl<span class="sc">*</span>Type<span class="sc">*</span>Cont <span class="sc">+</span> Sat, <span class="at">data =</span> housing, <span class="at">family =</span> poisson)</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(house_glm) <span class="co"># high residual deviance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Freq ~ Infl * Type * Cont + Sat, family = poisson, 
+    data = housing)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-4.5551  -1.0612  -0.0593   0.6483   4.1478  
+
+Coefficients:
+                                    Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                        3.136e+00  1.196e-01  26.225  &lt; 2e-16 ***
+InflMedium                         2.733e-01  1.586e-01   1.723 0.084868 .  
+InflHigh                          -2.054e-01  1.784e-01  -1.152 0.249511    
+TypeApartment                      3.666e-01  1.555e-01   2.357 0.018403 *  
+TypeAtrium                        -7.828e-01  2.134e-01  -3.668 0.000244 ***
+TypeTerrace                       -8.145e-01  2.157e-01  -3.775 0.000160 ***
+ContHigh                          -2.200e-16  1.690e-01   0.000 1.000000    
+Sat.L                              1.159e-01  4.038e-02   2.871 0.004094 ** 
+Sat.Q                              2.629e-01  4.515e-02   5.824 5.76e-09 ***
+InflMedium:TypeApartment          -1.177e-01  2.086e-01  -0.564 0.572571    
+InflHigh:TypeApartment             1.753e-01  2.279e-01   0.769 0.441783    
+InflMedium:TypeAtrium             -4.068e-01  3.035e-01  -1.340 0.180118    
+InflHigh:TypeAtrium               -1.692e-01  3.294e-01  -0.514 0.607433    
+InflMedium:TypeTerrace             6.292e-03  2.860e-01   0.022 0.982450    
+InflHigh:TypeTerrace              -9.305e-02  3.280e-01  -0.284 0.776633    
+InflMedium:ContHigh               -1.398e-01  2.279e-01  -0.613 0.539715    
+InflHigh:ContHigh                 -6.091e-01  2.800e-01  -2.176 0.029585 *  
+TypeApartment:ContHigh             5.029e-01  2.109e-01   2.385 0.017083 *  
+TypeAtrium:ContHigh                6.774e-01  2.751e-01   2.462 0.013811 *  
+TypeTerrace:ContHigh               1.099e+00  2.675e-01   4.106 4.02e-05 ***
+InflMedium:TypeApartment:ContHigh  5.359e-02  2.862e-01   0.187 0.851450    
+InflHigh:TypeApartment:ContHigh    1.462e-01  3.380e-01   0.432 0.665390    
+InflMedium:TypeAtrium:ContHigh     1.555e-01  3.907e-01   0.398 0.690597    
+InflHigh:TypeAtrium:ContHigh       4.782e-01  4.441e-01   1.077 0.281619    
+InflMedium:TypeTerrace:ContHigh   -4.980e-01  3.671e-01  -1.357 0.174827    
+InflHigh:TypeTerrace:ContHigh     -4.470e-01  4.545e-01  -0.984 0.325326    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 833.66  on 71  degrees of freedom
+Residual deviance: 217.46  on 46  degrees of freedom
+AIC: 610.43
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>Clearly there’s probably some correlation between satisfaction and the other variables, let’s check them out individually.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-23_744f568a727a5e264e45fb3ca74d7fe4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># addterm will check each term individually, and test marginality</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">addterm</span>(house_glm, <span class="sc">~</span>. <span class="sc">+</span> Sat<span class="sc">:</span>(Infl<span class="sc">+</span>Type<span class="sc">+</span>Cont), <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term additions
+
+Model:
+Freq ~ Infl * Type * Cont + Sat
+         Df Deviance    AIC     LRT   Pr(Chi)    
+&lt;none&gt;        217.46 610.43                      
+Infl:Sat  4   111.08 512.05 106.371 &lt; 2.2e-16 ***
+Type:Sat  6   156.79 561.76  60.669 3.292e-11 ***
+Cont:Sat  2   212.33 609.30   5.126   0.07708 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Influence seems to have the largest impact, so we add this to the model, and type probably has a large</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-24_9ea71ef426d6a2d13148bc28f13bb17f">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>house_glm1 <span class="ot">&lt;-</span> <span class="fu">update</span>(house_glm, .<span class="sc">~</span>. <span class="sc">+</span> Sat<span class="sc">:</span>(Infl <span class="sc">+</span> Type <span class="sc">+</span> Cont))</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(house_glm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Freq ~ Infl + Type + Cont + Sat + Infl:Type + Infl:Cont + 
+    Type:Cont + Infl:Sat + Type:Sat + Cont:Sat + Infl:Type:Cont, 
+    family = poisson, data = housing)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.6022  -0.5282  -0.0641   0.5757   1.9322  
+
+Coefficients:
+                                   Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                        3.135074   0.120112  26.101  &lt; 2e-16 ***
+InflMedium                         0.248327   0.159979   1.552 0.120602    
+InflHigh                          -0.412645   0.184947  -2.231 0.025671 *  
+TypeApartment                      0.292524   0.157477   1.858 0.063231 .  
+TypeAtrium                        -0.792847   0.214413  -3.698 0.000218 ***
+TypeTerrace                       -1.018074   0.221263  -4.601 4.20e-06 ***
+ContHigh                          -0.001407   0.169711  -0.008 0.993385    
+Sat.L                             -0.098106   0.112592  -0.871 0.383570    
+Sat.Q                              0.285657   0.122283   2.336 0.019489 *  
+InflMedium:TypeApartment          -0.017882   0.210496  -0.085 0.932302    
+InflHigh:TypeApartment             0.386869   0.233297   1.658 0.097263 .  
+InflMedium:TypeAtrium             -0.360311   0.304979  -1.181 0.237432    
+InflHigh:TypeAtrium               -0.036788   0.334793  -0.110 0.912503    
+InflMedium:TypeTerrace             0.185154   0.288892   0.641 0.521580    
+InflHigh:TypeTerrace               0.310749   0.334815   0.928 0.353345    
+InflMedium:ContHigh               -0.200060   0.228748  -0.875 0.381799    
+InflHigh:ContHigh                 -0.725790   0.282352  -2.571 0.010155 *  
+TypeApartment:ContHigh             0.569691   0.212152   2.685 0.007247 ** 
+TypeAtrium:ContHigh                0.702115   0.276056   2.543 0.010979 *  
+TypeTerrace:ContHigh               1.215930   0.269968   4.504 6.67e-06 ***
+InflMedium:Sat.L                   0.519627   0.096830   5.366 8.03e-08 ***
+InflHigh:Sat.L                     1.140302   0.118180   9.649  &lt; 2e-16 ***
+InflMedium:Sat.Q                  -0.064474   0.102666  -0.628 0.530004    
+InflHigh:Sat.Q                     0.115436   0.127798   0.903 0.366380    
+TypeApartment:Sat.L               -0.520170   0.109793  -4.738 2.16e-06 ***
+TypeAtrium:Sat.L                  -0.288484   0.149551  -1.929 0.053730 .  
+TypeTerrace:Sat.L                 -0.998666   0.141527  -7.056 1.71e-12 ***
+TypeApartment:Sat.Q                0.055418   0.118515   0.468 0.640068    
+TypeAtrium:Sat.Q                  -0.273820   0.149713  -1.829 0.067405 .  
+TypeTerrace:Sat.Q                 -0.032328   0.149251  -0.217 0.828520    
+ContHigh:Sat.L                     0.340703   0.087778   3.881 0.000104 ***
+ContHigh:Sat.Q                    -0.097929   0.094068  -1.041 0.297851    
+InflMedium:TypeApartment:ContHigh  0.046900   0.286212   0.164 0.869837    
+InflHigh:TypeApartment:ContHigh    0.126229   0.338208   0.373 0.708979    
+InflMedium:TypeAtrium:ContHigh     0.157239   0.390719   0.402 0.687364    
+InflHigh:TypeAtrium:ContHigh       0.478611   0.444244   1.077 0.281320    
+InflMedium:TypeTerrace:ContHigh   -0.500162   0.367135  -1.362 0.173091    
+InflHigh:TypeTerrace:ContHigh     -0.463099   0.454713  -1.018 0.308467    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 833.657  on 71  degrees of freedom
+Residual deviance:  38.662  on 34  degrees of freedom
+AIC: 455.63
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sum(residuals(house_glm1, type = "pearson")^2) / house_glm1$df.residual # dispersion estimate</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>house_glm1<span class="sc">$</span>df.residual <span class="co"># nrow(housing) - length(coef(house_glm1))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 34</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sum(residuals(house_glm1, type = "deviance")^2) / house_glm1$df.residual</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - pchisq(deviance(house_glm1), house_glm1$df.residual) # .267? what's the test here...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>See 202 for rescaling the predictions from this model to the probability scale (by the margin of satisfaction)</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-25_5d759278120dcbe7e51999e350c87423">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>hnames <span class="ot">&lt;-</span> <span class="fu">lapply</span>(housing[, <span class="sc">-</span><span class="dv">5</span>], levels) <span class="co"># </span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>house_pm <span class="ot">&lt;-</span> <span class="fu">predict</span>(house_glm1, <span class="fu">expand.grid</span>(hnames), <span class="at">type =</span> <span class="st">"response"</span>) <span class="co"># poisson means exp(\eta)</span></span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>house_pm <span class="ot">&lt;-</span> <span class="fu">matrix</span>(house_pm, <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> T, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="cn">NULL</span>, hnames[[<span class="dv">1</span>]])) <span class="co"># list the predictions into matrix form, columns being satisfaction</span></span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">expand.grid</span>(hnames[<span class="sc">-</span><span class="dv">1</span>]), house_pm <span class="sc">/</span> <span class="fu">rowSums</span>(house_pm)) <span class="co"># normalize by row, and attach the name</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Infl      Type Cont       Low    Medium      High
+1     Low     Tower  Low 0.3955687 0.2601077 0.3443236
+2  Medium     Tower  Low 0.2602403 0.2674072 0.4723526
+3    High     Tower  Low 0.1504958 0.1924126 0.6570916
+4     Low Apartment  Low 0.5427582 0.2308450 0.2263968
+5  Medium Apartment  Low 0.3945683 0.2622428 0.3431889
+6    High Apartment  Low 0.2551503 0.2110026 0.5338470
+7     Low    Atrium  Low 0.4294218 0.3220096 0.2485686
+8  Medium    Atrium  Low 0.2959630 0.3468082 0.3572289
+9    High    Atrium  Low 0.1865151 0.2719420 0.5415429
+10    Low   Terrace  Low 0.6453059 0.2178758 0.1368183
+11 Medium   Terrace  Low 0.5076883 0.2678600 0.2244517
+12   High   Terrace  Low 0.3676505 0.2413550 0.3909945
+13    Low     Tower High 0.2982776 0.2813636 0.4203589
+14 Medium     Tower High 0.1847507 0.2723332 0.5429161
+15   High     Tower High 0.1009787 0.1852058 0.7138155
+16    Low Apartment High 0.4375458 0.2669645 0.2954897
+17 Medium Apartment High 0.2974727 0.2836249 0.4189024
+18   High Apartment High 0.1794106 0.2128413 0.6077481
+19    Low    Atrium High 0.3319072 0.3570404 0.3110524
+20 Medium    Atrium High 0.2157414 0.3626615 0.4215970
+21   High    Atrium High 0.1283298 0.2684145 0.6032556
+22    Low   Terrace High 0.5471602 0.2650171 0.1878227
+23 Medium   Terrace High 0.4044226 0.3060991 0.2894783
+24   High   Terrace High 0.2729568 0.2570580 0.4699852</code></pre>
+</div>
+</div>
+</section>
+<section id="log-linear-models" class="level3" data-number="5.6.2">
+<h3 data-number="5.6.2" class="anchored" data-anchor-id="log-linear-models"><span class="header-section-number">5.6.2</span> Log Linear Models</h3>
+<p>log linear models with iterative proportional scaling is done with function <code>loglm</code>.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-26_214004d17d2f780335d3322166d4360d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">loglm</span>(Freq <span class="sc">~</span> Infl<span class="sc">*</span>Type<span class="sc">*</span>Cont <span class="sc">+</span> Sat<span class="sc">*</span>(Infl <span class="sc">+</span> Type <span class="sc">+</span> Cont), <span class="at">data =</span> housing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+loglm(formula = Freq ~ Infl * Type * Cont + Sat * (Infl + Type + 
+    Cont), data = housing)
+
+Statistics:
+                      X^2 df  P(&gt; X^2)
+Likelihood Ratio 38.66222 34 0.2671359
+Pearson          38.90831 34 0.2582333</code></pre>
+</div>
+</div>
+</section>
+<section id="multinomial-models" class="level3" data-number="5.6.3">
+<h3 data-number="5.6.3" class="anchored" data-anchor-id="multinomial-models"><span class="header-section-number">5.6.3</span> Multinomial Models</h3>
+<p>The example data we’ll is use party affiliation:</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-27_f08fb2fce88f561aba982a0ae0ded55c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># array version of data</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>party <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="fu">c</span>(<span class="dv">132</span>, <span class="dv">42</span>, <span class="dv">176</span>, <span class="dv">6</span>, <span class="dv">127</span>, <span class="dv">12</span>,</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>                 <span class="dv">172</span>, <span class="dv">56</span>, <span class="dv">129</span>, <span class="dv">4</span>, <span class="dv">130</span>, <span class="dv">15</span>), </span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">2</span>),</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="at">race =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"black"</span>),</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>                               <span class="at">party =</span> <span class="fu">c</span>(<span class="st">"democrat"</span>, <span class="st">"independent"</span>, <span class="st">"republican"</span>),</span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>                               <span class="at">gender =</span> <span class="fu">c</span>(<span class="st">"male"</span>, <span class="st">"female"</span>)))</span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>party_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame.table</span>(party) <span class="co"># data frame version of data</span></span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Marginal Tables</span></span>
+<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a>race_party <span class="ot">&lt;-</span> <span class="fu">margin.table</span>(party, <span class="at">margin =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb84-12"><a href="#cb84-12" aria-hidden="true" tabindex="-1"></a>gender_party <span class="ot">&lt;-</span> <span class="fu">margin.table</span>(party, <span class="at">margin =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>))</span>
+<span id="cb84-13"><a href="#cb84-13" aria-hidden="true" tabindex="-1"></a>race_gender <span class="ot">&lt;-</span> <span class="fu">margin.table</span>(party, <span class="at">margin =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="nnet" class="level4">
+<h4 class="anchored" data-anchor-id="nnet">nnet</h4>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-28_206bb66c5733e54317d91254c7ddc459">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>party_mod <span class="ot">&lt;-</span> <span class="fu">multinom</span>(party <span class="sc">~</span> race <span class="sc">+</span> gender, <span class="at">weights =</span> Freq, party_df) <span class="co"># democrat is the "reference"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  12 (6 variable)
+initial  value 1099.710901 
+iter  10 value 1042.893269
+final  value 1042.891187 
+converged</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(party_mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+multinom(formula = party ~ race + gender, data = party_df, weights = Freq)
+
+Coefficients:
+            (Intercept) raceblack genderfemale
+independent   0.2855582 -2.278140   -0.5727764
+republican   -0.0497550 -1.118276   -0.2201972
+
+Std. Errors:
+            (Intercept) raceblack genderfemale
+independent   0.1125979 0.3427945    0.1575210
+republican    0.1198046 0.2335145    0.1582522
+
+Residual Deviance: 2085.782 
+AIC: 2097.782 </code></pre>
+</div>
+</div>
+<p>Hypothesis testing with nnet</p>
+</section>
+<section id="vgam" class="level4">
+<h4 class="anchored" data-anchor-id="vgam">VGAM</h4>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-29_1f8fbb59a358d0aa127e0e907719076c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># VGAM</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="co"># needs version in which "stimulus factors" are separated from "response" factors.</span></span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>housing_wide <span class="ot">&lt;-</span> housing <span class="sc">%&gt;%</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"Sat"</span>, <span class="at">values_from =</span> <span class="st">"Freq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Our saturated dataset is one in which every cell is estimated with a parameter.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-30_e723e19f4ee75b39313ba5ec9cdec5ca">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># saturated model</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>housing_vglm0 <span class="ot">&lt;-</span> <span class="fu">vglm</span>(<span class="fu">cbind</span>(Low, Medium, High) <span class="sc">~</span> Infl<span class="sc">*</span>Type<span class="sc">*</span>Cont, <span class="at">data =</span> housing_wide, <span class="at">family =</span> multinomial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in vglm.fitter(x = x, y = y, w = w, offset = offset, Xm2 = Xm2, : some
+quantities such as z, residuals, SEs may be inaccurate due to convergence at a
+half-step</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">deviance</span>(housing_vglm0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -9.792167e-14</code></pre>
+</div>
+</div>
+<p>In the saturated model, we see that our deviance is equal to 0 because it fits the data perfectly.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-31_da154b46d7c7dcbd4a203a9e32104e3c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co"># full two way interaction model</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>housing_vglm <span class="ot">&lt;-</span> <span class="fu">vglm</span>(<span class="fu">cbind</span>(Low, Medium, High) <span class="sc">~</span> (Infl <span class="sc">+</span> Type <span class="sc">+</span> Cont)<span class="sc">^</span><span class="dv">2</span>, <span class="at">data =</span> housing_wide, <span class="at">family =</span> multinomial)</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(housing_vglm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+vglm(formula = cbind(Low, Medium, High) ~ (Infl + Type + Cont)^2, 
+    family = multinomial, data = housing_wide)
+
+Coefficients: 
+                             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept):1              -0.2728053  0.2532115  -1.077  0.28131    
+(Intercept):2              -0.3780064  0.2576046  -1.467  0.14227    
+InflMedium:1                0.1982869  0.3081018   0.644  0.51985    
+InflMedium:2               -0.0083922  0.3171262  -0.026  0.97889    
+InflHigh:1                 -0.9649735  0.3945466  -2.446  0.01445 *  
+InflHigh:2                 -0.8646670  0.3794916  -2.278  0.02270 *  
+TypeApartment:1             1.4992506  0.3153481   4.754 1.99e-06 ***
+TypeApartment:2             0.6555399  0.3307945   1.982  0.04751 *  
+TypeAtrium:1                0.6246612  0.4142176   1.508  0.13154    
+TypeAtrium:2                0.3751106  0.4204712   0.892  0.37233    
+TypeTerrace:1               1.2966645  0.4192741   3.093  0.00198 ** 
+TypeTerrace:2               0.4378242  0.4595906   0.953  0.34077    
+ContHigh:1                 -0.7397711  0.3116324  -2.374  0.01760 *  
+ContHigh:2                 -0.2009809  0.3039959  -0.661  0.50853    
+InflMedium:TypeApartment:1 -1.3982019  0.3535169  -3.955 7.65e-05 ***
+InflMedium:TypeApartment:2 -0.5498060  0.3604313  -1.525  0.12716    
+InflHigh:TypeApartment:1   -0.9211659  0.4576832  -2.013  0.04415 *  
+InflHigh:TypeApartment:2   -0.3138506  0.4358689  -0.720  0.47149    
+InflMedium:TypeAtrium:1    -0.9955454  0.4790778  -2.078  0.03771 *  
+InflMedium:TypeAtrium:2    -0.1868591  0.4525047  -0.413  0.67965    
+InflHigh:TypeAtrium:1       0.1416714  0.5758309   0.246  0.80566    
+InflHigh:TypeAtrium:2       0.2132503  0.5362081   0.398  0.69085    
+InflMedium:TypeTerrace:1   -0.9030966  0.4563464  -1.979  0.04782 *  
+InflMedium:TypeTerrace:2    0.0081197  0.4836471   0.017  0.98661    
+InflHigh:TypeTerrace:1     -0.8443360  0.5889810  -1.434  0.15170    
+InflHigh:TypeTerrace:2     -0.2200667  0.5911664  -0.372  0.70970    
+InflMedium:ContHigh:1       0.0119167  0.2883493   0.041  0.96703    
+InflMedium:ContHigh:2      -0.0735225  0.3046628  -0.241  0.80930    
+InflHigh:ContHigh:1        -0.2258679  0.3504496  -0.645  0.51925    
+InflHigh:ContHigh:2         0.0318502  0.3496997   0.091  0.92743    
+TypeApartment:ContHigh:1    0.1350432  0.3218707   0.420  0.67481    
+TypeApartment:ContHigh:2   -0.0002221  0.3186735  -0.001  0.99944    
+TypeAtrium:ContHigh:1       0.3409407  0.4320950   0.789  0.43009    
+TypeAtrium:ContHigh:2       0.2975587  0.4139167   0.719  0.47221    
+TypeTerrace:ContHigh:1      1.1520381  0.4173381   2.760  0.00577 ** 
+TypeTerrace:ContHigh:2      0.6313710  0.4353792   1.450  0.14701    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Names of linear predictors: log(mu[,1]/mu[,3]), log(mu[,2]/mu[,3])
+
+Residual deviance: 5.9443 on 12 degrees of freedom
+
+Log-likelihood: -102.5404 on 12 degrees of freedom
+
+Number of Fisher scoring iterations: 3 
+
+No Hauck-Donner effect found in any of the estimates
+
+
+Reference group is level  3  of the response</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">deviance</span>(housing_vglm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.944319</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lack of fit tests</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(<span class="fu">deviance</span>(housing_vglm), <span class="fu">df.residual</span>(housing_vglm)) <span class="co"># deviance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9188628</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(<span class="fu">sum</span>(<span class="fu">residuals</span>(housing_vglm, <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">^</span><span class="dv">2</span>), <span class="fu">df.residual</span>(housing_vglm)) <span class="co"># pearson</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.917741</code></pre>
+</div>
+</div>
+<p>The null hypothesis here is that the model is specified correctly. High p-values mean we fail to reject that the model is correct. In general, lack of fit tests are pretty bad tests for telling us any information. We would prefer to do some manual model searching.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-32_0e8b30f12972887f5748af9108f00aff">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(housing_vglm, <span class="at">test =</span> <span class="st">"LRT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions
+
+Model:
+cbind(Low, Medium, High) ~ (Infl + Type + Cont)^2
+          Df Deviance    AIC     LRT Pr(&gt;Chi)  
+&lt;none&gt;         5.9443 277.08                   
+Infl:Type 12  27.0024 274.14 21.0581  0.04954 *
+Infl:Cont  4   6.8284 269.96  0.8841  0.92684  
+Type:Cont  6  15.2341 274.37  9.2898  0.15793  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The results here say that we could probably drop <code>Infl:Cont</code> and <code>Type:Cont</code>. In fact, dropping <code>Infl:Cont</code>, we would get the biggest drop in AIC, indicating better model fit for number of parameters we estimate.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-33_21c47bcd0fdc58bb86bef07e9c34eb72">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>housing_vglm1 <span class="ot">&lt;-</span> <span class="fu">update</span>(housing_vglm, .<span class="sc">~</span>. <span class="sc">-</span> Infl<span class="sc">:</span>Cont)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in vglm.fitter(x = x, y = y, w = w, offset = offset, Xm2 = Xm2, : some
+quantities such as z, residuals, SEs may be inaccurate due to convergence at a
+half-step</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(housing_vglm1, <span class="at">test =</span> <span class="st">"LRT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions
+
+Model:
+cbind(Low, Medium, High) ~ Infl + Type + Cont + Infl:Type + Type:Cont
+          Df Deviance    AIC     LRT Pr(&gt;Chi)  
+&lt;none&gt;         6.8284 269.96                   
+Infl:Type 12  28.2559 267.39 21.4275  0.04446 *
+Type:Cont  6  16.1072 267.24  9.2788  0.15850  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Doing it again shows we could again get lower AIC by dropping either parameter…. an automated way of doing this can be done through <code>step4vglm</code></p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-34_f63774d4a2261c11d24d471fc7eb31d6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Forward-Backward Step selection on 2-way interaction model</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>housing_vglm_step <span class="ot">&lt;-</span> <span class="fu">step4vglm</span>(housing_vglm, <span class="at">direction =</span> <span class="st">"both"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Start:  AIC=277.08
+cbind(Low, Medium, High) ~ (Infl + Type + Cont)^2
+
+            Df Deviance    AIC
+- Infl:Cont  4   6.8284 269.96
+- Infl:Type 12  27.0024 274.14
+- Type:Cont  6  15.2341 274.37
+&lt;none&gt;           5.9443 277.08</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in vglm.fitter(x = x, y = y, w = w, offset = offset, Xm2 = Xm2, : some
+quantities such as z, residuals, SEs may be inaccurate due to convergence at a
+half-step</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Step:  AIC=269.96
+cbind(Low, Medium, High) ~ Infl + Type + Cont + Infl:Type + Type:Cont
+
+            Df Deviance    AIC
+- Type:Cont  6  16.1072 267.24
+- Infl:Type 12  28.2559 267.39
+&lt;none&gt;           6.8284 269.96
++ Infl:Cont  4   5.9443 277.08
+
+Step:  AIC=267.24
+cbind(Low, Medium, High) ~ Infl + Type + Cont + Infl:Type
+
+            Df Deviance    AIC
+- Infl:Type 12   38.662 265.80
+&lt;none&gt;           16.107 267.24
++ Type:Cont  6    6.828 269.96
++ Infl:Cont  4   15.234 274.37
+- Cont       2   32.871 280.01
+
+Step:  AIC=265.8
+cbind(Low, Medium, High) ~ Infl + Type + Cont
+
+            Df Deviance    AIC
+&lt;none&gt;           38.662 265.80
++ Infl:Type 12   16.107 267.24
++ Type:Cont  6   28.256 267.39
++ Infl:Cont  4   37.472 272.61
+- Cont       2   54.722 277.86
+- Type       6  100.889 316.03
+- Infl       4  147.780 366.92</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>housing_vglm_step<span class="sc">@</span>post<span class="sc">$</span>anova <span class="co"># shows the steps that the algorithm took</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Step Df   Deviance Resid. Df Resid. Dev      AIC
+1             NA         NA        12   5.944319 277.0807
+2 - Infl:Cont  4  0.8840624        16   6.828381 269.9648
+3 - Type:Cont  6  9.2787763        22  16.107157 267.2436
+4 - Infl:Type 12 22.5550474        34  38.662205 265.7986</code></pre>
+</div>
+</div>
+<p>The steps the algorithm is saved in the slot <code>@post$anova</code>. We can see that the additive model was selected, dropping all the interactions.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-35_dfeac3b3d323c1af6b3906da051f0674">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># additive model</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>housing_vglm2 <span class="ot">&lt;-</span> <span class="fu">vglm</span>(<span class="fu">cbind</span>(Low, Medium, High) <span class="sc">~</span> Infl <span class="sc">+</span> Type <span class="sc">+</span> Cont, <span class="at">data =</span> housing_wide, <span class="at">family =</span> multinomial)</span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(housing_vglm2, housing_vglm, <span class="at">type =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: cbind(Low, Medium, High) ~ Infl + Type + Cont
+Model 2: cbind(Low, Medium, High) ~ (Infl + Type + Cont)^2
+  Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)  
+1        34     38.662                       
+2        12      5.944 22   32.718  0.06595 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>there’s weak evidence that those dropped coefficients were not zero… so in favor of the more parsimonious and interpretable model, we choose the additive model. Now we do some diagnostics, show the mosaic plot of the pearson chisq values.</p>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-36_6487ff21acc699ab57308aa1c6741346">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">residuals</span>(housing_vglm2, <span class="st">"pearson"</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="co"># asymptotically the same</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 38.91043</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">deviance</span>(housing_vglm2) <span class="co"># pretty darn close</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 38.6622</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># grab standardized residuals... I think theses are on the raw scale, need to derive</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>housing_vglm2_stdres <span class="ot">&lt;-</span> housing_wide <span class="sc">%&gt;%</span> </span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Infl,Type, Cont) <span class="sc">%&gt;%</span> </span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="fu">residuals</span>(housing_vglm2, <span class="st">"stdres"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(Low<span class="sc">:</span>High, <span class="at">names_to =</span> <span class="st">"Sat"</span>, <span class="at">values_to =</span> <span class="st">"stdres"</span>)</span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(stdres<span class="sc">~</span>Sat <span class="sc">+</span> Infl <span class="sc">+</span> Type, <span class="at">data=</span>housing_vglm2_stdres)</span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-9"><a href="#cb120-9" aria-hidden="true" tabindex="-1"></a>foo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>, , Type = Tower
+
+        Infl
+Sat             Low     Medium       High
+  High    2.3368820  1.7993578  7.6329517
+  Low    -3.1561606 -1.7459604 -5.4886972
+  Medium  0.7896368 -0.1247062 -2.5826432
+
+, , Type = Apartment
+
+        Infl
+Sat             Low     Medium       High
+  High   -8.7451504  1.0581085  7.6844538
+  Low     9.5841342 -1.4240255 -5.7464336
+  Medium -0.5702533  0.3521384 -2.3637276
+
+, , Type = Atrium
+
+        Infl
+Sat             Low     Medium       High
+  High   -2.3120155  0.8251904  2.0911215
+  Low     0.4934728 -3.1374902 -2.6638237
+  Medium  2.0341706  2.4451851  0.5348104
+
+, , Type = Terrace
+
+        Infl
+Sat             Low     Medium       High
+  High   -7.1933577 -4.3805628  2.2529711
+  Low     8.6764258  2.8198862 -1.6825344
+  Medium -1.3182128  1.8356588 -0.6954066</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaicplot</span>(foo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-37_c5d703b52464729b4dd530ea6cb774a5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>housing_wide_matrix <span class="ot">&lt;-</span> housing_wide <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Low<span class="sc">:</span>High) <span class="sc">%&gt;%</span> </span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.matrix</span>()</span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>sat_margin <span class="ot">&lt;-</span> housing_wide_matrix <span class="sc">%&gt;%</span> <span class="fu">rowSums</span>()</span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a>housing_vglm2_predicted <span class="ot">&lt;-</span> <span class="fu">fitted</span>(housing_vglm2) <span class="sc">*</span> sat_margin</span>
+<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a>(housing_wide_matrix <span class="sc">-</span> housing_vglm2_predicted) <span class="sc">/</span> <span class="fu">sqrt</span>(housing_vglm2_predicted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Low      Medium         High
+ [1,] -1.27131702  0.65442726  0.793847557
+ [2,]  2.05554037 -0.52448903 -1.131108776
+ [3,]  0.48542299  0.00980894 -0.237618822
+ [4,]  0.83488118 -0.06530752 -1.226738951
+ [5,] -0.52159491  0.72901366 -0.077987991
+ [6,]  0.19903520 -0.58897340  0.232680471
+ [7,] -0.20002910 -0.40632189  0.725380811
+ [8,] -0.09968461 -0.54894903  0.631617806
+ [9,]  0.93631742  0.41590003 -0.844215602
+[10,] -0.44816554 -0.29018330  1.339493961
+[11,] -1.27460531  0.60886282  1.251820928
+[12,] -0.50068951 -0.23393207  0.669307443
+[13,] -1.50554299 -0.15670496  1.396421868
+[14,]  0.57743627  0.25994911 -0.520953337
+[15,] -0.07366774 -0.30940893  0.185311590
+[16,]  0.57671852  0.21220772 -0.903490751
+[17,] -0.71913615 -0.80963872  1.272211462
+[18,] -0.77139003  0.70614331  0.001230827
+[19,] -0.19903792  0.10678590  0.091194172
+[20,] -0.59885245  0.37522109  0.080380548
+[21,]  0.96158954 -0.06254569 -0.401788912
+[22,]  0.85710435 -0.33167080 -1.068931434
+[23,]  0.91913589  0.24740415 -1.340806857
+[24,] -0.60596707 -0.06819771  0.512236271</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">residuals</span>(housing_vglm2, <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">+</span> <span class="fu">fitted</span>(housing_vglm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Low    Medium      High
+1  0.30000000 0.3000000 0.4000000
+2  0.36956522 0.2391304 0.3913043
+3  0.17543860 0.1929825 0.6315789
+4  0.60396040 0.2277228 0.1683168
+5  0.36440678 0.2966102 0.3389831
+6  0.26530612 0.1836735 0.5510204
+7  0.40625000 0.2812500 0.3125000
+8  0.28571429 0.2857143 0.4285714
+9  0.27272727 0.3181818 0.4090909
+10 0.58064516 0.1935484 0.2258065
+11 0.36585366 0.3170732 0.3170732
+12 0.30434783 0.2173913 0.4782609
+13 0.20000000 0.2714286 0.5285714
+14 0.21250000 0.2875000 0.5000000
+15 0.09677419 0.1612903 0.7419355
+16 0.46706587 0.2754491 0.2574850
+17 0.26815642 0.2513966 0.4804469
+18 0.14705882 0.2450980 0.6078431
+19 0.31746032 0.3650794 0.3174603
+20 0.17857143 0.3928571 0.4285714
+21 0.18421053 0.2631579 0.5526316
+22 0.61290323 0.2473118 0.1397849
+23 0.47692308 0.3230769 0.2000000
+24 0.20833333 0.2500000 0.5416667</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>obs_p <span class="ot">&lt;-</span> housing_wide_matrix <span class="sc">/</span> sat_margin</span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>fit_p <span class="ot">&lt;-</span> <span class="fu">fitted</span>(housing_vglm2)</span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a><span class="fu">residuals</span>(housing_vglm2, <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           Low        Medium          High
+1  -0.09556873  0.0398922904  5.567644e-02
+2   0.10932496 -0.0282767182 -8.104824e-02
+3   0.02494279  0.0005699035 -2.551270e-02
+4   0.06120222 -0.0031222147 -5.808001e-02
+5  -0.03016154  0.0343673813 -4.205846e-03
+6   0.01015582 -0.0273291797  1.717336e-02
+7  -0.02317183 -0.0407595729  6.393140e-02
+8  -0.01024868 -0.0610938738  7.134255e-02
+9   0.08621220  0.0462397822 -1.324520e-01
+10 -0.06466070 -0.0243274212  8.898812e-02
+11 -0.14183466  0.0492131823  9.262148e-02
+12 -0.06330269 -0.0239637078  8.726640e-02
+13 -0.09827758 -0.0099349949  1.082126e-01
+14  0.02774930  0.0151667891 -4.291609e-02
+15 -0.00420447 -0.0239154916  2.811996e-02
+16  0.02952007  0.0084845677 -3.800464e-02
+17 -0.02931623 -0.0322282664  6.154450e-02
+18 -0.03235176  0.0322567566  9.500771e-05
+19 -0.01444687  0.0080390048  6.407869e-03
+20 -0.03717000  0.0301956212  6.974382e-03
+21  0.05588069 -0.0052566447 -5.062404e-02
+22  0.06574300 -0.0177052766 -4.803772e-02
+23  0.07250046  0.0169777976 -8.947826e-02
+24 -0.06462348 -0.0070579688  7.168145e-02</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="co"># varfun &lt;- object@family@charfun</span></span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a><span class="co"># vfun &lt;- varfun(x = NULL, eta = predict(object), </span></span>
+<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                   extra = object@extra, varfun = TRUE)</span></span>
+<span id="cb129-4"><a href="#cb129-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                 ans &lt;- (y - E1)/sqrt(vfun * (1 - c(hatvalues(object))))</span></span>
+<span id="cb129-5"><a href="#cb129-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb129-6"><a href="#cb129-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - hatvalues(housing_vglm2)</span></span>
+<span id="cb129-7"><a href="#cb129-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb129-8"><a href="#cb129-8" aria-hidden="true" tabindex="-1"></a><span class="co"># varfun &lt;- housing_vglm2@family@charfun</span></span>
+<span id="cb129-9"><a href="#cb129-9" aria-hidden="true" tabindex="-1"></a><span class="co"># vfun &lt;- varfun(x = NULL, eta = predict(housing_vglm2), extra = housing_vglm2@extra, varfun = TRUE)</span></span>
+<span id="cb129-10"><a href="#cb129-10" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb129-11"><a href="#cb129-11" aria-hidden="true" tabindex="-1"></a><span class="co"># housing_vglm2@family@vfamily</span></span>
+<span id="cb129-12"><a href="#cb129-12" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb129-13"><a href="#cb129-13" aria-hidden="true" tabindex="-1"></a><span class="co"># w &lt;- weights(object, type = "prior")</span></span>
+<span id="cb129-14"><a href="#cb129-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                 x &lt;- y * c(w)</span></span>
+<span id="cb129-15"><a href="#cb129-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                 E1 &lt;- E1 * c(w)</span></span>
+<span id="cb129-16"><a href="#cb129-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                 if (any(x &lt; 0) || anyNA(x)) stop("all entries of 'x' must be nonnegative and finite")</span></span>
+<span id="cb129-17"><a href="#cb129-17" aria-hidden="true" tabindex="-1"></a><span class="co">#                 if ((n &lt;- sum(x)) == 0) stop("at least one entry of 'x' must be positive")</span></span>
+<span id="cb129-18"><a href="#cb129-18" aria-hidden="true" tabindex="-1"></a><span class="co">#                 if (length(dim(x)) &gt; 2L) stop("invalid 'x'")</span></span>
+<span id="cb129-19"><a href="#cb129-19" aria-hidden="true" tabindex="-1"></a><span class="co">#                 if (length(x) == 1L) stop("'x' must at least have 2 elements")</span></span>
+<span id="cb129-20"><a href="#cb129-20" aria-hidden="true" tabindex="-1"></a><span class="co">#                 sr &lt;- rowSums(x)</span></span>
+<span id="cb129-21"><a href="#cb129-21" aria-hidden="true" tabindex="-1"></a><span class="co">#                 sc &lt;- colSums(x)</span></span>
+<span id="cb129-22"><a href="#cb129-22" aria-hidden="true" tabindex="-1"></a><span class="co">#                 E &lt;- outer(sr, sc, "*")/n</span></span>
+<span id="cb129-23"><a href="#cb129-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                 v &lt;- function(r, c, n) c * r * (n - r) * (n - </span></span>
+<span id="cb129-24"><a href="#cb129-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                   c)/n^3</span></span>
+<span id="cb129-25"><a href="#cb129-25" aria-hidden="true" tabindex="-1"></a><span class="co">#                 V &lt;- outer(sr, sc, v, n)</span></span>
+<span id="cb129-26"><a href="#cb129-26" aria-hidden="true" tabindex="-1"></a><span class="co">#                 dimnames(E) &lt;- dimnames(x)</span></span>
+<span id="cb129-27"><a href="#cb129-27" aria-hidden="true" tabindex="-1"></a><span class="co">#                 ans &lt;- stdres &lt;- (x - E)/sqrt(V)</span></span>
+<span id="cb129-28"><a href="#cb129-28" aria-hidden="true" tabindex="-1"></a><span class="co"># rowSums(fitted)</span></span>
+<span id="cb129-29"><a href="#cb129-29" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb129-30"><a href="#cb129-30" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb129-31"><a href="#cb129-31" aria-hidden="true" tabindex="-1"></a><span class="co"># housing_vglm2@y # observed</span></span>
+<span id="cb129-32"><a href="#cb129-32" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(housing_vglm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-37-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-37-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="categorical_files/figure-html/unnamed-chunk-37-4.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(housing_vglm2, <span class="at">matrix =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              log(mu[,1]/mu[,3]) log(mu[,2]/mu[,3])
+(Intercept)            0.1387428         -0.2804860
+InflMedium            -0.7348632         -0.2884673
+InflHigh              -1.6126311         -0.9476957
+TypeApartment          0.7356317          0.2999430
+TypeAtrium             0.4079781          0.5393484
+TypeTerrace            1.4123277          0.7457572
+ContHigh              -0.4818270         -0.1209751</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-38_063b2a8487227339fca72159626658ce">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the predicted probabilities by each of the covariates.</span></span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(housing_wide <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Infl, Type, Cont),</span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">fitted</span>(housing_vglm2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 24 × 6
+   Infl   Type      Cont    Low Medium  High
+   &lt;fct&gt;  &lt;fct&gt;     &lt;fct&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+ 1 Low    Tower     Low   0.396  0.260 0.344
+ 2 Medium Tower     Low   0.260  0.267 0.472
+ 3 High   Tower     Low   0.150  0.192 0.657
+ 4 Low    Apartment Low   0.543  0.231 0.226
+ 5 Medium Apartment Low   0.395  0.262 0.343
+ 6 High   Apartment Low   0.255  0.211 0.534
+ 7 Low    Atrium    Low   0.429  0.322 0.249
+ 8 Medium Atrium    Low   0.296  0.347 0.357
+ 9 High   Atrium    Low   0.187  0.272 0.542
+10 Low    Terrace   Low   0.645  0.218 0.137
+# … with 14 more rows
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="categorical_cache/html/unnamed-chunk-39_a9d73c906f6c73f1b4f979686d7932d0">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(housing_vglm1, housing_vglm, <span class="at">type =</span> <span class="dv">1</span>) <span class="co"># score tests not available in VGAM currently</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: cbind(Low, Medium, High) ~ Infl + Type + Cont + Infl:Type + Type:Cont
+Model 2: cbind(Low, Medium, High) ~ (Infl + Type + Cont)^2
+  Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)
+1        16     6.8284                     
+2        12     5.9443  4  0.88406   0.9268</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">deviance</span>(housing_vglm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.944319</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dropterm</span>(housing_vglm, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions
+
+Model:
+cbind(Low, Medium, High) ~ (Infl + Type + Cont)^2
+          Df    AIC     LRT Pr(Chi)  
+&lt;none&gt;       277.08                  
+Infl:Type 12 274.14 21.0581 0.04954 *
+Infl:Cont  4 269.96  0.8841 0.92684  
+Type:Cont  6 274.37  9.2898 0.15793  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../bayesian/bayesian.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../matrix/matrix.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Matrix Math</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

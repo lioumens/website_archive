@@ -13,9 +13,20 @@ book:
     type: overlay
   chapters:
     - "index.qmd"
+    - "advanced/advanced.qmd"
+    - "approximation/approximation.qmd"
+    - "bayesian/bayesian.qmd"
+    - "categorical/categorical.qmd"
     - "matrix/matrix.qmd"
     - "stochastic/stochastic.qmd"
     - "meta/meta.qmd"
+    - "exponential/exponential.qmd"
+    - "longitudinal/within_between.qmd"
+    - "epidemiology/epidemiology.qmd"
+    - "network/network_centrality.qmd"
+    - "network/network_gnar.qmd"
+    - "observable/observable.qmd"
+    - "spatial/carbayes.qmd"
     - part: "From Informational"
       chapters:
         - "bootstrap/bootstrap.qmd"
