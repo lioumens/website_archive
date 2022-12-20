@@ -1,0 +1,40 @@
+---
+title: "Sensitivity"
+author: "Michael"
+date: "2/14/2022"
+---
+
+---
+title: "Sensitivity Analysis"
+author: "Michael Liou"
+date: "2/14/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+#| code-summary: Libraries
+#| message: false
+library(sensitivity)
+library(boot)
+```
+
+```{r}
+n <- 1000
+X1 <- data.frame(matrix(runif(8 * n), nrow = n))
+X2 <- data.frame(matrix(runif(8 * n), nrow = n))
+
+
+# sensitivity analysis
+x <- sobol(model = sobol.fun, X1 = X1, X2 = X2, order = 2, nboot = 100)
+print(x)
+#plot(x)
+
+library(ggplot2)
+ggplot(x)
+
+plot(X1, sobol.fun(X1))
+```
+
+
+
+

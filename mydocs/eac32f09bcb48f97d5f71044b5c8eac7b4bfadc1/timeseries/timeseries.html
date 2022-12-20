@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.203">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Liou">
+<meta name="dcterms.date" content="2022-12-19">
+
+<title>Personal Documentation - 31&nbsp; Time Series</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../bootstrap/bootstrap.html" rel="next">
+<link href="../spatial/spatial.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Time Series</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Personal Documentation</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../advanced/advanced.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Advanced R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../approximation/approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Approximation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bayesian/bayesian.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../categorical/categorical.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../changepoint/changepoint.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Changepoint Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../crossover/crossover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Crossover Designs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../diffeq/diffeq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Differential Equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../experimentaldesign/experimentaldesign.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Experimental Design</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../gam/gam.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Additive Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/longitudinal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Longitudinal Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/randomcoef.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Coefficient Models (CALS)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Mixed Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed_variance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Mixed Models (Variance)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../next_gen_sequencing/next_gen_sequencing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Next Generation Sequencing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../optimization/optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ordination/ordination.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Ordination</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallel/parallel.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Parallel Computing in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plant_breeding/plant_breeding.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Plant Breeding</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/spatial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spatial Statistics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../timeseries/timeseries.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Time Series</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Draft</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../sensitivity/sensitivity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Sensitivity Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../signal/signal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Signal Processing</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">32</span>  Introduction</a>
+  <ul class="collapse">
+  <li><a href="#types-of-models" id="toc-types-of-models" class="nav-link" data-scroll-target="#types-of-models"><span class="toc-section-number">32.1</span>  Types of Models</a></li>
+  <li><a href="#software" id="toc-software" class="nav-link" data-scroll-target="#software"><span class="toc-section-number">32.2</span>  Software</a></li>
+  <li><a href="#theory" id="toc-theory" class="nav-link" data-scroll-target="#theory"><span class="toc-section-number">32.3</span>  Theory</a></li>
+  </ul></li>
+  <li><a href="#univariate-time-series" id="toc-univariate-time-series" class="nav-link" data-scroll-target="#univariate-time-series"><span class="toc-section-number">33</span>  Univariate time series</a>
+  <ul class="collapse">
+  <li><a href="#base-tools" id="toc-base-tools" class="nav-link" data-scroll-target="#base-tools"><span class="toc-section-number">33.1</span>  base tools</a></li>
+  <li><a href="#ar1" id="toc-ar1" class="nav-link" data-scroll-target="#ar1"><span class="toc-section-number">33.2</span>  AR(1)</a></li>
+  <li><a href="#simulated-examples" id="toc-simulated-examples" class="nav-link" data-scroll-target="#simulated-examples"><span class="toc-section-number">33.3</span>  Simulated Examples</a></li>
+  <li><a href="#examples-la-county" id="toc-examples-la-county" class="nav-link" data-scroll-target="#examples-la-county"><span class="toc-section-number">33.4</span>  Examples: LA County</a></li>
+  <li><a href="#example-airpassengers" id="toc-example-airpassengers" class="nav-link" data-scroll-target="#example-airpassengers"><span class="toc-section-number">33.5</span>  Example: AirPassengers</a></li>
+  </ul></li>
+  <li><a href="#multivariate-time-series" id="toc-multivariate-time-series" class="nav-link" data-scroll-target="#multivariate-time-series"><span class="toc-section-number">34</span>  Multivariate time series</a>
+  <ul class="collapse">
+  <li><a href="#vector-autoregression" id="toc-vector-autoregression" class="nav-link" data-scroll-target="#vector-autoregression"><span class="toc-section-number">34.1</span>  Vector Autoregression</a>
+  <ul class="collapse">
+  <li><a href="#example-la-county-var" id="toc-example-la-county-var" class="nav-link" data-scroll-target="#example-la-county-var"><span class="toc-section-number">34.1.1</span>  Example: LA County (VAR)</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#state-space-model" id="toc-state-space-model" class="nav-link" data-scroll-target="#state-space-model"><span class="toc-section-number">35</span>  State Space Model</a>
+  <ul class="collapse">
+  <li><a href="#example-ar1-with-observational-noise" id="toc-example-ar1-with-observational-noise" class="nav-link" data-scroll-target="#example-ar1-with-observational-noise"><span class="toc-section-number">35.1</span>  Example: AR(1) with observational noise</a></li>
+  <li><a href="#kalman-filter" id="toc-kalman-filter" class="nav-link" data-scroll-target="#kalman-filter"><span class="toc-section-number">35.2</span>  Kalman Filter</a>
+  <ul class="collapse">
+  <li><a href="#example-local-level-model" id="toc-example-local-level-model" class="nav-link" data-scroll-target="#example-local-level-model"><span class="toc-section-number">35.2.1</span>  Example: Local level Model</a></li>
+  </ul></li>
+  <li><a href="#estimation-of-state-parameters" id="toc-estimation-of-state-parameters" class="nav-link" data-scroll-target="#estimation-of-state-parameters"><span class="toc-section-number">35.3</span>  Estimation of State Parameters</a></li>
+  <li><a href="#example-nile" id="toc-example-nile" class="nav-link" data-scroll-target="#example-nile"><span class="toc-section-number">35.4</span>  Example: Nile</a>
+  <ul class="collapse">
+  <li><a href="#statsstructts" id="toc-statsstructts" class="nav-link" data-scroll-target="#statsstructts"><span class="toc-section-number">35.4.1</span>  stats::StructTS</a></li>
+  <li><a href="#dlmdlm" id="toc-dlmdlm" class="nav-link" data-scroll-target="#dlmdlm"><span class="toc-section-number">35.4.2</span>  dlm::dlm</a></li>
+  <li><a href="#kfaskfs" id="toc-kfaskfs" class="nav-link" data-scroll-target="#kfaskfs"><span class="toc-section-number">35.4.3</span>  KFAS::KFS</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Time Series</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Liou </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 19, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level1" data-number="32">
+<h1 data-number="32"><span class="header-section-number">32</span> Introduction</h1>
+<section id="types-of-models" class="level2" data-number="32.1">
+<h2 data-number="32.1" class="anchored" data-anchor-id="types-of-models"><span class="header-section-number">32.1</span> Types of Models</h2>
+<ul>
+<li><p>Autoregression (AR)</p></li>
+<li><p>Moving Average (AM)</p></li>
+<li><p>Vector Autoregression (VAR)</p></li>
+<li><p>HMM</p>
+<ul>
+<li>related to bayesian inference, special</li>
+</ul></li>
+<li><p>State Space Models</p>
+<ul>
+<li>very broad space of models that includes arima models, and dynamic linear models. Can also account for linear/nonlinear gaussian/non-gaussian errors</li>
+</ul></li>
+<li><p>Multivariate autoregression (MAR)</p></li>
+</ul>
+</section>
+<section id="software" class="level2" data-number="32.2">
+<h2 data-number="32.2" class="anchored" data-anchor-id="software"><span class="header-section-number">32.2</span> Software</h2>
+<ul>
+<li><code>stats</code>
+<ul>
+<li><code>KalmanLike</code>, <code>KalmanRun</code>, <code>KalmanSmooth</code>, <code>KalmanForecast</code></li>
+</ul></li>
+<li><code>dlm</code></li>
+<li><code>KFAS</code></li>
+</ul>
+<p>See also <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=&amp;ved=2ahUKEwjng_vXx4P6AhWdk4kEHZ4KBUAQFnoECBoQAQ&amp;url=https%3A%2F%2Fwww.jstatsoft.org%2Farticle%2Fdownload%2Fv041i04%2F488&amp;usg=AOvVaw0bbJoxE4fWu74zhZs0qggz">State Space Models in R</a>.</p>
+</section>
+<section id="theory" class="level2" data-number="32.3">
+<h2 data-number="32.3" class="anchored" data-anchor-id="theory"><span class="header-section-number">32.3</span> Theory</h2>
+<p>Courses</p>
+<ul>
+<li>Kevin Kotzé’s <a href="https://www.economodel.com/time-series-analysis">Time Series Analysis Course</a>
+<ul>
+<li>has a great overview and description, and packaged R commands for univariate and multivariate from an economics perspective.</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="univariate-time-series" class="level1" data-number="33">
+<h1 data-number="33"><span class="header-section-number">33</span> Univariate time series</h1>
+<section id="base-tools" class="level2" data-number="33.1">
+<h2 data-number="33.1" class="anchored" data-anchor-id="base-tools"><span class="header-section-number">33.1</span> base tools</h2>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-1_dbfc259e5d324f6ec4699982f2b9f4a6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># acf, ccf, pacf</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="ar1" class="level2" data-number="33.2">
+<h2 data-number="33.2" class="anchored" data-anchor-id="ar1"><span class="header-section-number">33.2</span> AR(1)</h2>
+<p>Autoregressive of order 1 is the simplest time series you can have.</p>
+<p><span class="math display">
+\begin{aligned}
+Y_t = Y_{t-1} + \varepsilon_t
+\end{aligned}
+</span></p>
+</section>
+<section id="simulated-examples" class="level2" data-number="33.3">
+<h2 data-number="33.3" class="anchored" data-anchor-id="simulated-examples"><span class="header-section-number">33.3</span> Simulated Examples</h2>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-2_35f5076db960a0e0b6a6038afba65b40">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># AR models</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sim_ar <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">p =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ar =</span> <span class="fu">list</span>(.<span class="dv">7</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">c</span>(.<span class="dv">7</span>,<span class="sc">-</span>.<span class="dv">3</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">c</span>(.<span class="dv">7</span>, <span class="sc">-</span>.<span class="dv">3</span>, .<span class="dv">5</span>)),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n =</span> <span class="dv">200</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">list</span>(<span class="fu">arima.sim</span>(<span class="fu">list</span>(<span class="at">ar =</span> ar), <span class="at">n =</span> <span class="dv">200</span>)),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="fu">list</span>(<span class="fu">time</span>(y)))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>sim_ar <span class="sc">%&gt;%</span> <span class="fu">unnest</span>(<span class="fu">c</span>(x, y)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(p<span class="sc">~</span>.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-3_6ec807d6aa675f06c264c3be5946c6fa">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ma processes</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sim_ma <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">q =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ma =</span> <span class="fu">list</span>(.<span class="dv">7</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">c</span>(.<span class="dv">7</span>,<span class="sc">-</span>.<span class="dv">3</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">c</span>(.<span class="dv">7</span>, <span class="sc">-</span>.<span class="dv">3</span>, .<span class="dv">5</span>)),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n =</span> <span class="dv">200</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">list</span>(<span class="fu">arima.sim</span>(<span class="fu">list</span>(<span class="at">ma =</span> ma), <span class="at">n =</span> <span class="dv">200</span>)),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="fu">list</span>(<span class="fu">time</span>(y))) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>sim_ma <span class="sc">%&gt;%</span> <span class="fu">unnest</span>(<span class="fu">c</span>(x, y)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(q<span class="sc">~</span>.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="examples-la-county" class="level2" data-number="33.4">
+<h2 data-number="33.4" class="anchored" data-anchor-id="examples-la-county"><span class="header-section-number">33.4</span> Examples: LA County</h2>
+<p>We just examine the cardiovascular mortality from the LA Pollution study. These are average weekly cv mortality rates from <code>astsa</code> package.</p>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-4_60aa7407ae430e0fa22e649179614d41">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ?cmort</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> cmort <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> x <span class="sc">%&gt;%</span> <span class="fu">lag</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># yt = u + beta * yt-1</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cmort_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(x<span class="sc">~</span>x1)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">coef</span>(cmort_lm)[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">coef</span>(cmort_lm)[<span class="dv">2</span>] <span class="sc">*</span> x1,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">fitted</span>(cmort_lm)),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">predict</span>(cmort_lm))) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="co"># fitted/predicted values match up</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       [,1]      [,2]      [,3]
+         NA        NA        NA
+2  95.73811  95.73811  95.73811
+3 100.97814 100.97814 100.97814
+4  93.04478  93.04478  93.04478
+5  95.89246  95.89246  95.89246
+6  94.19466  94.19466  94.19466</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-5_20b8fba2949ad72f901196db037386fe">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(<span class="fu">time</span>(cmort), x, <span class="at">geom =</span> <span class="st">"line"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span>  <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">fitted</span>(cmort_lm)), <span class="at">color =</span> <span class="st">"red"</span>)) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"red"</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">label =</span> <span class="fu">c</span>(<span class="st">"raw"</span>, <span class="st">"fitted"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Don't know how to automatically pick scale for object of type ts. Defaulting to continuous.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row(s) containing missing values (geom_path).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="example-airpassengers" class="level2" data-number="33.5">
+<h2 data-number="33.5" class="anchored" data-anchor-id="example-airpassengers"><span class="header-section-number">33.5</span> Example: AirPassengers</h2>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-6_fa9d0be5d8cbfabb5394f988697c92aa">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>AirPassengers <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-7_333b55c7f1fe57e48861478c4b4ee5d0">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sarima</span>(AirPassengers, <span class="at">d =</span> <span class="dv">1</span>, <span class="at">p =</span> <span class="dv">2</span>, <span class="at">q =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>initial  value 3.522169 
+iter   2 value 3.456359
+iter   3 value 3.447683
+iter   4 value 3.447001
+iter   5 value 3.447000
+iter   6 value 3.447000
+iter   6 value 3.447000
+iter   6 value 3.447000
+final  value 3.447000 
+converged
+initial  value 3.441124 
+iter   2 value 3.441115
+iter   3 value 3.441115
+iter   4 value 3.441114
+iter   4 value 3.441114
+iter   4 value 3.441114
+final  value 3.441114 
+converged</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$fit
+
+Call:
+arima(x = xdata, order = c(p, d, q), seasonal = list(order = c(P, D, Q), period = S), 
+    xreg = constant, transform.pars = trans, fixed = fixed, optim.control = list(trace = trc, 
+        REPORT = 1, reltol = tol))
+
+Coefficients:
+         ar1      ar2  constant
+      0.3792  -0.2314    2.4075
+s.e.  0.0823   0.0834    3.0636
+
+sigma^2 estimated as 973.4:  log likelihood = -694.99,  aic = 1397.98
+
+$degrees_of_freedom
+[1] 140
+
+$ttable
+         Estimate     SE t.value p.value
+ar1        0.3792 0.0823  4.6065  0.0000
+ar2       -0.2314 0.0834 -2.7767  0.0062
+constant   2.4075 3.0636  0.7858  0.4333
+
+$AIC
+[1] 9.77605
+
+$AICc
+[1] 9.777257
+
+$BIC
+[1] 9.858927</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="multivariate-time-series" class="level1" data-number="34">
+<h1 data-number="34"><span class="header-section-number">34</span> Multivariate time series</h1>
+<section id="vector-autoregression" class="level2" data-number="34.1">
+<h2 data-number="34.1" class="anchored" data-anchor-id="vector-autoregression"><span class="header-section-number">34.1</span> Vector Autoregression</h2>
+<section id="example-la-county-var" class="level3" data-number="34.1.1">
+<h3 data-number="34.1.1" class="anchored" data-anchor-id="example-la-county-var"><span class="header-section-number">34.1.1</span> Example: LA County (VAR)</h3>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-8_b2fd1c75659751b404f70bed58ed2dcd">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cardiovascular mortality, temperature and particulates in LA county, weekly.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>la <span class="ot">&lt;-</span> <span class="fu">cbind</span>(cmort, tempr, part)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># visualization</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ts.plot(cmort, tempr, part, col = 1:3) # base r of autoplot </span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(la, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="fu">facet_grid</span>(series<span class="sc">~</span>., <span class="at">scales =</span> <span class="st">"free_y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-9_481c08d18e1749828a0f5dc808543794">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>la_var1 <span class="ot">&lt;-</span> <span class="fu">VAR</span>(la, <span class="at">p =</span> <span class="dv">1</span>, <span class="at">type =</span> <span class="st">"both"</span>) <span class="co"># w/ trend</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>la_var2 <span class="ot">&lt;-</span> <span class="fu">VAR</span>(la, <span class="at">p =</span> <span class="dv">2</span>, <span class="at">type =</span> <span class="st">"both"</span>) <span class="co"># w/ trend</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># coefficient matrix</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">coef</span>(la_var1),rlang<span class="sc">::</span><span class="fu">as_function</span>(<span class="sc">~</span>.x[,<span class="st">"Estimate"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>               cmort        tempr         part
+cmort.l1  0.46482370 -0.244046444 -0.124774858
+tempr.l1 -0.36088790  0.486595619 -0.476526201
+part.l1   0.09941503 -0.127660994  0.581308364
+const    73.22729188 67.585597743 67.463501275
+trend    -0.01445884 -0.006912455 -0.004650001</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vcov of coef estimates</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">coef</span>(la_var1), rlang<span class="sc">::</span><span class="fu">as_function</span>(<span class="sc">~</span><span class="fu">round</span>(.x[,<span class="st">"Std. Error"</span>], <span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         cmort tempr   part
+cmort.l1 0.037 0.042  0.079
+tempr.l1 0.032 0.037  0.069
+part.l1  0.019 0.022  0.041
+const    4.834 5.542 10.399
+trend    0.002 0.002  0.004</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated covariance of errors</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(la_var1)<span class="sc">$</span>covres</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          cmort     tempr      part
+cmort 31.171944  5.974621  16.65448
+tempr  5.974621 40.964945  42.32335
+part  16.654476 42.323345 144.26025</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-10_bd6e7998078620d598bad9424069c1ff">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>la_var1_const <span class="ot">&lt;-</span> <span class="fu">VAR</span>(la, <span class="at">p =</span> <span class="dv">1</span>, <span class="at">type =</span> <span class="st">"const"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">coef</span>(la_var1_const),rlang<span class="sc">::</span><span class="fu">as_function</span>(<span class="sc">~</span>.x[,<span class="st">"Estimate"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>               cmort      tempr        part
+cmort.l1  0.60149346 -0.1787076 -0.08082151
+tempr.l1 -0.30946101  0.5111817 -0.45998718
+part.l1   0.07096225 -0.1412636  0.57215788
+const    54.94579126 58.8456142 61.58412402</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-11_27fbe107d223ec8d5ae2b6e1a70bde23">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>la_ols <span class="ot">&lt;-</span> <span class="fu">ar.ols</span>(la, <span class="at">order.max =</span> <span class="dv">1</span>, <span class="at">demean =</span> <span class="cn">FALSE</span>, <span class="at">intercept =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># matches constant VAR coefficients</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">t</span>(la_ols<span class="sc">$</span>ar[<span class="dv">1</span>,,]),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">const =</span> la_ols<span class="sc">$</span>x.intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            cmort      tempr        part
+cmort  0.60149346 -0.1787076 -0.08082151
+tempr -0.30946101  0.5111817 -0.45998718
+part   0.07096225 -0.1412636  0.57215788
+const 54.94579126 58.8456142 61.58412402</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-12_5c391e9f07385452a3271aaa9c3aa6dd">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>la <span class="sc">%&gt;%</span> <span class="fu">melt</span>(<span class="fu">c</span>(<span class="st">"time"</span>, <span class="st">"series"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(time, value)) <span class="sc">+</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">fitted</span>(la_var1) <span class="sc">%&gt;%</span> <span class="fu">melt</span>(<span class="fu">c</span>(<span class="st">"time"</span>, <span class="st">"series"</span>)),</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(time, value, <span class="at">color =</span> <span class="st">"red"</span>), <span class="at">alpha=</span> .<span class="dv">6</span>) <span class="sc">+</span>  <span class="co"># var1</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">fitted</span>(la_var1_const) <span class="sc">%&gt;%</span> <span class="fu">melt</span>(<span class="fu">c</span>(<span class="st">"time"</span>, <span class="st">"series"</span>)),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(time, value, <span class="at">color =</span> <span class="st">"blue"</span>), <span class="at">alpha =</span> .<span class="dv">6</span>) <span class="sc">+</span> <span class="co"># var1 const</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">fitted</span>(la_var2) <span class="sc">%&gt;%</span> <span class="fu">melt</span>(<span class="fu">c</span>(<span class="st">"time"</span>, <span class="st">"series"</span>)),</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(time, value, <span class="at">color =</span> <span class="st">"green"</span>), <span class="at">alpha =</span> .<span class="dv">6</span>) <span class="sc">+</span> <span class="co"># var2</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span>),</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"var1"</span>, <span class="st">"var1_const"</span>, <span class="st">"var2"</span>)) <span class="sc">+</span> </span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(series<span class="sc">~</span>.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>From looking at the models, they’re quite difficult to tell which model is fitting better than the others.</p>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-13_069309c731419964ef28a2714a5c0c7c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># var estimates using lm</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Matrix of time series</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>la_mat <span class="ot">&lt;-</span> la <span class="sc">%&gt;%</span> <span class="st">`</span><span class="at">class&lt;-</span><span class="st">`</span>(<span class="st">"matrix"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>la_var1_manual <span class="ot">&lt;-</span> <span class="fu">lm</span>(la_mat <span class="sc">~</span> <span class="fu">cbind</span>(<span class="fu">lag</span>(la_mat), <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(la_mat))) <span class="co"># w/ trend</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>la_var1_const_manual <span class="ot">&lt;-</span> <span class="fu">lm</span>(la_mat <span class="sc">~</span> <span class="fu">lag</span>(la_mat)) <span class="co"># const</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-14_d26a2bbfbdf574e30b994e25bfb309bb">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># coefs match</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">coef</span>(la_var1),rlang<span class="sc">::</span><span class="fu">as_function</span>(<span class="sc">~</span>.x[,<span class="st">"Estimate"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>               cmort        tempr         part
+cmort.l1  0.46482370 -0.244046444 -0.124774858
+tempr.l1 -0.36088790  0.486595619 -0.476526201
+part.l1   0.09941503 -0.127660994  0.581308364
+const    73.22729188 67.585597743 67.463501275
+trend    -0.01445884 -0.006912455 -0.004650001</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(la_var1_manual)[<span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">5</span>),] <span class="sc">%&gt;%</span> <span class="co"># reorder to match</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">rownames&lt;-</span><span class="st">`</span>(<span class="fu">c</span>(<span class="st">"cmort"</span>, <span class="st">"tempr"</span>, <span class="st">"part"</span>, <span class="st">"const"</span>, <span class="st">"trend"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            cmort        tempr         part
+cmort  0.46482370 -0.244046444 -0.124774858
+tempr -0.36088790  0.486595619 -0.476526201
+part   0.09941503 -0.127660994  0.581308364
+const 73.22729188 67.585597743 67.463501275
+trend -0.01445884 -0.006912455 -0.004650001</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># var matches</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># SSE / n-r-p</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># nobs - coefs_estimated - VAR_order</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">crossprod</span>(la_var1_const_manual<span class="sc">$</span>residuals) <span class="sc">/</span> (<span class="fu">nrow</span>(la_mat) <span class="sc">-</span> la_var1_const_manual<span class="sc">$</span>rank <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 503</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          cmort     tempr      part
+cmort 34.420060  7.545224  17.68590
+tempr  7.545224 41.640053  42.74813
+part  17.685898 42.748133 144.31580</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(la_var1_const)<span class="sc">$</span>covres</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          cmort     tempr      part
+cmort 34.420060  7.545224  17.68590
+tempr  7.545224 41.640053  42.74813
+part  17.685898 42.748133 144.31580</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-15_6ca6b0500a5566f4a8122a7cc62fefd1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># order selection</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">VARselect</span>(la) <span class="co"># selects 2 by BIC</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$selection
+AIC(n)  HQ(n)  SC(n) FPE(n) 
+     9      5      2      9 
+
+$criteria
+                  1           2           3           4           5           6
+AIC(n)     11.84541    11.35895    11.32363    11.28376    11.23095    11.20946
+HQ(n)      11.88523    11.42864    11.42318    11.41318    11.39023    11.39861
+SC(n)      11.94687    11.53651    11.57728    11.61351    11.63679    11.69140
+FPE(n) 139442.85952 85730.12941 82755.88760 79522.85813 75434.43083 73833.93231
+                 7           8           9          10
+AIC(n)    11.21508    11.19717    11.17261    11.17843
+HQ(n)     11.43409    11.44604    11.45134    11.48703
+SC(n)     11.77311    11.83130    11.88283    11.96475
+FPE(n) 74254.62493 72942.17171 71179.59211 71604.50745</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-16_a89a9f6ded6c9fd956324c5a9e0e7fea">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">resid</span>(la_var2), <span class="dv">52</span>)<span class="sc">$</span>acf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>, , 1
+
+               [,1]         [,2]         [,3]
+ [1,]  1.0000000000  0.217879438  0.277509279
+ [2,]  0.0190479748  0.005389606  0.005820489
+ [3,]  0.0196665705  0.029266506  0.057572004
+ [4,]  0.0018750976  0.113509001  0.072168281
+ [5,]  0.0370667228  0.089215447  0.089481560
+ [6,]  0.0234497703  0.006534372  0.041550540
+ [7,]  0.0002439599 -0.020245959  0.015288896
+ [8,] -0.0201621665 -0.014605120  0.028696187
+ [9,] -0.0717493834 -0.047291658 -0.055464437
+[10,]  0.0488793637 -0.008198369  0.021221599
+[11,] -0.0695031498 -0.080878807 -0.004731138
+[12,] -0.0070995080 -0.074345678 -0.011980420
+[13,]  0.0282316571 -0.014114181 -0.014007958
+[14,] -0.0198756141 -0.034144315  0.051026255
+[15,] -0.0443005551 -0.038874943 -0.081377952
+[16,]  0.0786827878 -0.059140216 -0.031402333
+[17,] -0.0327084309 -0.041759473 -0.016714248
+[18,]  0.0108442536  0.022255941  0.040101939
+[19,]  0.0043285647 -0.062265045 -0.027016343
+[20,] -0.0554667399  0.022056093  0.037211470
+[21,]  0.0079066206 -0.018238253 -0.007438298
+[22,]  0.0314774049 -0.040331764 -0.149078216
+[23,]  0.0096106673 -0.082998640 -0.047516759
+[24,] -0.0025419428  0.003317043  0.017429386
+[25,]  0.0539863170  0.032757468 -0.003150329
+[26,] -0.0005172218  0.041461399 -0.004494827
+[27,]  0.0127625494 -0.014332058 -0.028122241
+[28,]  0.0904734843  0.040357750 -0.047025945
+[29,] -0.0746643793  0.015222129 -0.044827848
+[30,] -0.0008245447 -0.038980932 -0.034558792
+[31,] -0.0520697165  0.073548481 -0.017026157
+[32,]  0.0304587464 -0.022986878 -0.024226714
+[33,] -0.0141854337 -0.064576026 -0.056280760
+[34,] -0.0070769444  0.077901477 -0.040394100
+[35,] -0.0362246932 -0.014366382 -0.060734195
+[36,] -0.0214401093 -0.014338261 -0.030299110
+[37,] -0.0008471980 -0.068583531 -0.017670940
+[38,] -0.0006026269 -0.019236217 -0.043214529
+[39,]  0.0064111064  0.002799474  0.039626533
+[40,] -0.0043898669  0.034082897 -0.012423884
+[41,] -0.0583439171 -0.002440935  0.034561440
+[42,]  0.0136243581 -0.033637019  0.027505399
+[43,] -0.0033203555 -0.024584074 -0.024374319
+[44,] -0.0537574770 -0.059025968 -0.021135711
+[45,]  0.0030748770  0.027478454  0.056947794
+[46,] -0.0152810216 -0.032749931 -0.025585528
+[47,] -0.0075957603 -0.039362742  0.053481937
+[48,]  0.0532566114 -0.004024262  0.070240327
+[49,]  0.0235818271  0.003943218 -0.018320176
+[50,] -0.0474990754  0.062016271  0.047488310
+[51,] -0.0334291892  0.032924414  0.045649735
+[52,]  0.0451385770  0.108830728  0.103113081
+[53,]  0.0016785953 -0.030510828 -0.015254719
+
+, , 2
+
+               [,1]          [,2]          [,3]
+ [1,]  0.2178794381  1.0000000000  5.998217e-01
+ [2,] -0.0069134627 -0.0273153464 -2.028058e-02
+ [3,] -0.0417396384 -0.0732641900 -5.746080e-02
+ [4,] -0.0365251777 -0.0191031871 -5.234533e-03
+ [5,]  0.1223110978  0.0997388030 -3.702000e-02
+ [6,] -0.0426267519  0.0013077690  7.279985e-02
+ [7,]  0.0008907663  0.0168402620  8.611434e-02
+ [8,]  0.0527425268 -0.0236969942 -1.401886e-02
+ [9,]  0.0329738376  0.0578341857  4.853311e-02
+[10,]  0.0008613065  0.0881269759  6.528484e-02
+[11,]  0.0038643703 -0.0193190571  5.039434e-02
+[12,] -0.0322386983 -0.0849282312 -3.180028e-02
+[13,] -0.0337960274 -0.1018435407 -4.181919e-02
+[14,]  0.0383478236 -0.0263751966  6.256511e-02
+[15,]  0.0530821002 -0.0604857546 -4.390368e-03
+[16,] -0.0578959149 -0.0405959048  2.986441e-02
+[17,] -0.1207562981 -0.0172022414  4.496452e-02
+[18,]  0.0309632879  0.0176564288 -1.277802e-05
+[19,]  0.0458044264 -0.0082539630 -2.952468e-03
+[20,]  0.0181248335 -0.0458729285  2.196671e-02
+[21,]  0.0341990752 -0.0128123086  5.801552e-02
+[22,] -0.0318799968  0.0017036440 -4.847752e-02
+[23,]  0.0015451698 -0.0791214645 -7.364551e-02
+[24,]  0.1330538448  0.0298501082  6.925756e-02
+[25,]  0.0009457457  0.0770053571  2.507865e-02
+[26,]  0.0109719963  0.0405010344 -1.796386e-02
+[27,]  0.0031538570  0.0078040045 -3.669959e-02
+[28,]  0.1218428831  0.0390931973  1.646810e-02
+[29,]  0.0119989667 -0.0337334222 -7.647781e-02
+[30,]  0.0193617959  0.0084917093 -5.090994e-02
+[31,] -0.0902243555  0.0195814082 -1.051971e-02
+[32,]  0.0073009931 -0.0535270412 -7.326326e-02
+[33,]  0.0096090917 -0.0350304718 -4.321136e-02
+[34,] -0.0481614893  0.0380136660 -2.507569e-02
+[35,] -0.0305350325  0.0607175363  1.222326e-02
+[36,] -0.0572740455 -0.1200585756 -7.296693e-02
+[37,] -0.0847362741 -0.1160121279 -7.261332e-02
+[38,] -0.0768652106  0.0017602589 -8.082381e-02
+[39,]  0.0523430919  0.0006355169  1.791517e-02
+[40,] -0.0442097337 -0.0676960291 -3.356747e-02
+[41,]  0.0032764001 -0.0343545757  5.942883e-03
+[42,] -0.0015313453 -0.0959785808 -8.464231e-02
+[43,] -0.0724475785  0.0561233233  2.837262e-02
+[44,] -0.0374797220  0.0378247513  4.592497e-02
+[45,]  0.0672385341 -0.0004920405 -6.144555e-03
+[46,] -0.0198744796 -0.0468162051 -1.651516e-02
+[47,] -0.0003644189  0.0043254720 -2.643725e-03
+[48,]  0.0696476317  0.1028146531  6.472267e-02
+[49,] -0.0011331338  0.0738081817  5.243119e-03
+[50,]  0.1348519820  0.0142999698  5.172204e-02
+[51,]  0.0356162974  0.0924132277  9.607002e-02
+[52,]  0.0219433194  0.0778897000  5.430037e-02
+[53,] -0.0167431902  0.0649301370 -1.286292e-02
+
+, , 3
+
+              [,1]          [,2]          [,3]
+ [1,]  0.277509279  5.998217e-01  1.0000000000
+ [2,] -0.005606983 -6.272803e-03 -0.0718869340
+ [3,] -0.050471197 -2.927774e-02 -0.1044093310
+ [4,] -0.051476471  2.435578e-02  0.0818592172
+ [5,]  0.108826391  1.151831e-01  0.1014317196
+ [6,] -0.022393526 -6.285620e-02  0.0399776248
+ [7,] -0.011671622 -8.293098e-03  0.0868554043
+ [8,]  0.107868824 -2.285020e-02  0.0788537879
+ [9,]  0.026654486  5.549410e-02  0.0286138179
+[10,]  0.006512363  5.259021e-02  0.0134036524
+[11,]  0.017700351  5.772317e-02  0.1179402578
+[12,]  0.034172710 -7.100005e-02 -0.0005368955
+[13,]  0.008708124 -7.024868e-02 -0.0402356322
+[14,]  0.026161657 -1.668984e-02  0.0198641366
+[15,]  0.008635961 -3.657212e-02 -0.0296797994
+[16,] -0.045548433 -2.637129e-02 -0.0014683183
+[17,] -0.061769793 -1.222882e-01 -0.0526359004
+[18,] -0.012604978  4.833238e-05 -0.0665361808
+[19,]  0.058612968 -3.741204e-02 -0.0279237208
+[20,] -0.014398202 -4.194695e-02 -0.0219147857
+[21,] -0.077601777 -5.893514e-02 -0.0523712541
+[22,] -0.070870854 -2.192678e-02 -0.1158347237
+[23,]  0.017674360 -8.745858e-02 -0.0902506776
+[24,]  0.018570603 -4.593930e-02 -0.0473447030
+[25,] -0.030733137 -2.834240e-02 -0.0974021202
+[26,] -0.079026054  1.409404e-03 -0.0893268387
+[27,] -0.011309736 -4.065380e-02 -0.0655419435
+[28,]  0.061413962  3.922000e-02 -0.0118739795
+[29,] -0.004480642 -1.555248e-02 -0.1293403808
+[30,] -0.046126569 -4.969208e-02 -0.1167476498
+[31,] -0.074081955  6.289827e-04 -0.0410670937
+[32,]  0.039199340  3.136864e-02 -0.0436366189
+[33,] -0.029864342 -3.633935e-03 -0.0893552371
+[34,] -0.062001622  1.449538e-02 -0.0535228109
+[35,]  0.014113252  6.231999e-02 -0.0164022658
+[36,]  0.018152519 -3.877261e-03 -0.0598618895
+[37,] -0.073200277 -7.932530e-02 -0.0767545504
+[38,] -0.029641931  7.458741e-02  0.0355013579
+[39,]  0.049829939  3.407308e-02  0.0065261069
+[40,] -0.020708624 -4.724998e-02 -0.0758863362
+[41,] -0.020351186  3.246480e-02  0.0624133451
+[42,]  0.020070135 -9.845861e-03 -0.0263576348
+[43,]  0.004443117  4.202227e-02  0.0249697264
+[44,] -0.023152376  2.120964e-02  0.0813184577
+[45,]  0.009773793 -9.803032e-03  0.0384603537
+[46,]  0.009824226  3.559850e-02  0.0455509389
+[47,]  0.009718289  5.872142e-02  0.0414817491
+[48,]  0.029567261  5.085948e-02  0.0930198800
+[49,]  0.010326438 -2.081853e-03  0.0687912111
+[50,]  0.112706488  4.545080e-02  0.0631379931
+[51,]  0.073618289  9.333858e-02  0.1271988308
+[52,]  0.019653903  3.141887e-02  0.1165514742
+[53,]  0.041510649  5.583284e-02  0.0648846998</code></pre>
+</div>
+</div>
+<p>The CCF plots should all be non significant. The second part of “x &amp; y” are the ones that lead.</p>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-17_2165f4caa06715e6a43b73601c871bd4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># serial test</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">serial.test</span>(la_var2, <span class="at">lags.pt =</span> <span class="dv">12</span>, <span class="at">type =</span> <span class="st">"PT.adjusted"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Portmanteau Test (adjusted)
+
+data:  Residuals of VAR object la_var2
+Chi-squared = 162.35, df = 90, p-value = 4.602e-06</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>la[,<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = c(1970, 1) 
+End = c(1979, 40) 
+Frequency = 52 
+  [1]  97.85 104.64  94.36  98.05  95.85  95.98  88.63  90.85  92.06  88.75
+ [11]  94.60  92.86  98.02  87.64  97.40  83.24  86.60  90.69  82.86  99.06
+ [21]  81.00  93.18  86.86  89.35  87.13  88.39  85.38  83.96  84.95  86.81
+ [31]  85.25  94.72  90.96  87.73  92.58  87.02  92.68  97.95  94.19  93.95
+ [41]  92.29  93.48  97.41  96.98 106.60 112.41 118.59 107.90 111.82 102.78
+ [51] 100.63 106.54 105.39 104.99 102.72 104.67 103.30  98.46 100.78  94.43
+ [61]  92.16  92.13  95.04  86.88  95.29  85.39  92.63  88.72  87.09  83.92
+ [71]  89.01  78.14  92.84  88.65  86.66  82.04 105.15  94.19  83.99  88.22
+ [81]  85.59  99.21  87.77  90.39  82.25 102.92  86.84  97.22  94.97 104.86
+ [91]  80.53 102.47  97.80  95.28 105.64 106.44 110.65 114.41 115.98 112.72
+[101] 115.99 104.14 109.30 111.47 102.67 101.34  94.97  90.48  93.70  81.87
+[111]  91.12  90.55  89.62  91.63  89.22  84.81  95.00  83.77  98.26  82.87
+[121]  85.51  84.67  84.45  93.96  82.47  89.18  87.33  92.67  93.83  86.65
+[131]  89.35  77.97  86.06  83.34  87.35  90.58  84.72  88.32  82.62  92.52
+[141]  86.73  99.54  95.50  92.34  97.49  97.90  97.54 103.78 110.17 116.04
+[151] 132.04 126.95 121.11 119.30 118.20 102.36  98.44  97.87  92.98  96.16
+[161]  86.83  91.09  92.50  90.64  80.69  99.91  89.09  94.25  93.33  84.08
+[171]  86.37  86.61  82.47  82.73  98.29  87.02  91.13  80.23  81.36  82.80
+[181]  87.24  79.37  86.83  82.00  77.96  79.69  87.32  85.33  92.02  84.03
+[191]  83.45  82.35  89.17  82.24  93.35  89.16  95.13  89.10 100.32  95.61
+[201]  99.61 105.82 104.20  95.45  90.48  93.58  91.71  95.29  94.69 102.50
+[211]  98.58 107.12  99.29  96.85  89.02  96.27  97.55  85.16  94.77  85.45
+[221]  97.46  83.31  91.41  88.84  86.44  82.08  83.63  95.22  80.28  85.59
+[231]  84.68  81.53  89.20  74.51  81.85  81.97  85.01  86.98  81.67  91.11
+[241]  83.38  86.18  89.93  91.82  92.27  89.29  85.41  96.78  83.60  98.63
+[251]  90.86  94.36  97.52 108.68 107.23 107.08 113.39 105.51 111.90 110.44
+[261]  95.42  97.78  90.38  86.89  91.59  85.51  88.16  87.03  88.61  96.96
+[271]  80.03  80.53  76.46  78.85  87.03  82.27  78.92  72.75  77.75  83.79
+[281]  82.13  76.42  74.58  79.61  76.52  79.27  74.70  75.49  82.82  80.29
+[291]  80.05  78.64  79.40  71.02  73.55  79.60  85.08  90.14  82.26  86.75
+[301]  90.11  94.86  89.68  90.16  85.73  96.82 100.37  93.43  94.12  89.26
+[311]  91.81  97.40 102.71 101.94  97.40  96.12 105.45  94.34  92.51  88.47
+[321]  85.47  85.70  84.48  85.63  79.67  80.78  74.58  76.32  80.37  83.30
+[331]  82.98  91.34  78.57  76.68  76.47  73.66  78.61  83.40  71.96  77.17
+[341]  72.38  79.52  72.05  75.86  74.32  77.70  82.99  77.79  77.42  85.55
+[351]  85.33  82.16  83.74  84.40  90.32  82.74  91.50  96.23  92.90  92.30
+[361]  91.76  92.34  78.91  88.06  81.91  79.68  83.20  84.05  85.80  84.39
+[371]  91.74  90.65  89.67  86.24  91.46  83.30  83.05  74.14  90.12  83.84
+[381]  79.94  74.65  77.89  78.06  74.96  77.90  73.65  79.32  82.91  79.48
+[391]  73.21  76.46  73.76  68.11  76.53  68.46  72.84  79.92  73.26  79.55
+[401]  77.02  78.39  81.86  88.20  75.69  88.85  82.52  87.44  82.91  92.84
+[411]  91.85  89.82  96.84  99.56 105.10  95.70  93.46  99.27  90.39  85.85
+[421]  86.69  92.94  86.63  89.78  83.22  86.04  81.53  77.46  76.63  82.09
+[431]  81.22  70.96  80.17  78.48  76.80  77.63  74.31  76.30  85.97  73.07
+[441]  76.29  75.21  79.18  78.25  77.24  81.55  75.46  76.86  88.43  92.93
+[451]  77.65  78.74  73.63  82.11  80.81  84.34  83.48  76.40  92.77  88.09
+[461]  96.20 100.28 107.58  93.73  87.33  88.11  88.07 100.81  95.52  91.14
+[471]  85.67  88.24  88.61  85.64  87.29  83.92  89.15  87.61  81.99  84.86
+[481]  81.17  87.33  86.40  85.90  79.01  83.49  87.88  74.94  80.32  81.75
+[491]  78.68  74.62  74.16  71.50  75.89  74.89  77.36  73.63  81.17  83.91
+[501]  82.36  79.74  73.46  79.03  76.56  78.52  89.43  85.49</code></pre>
+</div>
+</div>
+<p>There are some large sample properties of VAR’s as well,</p>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-18_2f31dbfec62ef56932a685f46ce1228b">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+</section>
+<section id="state-space-model" class="level1" data-number="35">
+<h1 data-number="35"><span class="header-section-number">35</span> State Space Model</h1>
+<p>These models have a hierarchical form, in which there is some underlying time series process, but then we also observe data on top of that. Thus, the general form of the equations look like this:</p>
+<p><span class="math display">
+\begin{aligned}
+\textbf{State Equation:}&amp; \\
+x_t &amp;= \Phi x_{t-1} + \Upsilon u_t +   w_t \\
+\textbf{Observation Equation:}&amp; \\
+y_t &amp;= A_t x_t + \Gamma u_t  + v_t
+\end{aligned}
+</span> where:</p>
+<ul>
+<li><span class="math inline">\Upsilon u_t</span> - is time varying exogenous variables</li>
+<li><span class="math inline">\Upsilon u_t</span> - is time varying exogenous variables</li>
+<li><span class="math inline">x_t</span> is state at time <span class="math inline">t</span></li>
+<li><span class="math inline">\Phi x_t</span> is state at time <span class="math inline">t</span> describes how <span class="math inline">x</span> evolves</li>
+<li><span class="math inline">w_t</span> is state noise with <span class="math inline">w_t \sim N(0, Q)</span></li>
+<li><span class="math inline">v_t</span> is measurement noise with <span class="math inline">v_t \sim N(0, R)</span></li>
+</ul>
+<p>There are more general forms of the state space model: with correlated errors, see Durbin Koopman for more state space methods.</p>
+<p>It seems now that state space models are now also being superseded by recurrent neural networks, which can model dynamical properties.</p>
+<section id="example-ar1-with-observational-noise" class="level2" data-number="35.1">
+<h2 data-number="35.1" class="anchored" data-anchor-id="example-ar1-with-observational-noise"><span class="header-section-number">35.1</span> Example: AR(1) with observational noise</h2>
+<p>The state equation:</p>
+<p><span class="math display">
+\begin{aligned}
+\textbf{State Equation:}&amp; \\
+x_t &amp;= \phi x_{t-1} + w_t \\
+\textbf{Observation Equation:}&amp; \\
+y_t &amp;= x_t + v_t
+\end{aligned}
+</span></p>
+<p>What is interesting about this case with a hierarchical data structure, is that we can show it has the same error structure as an ARMA model. Shumway Stoffer notes that even though it has the same parameterization as an ARMA model, it is often easier to think about the state model form. See example 6.3 for more details.</p>
+</section>
+<section id="kalman-filter" class="level2" data-number="35.2">
+<h2 data-number="35.2" class="anchored" data-anchor-id="kalman-filter"><span class="header-section-number">35.2</span> Kalman Filter</h2>
+<p>Kalman filter is a recursive, markovian updating algorithm for estimating a hidden state variable given noisy and partial observations. The common example is that we are tracking a truck by gps observations. Since the gps observations are imprecise, they will jump back and forth.</p>
+<p>An excellent resource explanation with pictures is found <a href="https://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/">from bzarg</a></p>
+<section id="example-local-level-model" class="level3" data-number="35.2.1">
+<h3 data-number="35.2.1" class="anchored" data-anchor-id="example-local-level-model"><span class="header-section-number">35.2.1</span> Example: Local level Model</h3>
+<p>Consider the equations:</p>
+<p><span class="math display">
+\begin{aligned}
+\textbf{State Equation:}&amp; \\
+x_t &amp;= x_{t-1} + w_t \\
+\textbf{Observation Equation:}&amp; \\
+y_t &amp;= x_t + v_t
+\end{aligned}
+</span> where both <span class="math inline">w_t, v_t \sim N(0, 1)</span>. We can make the Kalman filter here based on our observation equation. We assume that <span class="math inline">A = 1</span> (in this case) and <span class="math inline">Phi = 1</span> are known here. In reality, we can use maximum likelihood of the <em>innnovations</em> (prediction errors) in order to estimate the</p>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-19_a65565b1fe0ae512c4f123a773a8ee9c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate the data</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span>  <span class="dv">50</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>x0 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>) <span class="co"># random initial state</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>) <span class="co"># state level noise</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>v <span class="ot">=</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>) <span class="co"># observation level noise</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">cumsum</span>(<span class="fu">c</span>(x0, w)) <span class="co"># true state variables</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> x[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">+</span> v <span class="co"># remove initial state</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>ks <span class="ot">&lt;-</span> <span class="fu">Ksmooth0</span>(<span class="at">num =</span> <span class="dv">50</span>, </span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> y, </span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">A =</span> <span class="dv">1</span>, </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">mu0 =</span> <span class="dv">10</span>, <span class="co"># set initial values</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">Sigma0 =</span> <span class="dv">20</span>, <span class="co"># set initial values</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">Phi =</span> <span class="dv">1</span>,</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">cQ =</span> <span class="dv">1</span>,</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">cR =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-20_05815c3be33fe5a897cfe78ecaec54a5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot all the predictions</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>),</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">4</span>))</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x[<span class="sc">-</span><span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Prediction"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">10</span>))</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xp[<span class="dv">1</span>,,])</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xp <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(ks<span class="sc">$</span>Pp[<span class="dv">1</span>,,]), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">4</span>)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xp <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(ks<span class="sc">$</span>Pp[<span class="dv">1</span>,,]), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">4</span>) <span class="co"># variance matrices</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co"># filters</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x[<span class="sc">-</span><span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Filters"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">10</span>), <span class="at">xlab =</span> <span class="st">""</span>)</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xf[<span class="dv">1</span>,,])</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xf <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(ks<span class="sc">$</span>Pf[<span class="dv">1</span>,,]), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">4</span>)</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xf <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(ks<span class="sc">$</span>Pf[<span class="dv">1</span>,,]), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">4</span>) <span class="co"># variance matrices</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a><span class="co"># ks$xs[1,,] # smooth values</span></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x[<span class="sc">-</span><span class="dv">1</span>], <span class="at">main =</span> <span class="st">"Smooth"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">10</span>), <span class="at">xlab =</span> <span class="st">""</span>)</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xs[<span class="dv">1</span>,,])</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xs <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(ks<span class="sc">$</span>Ps[<span class="dv">1</span>,,]), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">4</span>)</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(ks<span class="sc">$</span>xs <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(ks<span class="sc">$</span>Ps[<span class="dv">1</span>,,]), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">4</span>) <span class="co"># variance matrices</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-21_21ebbc2e9bf91d307acc1dcc154169f2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># creating table for comparison</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">predict =</span> ks<span class="sc">$</span>xp[<span class="dv">1</span>,,],</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">filter =</span> ks<span class="sc">$</span>xf[<span class="dv">1</span>,,],</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">smooth =</span> ks<span class="sc">$</span>xs[<span class="dv">1</span>,,],</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">predict_sd =</span> <span class="fu">sqrt</span>(ks<span class="sc">$</span>Pp[<span class="dv">1</span>,,]),</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">filter_sd =</span> <span class="fu">sqrt</span>(ks<span class="sc">$</span>Pf[<span class="dv">1</span>,,]),</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">smooth_sd =</span> <span class="fu">sqrt</span>(ks<span class="sc">$</span>Ps[<span class="dv">1</span>,,])) <span class="sc">%&gt;%</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(predict<span class="sc">:</span>smooth, <span class="sc">~</span>scales<span class="sc">::</span><span class="fu">number</span>(.x, <span class="at">accuracy =</span> .<span class="dv">001</span>)),</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(predict_sd<span class="sc">:</span>smooth_sd, <span class="sc">~</span>scales<span class="sc">::</span><span class="fu">number</span>(.x,<span class="at">accuracy =</span> .<span class="dv">01</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">predict =</span> <span class="fu">glue</span>(<span class="st">"{predict} ({predict_sd})"</span>),</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">filter =</span> <span class="fu">glue</span>(<span class="st">"{filter} ({filter_sd})"</span>),</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">smooth =</span> <span class="fu">glue</span>(<span class="st">"{smooth} ({smooth_sd})"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 50 × 3
+   predict       filter        smooth       
+   &lt;glue&gt;        &lt;glue&gt;        &lt;glue&gt;       
+ 1 10.000 (4.58) -0.552 (0.98) -0.538 (0.77)
+ 2 -0.552 (1.40) -0.807 (0.81) -0.524 (0.69)
+ 3 -0.807 (1.29) -0.810 (0.79) -0.096 (0.67)
+ 4 -0.810 (1.27) 0.978 (0.79)  1.048 (0.67) 
+ 5 0.978 (1.27)  1.490 (0.79)  1.161 (0.67) 
+ 6 1.490 (1.27)  0.536 (0.79)  0.628 (0.67) 
+ 7 0.536 (1.27)  0.209 (0.79)  0.778 (0.67) 
+ 8 0.209 (1.27)  1.438 (0.79)  1.699 (0.67) 
+ 9 1.438 (1.27)  1.283 (0.79)  2.123 (0.67) 
+10 1.283 (1.27)  3.726 (0.79)  3.481 (0.67) 
+# … with 40 more rows
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="estimation-of-state-parameters" class="level2" data-number="35.3">
+<h2 data-number="35.3" class="anchored" data-anchor-id="estimation-of-state-parameters"><span class="header-section-number">35.3</span> Estimation of State Parameters</h2>
+<p>There are bayesian methods for estimating the state parameters but also maximum likelihood w/ Newton Raphson or EM algorithmss</p>
+</section>
+<section id="example-nile" class="level2 tabset" data-number="35.4">
+<h2 class="tabset anchored" data-number="35.4" data-anchor-id="example-nile"><span class="header-section-number">35.4</span> Example: Nile</h2>
+<p>Annual flow of the river Nile from 1871 - 1970. There’s an apparent changepoint near 1898.</p>
+<p>I found this example going through all the state space model libraries. The orginal paper is called “JSS Journal of Statistical Software, State Space Models in R”.Specifically, we walk through the Nile example with 3 functions:</p>
+<ol type="1">
+<li><code>stats::StructTS</code></li>
+<li><code>dlm:dlmMLE</code></li>
+<li><code>KFAS:kf</code></li>
+</ol>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-22_d137917b15c918a2934e60c360a2d909">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># change point analyses</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(Nile)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="statsstructts" class="level3" data-number="35.4.1">
+<h3 data-number="35.4.1" class="anchored" data-anchor-id="statsstructts"><span class="header-section-number">35.4.1</span> stats::StructTS</h3>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-23_42026751f262f40d45a2c8c72d984741">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>nile_sts <span class="ot">&lt;-</span> <span class="fu">StructTS</span>(Nile, <span class="st">"level"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co"># nile_sts %&gt;% tsdiag() # diagnostics of structural model</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># values from model.</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> <span class="fu">time</span>(Nile),</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">filtered =</span> <span class="fu">fitted</span>(nile_sts)[,<span class="st">"level"</span>], <span class="co"># filtered values</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">smoothed =</span> <span class="fu">tsSmooth</span>(nile_sts)[,<span class="st">"level"</span>]) <span class="co"># smoothed valuees</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 100 × 3
+   times filtered smoothed
+   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+ 1  1871    1120     1112.
+ 2  1872    1141.    1111.
+ 3  1873    1073.    1105.
+ 4  1874    1117.    1114.
+ 5  1875    1130.    1112.
+ 6  1876    1138.    1107.
+ 7  1877    1049.    1096.
+ 8  1878    1098.    1112.
+ 9  1879    1171.    1117.
+10  1880    1163.    1098.
+# … with 90 more rows
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># forecast values</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(nile_sts,<span class="at">n.ahead =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$pred
+Time Series:
+Start = 1971 
+End = 1975 
+Frequency = 1 
+[1] 798.3682 798.3682 798.3682 798.3682 798.3682
+
+$se
+Time Series:
+Start = 1971 
+End = 1975 
+Frequency = 1 
+[1] 143.5266 148.5564 153.4215 158.1370 162.7159</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plotting forecast values, with package forecast</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(forecast<span class="sc">::</span><span class="fu">forecast</span>(nile_sts, <span class="co"># StructST object</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">level =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">90</span>), <span class="co"># CI levels</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">h =</span> <span class="dv">10</span>), <span class="co"># periods of forecasting</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">1950</span>, <span class="dv">1980</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="dlmdlm" class="level3" data-number="35.4.2">
+<h3 data-number="35.4.2" class="anchored" data-anchor-id="dlmdlm"><span class="header-section-number">35.4.2</span> dlm::dlm</h3>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-24_329e8026c9adf75adfbdd0688836af5a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the dlm object</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>nile_dlm_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(theta){</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dlmModPoly</span>(<span class="at">order =</span> <span class="dv">1</span>, <span class="at">dV =</span> theta[<span class="dv">1</span>], <span class="at">dW =</span> theta[<span class="dv">2</span>]) <span class="co"># fits local level model</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="co"># calls optim internally to optimize model (default BFGS)</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="co"># could use numDeriv::hessian for numerically accurate evaluation of Hessians</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>nile_dlm_mle <span class="ot">&lt;-</span> <span class="fu">dlmMLE</span>(Nile, <span class="co"># data</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parm =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">2</span>), <span class="co"># initial parameters</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>                   nile_dlm_ll, <span class="co"># model</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">lower =</span> <span class="fu">rep</span>(<span class="fl">1e-4</span>, <span class="dv">2</span>)) </span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>nile_dlm_mle<span class="sc">$</span>par <span class="co"># similar variance parameters of local linear model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 15099.787  1468.438</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-25_35f4e18e84e48c82e186c62b11e9ce60">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>nile_dlm_ll_best <span class="ot">&lt;-</span> <span class="fu">nile_dlm_ll</span>(nile_dlm_mle<span class="sc">$</span>par) <span class="co"># build model with best fit by optim</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">W</span>(nile_dlm_ll_best) <span class="co"># state randomnesss</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]
+[1,] 1468.438</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(nile_dlm_ll_best) <span class="co"># observation error variance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]
+[1,] 15099.79</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># can use fitted model to create smooth estimates now</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co"># $s has time series of smooth estimates</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="co"># $U.S and $D.S have SVD of smoothing varriances (for std err)</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>nile_dlm_ll_smooth <span class="ot">&lt;-</span> <span class="fu">dlmSmooth</span>(Nile , nile_dlm_ll_best)</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="co"># conf ints can be calculated by</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-26_dc3bd583a3ce0657e3547852bb9fbf8f">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate standard errors</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>hwidth <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">unlist</span>(<span class="fu">dlmSvd2var</span>(nile_dlm_ll_smooth<span class="sc">$</span>U.S, nile_dlm_ll_smooth<span class="sc">$</span>D.S))) <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fl">0.025</span>, <span class="at">lower =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>nile_dlm_ll_smooth_ci <span class="ot">&lt;-</span> <span class="fu">cbind</span>(nile_dlm_ll_smooth<span class="sc">$</span>s, <span class="fu">as.vector</span>(nile_dlm_ll_smooth<span class="sc">$</span>s) <span class="sc">+</span> hwidth <span class="sc">%o%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(nile_dlm_ll_smooth_ci) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"smoothed kalman with CI"</span>) <span class="sc">+</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">time =</span> <span class="fu">time</span>(Nile),</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">flow =</span> Nile,</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">series =</span> <span class="st">"real"</span>),</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">mapping =</span> <span class="fu">aes</span>(time, flow))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="kfaskfs" class="level3" data-number="35.4.3">
+<h3 data-number="35.4.3" class="anchored" data-anchor-id="kfaskfs"><span class="header-section-number">35.4.3</span> KFAS::KFS</h3>
+<p>Kalman filtering/smoothing/simulation for linear state space models in the exponential family. KFAS uses the sequential processing method. This package uses a slightly different parameterization of their state space models.</p>
+<p><span class="math display">
+\begin{aligned}
+y_t &amp;= Z_t\alpha_t + \varepsilon_t &amp;\text{observation}\\
+\alpha_{t+1} &amp;= T_t \alpha_t + R_t\eta_t &amp;\text{transition}
+\end{aligned}
+</span></p>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-27_fda6f380c433cee202c772231a4dfa75">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># build the local linear model</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="co"># can initialize a specific model with values</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="co"># nile_kfas_ll_model &lt;- SSModel(Nile ~ SSMtrend(1, Q = 15000), # Q = Transition error</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                               H = 30) # Observation error</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="co"># add NA for values you want to optimize</span></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>nile_kfas_ll_model <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(Nile <span class="sc">~</span> <span class="fu">SSMtrend</span>(<span class="dv">1</span>, <span class="at">Q =</span> <span class="fu">list</span>(<span class="fu">matrix</span>(<span class="cn">NA</span>))), <span class="co"># Q = Transition error</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>                              <span class="at">H =</span> <span class="fu">matrix</span>(<span class="cn">NA</span>)) <span class="co"># Observation error</span></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a><span class="co"># fit the model with wrapper to `optim`</span></span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="co"># -logLik(nile_kfas_ll_model) # is the objective that is optimized</span></span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>nile_kfas_ll_fit <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(nile_kfas_ll_model,</span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>       <span class="fu">c</span>(<span class="fu">log</span>(<span class="fu">var</span>(Nile)), <span class="fu">log</span>(<span class="fu">var</span>(Nile))), <span class="co"># initial parameters for optim</span></span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">method =</span> <span class="st">"BFGS"</span>)</span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a><span class="co"># extract just the optimal model</span></span>
+<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a>nile_kfas_ll <span class="ot">&lt;-</span> nile_kfas_ll_fit<span class="sc">$</span>model</span>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter/smooth</span></span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a>nile_kfas_ll_smooth <span class="ot">&lt;-</span> <span class="fu">KFS</span>(nile_kfas_ll,</span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">filtering =</span> <span class="st">"state"</span>,</span>
+<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">smoothing =</span> <span class="st">"state"</span>)</span>
+<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a><span class="co"># autoplot calls fortify, grabbing some components of the model</span></span>
+<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a><span class="co"># ggfortify:::autoplot.KFS</span></span>
+<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a><span class="co"># fortify(nile_kfas_ll_smooth)  # create df with: time, raw y, alphahat (smoothed values), raw residual = raw y - alphahat</span></span>
+<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a><span class="co"># nile_kfas_ll_smooth$alphahat # contains smoothed state variable estimates. for some reason "fitted" doesn't return these.</span></span>
+<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(nile_kfas_ll_smooth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-28_abfdf6824f6e91805867f295568da1b6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># these give same values</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cbind(predict(nile_kfas_ll),</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>      <span class="co"># nile_kfas_ll_smooth$alphahat)</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>nile_kfas_ll_ci <span class="ot">&lt;-</span> <span class="fu">predict</span>(nile_kfas_ll, <span class="at">interval =</span> <span class="st">"confidence"</span>, <span class="at">level =</span> .<span class="dv">9</span>)</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>nile_kfas_ll_pi <span class="ot">&lt;-</span> <span class="fu">predict</span>(nile_kfas_ll, <span class="at">interval =</span> <span class="st">"prediction"</span>, <span class="at">level =</span> .<span class="dv">9</span>)</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>legend_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"lower_ci"</span>, <span class="st">"upper_ci"</span>, <span class="st">"fit"</span>, <span class="st">"lower_pi"</span>, <span class="st">"upper_pi"</span>)</span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a><span class="co"># forecast:::autoplot.mts</span></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(<span class="fu">cbind</span>(nile_kfas_ll_ci[,<span class="sc">-</span><span class="dv">1</span>], nile_kfas_ll_pi),</span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">mapping =</span> <span class="fu">aes</span>(x, y, <span class="at">group =</span> series, <span class="at">linetype =</span> series)) <span class="sc">+</span></span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_linetype_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>), <span class="at">labels =</span> legend_labels) <span class="sc">+</span></span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>), <span class="at">labels =</span> legend_labels) <span class="sc">+</span></span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Predicted Annual flow"</span>, <span class="at">main =</span> <span class="st">"River Nile"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="timeseries_cache/html/unnamed-chunk-29_2e2ef1a8e7002a0f7903bd5adff90db9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># forecasting</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>nile_kfs_mean <span class="ot">&lt;-</span> <span class="fu">KFS</span>(nile_kfas_ll,</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">filtering =</span> <span class="fu">c</span>(<span class="st">'state'</span>)) <span class="co"># specifying "mean" only estimates the smooths (alphahat)</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="at">predict =</span> nile_kfs_mean<span class="sc">$</span>a, <span class="co"># one step ahead prediction</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">filter =</span> nile_kfs_mean<span class="sc">$</span>att, <span class="co"># filter estimates</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">smooth =</span> nile_kfs_mean<span class="sc">$</span>alphahat) <span class="sc">%&gt;%</span>  <span class="co"># smoothed</span></span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span> </span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">700</span>, <span class="dv">1250</span>)) <span class="sc">+</span></span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"predict/filter/smooth estiamtes of Nile with KFS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="timeseries_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../spatial/spatial.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spatial Statistics</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../bootstrap/bootstrap.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Bootstrap</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

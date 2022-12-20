@@ -1,0 +1,112 @@
+---
+title: "Signal Processing"
+author: "Michael Liou"
+date: "2/4/2022"
+execute:
+  cache: true
+---
+
+```{r setup, include=FALSE}
+#| code-summary: Libraries
+#| message: false
+library(shiny)
+library(signal)
+library(seewave)
+library(gsignal)
+library(fftw)
+
+# prerequisites for warbleR
+# brew install cmake
+# brew install fftw
+# install.packages("bioacoustics")
+# install.packages("fftw")
+library(warbleR)
+
+library(tidyverse)
+```
+
+## Introduction to DSP
+
+[Jeff Doser's R Programming for Data Science](https://www.jeffdoser.com/files/for875/_book/digital-signal-processing.html)
+
+```{r}
+x <- seq(0, 2 * pi, .1)
+standard <- sin(x)
+altered <- 2 * sin(3 * (x-1)) + 4
+graphData <- tibble(x, standard, altered)
+ggplot(data = graphData, mapping = aes(x = x)) +
+  geom_point(aes(y = standard, color = "sin(x)")) +
+  geom_point(aes(y = altered, color = "2*sin(3 * (x - 1)) + 4"))
+```
+
+
+```{r}
+t <- seq(0, 1, len = 100)
+
+# consider the signals
+sig <- sin(2 * pi * t)
+noisySig <- sin(2*pi*t) + .25 * rnorm(length(t))
+ggplot() + 
+  geom_line(mapping = aes(t, sig)) +
+  geom_line(mapping = aes(t, noisySig), color = "red")
+```
+
+```{r}
+# butter(filter order, critical frequency 0<w<1)
+# w is like the bandwidth
+butterFilter <- butter(2, .1)
+recoveredSig <- signal::filter(butterFilter, noisySig)
+allSignals <- data.frame(t, sig, noisySig, recoveredSig)
+
+allSignals %>% ggplot(aes(t)) +
+  geom_line(aes(y = sig, color = "Original")) +
+  geom_line(aes(y = noisySig, color = "noisy")) +
+  geom_line(aes(y = recoveredSig, color = "Recovered")) +
+  labs(x = "Time", y = "Signal")
+```
+
+## Savitzky-Golay Smoother
+
+
+```{r}
+# discrete signal
+t <- 1:40
+signal <- c(rep(0,15), rep(10, 10), rep(0, 15))
+```
+
+```{r}
+#| eval: false
+# shiny app for interactive
+ui <- fluidPage(
+  titlePanel("Interactive sgolayfilt"),
+  sliderInput("sg_p", "p",min = 3, max = 10, value = 3),
+  sliderInput("sg_n", "n",min = 5, max = 21, value = 7, step = 2),
+  plotOutput("plot")
+)
+server <- function(input, output){
+  sg <- reactive({sgolayfilt(x, input$sg_p, input$sg_n)})
+  output$plot <- renderPlot({
+    ggplot(mapping = aes(x = t)) + geom_point(aes(y = signal)) +
+      geom_line(aes(y = sg()))
+  }, res = 96)
+  output$product <- renderText({
+    input$sg_p
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+```{r}
+bf <- butter(5,1/3) # butter filter
+sg <- sgolayfilt(x) # sgolayfilt
+plot(sg, type="l")
+lines(filtfilt(rep(1, 5)/5,1,x), col = "red") # averaging filter
+lines(filtfilt(bf,x), col = "blue")   # butterworth
+points(x, pch = "x")        # original data
+```
+
+
+
+

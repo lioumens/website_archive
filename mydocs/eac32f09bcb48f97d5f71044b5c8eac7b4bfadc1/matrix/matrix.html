@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.280">
+<meta name="generator" content="quarto-1.2.203">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Michael Liou">
 
-<title>Personal Documentation - 6&nbsp; Matrix Math</title>
+<title>Personal Documentation - 16&nbsp; Matrix Math</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -113,8 +113,8 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../stochastic/stochastic.html" rel="next">
-<link href="../categorical/categorical.html" rel="prev">
+<link href="../meta/meta.html" rel="next">
+<link href="../longitudinal/within_between.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -172,7 +172,7 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Matrix Math</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Matrix Math</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -222,52 +222,117 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  <a href="../changepoint/changepoint.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Changepoint Analysis</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  <a href="../crossover/crossover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Crossover Designs</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  <a href="../diffeq/diffeq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Differential Equations</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
+  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  <a href="../experimentaldesign/experimentaldesign.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Experimental Design</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
+  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  <a href="../gam/gam.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Additive Models</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  <a href="../longitudinal/longitudinal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Longitudinal Data Analysis</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  <a href="../longitudinal/randomcoef.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Coefficient Models (CALS)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
+  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Mixed Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed_variance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Mixed Models (Variance)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../next_gen_sequencing/next_gen_sequencing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Next Generation Sequencing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../optimization/optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ordination/ordination.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Ordination</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallel/parallel.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Parallel Computing in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -280,12 +345,12 @@ div.csl-indent {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
   </div>
 </li>
       </ul>
@@ -314,24 +379,24 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#basic-matrices" id="toc-basic-matrices" class="nav-link active" data-scroll-target="#basic-matrices"><span class="toc-section-number">6.1</span>  Basic Matrices</a></li>
-  <li><a href="#adjacency-matrix" id="toc-adjacency-matrix" class="nav-link" data-scroll-target="#adjacency-matrix"><span class="toc-section-number">6.2</span>  Adjacency Matrix</a>
+  <li><a href="#basic-matrices" id="toc-basic-matrices" class="nav-link active" data-scroll-target="#basic-matrices"><span class="toc-section-number">16.1</span>  Basic Matrices</a></li>
+  <li><a href="#adjacency-matrix" id="toc-adjacency-matrix" class="nav-link" data-scroll-target="#adjacency-matrix"><span class="toc-section-number">16.2</span>  Adjacency Matrix</a>
   <ul class="collapse">
-  <li><a href="#example-spectrums" id="toc-example-spectrums" class="nav-link" data-scroll-target="#example-spectrums"><span class="toc-section-number">6.2.1</span>  Example Spectrums</a></li>
-  <li><a href="#spectral-radius-bounds" id="toc-spectral-radius-bounds" class="nav-link" data-scroll-target="#spectral-radius-bounds"><span class="toc-section-number">6.2.2</span>  Spectral Radius Bounds</a></li>
+  <li><a href="#example-spectrums" id="toc-example-spectrums" class="nav-link" data-scroll-target="#example-spectrums"><span class="toc-section-number">16.2.1</span>  Example Spectrums</a></li>
+  <li><a href="#spectral-radius-bounds" id="toc-spectral-radius-bounds" class="nav-link" data-scroll-target="#spectral-radius-bounds"><span class="toc-section-number">16.2.2</span>  Spectral Radius Bounds</a></li>
   </ul></li>
-  <li><a href="#laplacian" id="toc-laplacian" class="nav-link" data-scroll-target="#laplacian"><span class="toc-section-number">6.3</span>  Laplacian</a>
+  <li><a href="#laplacian" id="toc-laplacian" class="nav-link" data-scroll-target="#laplacian"><span class="toc-section-number">16.3</span>  Laplacian</a>
   <ul class="collapse">
-  <li><a href="#example-spectrums-1" id="toc-example-spectrums-1" class="nav-link" data-scroll-target="#example-spectrums-1"><span class="toc-section-number">6.3.1</span>  Example Spectrums</a></li>
-  <li><a href="#spectral-radius-bounds-1" id="toc-spectral-radius-bounds-1" class="nav-link" data-scroll-target="#spectral-radius-bounds-1"><span class="toc-section-number">6.3.2</span>  Spectral Radius Bounds</a></li>
-  <li><a href="#laplacian-for-distributed-summation" id="toc-laplacian-for-distributed-summation" class="nav-link" data-scroll-target="#laplacian-for-distributed-summation"><span class="toc-section-number">6.3.3</span>  Laplacian for Distributed Summation</a></li>
-  <li><a href="#normalized-laplacian" id="toc-normalized-laplacian" class="nav-link" data-scroll-target="#normalized-laplacian"><span class="toc-section-number">6.3.4</span>  Normalized Laplacian</a></li>
-  <li><a href="#fiedler-bounds-normalized-laplacian" id="toc-fiedler-bounds-normalized-laplacian" class="nav-link" data-scroll-target="#fiedler-bounds-normalized-laplacian"><span class="toc-section-number">6.3.5</span>  Fiedler Bounds (normalized Laplacian)</a></li>
-  <li><a href="#laplacian-decomposition-as-incidence-matrix" id="toc-laplacian-decomposition-as-incidence-matrix" class="nav-link" data-scroll-target="#laplacian-decomposition-as-incidence-matrix"><span class="toc-section-number">6.3.6</span>  Laplacian decomposition as incidence matrix</a></li>
-  <li><a href="#laplacian-stochastic-matrix" id="toc-laplacian-stochastic-matrix" class="nav-link" data-scroll-target="#laplacian-stochastic-matrix"><span class="toc-section-number">6.3.7</span>  Laplacian Stochastic Matrix</a></li>
+  <li><a href="#example-spectrums-1" id="toc-example-spectrums-1" class="nav-link" data-scroll-target="#example-spectrums-1"><span class="toc-section-number">16.3.1</span>  Example Spectrums</a></li>
+  <li><a href="#spectral-radius-bounds-1" id="toc-spectral-radius-bounds-1" class="nav-link" data-scroll-target="#spectral-radius-bounds-1"><span class="toc-section-number">16.3.2</span>  Spectral Radius Bounds</a></li>
+  <li><a href="#laplacian-for-distributed-summation" id="toc-laplacian-for-distributed-summation" class="nav-link" data-scroll-target="#laplacian-for-distributed-summation"><span class="toc-section-number">16.3.3</span>  Laplacian for Distributed Summation</a></li>
+  <li><a href="#normalized-laplacian" id="toc-normalized-laplacian" class="nav-link" data-scroll-target="#normalized-laplacian"><span class="toc-section-number">16.3.4</span>  Normalized Laplacian</a></li>
+  <li><a href="#fiedler-bounds-normalized-laplacian" id="toc-fiedler-bounds-normalized-laplacian" class="nav-link" data-scroll-target="#fiedler-bounds-normalized-laplacian"><span class="toc-section-number">16.3.5</span>  Fiedler Bounds (normalized Laplacian)</a></li>
+  <li><a href="#laplacian-decomposition-as-incidence-matrix" id="toc-laplacian-decomposition-as-incidence-matrix" class="nav-link" data-scroll-target="#laplacian-decomposition-as-incidence-matrix"><span class="toc-section-number">16.3.6</span>  Laplacian decomposition as incidence matrix</a></li>
+  <li><a href="#laplacian-stochastic-matrix" id="toc-laplacian-stochastic-matrix" class="nav-link" data-scroll-target="#laplacian-stochastic-matrix"><span class="toc-section-number">16.3.7</span>  Laplacian Stochastic Matrix</a></li>
   </ul></li>
-  <li><a href="#stochastic-matrices" id="toc-stochastic-matrices" class="nav-link" data-scroll-target="#stochastic-matrices"><span class="toc-section-number">6.4</span>  Stochastic Matrices</a></li>
-  <li><a href="#matrix-norms" id="toc-matrix-norms" class="nav-link" data-scroll-target="#matrix-norms"><span class="toc-section-number">6.5</span>  Matrix Norms</a></li>
+  <li><a href="#stochastic-matrices" id="toc-stochastic-matrices" class="nav-link" data-scroll-target="#stochastic-matrices"><span class="toc-section-number">16.4</span>  Stochastic Matrices</a></li>
+  <li><a href="#matrix-norms" id="toc-matrix-norms" class="nav-link" data-scroll-target="#matrix-norms"><span class="toc-section-number">16.5</span>  Matrix Norms</a></li>
   </ul>
 </nav>
     </div>
@@ -340,7 +405,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Matrix Math</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Matrix Math</span></h1>
 </div>
 
 
@@ -378,8 +443,8 @@ div.csl-indent {
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Lmisc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="basic-matrices" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="basic-matrices"><span class="header-section-number">6.1</span> Basic Matrices</h2>
+<section id="basic-matrices" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="basic-matrices"><span class="header-section-number">16.1</span> Basic Matrices</h2>
 <p>Let <span class="math inline">j</span> be the vector of all 1’s, and <span class="math inline">J</span> be the matrix of all ones.</p>
 <p><span class="math display">
 \begin{aligned}
@@ -395,13 +460,13 @@ Jx &amp;= \begin{bmatrix}
 \end{aligned}
 </span></p>
 </section>
-<section id="adjacency-matrix" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="adjacency-matrix"><span class="header-section-number">6.2</span> Adjacency Matrix</h2>
-<section id="example-spectrums" class="level3" data-number="6.2.1">
-<h3 data-number="6.2.1" class="anchored" data-anchor-id="example-spectrums"><span class="header-section-number">6.2.1</span> Example Spectrums</h3>
+<section id="adjacency-matrix" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="adjacency-matrix"><span class="header-section-number">16.2</span> Adjacency Matrix</h2>
+<section id="example-spectrums" class="level3" data-number="16.2.1">
+<h3 data-number="16.2.1" class="anchored" data-anchor-id="example-spectrums"><span class="header-section-number">16.2.1</span> Example Spectrums</h3>
 </section>
-<section id="spectral-radius-bounds" class="level3" data-number="6.2.2">
-<h3 data-number="6.2.2" class="anchored" data-anchor-id="spectral-radius-bounds"><span class="header-section-number">6.2.2</span> Spectral Radius Bounds</h3>
+<section id="spectral-radius-bounds" class="level3" data-number="16.2.2">
+<h3 data-number="16.2.2" class="anchored" data-anchor-id="spectral-radius-bounds"><span class="header-section-number">16.2.2</span> Spectral Radius Bounds</h3>
 <div class="callout-note callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -427,7 +492,7 @@ Theorem 2.3: Adjacency Matrix Spectral Radius Bound <span class="citation" data-
 \begin{align*}
 \rho(A) \leq \sqrt{1 + 2m - n}
 \end{align*}
-\tag{6.1}</span></span></p>
+\tag{16.1}</span></span></p>
 <ul>
 <li>equality reached for complete or star graph</li>
 </ul>
@@ -490,10 +555,10 @@ Theorem 2.3: Adjacency Matrix Spectral Radius Bound <span class="citation" data-
 </div>
 </section>
 </section>
-<section id="laplacian" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="laplacian"><span class="header-section-number">6.3</span> Laplacian</h2>
-<section id="example-spectrums-1" class="level3" data-number="6.3.1">
-<h3 data-number="6.3.1" class="anchored" data-anchor-id="example-spectrums-1"><span class="header-section-number">6.3.1</span> Example Spectrums</h3>
+<section id="laplacian" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="laplacian"><span class="header-section-number">16.3</span> Laplacian</h2>
+<section id="example-spectrums-1" class="level3" data-number="16.3.1">
+<h3 data-number="16.3.1" class="anchored" data-anchor-id="example-spectrums-1"><span class="header-section-number">16.3.1</span> Example Spectrums</h3>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">Components</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Complete Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Star Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">Bipartite Graph</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">Path</a></li></ul>
 <div class="tab-content">
@@ -626,8 +691,8 @@ Theorem 2.3: Adjacency Matrix Spectral Radius Bound <span class="citation" data-
 </div>
 </div>
 </section>
-<section id="spectral-radius-bounds-1" class="level3" data-number="6.3.2">
-<h3 data-number="6.3.2" class="anchored" data-anchor-id="spectral-radius-bounds-1"><span class="header-section-number">6.3.2</span> Spectral Radius Bounds</h3>
+<section id="spectral-radius-bounds-1" class="level3" data-number="16.3.2">
+<h3 data-number="16.3.2" class="anchored" data-anchor-id="spectral-radius-bounds-1"><span class="header-section-number">16.3.2</span> Spectral Radius Bounds</h3>
 <section id="simple" class="level4">
 <h4 class="anchored" data-anchor-id="simple">Simple</h4>
 <p>There are 3 simple bounds on the Laplacian presented by <span class="citation" data-cites="andersonEigenvaluesLaplacianGraph1985">(<a href="#ref-andersonEigenvaluesLaplacianGraph1985" role="doc-biblioref">Anderson and Morley 1985</a>)</span>,</p>
@@ -656,8 +721,8 @@ Theorem 2.3: Adjacency Matrix Spectral Radius Bound <span class="citation" data-
 </ul>
 </section>
 </section>
-<section id="laplacian-for-distributed-summation" class="level3" data-number="6.3.3">
-<h3 data-number="6.3.3" class="anchored" data-anchor-id="laplacian-for-distributed-summation"><span class="header-section-number">6.3.3</span> Laplacian for Distributed Summation</h3>
+<section id="laplacian-for-distributed-summation" class="level3" data-number="16.3.3">
+<h3 data-number="16.3.3" class="anchored" data-anchor-id="laplacian-for-distributed-summation"><span class="header-section-number">16.3.3</span> Laplacian for Distributed Summation</h3>
 <div class="callout-note callout callout-style-simple no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -792,8 +857,8 @@ $vectors
 </div>
 </div>
 </section>
-<section id="normalized-laplacian" class="level3" data-number="6.3.4">
-<h3 data-number="6.3.4" class="anchored" data-anchor-id="normalized-laplacian"><span class="header-section-number">6.3.4</span> Normalized Laplacian</h3>
+<section id="normalized-laplacian" class="level3" data-number="16.3.4">
+<h3 data-number="16.3.4" class="anchored" data-anchor-id="normalized-laplacian"><span class="header-section-number">16.3.4</span> Normalized Laplacian</h3>
 <p>The primary reason for looking at the normalized laplacian is because it removes dependence on the number of nodes in the graph, which would change bounds. Rather, the eigenvalues of a normalized laplacian will range from <span class="math inline">0 \leq 2</span>, reaching 2 for bipartite graphs.</p>
 <div class="cell" data-hash="matrix_cache/html/unnamed-chunk-15_e2c587917978bffd2ddcda34edc85b79">
 <details>
@@ -898,8 +963,8 @@ $vectors
 </div>
 </section>
 </section>
-<section id="fiedler-bounds-normalized-laplacian" class="level3" data-number="6.3.5">
-<h3 data-number="6.3.5" class="anchored" data-anchor-id="fiedler-bounds-normalized-laplacian"><span class="header-section-number">6.3.5</span> Fiedler Bounds (normalized Laplacian)</h3>
+<section id="fiedler-bounds-normalized-laplacian" class="level3" data-number="16.3.5">
+<h3 data-number="16.3.5" class="anchored" data-anchor-id="fiedler-bounds-normalized-laplacian"><span class="header-section-number">16.3.5</span> Fiedler Bounds (normalized Laplacian)</h3>
 <p>Fiedler Eigenvalue is the smallest non-zero eigenvalue.</p>
 <section id="simple-1" class="level4">
 <h4 class="anchored" data-anchor-id="simple-1">Simple</h4>
@@ -1230,8 +1295,8 @@ h_G &amp;= \min_S \frac{|\delta S|}{\min \{|S|,|\bar S| \}} \\&amp;= \frac{\text
 </div>
 </section>
 </section>
-<section id="laplacian-decomposition-as-incidence-matrix" class="level3" data-number="6.3.6">
-<h3 data-number="6.3.6" class="anchored" data-anchor-id="laplacian-decomposition-as-incidence-matrix"><span class="header-section-number">6.3.6</span> Laplacian decomposition as incidence matrix</h3>
+<section id="laplacian-decomposition-as-incidence-matrix" class="level3" data-number="16.3.6">
+<h3 data-number="16.3.6" class="anchored" data-anchor-id="laplacian-decomposition-as-incidence-matrix"><span class="header-section-number">16.3.6</span> Laplacian decomposition as incidence matrix</h3>
 <p>If we define an incidence matrix as a <span class="math inline">|V| \times |E|</span> matrix, in which each column has a 1 and -1 for in positions the edge connects the vertices,</p>
 <div class="cell" data-hash="matrix_cache/html/unnamed-chunk-29_45d4f8b5bde6a1d295f59a299ed9cc11">
 <details>
@@ -1287,17 +1352,17 @@ h_G &amp;= \min_S \frac{|\delta S|}{\min \{|S|,|\bar S| \}} \\&amp;= \frac{\text
 </div>
 </div>
 </section>
-<section id="laplacian-stochastic-matrix" class="level3" data-number="6.3.7">
-<h3 data-number="6.3.7" class="anchored" data-anchor-id="laplacian-stochastic-matrix"><span class="header-section-number">6.3.7</span> Laplacian Stochastic Matrix</h3>
+<section id="laplacian-stochastic-matrix" class="level3" data-number="16.3.7">
+<h3 data-number="16.3.7" class="anchored" data-anchor-id="laplacian-stochastic-matrix"><span class="header-section-number">16.3.7</span> Laplacian Stochastic Matrix</h3>
 <p><span class="math inline">I - D^{\dagger}A</span></p>
 </section>
 </section>
-<section id="stochastic-matrices" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="stochastic-matrices"><span class="header-section-number">6.4</span> Stochastic Matrices</h2>
+<section id="stochastic-matrices" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="stochastic-matrices"><span class="header-section-number">16.4</span> Stochastic Matrices</h2>
 <p>matrices in which each matrix row sums to 1.</p>
 </section>
-<section id="matrix-norms" class="level2" data-number="6.5">
-<h2 data-number="6.5" class="anchored" data-anchor-id="matrix-norms"><span class="header-section-number">6.5</span> Matrix Norms</h2>
+<section id="matrix-norms" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="matrix-norms"><span class="header-section-number">16.5</span> Matrix Norms</h2>
 <p>This section aims to quantify and give intuition behind the following matrix norms.</p>
 <ul>
 <li>spectral</li>
@@ -1461,13 +1526,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../categorical/categorical.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></span>
+      <a href="../longitudinal/within_between.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../stochastic/stochastic.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../meta/meta.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Meta Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

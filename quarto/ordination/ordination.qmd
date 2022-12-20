@@ -1,0 +1,474 @@
+---
+title: "Ordination"
+author: "Michael Liou"
+date: "`r Sys.Date()`"
+execute:
+  cache: true
+---
+
+
+::: {.callout-note appearance="minimal" icon=false}
+
+The following document is a work in progress!
+
+:::
+
+
+
+```{r}
+#| code-summary: Libraries
+#| message: false
+library(vegan)
+library(xlsx)
+library(skimr)
+library(janitor)
+library(tidyverse)
+library(ggbiplot)
+library(ca)
+library(CCA)
+```
+
+## Overview
+
+Methods to Distinguish
+
+- Correspondance Analysis (CA)
+  - unconstrained, compare to PCA
+- Redundancy Analysis (RDA)
+- Canonical correspondance Analysis (CCA)
+- Canonical Correlation Analysis (CCorA)
+- Discriminant Analysis (DA)
+- PCA
+- Factor Analysis
+- NMDS
+- MDS
+
+General Packages
+
+- `PCA::`
+
+Software functions
+
+- `prcomp` - PCA
+- `princomp` - PCA
+- `cmdscale()` - mds
+- `factanal()` - factor analysis
+- `labdsv::pca` 
+- `ade4::`
+
+## Organizing Types of Ecological Data
+
+An ecological data matrix generally has the format of a main "response" matrix, with counts of species (columns) at each site (rows). We will generally have another data frame with the covariates describing each site, called the "environmental covariate" matrix and "species covariates" matrix.
+
+<figure>
+<img src="img/community_matrix_example.png" style="width:100%"></img>
+<figcaption></figcaption>
+</figure>
+
+
+## PCA
+
+
+
+There are a few ways to do a PCA in R. In order of preferred use,
+
+- prcomp
+- svd
+- princomp
+- eigen
+
+We'll use USArrests example to show the similarity between all the program functionality
+
+```{r}
+USArrests %>% head() # This is what the data looks like
+```
+
+::: {.panel-tabset}
+
+### prcomp
+
+`prcomp` uses `svd` under the hood, and is generally the main workhorse for doing principal components analysis.
+
+```{r}
+us_pr <- prcomp(USArrests, scale = TRUE)
+us_pr$sdev^2 # the variances
+us_pr$rotation
+```
+
+### eigen
+
+`eigen` is the standard diagonalization technique, with the variance explained extracted in 
+
+```{r}
+us_Y <- cov(USArrests %>% scale(center = TRUE, scale = TRUE))
+us_Y <- cor(USArrests) # the same as cov of centered matrix
+
+us_eig <- eigen(us_Y)
+# variances
+us_eig$values
+
+us_eig$vectors # loadings
+```
+
+### princomp
+
+uses `eigen` under the hood, mostly here for compatibility reasons
+
+```{r}
+# correlation version
+us_prin <- princomp(USArrests, cor = TRUE)
+us_prin$sdev^2
+```
+
+```{r}
+# loadings
+us_prin$loadings
+```
+
+```{r}
+# these scores should be the same, can't figure out why they're slightly different?
+us_prin$scores %>% head()
+
+scale(USArrests) %*% us_eig$vectors %>% head()
+```
+
+
+```{r}
+# the scale variables
+cbind(us_prin$center,
+      attr(scale(USArrests), "scaled:center"))
+      
+
+n <- nrow(USArrests)
+cbind(us_prin$scale,
+      attr(scale(USArrests), "scaled:scale") * sqrt((n-1) / n))
+```
+
+
+```{r}
+# covariance version
+us_prin_cov <- princomp(USArrests) # uses factor of 1/n for variance calculations
+
+# the svd equivalent
+n <- nrow(USArrests)
+us_svd_cov <- svd(cov(USArrests) * (n-1) / n)
+
+cbind(us_prin_cov$sdev^2,
+      us_svd_cov$d)
+```
+
+only works for when n > p, "R"-mode PCA refers to the respondents (rows) and "Q"-mode refers to the questions (columns). difference is just interpretation. SVD is prefered
+
+### svd
+
+$$
+\begin{aligned}
+\Sigma = UDV' \\
+U'\Sigma = DV'
+\end{aligned}
+$$
+
+
+
+```{r}
+us_Y <- cov(USArrests %>% scale(center = TRUE, scale = TRUE))
+us_Y <- cor(USArrests) # the same as cov of centered matrix
+
+us_svd <- svd(us_Y)
+
+# UDV'
+# us_svd$u %*% diag(us_svd$d) %*% t(us_svd$v)
+
+
+us_svd$d # the variances
+
+us_svd$v # the loadings
+```
+
+:::
+
+## Correspondence Analysis (CA)
+
+- `ca::ca()`
+- `FactoMineR::CA()`
+- `ade4::dudi.coa()`
+- `amap::afc()`
+- `MASS::corresp()`
+
+```{r}
+author_ca <- ca(author)
+plot(author_ca)
+```
+
+
+## Multivariate Regression
+
+`lm` can handle multivariate regressions
+
+### Estimation
+
+$$
+\begin{aligned}
+\hat B = (X'X)^{-1}X'Y
+\end{aligned}
+$$
+We can also formulate the answers w/ the centered $X$ matrix
+$$
+\begin{aligned}
+\mathbf{\hat B_1} &= (\mathbf{X_c}'\mathbf{X_c})^{-1}\mathbf{X_c}'\mathbf{Y} \\
+\mathbf{\hat \beta_0} &=  \mathbf{\bar y} - \mathbf{\bar x}'\mathbf{\hat B_1}
+\end{aligned}
+$$
+
+
+```{r}
+iris_lm <- lm(cbind(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)~Species, data = iris)
+```
+
+```{r}
+# Useful for manual calculations
+Y <- with(iris, cbind(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width))
+X <- model.matrix(~Species, data = iris)
+X1 <- X[,-1] # drop the intercept
+Xc <- X1 %>% scale(scale = F)
+SYY <- cov(Y)
+SYX <- cov(Y, X1)
+SXX <- cov(X1)
+```
+
+
+```{r}
+# Manual calculation of B
+B <- solve(crossprod(X)) %*% t(X) %*% Y # B
+
+# B calculation with centered matrices
+B1 <- solve(crossprod(Xc)) %*% t(Xc) %*% Y # B_1
+B0 <- colMeans(Y) - t(colMeans(X1)) %*% B1
+
+
+# B calculation w/ covariances
+B1_S <- solve(SXX) %*% t(SYX)
+B0_S <- colMeans(Y) -  t(colMeans(X1)) %*% B1_S
+
+list(lm = coef(iris_lm),
+     manual = B,
+     centered = rbind(B0, B1),
+     covariance = rbind(B0_S, B1_S))
+```
+
+
+$$
+\begin{aligned}
+R^2 = \frac{|S_{XY} S_{XX}^{-1} S_{YX}|}{|S_{YY}|}
+\end{aligned}
+$$
+
+```{r}
+# TODO: Why is R^2 zero here
+# R^2 from each regression
+# vapply(summary(iris_lm),FUN = function(x) x$r.squared, FUN.VALUE = numeric(1))
+
+det(SYX %*% solve(SXX) %*% t(SYX)) / det(SYY) # way small, basically 0
+```
+
+
+### Hypothesis Testing
+
+Consider the partitioning, from pg 343 of Rencher Methods of Multivariate Analysis
+
+$$
+\begin{aligned}
+\mathbf{Y'Y} - n\mathbf{\bar y\bar y'} &= (\mathbf{Y'Y} + \mathbf{Y'X'\hat{B}}) - (\mathbf{Y'X'\hat{B}} -  n\mathbf{\bar y\bar y'}) \\
+&\equiv \mathbf{E} + \mathbf{H}
+\end{aligned}
+$$
+
+In hypothesis testing, the matrix $E^{-1}H$ is pretty special, and many of the tests can be expressed in terms of the eigenvalues of this matrix. Hence, let $\lambda_i$ be the $i$th largest eigenvalue of $E^{-1}H$.
+
+- Wilks Hypothesis Test $\Lambda = \frac{|E|}{|E + H|}$ (likelihood ratio test)
+  - on the eigenscale: $\Lambda = \prod_{i=1}^s \frac{1}{1+\lambda_i}$
+  - with covariance: $\Lambda = \frac{|\mathbf{S}|}{|\mathbf{S_{XX}}|\mathbf{S_{YY}}|}$
+- Roy
+  - on the eigenscale $\theta = \frac{\lambda_1}{1 + \lambda_1}$
+- Pillai $V^{(s)} = \mathrm{tr}[(H + E)^{-1}H]$
+  - on the eigenscale: $V^{(s)} = \sum_i^s\frac{\lambda_i}{1 + \lambda_i}$
+- Hotelling (generalized T statistic) $U^{(s)} = tr(E^{-1}H)$
+  - on the eigenscale: $U^{(s)} = \sum_i^s \lambda_i$
+
+## Redundancy Analysis
+
+Redundancy analysis can be understood as a multivariate regression followed by a PCA on the (covariance) of the fitted values.
+
+It seems I'm running into a bunch of singularity issues due to the fact that n < p in these matrices, the standard eigenequation of redundancy analysis is:
+
+$$
+\begin{aligned}
+(S_{YX}S^{-1}_{XX}S'_{YX} - \lambda_k I)u_k = 0
+\end{aligned}
+$$
+
+The ecological matrix `dune` is matrix counts of 30 species (columns) from 20 sites (rows). The covariate matrix `dune.env` is covariates of the 20 sites (rows), with 5 features of the site (columns):
+
+- A1: numeric vector of soil thickness on A1 horizon
+- Moisture: ordered factor with levels 1 < 2 < 4 < 5
+- Type of management
+- Use - land-use Hayfield < Hyapastu < Pasture
+- Manure - ordered factor
+
+```{r}
+data(dune)
+data(dune.env)
+
+dune %>% head()
+dune.env %>% head()
+```
+
+
+```{r}
+dune_rda <- rda(dune ~ Manure, dune.env, scale = T)
+dune_rda
+summary(dune_rda)
+
+scores(dune_rda, scaling = 0, display = "sp")
+```
+
+
+```{r}
+Y <- dune %>% data.matrix()
+X <- model.matrix(~Manure, data = dune.env)[,-1, drop = F]
+# Y <- dune %>% scale(scale = T)
+
+SYY <- cov(Y)
+
+SXX <- cov(X)
+SYX <- cov(Y, X)
+rbind(cbind(SYY, SYX),
+      cbind(t(SYX), SXX))
+
+solve(SXX) %*% t(SYX)
+
+
+MASS::ginv(SYY) %*% SYX %*% solve(SXX) %*% t(SYX)
+
+eigen(SYX %*% solve(SXX) %*% t(SYX))
+```
+
+
+```{r}
+Xc <- model.matrix(~Manure, data = dune.env)[,-1, drop = F] %>% scale(scale = FALSE)
+
+mod <- lm(Y ~ Xc)
+coef(mod)[-1, ]
+solve(t(Xc) %*% Xc) %*% t(Xc) %*% Y # Bhat
+```
+
+
+```{r}
+cancor(dune %>% data.matrix(), X)$xcoef[,1:2]
+
+data(nutrimouse)
+X=as.matrix(nutrimouse$gene[,1:10])
+Y=as.matrix(nutrimouse$lipid)
+res.cc = cc(X, Y)
+
+res.cc
+```
+
+
+```{r}
+Y <- dune %>% scale(scale = T)
+dune_lm <- lm(Y ~ Manure, data = dune.env)
+Yhat <- fitted(dune_lm)
+
+# residuals (unconstrained)
+S <- cov(resid(dune_lm))
+S_eig <- eigen(S)
+S_eig$values # eigenvalues for unconstrained axes
+
+
+# fitted values
+Sfit <- cov(Yhat)
+Sfit_eig <- eigen(Sfit)
+Sfit_eig$values # eigenvalues for constrained axes
+
+# Species Scores
+cbind(
+  scores(dune_rda, scaling = 0, display = "sp"), # rda scores
+  Sfit_eig$vectors[,1:2]) # eigen scores
+
+# Site Scores (order is the same)
+dune_site_scores <- (Y %*% Sfit_eig$vectors)[,1]
+
+# I don't know yet how they get scaling factor, but details described in vignette("decision-vegan"), section 3
+# dune_site_scores / scores(dune_rda, scaling = 0, display = "wa")[,"RDA1"] 
+cbind(
+  scores(dune_rda, scaling = 0, display = "wa")[,"RDA1"] %>% order(), # rda ordering
+  dune_site_scores %>% order()) # my ordering
+
+# factor biplot
+scores(dune_rda, scaling = 1, display = "bp")[,1] %>% order()
+(coef(dune_lm)[-1,])[,1] %>% na.omit()
+```
+
+
+For general scaling, see source code in `vegan:::scores.cca`
+
+>     if ("sites" %in% take) {
+        wa <- cbind(x$CCA$wa, x$CA$u)[, choices, drop = FALSE]
+        if (scaling) {
+            scal <- list(slam, 1, sqrt(slam))[[abs(scaling)]]
+            wa <- sweep(wa, 2, scal, "*")
+            if (scaling < 0) {
+                scal <- sqrt(1/(1 - slam^2))
+                wa <- sweep(wa, 2, scal, "*")
+            }
+        }
+        sol$sites <- wa
+    }
+
+
+```{r}
+# The relevant functions for figuring out what's going
+# vegan:::rda.default
+# vegan:::ordConstrained
+# vegan:::initPCA
+# vegan:::ordConstrain
+```
+
+
+## Factor Analysis
+
+Basic theory, say we start by looking at the observations with matrix $X$ ($n$ people by $p$ observations). The assumption is we can explain those 
+The premise is that you can break down the covariance matrix into a systematic component (loadings) and an error.
+
+\begin{equation}
+X - M = 
+\end{equation}
+
+
+### Exploratory Factor Analysis
+
+$$
+\hat \Sigma = \underbrace{\hat \Lambda\hat \Lambda^T}_{communality} + \underbrace{\hat \Psi}_{uniqueness}
+$$
+
+
+#### Example
+
+[Introduction with practical example](https://www.geo.fu-berlin.de/en/v/soga/Geodata-analysis/factor-analysis/A-simple-example-of-FA/index.html)
+
+```{r}
+food <- read.csv("https://userpage.fu-berlin.de/soga/300/30100_data_sets/food-texture.csv", row.names = "X")
+
+# built in factor analysis
+(food.fa <- factanal(food, factors = 2)) 
+
+food.fa$uniquenesses
+sum(food.fa$uniquenesses^2)
+```
+
+- R doesn't print loadings lower than .1 (to help spot common chunks)
+- Higher levels of uniqueness mean that the factors do not account well for its variance.
+
+
+

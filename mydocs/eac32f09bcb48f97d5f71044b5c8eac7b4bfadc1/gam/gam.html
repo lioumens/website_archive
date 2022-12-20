@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.203">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Liou">
+<meta name="dcterms.date" content="2022-05-08">
+
+<title>Personal Documentation - 12&nbsp; Generalized Additive Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../longitudinal/longitudinal.html" rel="next">
+<link href="../exponential/exponential.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Additive Models</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Personal Documentation</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../advanced/advanced.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Advanced R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../approximation/approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Approximation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bayesian/bayesian.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../categorical/categorical.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../changepoint/changepoint.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Changepoint Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../crossover/crossover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Crossover Designs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../diffeq/diffeq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Differential Equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../experimentaldesign/experimentaldesign.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Experimental Design</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../gam/gam.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Additive Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/longitudinal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Longitudinal Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/randomcoef.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Coefficient Models (CALS)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Mixed Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed_variance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Mixed Models (Variance)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../next_gen_sequencing/next_gen_sequencing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Next Generation Sequencing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../optimization/optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ordination/ordination.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Ordination</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallel/parallel.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Parallel Computing in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">From Informational</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-packages" id="toc-r-packages" class="nav-link active" data-scroll-target="#r-packages"><span class="toc-section-number">12.1</span>  R Packages</a></li>
+  <li><a href="#univariate-smoothing" id="toc-univariate-smoothing" class="nav-link" data-scroll-target="#univariate-smoothing"><span class="toc-section-number">12.2</span>  Univariate Smoothing</a>
+  <ul class="collapse">
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="toc-section-number">12.2.1</span>  Examples</a></li>
+  </ul></li>
+  <li><a href="#air-pollution-in-chicago" id="toc-air-pollution-in-chicago" class="nav-link" data-scroll-target="#air-pollution-in-chicago"><span class="toc-section-number">12.3</span>  Air Pollution in Chicago</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Additive Models</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Liou </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 8, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="r-packages" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="r-packages"><span class="header-section-number">12.1</span> R Packages</h2>
+<ul>
+<li>“mgcv” - Mixed GAM Computational Vehicle
+<ul>
+<li><code>gamm</code> - for mixed models, uses <code>nlme</code> to fit</li>
+<li><code>gam</code> - can be used more general than exponential</li>
+<li><code>jagam</code> - interface to JAGS for bayesian estiamtion</li>
+</ul></li>
+<li>“gamm4” - like gamm, but with <code>lme4</code> in backend instead</li>
+</ul>
+<p>Smooth functions in “mgcv”:</p>
+<ul>
+<li><code>s()</code>- for univariate smooths, isotropic smooths, and random effects</li>
+<li><code>te()</code> - tensor product smooths constructed from singly pernalized marginal smooths</li>
+<li><code>ti()</code> - tensor product interactions with marginal smooth and lower order… for smooth anova models</li>
+<li><code>t2()</code> alternative tensor product smooth construction,useful with gamm4 package. `</li>
+</ul>
+<p>Smooth terms in GAMS, <code>bs = ""</code> - <code>tp</code> - low rank, thin plate splines, isotropic smoothers. Isotropic means that rotation of the covariate will not change the result of smoothing. thin plates don’t have “knots”, a truncated eigen-decomposition is used for rank reduction. low rank means fewer coefficients than data to smooth. - <code>ds</code> - duchon splines - <code>cr</code> - cubic regression spline - <code>cs</code> - shrinkage version of cubic splines - <code>cc</code> - cyclic cubic regression splines - <code>sos</code> - splines on the sphere - <code>ps</code> - psplines, b-spline basis and perform well generally - <code>cp</code> - cyclic version of p-spline</p>
+</section>
+<section id="univariate-smoothing" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="univariate-smoothing"><span class="header-section-number">12.2</span> Univariate Smoothing</h2>
+<p>4.2 of Wood.</p>
+<p>Example on Engine data. Hypothesis is that larger the engine copacity, the faster the engine will wear out.</p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-1_b7972736b131dd6f936dbbd3e96757ec">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read engine data. Hypothesis is that</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(engine)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(engine, <span class="fu">plot</span>(size, wear, <span class="at">xlab =</span> <span class="st">"Engine capacity"</span>, <span class="at">ylab=</span><span class="st">"Wear Index"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li><code>xj</code> are the knots</li>
+<li><code>x</code> is the data.</li>
+</ul>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-2_591e7f5b7b32b3dcf7e38e7620fcd454">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># function for generating tent functions, the basis function</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tf <span class="ot">&lt;-</span> <span class="cf">function</span>(x, xj, j) {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dj <span class="ot">&lt;-</span> xj<span class="sc">*</span><span class="dv">0</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  dj[j] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">approx</span>(xj, dj, x)<span class="sc">$</span>y</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>tf.X <span class="ot">&lt;-</span> <span class="cf">function</span>(x,xj) {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tent function basis matrix given data x, and knot sequence xj</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  nk <span class="ot">&lt;-</span> <span class="fu">length</span>(xj); n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, n, nk)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nk) {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    X[,j] <span class="ot">&lt;-</span> <span class="fu">tf</span>(x,xj,j)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  X</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-3_36d5526f388d98a198d00a86fc1ba70d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sj <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(engine<span class="sc">$</span>size), <span class="fu">max</span>(engine<span class="sc">$</span>size), <span class="at">length=</span><span class="dv">6</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">tf.X</span>(engine<span class="sc">$</span>size,sj)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">lm</span>(wear<span class="sc">~</span>X<span class="dv">-1</span>, <span class="at">data=</span>engine)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(engine<span class="sc">$</span>size), <span class="fu">max</span>(engine<span class="sc">$</span>size), <span class="at">length =</span> <span class="dv">200</span>) <span class="co"># prediction data</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>Xp <span class="ot">&lt;-</span> <span class="fu">tf.X</span>(s,sj) <span class="co"># prediction matrix</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(engine<span class="sc">$</span>size, engine<span class="sc">$</span>wear, <span class="at">main =</span> <span class="st">"piecewise linear estimate without smoothness"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(s, Xp <span class="sc">%*%</span> <span class="fu">coef</span>(b))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>cool, looks reasonable, but should introduce a penalty for the smoothness of the function</p>
+<p>We wish to penalize the parameters with some function</p>
+<p><span class="math display">
+\begin{aligned}
+|| y-X\beta ||^2 + \lambda \beta'D'D\beta  \\
+= \bigg\| \begin{bmatrix} y \\ 0 \end{bmatrix} - \begin{bmatrix}X \\ \sqrt{\lambda}D\end{bmatrix}\bigg\|^2
+\end{aligned}
+</span> For example, the penalty can be expressed in the matrix form</p>
+<p><span class="math display">
+\begin{aligned}
+\lambda \sum_{j=2}^{k-1}f(x^*_{j-1} - 2f(x^*_j) + f(x^*_{j+1}))^2
+\end{aligned}
+</span></p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-4_443a5bf0df876c56e6ce2fe671a17dcf">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(<span class="fu">diag</span>(<span class="dv">5</span>), <span class="at">differences=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5]
+[1,]    1   -2    1    0    0
+[2,]    0    1   -2    1    0
+[3,]    0    0    1   -2    1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>?diff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-5_955c9dbb5ffa56821829273ae982d849">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' penalized regression fit</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param y response variable</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x covariate</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param xj knot locations</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param sp smoothing parameter</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>prs.fit <span class="ot">&lt;-</span> <span class="cf">function</span>(y,x, xj, sp) {</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">tf.X</span>(x, xj) <span class="do">## model matrix</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> <span class="fu">diff</span>(<span class="fu">diag</span>(<span class="fu">length</span>(xj)), <span class="at">differences=</span><span class="dv">2</span>) <span class="do">## sqrt penalty, diff applied columnwise</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">rbind</span>(X, <span class="fu">sqrt</span>(sp)<span class="sc">*</span>D) <span class="co"># augmented model matrix</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">c</span>(y, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(D))) <span class="co"># augmented data</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(y<span class="sc">~</span>X<span class="dv">-1</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># fit the model</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>sj <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(engine<span class="sc">$</span>size), <span class="fu">max</span>(engine<span class="sc">$</span>size), <span class="at">length =</span> <span class="dv">20</span>) <span class="do">## knots</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">prs.fit</span>(engine<span class="sc">$</span>wear, engine<span class="sc">$</span>size, sj, <span class="dv">2</span>) <span class="co"># smoothing parameter = 2</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co"># prediction data, with same knot locations</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(engine<span class="sc">$</span>size), <span class="fu">max</span>(engine<span class="sc">$</span>size), <span class="at">length =</span> <span class="dv">200</span>) <span class="co"># prediction data</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>Xp <span class="ot">&lt;-</span> <span class="fu">tf.X</span>(s,sj)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(engine, <span class="fu">plot</span>(size, wear, <span class="at">main =</span> <span class="st">"smoothed estimate with lambda = 2"</span>))</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(s, Xp <span class="sc">%*%</span> <span class="fu">coef</span>(b))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="examples" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="examples"><span class="header-section-number">12.2.1</span> Examples</h3>
+<section id="brain-imaging" class="level4">
+<h4 class="anchored" data-anchor-id="brain-imaging">Brain Imaging</h4>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-6_c4789937cee0ccbcdc40fc3df4eb8dc4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># specifying your own smoother</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv); <span class="fu">library</span>(MASS) <span class="do">## load for mcycle data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'MASS'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    select</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sm <span class="ot">&lt;-</span> <span class="fu">smoothCon</span>(<span class="fu">s</span>(times, <span class="at">k=</span><span class="dv">10</span>), <span class="at">data =</span> mcycle, <span class="at">knots=</span><span class="cn">NULL</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">lm</span>(mcycle<span class="sc">$</span>accel<span class="sc">~</span>sm<span class="sc">$</span>X<span class="dv">-1</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create predictions</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">60</span>, <span class="at">length =</span> <span class="dv">200</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>Xp <span class="ot">&lt;-</span> <span class="fu">PredictMat</span>(sm, <span class="fu">data.frame</span>(<span class="at">times =</span> times)) <span class="co"># get matrix mapping beta to spline predictions at times</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(mcycle, <span class="fu">plot</span>(times, accel))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(times, Xp <span class="sc">%*%</span> beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-7_5888a57adaada47f36d7ac431fcdd1ed">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(brain)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>brain <span class="ot">&lt;-</span> brain[brain<span class="sc">$</span>medFPQ <span class="sc">&gt;</span> <span class="fl">5e-3</span>,] <span class="co"># exclude 2 outliers</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">gam</span>(medFPQ <span class="sc">~</span> <span class="fu">s</span>(Y,X,<span class="at">k=</span><span class="dv">100</span>), <span class="at">data=</span>brain)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(m0) <span class="co"># general diagnostics</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Method: GCV   Optimizer: magic
+Smoothing parameter selection converged after 6 iterations.
+The RMS GCV score gradient at convergence was 6.236018e-05 .
+The Hessian was positive definite.
+Model rank =  100 / 100 
+
+Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+indicate that k is too low, especially if edf is close to k'.
+
+         k'  edf k-index p-value    
+s(Y,X) 99.0 86.8    0.86  &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<ul>
+<li><code>k'</code> gives the maximum possible EDF for smooth df.</li>
+</ul>
+<p>Residual plots look terrible, variance obviously increasing with mean. Assuming that there’s a power relationship with mean-variance,</p>
+<p><span class="math display">
+\begin{aligned}
+var(y_i) \propto \mu_i^\beta
+\end{aligned}
+</span></p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-8_e65d8edffd2b8fd61f1b842de5d5b551">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(m0); fv <span class="ot">&lt;-</span> <span class="fu">fitted</span>(m0)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(<span class="fu">log</span>(e<span class="sc">^</span><span class="dv">2</span>) <span class="sc">~</span> <span class="fu">log</span>(fv)) <span class="co"># log \sigma^2 ~ log mean</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(e^2) ~ log(fv))
+
+Coefficients:
+(Intercept)      log(fv)  
+     -1.961        1.912  </code></pre>
+</div>
+</div>
+<p>means that <span class="math inline">\beta \approx 2</span>, implying that variance increases with square of the mean, so this is the gamma distribution. We could use the log link for the generalized linear family</p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-9_47824ab38be751953a6dce2ee9a9f88a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(brain<span class="sc">$</span>X, brain<span class="sc">$</span>Y, <span class="at">color =</span> brain<span class="sc">$</span>medFPQ) <span class="sc">+</span> <span class="fu">theme_test</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-10_02e40d2208d715658ce2e6b2584e28a5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4th root transformation for stabilization</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">gam</span>(medFPQ<span class="sc">^</span>.<span class="dv">25</span> <span class="sc">~</span> <span class="fu">s</span>(Y,X, <span class="at">k=</span><span class="dv">100</span>), <span class="at">data=</span>brain)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">gam</span>(medFPQ <span class="sc">~</span> <span class="fu">s</span>(Y,X, <span class="at">k=</span><span class="dv">100</span>), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link=</span>log), <span class="at">data=</span>brain)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Method: GCV   Optimizer: magic
+Smoothing parameter selection converged after 4 iterations.
+The RMS GCV score gradient at convergence was 4.811308e-06 .
+The Hessian was positive definite.
+Model rank =  100 / 100 
+
+Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+indicate that k is too low, especially if edf is close to k'.
+
+         k'  edf k-index p-value    
+s(Y,X) 99.0 64.5    0.92  &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># gam.check(m2) # similar, residuals look better</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-11_7712a2c1669e0bf290ddafcb3992919b">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">fitted</span>(m1)<span class="sc">^</span><span class="dv">4</span>); <span class="fu">mean</span>(<span class="fu">fitted</span>(m2)); <span class="fu">mean</span>(brain<span class="sc">$</span>medFPQ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9855539</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.211483</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.250302</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">fitted</span>(m1)); <span class="fu">mean</span>(brain<span class="sc">$</span>medFPQ<span class="sc">^</span>.<span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9832189</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9832189</code></pre>
+</div>
+</div>
+<p>The last value is the actual mean, so it makes sense that the link mean is the most accurate</p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-12_9cee3c557a89633fe91b2b5129662b11">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># m1 unbiased on 4th root scale vs unbiased on response scale in m2... </span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vis.gam</span>(m2, <span class="at">plot.type=</span><span class="st">"contour"</span>, <span class="at">too.far=</span>.<span class="dv">03</span>, <span class="at">color =</span> <span class="st">"gray"</span>, <span class="at">n.grid=</span><span class="dv">60</span>, <span class="at">zlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>m2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: Gamma 
+Link function: log 
+
+Formula:
+medFPQ ~ s(Y, X, k = 100)
+
+Estimated degrees of freedom:
+60.6  total = 61.61 
+
+GCV score: 0.6216871     </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-13_e1f4149bb46a72f43b04b2a305117b21">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># try the additive model</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">gam</span>(medFPQ <span class="sc">~</span> <span class="fu">s</span>(Y, <span class="at">k=</span><span class="dv">30</span>) <span class="sc">+</span> <span class="fu">s</span>(X, <span class="at">k=</span><span class="dv">30</span>), <span class="at">data =</span> brain, <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link=</span>log))</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>m3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: Gamma 
+Link function: log 
+
+Formula:
+medFPQ ~ s(Y, k = 30) + s(X, k = 30)
+
+Estimated degrees of freedom:
+ 9.58 20.20  total = 30.77 
+
+GCV score: 0.6453502     </code></pre>
+</div>
+</div>
+<p>GCV score is higher, so it’s probably not better…and the aic comparison confirms this</p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-14_a90cdcb8c6ce3aaf484154d2d9e9f342">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m2, m3) <span class="co"># m2 is lower</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         df      AIC
+m2 62.61062 3322.826
+m3 31.77467 3409.491</code></pre>
+</div>
+</div>
+<p>It makes sense that the additive model is not selected, because there’s no evidence of a longitudinal/latitude effect in strips. What about isotropic or tensor product smooths?</p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-15_2faf45924431bbbb45b103cee18b97b0">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>tm <span class="ot">&lt;-</span> <span class="fu">gam</span>(medFPQ <span class="sc">~</span> <span class="fu">te</span>(Y,X,<span class="at">k=</span><span class="dv">10</span>), <span class="at">data =</span> brain, <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link=</span>log))</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>tm1 <span class="ot">&lt;-</span> <span class="fu">gam</span>(medFPQ <span class="sc">~</span> <span class="fu">s</span>(Y, <span class="at">k=</span><span class="dv">10</span>, <span class="at">bs=</span><span class="st">"cr"</span>) <span class="sc">+</span> <span class="fu">s</span>(X, <span class="at">bs=</span><span class="st">"cr"</span>, <span class="at">k=</span><span class="dv">10</span>) <span class="sc">+</span> <span class="fu">ti</span>(X,Y, <span class="at">k=</span><span class="dv">10</span>), <span class="at">data=</span>brain, <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link=</span>log))</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m2, tm, tm1) <span class="co"># selects the isotropic spline. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          df      AIC
+m2  62.61062 3322.826
+tm  60.34768 3336.805
+tm1 57.08366 3333.671</code></pre>
+</div>
+</div>
+<p>In summary, the models we consider are</p>
+<ul>
+<li>m1</li>
+</ul>
+<p><span class="math display">
+\begin{aligned}
+\log(\mu_i) &amp;= f_1(Y_i, X_i), \qquad medFPQ \sim Gamma
+\end{aligned}
+</span></p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-16_4917d74c15bd5419013d7614e93a719e">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># is there an interaction now?</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(tm1) <span class="co"># the p-value for the interaction term is significant.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: Gamma 
+Link function: log 
+
+Formula:
+medFPQ ~ s(Y, k = 10, bs = "cr") + s(X, bs = "cr", k = 10) + 
+    ti(X, Y, k = 10)
+
+Approximate significance of smooth terms:
+           edf Ref.df      F  p-value
+s(Y)     8.258  8.750 14.526  &lt; 2e-16
+s(X)     7.494  8.314  6.959  &lt; 2e-16
+ti(X,Y) 39.332 49.891  2.291 1.34e-06</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-17_a35455d08cb15f4079700b6b905b2d87">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symmetry with "by"</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>brain<span class="sc">$</span>Xc <span class="ot">&lt;-</span> <span class="fu">abs</span>(brain<span class="sc">$</span>X <span class="sc">-</span> <span class="fl">64.5</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>brain<span class="sc">$</span>right <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(brain<span class="sc">$</span>X <span class="sc">&lt;</span> <span class="fl">64.5</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>m.sy <span class="ot">&lt;-</span> <span class="fu">gam</span>(medFPQ <span class="sc">~</span> <span class="fu">s</span>(Y, Xc, <span class="at">k=</span><span class="dv">100</span>), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> log), <span class="at">data=</span>brain) <span class="co"># symmetric</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>m.as <span class="ot">&lt;-</span> <span class="fu">gam</span>(medFPQ <span class="sc">~</span> <span class="fu">s</span>(Y, Xc, <span class="at">k=</span><span class="dv">100</span>) <span class="sc">+</span> <span class="fu">s</span>(Y, Xc, <span class="at">k=</span><span class="dv">100</span>, <span class="at">by =</span> right), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> log), <span class="at">data=</span>brain) <span class="co"># asymmetry model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-18_5c763f568380b5b52ea9668dc64de747">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>m.sy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: Gamma 
+Link function: log 
+
+Formula:
+medFPQ ~ s(Y, Xc, k = 100)
+
+Estimated degrees of freedom:
+51.4  total = 52.44 
+
+GCV score: 0.6489799     </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>m.as <span class="co"># has a better GCV scroe, indicating that this model is better and by AIC it says the same thing.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: Gamma 
+Link function: log 
+
+Formula:
+medFPQ ~ s(Y, Xc, k = 100) + s(Y, Xc, k = 100, by = right)
+
+Estimated degrees of freedom:
+50.5 44.7  total = 96.2 
+
+GCV score: 0.6176281     </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m.as) <span class="co"># p-value for the smooth "right" term seems to be far from 0.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: Gamma 
+Link function: log 
+
+Formula:
+medFPQ ~ s(Y, Xc, k = 100) + s(Y, Xc, k = 100, by = right)
+
+Approximate significance of smooth terms:
+                edf Ref.df     F p-value
+s(Y,Xc)       50.48  65.99 4.344  &lt;2e-16
+s(Y,Xc):right 44.72  59.21 2.457  &lt;2e-16</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="air-pollution-in-chicago" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="air-pollution-in-chicago"><span class="header-section-number">12.3</span> Air Pollution in Chicago</h2>
+<p>7.4 in Simon Wood book</p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-19_390feec0e1228ca9d226cff515a63224">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(chicago)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>ap0 <span class="ot">&lt;-</span> <span class="fu">gam</span>(death<span class="sc">~</span><span class="fu">s</span>(time, <span class="at">bs=</span><span class="st">"cr"</span>, <span class="at">k=</span><span class="dv">200</span>) <span class="sc">+</span> pm10median <span class="sc">+</span> so2median <span class="sc">+</span> o3median <span class="sc">+</span> tmpd, <span class="at">data =</span> chicago, <span class="at">family =</span> poisson)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(ap0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Method: UBRE   Optimizer: outer newton
+full convergence after 3 iterations.
+Gradient range [3.514596e-08,3.514596e-08]
+(score 0.2546689 &amp; scale 1).
+Hessian positive definite, eigenvalue range [0.004247567,0.004247567].
+Model rank =  204 / 204 
+
+Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+indicate that k is too low, especially if edf is close to k'.
+
+         k' edf k-index p-value    
+s(time) 199 169    0.92  &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>qqplot is obviously quite proble</p>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-20_2a2352d09034a976f94939f6e444950b">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ap0, <span class="at">n =</span> <span class="dv">1000</span>) <span class="co"># plot the smooth functions that make it up</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># n - needs to be several times larger than the effective degrees of freedom</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ap0, <span class="at">residuals =</span> <span class="cn">TRUE</span>, <span class="at">n =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-21_996ccf62d207bb00beaaa2ade5032a70">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>ap1 <span class="ot">&lt;-</span> <span class="fu">gam</span>(death <span class="sc">~</span> <span class="fu">s</span>(time, <span class="at">bs =</span> <span class="st">"cr"</span>, <span class="at">k=</span><span class="dv">200</span>) <span class="sc">+</span> <span class="fu">s</span>(pm10median, <span class="at">bs =</span> <span class="st">"cr"</span>) <span class="sc">+</span> <span class="fu">s</span>(so2median, <span class="at">bs =</span> <span class="st">"cr"</span>) <span class="sc">+</span> <span class="fu">s</span>(o3median, <span class="at">bs =</span> <span class="st">"cr"</span>) <span class="sc">+</span> <span class="fu">s</span>(tmpd, <span class="at">bs =</span> <span class="st">"cr"</span>), <span class="at">data =</span> chicago, <span class="at">family =</span> poisson)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(ap1) <span class="co"># honestly not that much better</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gam_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Method: UBRE   Optimizer: outer newton
+full convergence after 8 iterations.
+Gradient range [-6.661707e-07,4.670663e-08]
+(score 0.2410737 &amp; scale 1).
+Hessian positive definite, eigenvalue range [5.217842e-05,0.004273638].
+Model rank =  236 / 236 
+
+Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+indicate that k is too low, especially if edf is close to k'.
+
+                  k'    edf k-index p-value    
+s(time)       199.00 167.93    0.94  &lt;2e-16 ***
+s(pm10median)   9.00   6.86    1.02    0.90    
+s(so2median)    9.00   7.38    0.99    0.17    
+s(o3median)     9.00   1.58    1.00    0.38    
+s(tmpd)         9.00   8.27    1.02    0.96    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-22_62e07fe5a2d71762f7786ff16fb08162">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># confirming that I know where poisson residuals are coming from</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">residuals</span>(ap1, <span class="at">type =</span> <span class="st">"pearson"</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  0.7543849 -1.8266695  1.1255760  0.7299294  0.6915362 -1.1494885
+ [7]  0.3019724  0.3816246 -0.8354141 -1.6209453</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># chicago$death - predict(ap1)</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(ap1) <span class="sc">%&gt;%</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4841</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> chicago <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(pm10median), <span class="sc">!</span><span class="fu">is.na</span>(death), <span class="sc">!</span><span class="fu">is.na</span>(so2median), <span class="sc">!</span><span class="fu">is.na</span>(tmpd)) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(death)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>yhat <span class="ot">&lt;-</span> <span class="fu">predict</span>(ap1, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(((y <span class="sc">-</span> yhat) <span class="sc">/</span> <span class="fu">sqrt</span>(yhat))[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>],</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">residuals</span>(ap1, <span class="at">type =</span> <span class="st">"pearson"</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]       [,2]
+1   0.7543849  0.7543849
+3  -1.8266695 -1.8266695
+4   1.1255760  1.1255760
+6   0.7299294  0.7299294
+7   0.6915362  0.6915362
+8  -1.1494885 -1.1494885
+9   0.3019724  0.3019724
+11  0.3816246  0.3816246
+12 -0.8354141 -0.8354141
+13 -1.6209453 -1.6209453</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-23_394e7e9b38dbee7a2d9aefbaf3157bc3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Consider the single index model</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ?single.index</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co"># because we're studying air pollution, there's probably some lag involved, or weights thereof</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>lagard <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">n.lag =</span> <span class="dv">6</span>) {</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(x); X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, n, n.lag)</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.lag) X[i<span class="sc">:</span>n, i] <span class="ot">&lt;-</span> x[i<span class="sc">:</span>n<span class="sc">-</span>i<span class="sc">+</span><span class="dv">1</span>] <span class="co"># set the next column, starting at i.</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  X</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lagard</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">n.lag =</span> <span class="dv">3</span>) <span class="co"># probably most clear just to look at the model matrix here.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1   NA   NA
+[2,]    2    1   NA
+[3,]    3    2    1
+[4,]    4    3    2
+[5,]    5    4    3</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="gam_cache/html/unnamed-chunk-24_8a90f4d5a2471d2f3d777e5514f2ff8c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">lag =</span> <span class="fu">matrix</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">5</span>, <span class="fu">nrow</span>(chicago), <span class="dv">6</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>death <span class="ot">&lt;-</span> chicago<span class="sc">$</span>death</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>time <span class="ot">&lt;-</span> chicago<span class="sc">$</span>time</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>pm10 <span class="ot">&lt;-</span> <span class="fu">lagard</span>(chicago<span class="sc">$</span>pm10median)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>o3 <span class="ot">&lt;-</span> <span class="fu">lagard</span>(chicago<span class="sc">$</span>o3)</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>tmp <span class="ot">&lt;-</span> <span class="fu">lagard</span>(chicago<span class="sc">$</span>tmp)</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>si <span class="ot">&lt;-</span> <span class="cf">function</span>(theta, dat, <span class="at">opt =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>  alpha <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, theta) <span class="do">## alpha defined via unconstrained theta</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  kk <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(alpha<span class="sc">^</span><span class="dv">2</span>)); alpha <span class="ot">&lt;-</span> alpha<span class="sc">/</span>kk <span class="do">## ||alpha || = 1</span></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>  o3 <span class="ot">&lt;-</span> dat<span class="sc">$</span>o3 <span class="sc">%*%</span> alpha;</span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> dat<span class="sc">$</span>tmp <span class="sc">%*%</span> alpha</span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>  pm10 <span class="ot">&lt;-</span> dat<span class="sc">$</span>pm10 <span class="sc">%*%</span> alpha <span class="do">## re-weight laggard covariates</span></span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> <span class="fu">bam</span>(dat<span class="sc">$</span>death <span class="sc">~</span> <span class="fu">s</span>(dat<span class="sc">$</span>time, <span class="at">k =</span> <span class="dv">200</span>, <span class="at">bs=</span><span class="st">"cr"</span>) <span class="sc">+</span> <span class="fu">s</span>(pm10, <span class="at">bs=</span><span class="st">"cr"</span>) <span class="sc">+</span> <span class="fu">te</span>(o3, tmp, <span class="at">k=</span><span class="dv">8</span>), <span class="at">family=</span>poisson) <span class="do">## fit the model</span></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"."</span>) <span class="co"># give user something to watch</span></span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (opt) <span class="fu">return</span>(b<span class="sc">$</span>gcv.ubre) <span class="cf">else</span> {</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>    b<span class="sc">$</span>alpha <span class="ot">&lt;-</span> alpha <span class="do">## add alpha to model object</span></span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>    b<span class="sc">$</span>J <span class="ot">&lt;-</span> <span class="fu">outer</span>(alpha, <span class="sc">-</span>theta<span class="sc">/</span>kk<span class="sc">^</span><span class="dv">2</span>) <span class="do">## get dalpha_i/dtheta_j</span></span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(theta)) b<span class="sc">$</span>J[j<span class="sc">+</span><span class="dv">1</span>,j] <span class="ot">&lt;-</span> b<span class="sc">$</span>J[j<span class="sc">+</span><span class="dv">1</span>, j] <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span>kk</span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(b)</span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a><span class="co"># f1 &lt;- optim(rep(1, 5), si, method = "BFGS", hessian=TRUE, dat = dat)</span></span>
+<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a><span class="co"># save(f1, file = "f1.RData") # The results from f1 took forever to run, almost an hour, so save the results and just load it.</span></span>
+<span id="cb58-27"><a href="#cb58-27" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"f1.RData"</span>)</span>
+<span id="cb58-28"><a href="#cb58-28" aria-hidden="true" tabindex="-1"></a>apsi <span class="ot">&lt;-</span> <span class="fu">si</span>(f1<span class="sc">$</span>par, dat, <span class="at">opt =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>apsi<span class="sc">$</span>alpha</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  0.03419156  0.67333186  0.63917561  0.25879701  0.24601994 -0.09699472</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../exponential/exponential.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../longitudinal/longitudinal.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Longitudinal Data Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

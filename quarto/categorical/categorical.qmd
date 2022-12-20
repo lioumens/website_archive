@@ -7,6 +7,8 @@ execute:
 ---
 
 ```{r}
+#| code-summary: Libraries
+#| message: false
 library(tidyverse)
 library(AMR)
 library(DescTools)
@@ -28,7 +30,9 @@ This is a very broad area, but I feel like it's also super confusing because it'
 - McNemar Test
 - Generalized CMH test
 
-## 2x2 sampling mechanisms {.tabset}
+
+
+## 2x2 sampling mechanisms
 
 The many different sampling mechanisms arise from different study designs, and are critical to the assumptions of the population you are studying.
 
@@ -42,17 +46,18 @@ In an epidemiological context, the data is given as
 
 
 * Poisson (nothing fixed)
-* Multinomial (N) is fixed
+* Multinomial (N) total is fixed
   - "Cross Sectional" studies
 * Two-sample Binomial (1 margin fixed)
   - "Cohort Study" = n1, n0 fixed
   - "Case Control Study" = m1, m0 fixed
     - a type of "retrospective" study.
 * Hypergeometric (2 margins fixed)
-  - 
+  - very rarely the case in real experiments, but unfortunately many methods are based on this assumption for the 2x2 table.
 
+::: {.panel-tabset}
 
-### Poisson (cell means)
+### Poisson
 
 ```{r class.source = "fold-hide"}
 # Independent Poisson
@@ -70,9 +75,7 @@ rpoisson_table <- function(num_tables = 1, mean = 5, nrow = 2,  ncol = 2) {
   vec_table <- split(cells, gl(num_tables, ncol*nrow))
   vapply(vec_table, matrix, nrow = nrow, ncol = ncol, byrow = FALSE, FUN.VALUE = matrix(1:(ncol*nrow), nrow = nrow))
 }
-```
 
-```{r class.source = "fold-hide"}
 # 2x2 examples
 poisson_table_examples <- rpoisson_table(5, mean = 5, nrow = 2, ncol = 2)
 apply(poisson_table_examples,
@@ -81,7 +84,7 @@ apply(poisson_table_examples,
       simplify = FALSE)
 ```
 
-### Multinomial (Grand Total Fixed)
+### Multinomial
 
 ```{r}
 # grand total fixed
@@ -104,7 +107,7 @@ apply(multinom_table_examples,
 ```
 
 
-### Binomial Two Sample (One fixed margin)
+### Binomial
 
 ```{r}
 # Sample a 2x2 table
@@ -117,9 +120,7 @@ rbinom_table <- function(num_tables = 1, row_n = c(10, 10), p = c(.5, .5)) {
          binom_table}, 
        FUN.VALUE = matrix(rep(1.1, 4), nrow =2)) # expected 2x2 table
 }
-```
 
-```{r}
 binom_table_examples <- rbinom_table(5, row_n = c(10, 10), p = c(.5, .5))
 apply(binom_table_examples,
       MARGIN = 3,
@@ -146,9 +147,7 @@ rhyper_table <- function(num_tables, row_n = c(10, 10), col_n = c(10, 10))  {
          contingency_table
        },
        FUN.VALUE = matrix(c(0, 0, 0, 1.1), nrow = 2))}
-```
 
-```{r}
 # examples
 hyper_table_examples <- rhyper_table(num_tables = 5, row_n = c(10, 10), col_n = c(10, 10))
 apply(hyper_table_examples,
@@ -156,6 +155,8 @@ apply(hyper_table_examples,
       FUN = addmargins,
       simplify = FALSE)
 ```
+
+:::
 
 ## Measures of Association
 

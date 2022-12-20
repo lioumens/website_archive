@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.203">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Liou">
+<meta name="dcterms.date" content="2022-02-04">
+
+<title>Personal Documentation - 10&nbsp; Experimental Design</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../exponential/exponential.html" rel="next">
+<link href="../epidemiology/epidemiology.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Experimental Design</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Personal Documentation</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../advanced/advanced.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Advanced R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../approximation/approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Approximation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bayesian/bayesian.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../categorical/categorical.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../changepoint/changepoint.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Changepoint Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../crossover/crossover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Crossover Designs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../diffeq/diffeq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Differential Equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../experimentaldesign/experimentaldesign.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Experimental Design</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../gam/gam.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Additive Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/longitudinal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Longitudinal Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/randomcoef.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Coefficient Models (CALS)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Mixed Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed_variance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Mixed Models (Variance)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../next_gen_sequencing/next_gen_sequencing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Next Generation Sequencing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../optimization/optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ordination/ordination.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Ordination</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallel/parallel.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Parallel Computing in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plant_breeding/plant_breeding.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Plant Breeding</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">From Informational</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">11</span>  Introduction</a>
+  <ul class="collapse">
+  <li><a href="#definitions" id="toc-definitions" class="nav-link" data-scroll-target="#definitions"><span class="toc-section-number">11.1</span>  Definitions</a>
+  <ul class="collapse">
+  <li><a href="#examples-for-definitions" id="toc-examples-for-definitions" class="nav-link" data-scroll-target="#examples-for-definitions"><span class="toc-section-number">11.1.1</span>  Examples for definitions</a></li>
+  </ul></li>
+  <li><a href="#fischer-principles-of-design" id="toc-fischer-principles-of-design" class="nav-link" data-scroll-target="#fischer-principles-of-design"><span class="toc-section-number">11.2</span>  Fischer Principles of Design</a></li>
+  </ul></li>
+  <li><a href="#hasse-diagrams" id="toc-hasse-diagrams" class="nav-link" data-scroll-target="#hasse-diagrams"><span class="toc-section-number">12</span>  Hasse Diagrams</a></li>
+  <li><a href="#two-way-anova" id="toc-two-way-anova" class="nav-link" data-scroll-target="#two-way-anova"><span class="toc-section-number">13</span>  Two Way Anova</a>
+  <ul class="collapse">
+  <li><a href="#fitted-values-and-group-means" id="toc-fitted-values-and-group-means" class="nav-link" data-scroll-target="#fitted-values-and-group-means"><span class="toc-section-number">13.1</span>  Fitted values and Group Means</a></li>
+  </ul></li>
+  <li><a href="#blocking-designs" id="toc-blocking-designs" class="nav-link" data-scroll-target="#blocking-designs"><span class="toc-section-number">14</span>  Blocking Designs</a>
+  <ul class="collapse">
+  <li><a href="#randomized-complete-block-design-rcbd" id="toc-randomized-complete-block-design-rcbd" class="nav-link" data-scroll-target="#randomized-complete-block-design-rcbd"><span class="toc-section-number">14.1</span>  Randomized Complete Block Design (RCBD)</a></li>
+  <li><a href="#generalized-randomized-block-design-grbd" id="toc-generalized-randomized-block-design-grbd" class="nav-link" data-scroll-target="#generalized-randomized-block-design-grbd"><span class="toc-section-number">14.2</span>  Generalized Randomized Block Design (GRBD)</a></li>
+  <li><a href="#blocking-resources" id="toc-blocking-resources" class="nav-link" data-scroll-target="#blocking-resources"><span class="toc-section-number">14.3</span>  Blocking Resources</a></li>
+  </ul></li>
+  <li><a href="#split-plot-designs" id="toc-split-plot-designs" class="nav-link" data-scroll-target="#split-plot-designs"><span class="toc-section-number">15</span>  Split Plot Designs</a>
+  <ul class="collapse">
+  <li><a href="#oats-example" id="toc-oats-example" class="nav-link" data-scroll-target="#oats-example"><span class="toc-section-number">15.1</span>  Oats Example</a>
+  <ul class="collapse">
+  <li><a href="#without-blocking" id="toc-without-blocking" class="nav-link" data-scroll-target="#without-blocking"><span class="toc-section-number">15.1.1</span>  Without blocking</a></li>
+  <li><a href="#with-blocking" id="toc-with-blocking" class="nav-link" data-scroll-target="#with-blocking"><span class="toc-section-number">15.1.2</span>  With blocking</a></li>
+  </ul></li>
+  <li><a href="#steel-example" id="toc-steel-example" class="nav-link" data-scroll-target="#steel-example"><span class="toc-section-number">15.2</span>  Steel Example</a>
+  <ul class="collapse">
+  <li><a href="#with-day-block" id="toc-with-day-block" class="nav-link" data-scroll-target="#with-day-block"><span class="toc-section-number">15.2.1</span>  with day block</a></li>
+  <li><a href="#without-day-block" id="toc-without-day-block" class="nav-link" data-scroll-target="#without-day-block"><span class="toc-section-number">15.2.2</span>  without day block</a></li>
+  <li><a href="#with-blocktreatment" id="toc-with-blocktreatment" class="nav-link" data-scroll-target="#with-blocktreatment"><span class="toc-section-number">15.2.3</span>  with block:treatment</a></li>
+  <li><a href="#fake-data" id="toc-fake-data" class="nav-link" data-scroll-target="#fake-data"><span class="toc-section-number">15.2.4</span>  fake data</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#nested-variable-labeling" id="toc-nested-variable-labeling" class="nav-link" data-scroll-target="#nested-variable-labeling"><span class="toc-section-number">16</span>  Nested Variable labeling</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Experimental Design</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Liou </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 4, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Introduction</h1>
+<section id="definitions" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="definitions"><span class="header-section-number">11.1</span> Definitions</h2>
+<p>Types of units in Design and Analysis of Experiments (DOE)</p>
+<ul>
+<li><strong>Experimental Unit (EU)</strong> - the smallest unit to which a treatment is applied. Experiments can have more than one experimental unit when studying more than one treatment factor. This results in split-plot designs.</li>
+<li><strong>Sampling Unit</strong> - A unit that makes up the population to be modeled. Sampling units are used to make observations.</li>
+<li><strong>Observational Unit</strong> - The unit from which an observation is made.</li>
+</ul>
+<p>Types of factors in DOE</p>
+<ul>
+<li><strong>Treatment</strong> - normally a factor of interest to the experimentor.</li>
+<li><strong>Blocking</strong> - also regarded as a factor, but a known source of variation. This differs from treatment factor in that it CHANGES THE RANDOMIZATION of the experiement.</li>
+</ul>
+<p>A note on the word replication, I try to avoid this word, as it is <em>heavily</em> abused and vague. Sometimes clients mean subsamples, sometimes they mean a blocking factor, sometimes they mean experimental units. “I replicated this experiment 3 times”. If they replicated it over years, this would imply blocking in time. “I have 3 replicates of data”, implies they may have 3 data points from the same experimental unit.</p>
+<p>Another note on “blocking”: Blocking is a design mechanism of efficiency that stems from the REAL WORLD, not mathematics. Clients often come with “blocked” experiments because they believe that just including block will make the design more efficient. “Why did you block on this variable?” “blocking is more efficient and I had extra samples”. If you don’t block on anything useful, it will actually make the design less efficient, and you’re better off with a CRD.</p>
+<section id="examples-for-definitions" class="level3" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="examples-for-definitions"><span class="header-section-number">11.1.1</span> Examples for definitions</h3>
+<ul>
+<li>Students in classroom
+<ul>
+<li>Suppose we’re studying methods of teaching (treatment factor) on student achievement. The experimental unit is a classroom, because the teaching method is applied to the whole classroom. A sampling unit is a student from that classroom, and the observational unit is some test score of the student, or some measured response from the student.</li>
+</ul></li>
+<li>Plants in a field
+<ul>
+<li>When we study a fertilizer (treatment factor) on the health of a plant, we are likely not just planting 1 plant, but many in a row for which fertilizer is applied. The row is the experimental unit, a plant is the sampling unit, and the observational unit is making some measurement like root length on that plant.</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="fischer-principles-of-design" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="fischer-principles-of-design"><span class="header-section-number">11.2</span> Fischer Principles of Design</h2>
+<ol type="1">
+<li>Randomization - necessary for validity of error variance estimates.</li>
+<li>Replication - allows for an estimate of variance.</li>
+<li>Blocking (stratification) - allows for efficient experimentation</li>
+</ol>
+</section>
+</section>
+<section id="hasse-diagrams" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Hasse Diagrams</h1>
+<ol type="1">
+<li>start with M term on top, stands for grand mean</li>
+<li>next row is all factors not nested in any term, all lines up to M.</li>
+<li>nested factors go directly below what it’s nested in</li>
+<li>draw nodes for all interaction terms from above</li>
+</ol>
+</section>
+<section id="two-way-anova" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Two Way Anova</h1>
+<p><span class="math display">
+\begin{aligned}
+Y_{ijk} = \alpha_i + \beta_j + \varepsilon_{ijk}
+\end{aligned}
+</span></p>
+<section id="fitted-values-and-group-means" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="fitted-values-and-group-means"><span class="header-section-number">13.1</span> Fitted values and Group Means</h2>
+<p>The purpose of this section was an experiement following doing a Finley-Wilkenson regression for a client, in which I was considering calculating multiple ways of calculating the “environmental index”. The point here is a little subtle: <strong>The fitted values from a two-way anova model are not the same as the raw calculated grouped means</strong>. The upshot of this statement is that (ignoring the replication) <span class="math inline">\hat\alpha_1 + \hat\beta_1 = \bar{y}_{1.} + \bar{y}_{.1} \neq y_{11}</span>. (The statement is somewhat adhoc, without defining contrasts estimate, but this is the cell means encoding).</p>
+<p>After looking at this, it’s obvious, but the fact that in simple linear regression models, the fitted line goes through the mean, and even in one way anova models, the fitted values are directly the cell means. I just forgot the fact that this changes with two way models.</p>
+<p>Imagine the following ways we could slice this problem</p>
+<ul>
+<li>calculating the raw means by group.</li>
+<li>calculating the fitted values by two way anova w/o interaction</li>
+<li>calculating the fitted values by one way anova w/ interaction</li>
+<li>fitting several one-way linear models subsetting the data into groups over the other level</li>
+</ul>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-1_0eb6130e284bab41ff12912f683c124a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"oats"</span>, <span class="at">package =</span> <span class="st">"MASS"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate raw means</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>raw_mean <span class="ot">&lt;-</span> oats <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(V, N) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_Y =</span> <span class="fu">mean</span>(Y)) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(V, N)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># additive</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> V <span class="sc">+</span> N, <span class="at">data =</span> oats)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">"V"</span>, <span class="st">"N"</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>additive_mean <span class="ot">&lt;-</span> emm <span class="sc">%&gt;%</span> </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(V, N, emmean) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(V, N)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># additive with interaction</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> V <span class="sc">+</span> N <span class="sc">+</span> V<span class="sc">:</span>N, <span class="at">data =</span> oats)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>emm2 <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">"V"</span>, <span class="st">"N"</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>inter_mean <span class="ot">&lt;-</span> emm2 <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> <span class="fu">select</span>(V,N,emmean) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(V,N)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># several one-way linear models</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>mod_list <span class="ot">&lt;-</span> <span class="fu">lmList</span>(Y<span class="sc">~</span> N <span class="sc">|</span> V, <span class="at">data =</span> oats)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>new_dat <span class="ot">&lt;-</span> oats <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(V, N) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(V, N)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>list_mean <span class="ot">&lt;-</span> new_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">fitted =</span> <span class="fu">predict</span>(mod_list, <span class="at">newdata =</span> new_dat))</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Manual construction of fitted from marginal means</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>N_means <span class="ot">&lt;-</span> oats <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(N) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">N_mean =</span> <span class="fu">mean</span>(Y)) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>V_means <span class="ot">&lt;-</span> oats <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(V) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">V_mean =</span> <span class="fu">mean</span>(Y)) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>overall_mean <span class="ot">&lt;-</span> oats <span class="sc">%&gt;%</span> <span class="fu">pull</span>(Y) <span class="sc">%&gt;%</span> <span class="fu">mean</span>()</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate y_i. + y_.j - y_.. for all ij</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>manual_mean <span class="ot">&lt;-</span> N_means <span class="sc">%&gt;%</span> </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossing</span>(V_means) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fitted =</span> N_mean <span class="sc">+</span> V_mean <span class="sc">-</span> overall_mean) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(V, N)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(new_dat,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>          <span class="fu">tibble</span>(<span class="at">raw =</span> raw_mean<span class="sc">$</span>mean_Y,</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>                 <span class="at">additive =</span> additive_mean<span class="sc">$</span>emmean,</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>                 <span class="at">interaction =</span> inter_mean<span class="sc">$</span>emmean,</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>                 <span class="at">subset_oneway =</span> list_mean<span class="sc">$</span>fitted,</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>                 <span class="at">manual_fitted =</span> manual_mean<span class="sc">$</span>fitted))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>             V      N       raw  additive interaction subset_oneway
+1  Golden.rain 0.0cwt  80.00000  79.91667    79.91667      80.00000
+2  Golden.rain 0.2cwt  98.50000  99.41667    99.41667      98.50000
+3  Golden.rain 0.4cwt 114.66667 114.75000   114.75000     114.66667
+4  Golden.rain 0.6cwt 124.83333 123.91667   123.91667     124.83333
+5   Marvellous 0.0cwt  86.66667  85.20833    85.20833      86.66667
+6   Marvellous 0.2cwt 108.50000 104.70833   104.70833     108.50000
+7   Marvellous 0.4cwt 117.16667 120.04167   120.04167     117.16667
+8   Marvellous 0.6cwt 126.83333 129.20833   129.20833     126.83333
+9      Victory 0.0cwt  71.50000  73.04167    73.04167      71.50000
+10     Victory 0.2cwt  89.66667  92.54167    92.54167      89.66667
+11     Victory 0.4cwt 110.83333 107.87500   107.87500     110.83333
+12     Victory 0.6cwt 118.50000 117.04167   117.04167     118.50000
+   manual_fitted
+1       79.91667
+2       99.41667
+3      114.75000
+4      123.91667
+5       85.20833
+6      104.70833
+7      120.04167
+8      129.20833
+9       73.04167
+10      92.54167
+11     107.87500
+12     117.04167</code></pre>
+</div>
+</div>
+<p>Looking at the output, additive and interaction models don’t change the estimated marginal means. The one-way with subset matches the raw mean values by group because those one way models will go through the mean, and thus, fitting them seperately will those results. The Manual way of fitting calculated marginal means by Variety and Nitrogen separately, and then adds them in an “outer” type fashion.</p>
+</section>
+</section>
+<section id="blocking-designs" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Blocking Designs</h1>
+<p>At its core, one should understand the features of a two way anova in order to understand what blocking does to the covariate.</p>
+<section id="randomized-complete-block-design-rcbd" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="randomized-complete-block-design-rcbd"><span class="header-section-number">14.1</span> Randomized Complete Block Design (RCBD)</h2>
+<p>Summary</p>
+<ul>
+<li>RCBD’s assume that the blocking factor is <em>additive</em>. That might be a wrong assumption.</li>
+</ul>
+<p><span class="math display">
+\begin{aligned}
+Y_{ij} = \alpha_i + b_j + \varepsilon_{i(j)}
+\end{aligned}
+</span></p>
+<ul>
+<li><span class="math inline">Y_ij</span> - is observation at <span class="math inline">i</span>th treatment level</li>
+<li><span class="math inline">\alpha_i</span> - is treatment effect for level <span class="math inline">i</span></li>
+<li><span class="math inline">b_j</span> - is block effect of <span class="math inline">j</span></li>
+<li><span class="math inline">\varepsilon_{i(j)}</span> - is surrogate error term, assuming <span class="math inline">\varepsilon_{i(j)} \sim N(0, \sigma^2)</span></li>
+</ul>
+<div style="display:flex;justify-content:center">
+<p><img style="width:70%" src="assets/img/RCBD.png"> <img style="width:25%" src="assets/img/rcbd_table.png"></p>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-2_1ac3efbe90781d5d3c352b51acdf3052">
+
+</div>
+</section>
+<section id="generalized-randomized-block-design-grbd" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="generalized-randomized-block-design-grbd"><span class="header-section-number">14.2</span> Generalized Randomized Block Design (GRBD)</h2>
+<p><span class="math display">
+\begin{aligned}
+Y_{ij} = \alpha_i + b_j + \alpha b_{ij} + \varepsilon_{k(ij)}
+\end{aligned}
+</span></p>
+<ul>
+<li><span class="math inline">Y_ij</span> - is observation at <span class="math inline">i</span>th treatment level,</li>
+<li><span class="math inline">\alpha_i</span> - is treatment effect for level <span class="math inline">i</span>, <span class="math inline">i = 1 \dots a</span></li>
+<li><span class="math inline">b_j</span> - is block effect of <span class="math inline">j</span>, <span class="math inline">j = 1 \dots b</span></li>
+<li><span class="math inline">\alpha b_{ij}</span> - is interaction effect of treatment and block.</li>
+<li><span class="math inline">\varepsilon_{k(ij)}</span> - is error term, assuming <span class="math inline">\varepsilon_{k(ij)} \sim N(0, \sigma^2)</span></li>
+</ul>
+<div style="display:flex;justify-content:center;align-items:start">
+<p><img style="width:70%" src="assets/img/GRBD.png"> <img style="width:25%" src="assets/img/grbd_table.png"></p>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-3_3219c0e67676312b9bf61b620535e2b7">
+
+</div>
+<p>Within a single block, there is a replicate of the treatment. As opposed to a RCBD in which each level of the treatment has 1 experimental unit.</p>
+</section>
+<section id="blocking-resources" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="blocking-resources"><span class="header-section-number">14.3</span> Blocking Resources</h2>
+<ul>
+<li><a href="http://users.stat.umn.edu/~gary/classes/5303/lectures/Blocking.pdf">Gary Lecture Notes</a></li>
+</ul>
+</section>
+</section>
+<section id="split-plot-designs" class="level1" data-number="15">
+<h1 data-number="15"><span class="header-section-number">15</span> Split Plot Designs</h1>
+<p>The classic split plot design presented in most textbooks is one in which the whole plot experimental units (wpeu) treated by factor <span class="math inline">A</span> (with <span class="math inline">a</span> levels) have <span class="math inline">r</span> replications (either in the form of block replicates or identical replicates), and the sub-plot experimental units (speu) is completely randomized <em>within</em> the whole plot.</p>
+<p>The defining feature of split plot designs is that there are multiple sizes of experimental units.</p>
+<p><img style="width:70%" src="assets/img/split_plot_table.png"></p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-4_0ae5a4dc6652831b9611c6ce0884df2d">
+
+</div>
+<p><img style="width:70%" src="assets/img/split_plot_block_table.png"></p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-5_d9c2567e46bf3446f48409314c00e9ff">
+
+</div>
+<section id="oats-example" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="oats-example"><span class="header-section-number">15.1</span> Oats Example</h2>
+<p>This is normally analyzed as 1 factor RCBD in whole plot, 1 factor RCD in subplot. We will use this example in two ways, the simple way in which we ignore the blocking factor, and the natural way with the blocking factor.</p>
+<ul>
+<li><code>B</code> - Blocks (6 whole plots)</li>
+<li><code>V</code> - Varieties (3 levels, whole plot factor)</li>
+<li><code>N</code> - Nitrogen (4 levels, sub plot factor)</li>
+<li><code>Y</code> - Yields in 1/4 acre (from subplot)</li>
+</ul>
+<center>
+<img style="width:70%" src="assets/img/oats.png">
+<figcaption>
+Figure: This image shows 2 out of the 6 blocks (as rows) of the experiment.
+</figcaption>
+<br>
+</center>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-6_9aa8656c87d5eb85fc3a2a41e909b11c">
+
+</div>
+<div class="cell" data-rows.print="5" data-rownames.print="false" data-hash="experimentaldesign_cache/html/unnamed-chunk-7_24d11dde445580c0ea75890bf453d408">
+<div class="cell-output cell-output-stdout">
+<pre><code>   yield     variety nitrogen block field123 field
+1    111     Victory   0.0cwt     I        1     1
+2    130     Victory   0.2cwt     I        1     1
+3    157     Victory   0.4cwt     I        1     1
+4    174     Victory   0.6cwt     I        1     1
+5    117 Golden.rain   0.0cwt     I        2     2
+6    114 Golden.rain   0.2cwt     I        2     2
+7    161 Golden.rain   0.4cwt     I        2     2
+8    141 Golden.rain   0.6cwt     I        2     2
+9    105  Marvellous   0.0cwt     I        3     3
+10   140  Marvellous   0.2cwt     I        3     3
+11   118  Marvellous   0.4cwt     I        3     3
+12   156  Marvellous   0.6cwt     I        3     3
+13    61     Victory   0.0cwt    II        1     4
+14    91     Victory   0.2cwt    II        1     4
+15    97     Victory   0.4cwt    II        1     4
+16   100     Victory   0.6cwt    II        1     4
+17    70 Golden.rain   0.0cwt    II        2     5
+18   108 Golden.rain   0.2cwt    II        2     5
+19   126 Golden.rain   0.4cwt    II        2     5
+20   149 Golden.rain   0.6cwt    II        2     5
+21    96  Marvellous   0.0cwt    II        3     6
+22   124  Marvellous   0.2cwt    II        3     6
+23   121  Marvellous   0.4cwt    II        3     6
+24   144  Marvellous   0.6cwt    II        3     6
+25    68     Victory   0.0cwt   III        1     7
+26    64     Victory   0.2cwt   III        1     7
+27   112     Victory   0.4cwt   III        1     7
+28    86     Victory   0.6cwt   III        1     7
+29    60 Golden.rain   0.0cwt   III        2     8
+30   102 Golden.rain   0.2cwt   III        2     8
+31    89 Golden.rain   0.4cwt   III        2     8
+32    96 Golden.rain   0.6cwt   III        2     8
+33    89  Marvellous   0.0cwt   III        3     9
+34   129  Marvellous   0.2cwt   III        3     9
+35   132  Marvellous   0.4cwt   III        3     9
+36   124  Marvellous   0.6cwt   III        3     9
+37    74     Victory   0.0cwt    IV        1    10
+38    89     Victory   0.2cwt    IV        1    10
+39    81     Victory   0.4cwt    IV        1    10
+40   122     Victory   0.6cwt    IV        1    10
+41    64 Golden.rain   0.0cwt    IV        2    11
+42   103 Golden.rain   0.2cwt    IV        2    11
+43   132 Golden.rain   0.4cwt    IV        2    11
+44   133 Golden.rain   0.6cwt    IV        2    11
+45    70  Marvellous   0.0cwt    IV        3    12
+46    89  Marvellous   0.2cwt    IV        3    12
+47   104  Marvellous   0.4cwt    IV        3    12
+48   117  Marvellous   0.6cwt    IV        3    12
+49    62     Victory   0.0cwt     V        1    13
+50    90     Victory   0.2cwt     V        1    13
+51   100     Victory   0.4cwt     V        1    13
+52   116     Victory   0.6cwt     V        1    13
+53    80 Golden.rain   0.0cwt     V        2    14
+54    82 Golden.rain   0.2cwt     V        2    14
+55    94 Golden.rain   0.4cwt     V        2    14
+56   126 Golden.rain   0.6cwt     V        2    14
+57    63  Marvellous   0.0cwt     V        3    15
+58    70  Marvellous   0.2cwt     V        3    15
+59   109  Marvellous   0.4cwt     V        3    15
+60    99  Marvellous   0.6cwt     V        3    15
+61    53     Victory   0.0cwt    VI        1    16
+62    74     Victory   0.2cwt    VI        1    16
+63   118     Victory   0.4cwt    VI        1    16
+64   113     Victory   0.6cwt    VI        1    16
+65    89 Golden.rain   0.0cwt    VI        2    17
+66    82 Golden.rain   0.2cwt    VI        2    17
+67    86 Golden.rain   0.4cwt    VI        2    17
+68   104 Golden.rain   0.6cwt    VI        2    17
+69    97  Marvellous   0.0cwt    VI        3    18
+70    99  Marvellous   0.2cwt    VI        3    18
+71   119  Marvellous   0.4cwt    VI        3    18
+72   121  Marvellous   0.6cwt    VI        3    18</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="experimentaldesign_cache/html/unnamed-chunk-8_d8242e53fb5c787e62234ac12a918bec">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="experimentaldesign_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="without-blocking" class="level3 tabset" data-number="15.1.1">
+<h3 class="tabset anchored" data-number="15.1.1" data-anchor-id="without-blocking"><span class="header-section-number">15.1.1</span> Without blocking</h3>
+<p>Here we ignore the blocking factor. Suppose we just replicated the whole plot experimental unit a few more times. This means that we have 6 replication units for whole plot treatments, and theoretically get a better estimate for “Variety”</p>
+<p><a href="https://pages.stat.wisc.edu/~ane/st572/notes/lec25.pdf">Professor Ane Factorial and Split Plot</a></p>
+<p>The model for the simplest split plot design is:</p>
+<p><span class="math display">
+\begin{aligned}
+Y_{ijk} = \alpha_i &amp;+ \eta_{k(i)} + \\
+&amp;\beta_j + (\alpha\beta)_{ij} +  \varepsilon_{ijk}
+\end{aligned}
+</span> where:</p>
+<ul>
+<li><span class="math inline">\alpha</span> is whole plot factor (variety)</li>
+<li><span class="math inline">\eta_{k(i)}</span> is the whole plot error k replicates nested inside the whole plot factor</li>
+<li><span class="math inline">\beta_j</span> - subplot factor (nitrogen)</li>
+<li><span class="math inline">(\alpha\beta)_{ij}</span> - interaction of whole plot factor and subplot factor</li>
+<li><span class="math inline">\varepsilon_{ijk}</span> - split-plot level random error</li>
+</ul>
+<section id="lm-wrong" class="level4">
+<h4 class="anchored" data-anchor-id="lm-wrong">lm (wrong)</h4>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-9_d6fd892e7b7e7701fe59620b26519dd2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># anova table for factors for sum squares. These give identical tables.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_lm &lt;- lm(yield~nitrogen*variety + block:variety, data = oats) # same table, different way of specifying whole plot labels</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>oats_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(yield <span class="sc">~</span> nitrogen<span class="sc">*</span>variety <span class="sc">+</span> field, <span class="at">data =</span> oats)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(oats_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: yield
+                 Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+nitrogen          3 20020.5  6673.5 37.6856 2.458e-12 ***
+variety           2  1786.4   893.2  5.0438   0.01056 *  
+field            15 21888.6  1459.2  8.2404 1.609e-08 ***
+nitrogen:variety  6   321.7    53.6  0.3028   0.93220    
+Residuals        45  7968.7   177.1                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Note in this table, variety is tested over the wrong denominator. It should be tested wrt to the whole plot error term.</p>
+</section>
+<section id="aov" class="level4">
+<h4 class="anchored" data-anchor-id="aov">aov</h4>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-10_6b1284aed3b982874e160d7db5209a37">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># aov specifying whole plot error term</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_aov &lt;- aov(yield~ nitrogen*variety + Error(block:variety), data = oats) # gives warning, but correct</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>oats_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield <span class="sc">~</span> nitrogen<span class="sc">*</span>variety <span class="sc">+</span> <span class="fu">Error</span>(field), <span class="at">data =</span> oats)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: field
+          Df Sum Sq Mean Sq F value Pr(&gt;F)
+variety    2   1786   893.2   0.612  0.555
+Residuals 15  21889  1459.2               
+
+Error: Within
+                 Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+nitrogen          3  20020    6673  37.686 2.46e-12 ***
+nitrogen:variety  6    322      54   0.303    0.932    
+Residuals        45   7969     177                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Notice that variety has a very different p-value here when tested over the correct denominator, in contrast to the earlier <code>lm</code> table.</p>
+</section>
+<section id="aov-wrong" class="level4">
+<h4 class="anchored" data-anchor-id="aov-wrong">aov (wrong)</h4>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-11_9d0cb3dc2382a908c9b96165bc37aaf8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Incorrect labeling of field</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>oats_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield<span class="sc">~</span>nitrogen<span class="sc">*</span>variety <span class="sc">+</span> <span class="fu">Error</span>(field123), <span class="at">data =</span> oats)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: field123
+        Df Sum Sq Mean Sq
+variety  2   1786   893.2
+
+Error: Within
+                 Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+nitrogen          3  20020    6673  13.411 8.37e-07 ***
+nitrogen:variety  6    322      54   0.108    0.995    
+Residuals        60  29857     498                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>This above table is incorrect, since we’re not labeling our fields differently. We don’t have appropriate replicates for variety, and thus we can’t estimate the error term as we have specified.</p>
+</section>
+<section id="lmer" class="level4 active">
+<h4 class="active anchored" data-anchor-id="lmer">lmer</h4>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-12_3c8c97d77de51db719bd5d585dd347fb">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lmer way for split plot</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_lmer &lt;- lmer(yield ~ nitrogen*variety + (1|block:variety))</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_lmer &lt;- lmer(yield ~ nitrogen*variety + (1|block:field123))</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>oats_lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(yield <span class="sc">~</span> nitrogen<span class="sc">*</span>variety <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>field), <span class="at">data =</span> oats)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_lmer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: yield ~ nitrogen * variety + (1 | field)
+   Data: oats
+
+REML criterion at convergence: 538.2
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-1.83746 -0.64204  0.01107  0.61254  1.61722 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ field    (Intercept) 320.5    17.90   
+ Residual             177.1    13.31   
+Number of obs: 72, groups:  field, 18
+
+Fixed effects:
+                             Estimate Std. Error       df t value Pr(&gt;|t|)    
+(Intercept)                  104.5000     7.7975  15.0000  13.402 9.42e-10 ***
+nitrogen.L                    33.6901     5.4327  45.0000   6.201 1.57e-07 ***
+nitrogen.Q                    -4.1667     5.4327  45.0000  -0.767    0.447    
+nitrogen.C                    -0.8199     5.4327  45.0000  -0.151    0.881    
+varietyMarvellous              5.2917    11.0274  15.0000   0.480    0.638    
+varietyVictory                -6.8750    11.0274  15.0000  -0.623    0.542    
+nitrogen.L:varietyMarvellous  -4.8075     7.6830  45.0000  -0.626    0.535    
+nitrogen.Q:varietyMarvellous  -1.9167     7.6830  45.0000  -0.249    0.804    
+nitrogen.C:varietyMarvellous   3.9877     7.6830  45.0000   0.519    0.606    
+nitrogen.L:varietyVictory      2.5715     7.6830  45.0000   0.335    0.739    
+nitrogen.Q:varietyVictory     -1.0833     7.6830  45.0000  -0.141    0.888    
+nitrogen.C:varietyVictory     -2.8696     7.6830  45.0000  -0.374    0.711    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) ntrg.L ntrg.Q ntrg.C vrtyMr vrtyVc nt.L:M nt.Q:M nt.C:M
+nitrogen.L   0.000                                                        
+nitrogen.Q   0.000  0.000                                                 
+nitrogen.C   0.000  0.000  0.000                                          
+vartyMrvlls -0.707  0.000  0.000  0.000                                   
+varityVctry -0.707  0.000  0.000  0.000  0.500                            
+ntrgn.L:vrM  0.000 -0.707  0.000  0.000  0.000  0.000                     
+ntrgn.Q:vrM  0.000  0.000 -0.707  0.000  0.000  0.000  0.000              
+ntrgn.C:vrM  0.000  0.000  0.000 -0.707  0.000  0.000  0.000  0.000       
+ntrgn.L:vrV  0.000 -0.707  0.000  0.000  0.000  0.000  0.500  0.000  0.000
+ntrgn.Q:vrV  0.000  0.000 -0.707  0.000  0.000  0.000  0.000  0.500  0.000
+ntrgn.C:vrV  0.000  0.000  0.000 -0.707  0.000  0.000  0.000  0.000  0.500
+            nt.L:V nt.Q:V
+nitrogen.L               
+nitrogen.Q               
+nitrogen.C               
+vartyMrvlls              
+varityVctry              
+ntrgn.L:vrM              
+ntrgn.Q:vrM              
+ntrgn.C:vrM              
+ntrgn.L:vrV              
+ntrgn.Q:vrV  0.000       
+ntrgn.C:vrV  0.000  0.000</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-13_3294895443dcf4428610e9a00612c13e">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Type III tests, here it's an exact test, so no ambiguity</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># anova(oats_lmer, ddf = "Kenward-Roger")</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Anova(oats_lmer, type = "III", test.statistic = "F")</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(oats_lmer, <span class="at">ddf =</span> <span class="st">"Satterthwaite"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+                  Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+nitrogen         20020.5  6673.5     3    45 37.6856 2.458e-12 ***
+variety            216.8   108.4     2    15  0.6121    0.5552    
+nitrogen:variety   321.8    53.6     6    45  0.3028    0.9322    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>We note that this gives identical results as <code>aov</code>.</p>
+</section>
+</section>
+<section id="section" class="level3 unnumbered unlisted">
+<h3 class="unnumbered unlisted anchored" data-anchor-id="section"></h3>
+<p>Since the interaction doesn’t seem to be significant, we’d probably drop that term from the model and we would have the additive model as our final model for this data.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-14_16dd2e89d94b1e1df51f04ff9d40b409">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>oats_lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(yield <span class="sc">~</span> nitrogen <span class="sc">+</span> variety <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>field), <span class="at">data =</span> oats)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(oats_lmer)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="with-blocking" class="level3 tabset" data-number="15.1.2">
+<h3 class="tabset anchored" data-number="15.1.2" data-anchor-id="with-blocking"><span class="header-section-number">15.1.2</span> With blocking</h3>
+<p>Now that we consider blocking, the whole plot experimental unit no longer has replication. Thus, we cannot test the interaction of block and variety. Instead, we use the interaction term as the surrotate error term for whole plots. You might ask, what if I wanted to analyze the whole plot experimental error?</p>
+<p>The Hasse diagram with blocking looks like</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-15_b2d89b26e0ba557de084213338045ba0">
+<div class="cell-output-display">
+<p><img src="experimentaldesign_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The model for this is</p>
+<p><span class="math display">
+\begin{aligned}
+Y_{ijkl} = \alpha_i + b_{k} &amp;+ (\alpha b)_{l(ik)}\\
+&amp;\beta_j + \alpha\beta_{ij} +  \varepsilon_{l(ijk)}
+\end{aligned}
+</span> where:</p>
+<ul>
+<li><span class="math inline">\alpha</span> is whole plot factor (variety) (<span class="math inline">i = 1 \dots 3</span>)</li>
+<li><span class="math inline">b_k</span> is blocking (<span class="math inline">k = 1 \dots 6</span>)</li>
+<li><span class="math inline">(\alpha b)_{k(i)}</span> is the whole plot error k replicates nested inside the whole plot factor</li>
+<li><span class="math inline">\beta_j</span> - subplot factor (Nitrogen) (<span class="math inline">j = 1 \dots 4</span>)</li>
+<li><span class="math inline">(\alpha\beta)_{ij}</span> - interaction of whole plot factor and subplot factor</li>
+<li><span class="math inline">\varepsilon_{ijk}</span> - split-plot level random error</li>
+</ul>
+<section id="lm-wrong-1" class="level4">
+<h4 class="anchored" data-anchor-id="lm-wrong-1">lm (wrong)</h4>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-16_1ec1ba6cfbe9719afd4ab03229c19ded">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sum of Squres and MSE</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>oats_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(yield<span class="sc">~</span> block <span class="sc">+</span> variety<span class="sc">*</span>nitrogen <span class="sc">+</span> block<span class="sc">:</span>variety, <span class="at">data =</span> oats)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(oats_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: yield
+                 Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+block             5 15875.3  3175.1 17.9297 9.525e-10 ***
+variety           2  1786.4   893.2  5.0438  0.010557 *  
+nitrogen          3 20020.5  6673.5 37.6856 2.458e-12 ***
+variety:nitrogen  6   321.8    53.6  0.3028  0.932199    
+block:variety    10  6013.3   601.3  3.3957  0.002251 ** 
+Residuals        45  7968.8   177.1                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Again, the analysis here ignores that there is a different replication for the whole plots, and so block and variety are tested with the wrong denominator. Nonetheless, it is still useful to have the mean squared errors. We drop the interaction</p>
+</section>
+<section id="aov-1" class="level4">
+<h4 class="anchored" data-anchor-id="aov-1">aov</h4>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-17_c3f0a66bb20a9d6d8afca398e0e3c545">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed block effect</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_aov_block_fixed &lt;- aov(yield~ block + variety*nitrogen + Error(block:variety), data = oats) # singular error, but correct</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_aov_block_fixed &lt;- aov(yield~ block + variety*nitrogen + Error(block:field123), data = oats) # singular error, but correct</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>oats_aov_block_fixed <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield<span class="sc">~</span> block <span class="sc">+</span> variety<span class="sc">*</span>nitrogen <span class="sc">+</span> <span class="fu">Error</span>(field), <span class="at">data =</span> oats) <span class="co"># need to number each whole plot separately</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_aov_block_fixed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: field
+          Df Sum Sq Mean Sq F value Pr(&gt;F)  
+block      5  15875    3175   5.280 0.0124 *
+variety    2   1786     893   1.485 0.2724  
+Residuals 10   6013     601                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Error: Within
+                 Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+nitrogen          3  20020    6673  37.686 2.46e-12 ***
+variety:nitrogen  6    322      54   0.303    0.932    
+Residuals        45   7969     177                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-18_5bc12f9efbcc3a2bcf8d84fb0fcc1143">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Random block effects</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_aov_block_random &lt;- aov(yield~ block + variety*nitrogen + Error(block)+ Error(block:variety), data = oats) # the below is technically short for this, but aov only allows 1 `Error` term, so you must specify like that.</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_aov_block_random &lt;- aov(yield~ block + variety*nitrogen + Error(block/field), data = oats)  # gives singular error, but correct.</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_aov_block_random &lt;- aov(yield~ block + variety*nitrogen + Error(block/field123), data = oats)  # aov prefers numbered 123 across the blocks</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>oats_aov_block_random <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield<span class="sc">~</span> block <span class="sc">+</span> variety<span class="sc">*</span>nitrogen <span class="sc">+</span> <span class="fu">Error</span>(block<span class="sc">/</span>variety), <span class="at">data =</span> oats)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_aov_block_random)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: block
+      Df Sum Sq Mean Sq
+block  5  15875    3175
+
+Error: block:variety
+          Df Sum Sq Mean Sq F value Pr(&gt;F)
+variety    2   1786   893.2   1.485  0.272
+Residuals 10   6013   601.3               
+
+Error: Within
+                 Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+nitrogen          3  20020    6673  37.686 2.46e-12 ***
+variety:nitrogen  6    322      54   0.303    0.932    
+Residuals        45   7969     177                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Note that we don’t get a p-value for the random block now, since block gets its own error term. we also get the same results from when we treated block as fixed.</p>
+<p>Since there’s no interaction between variety and nitrogen, we can drop that from the model and get this as the final model.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-19_9978f12a7e033bf338f0069bf1ce4de1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No interaction</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>oats_aov_block_fixed_additive <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield<span class="sc">~</span> block <span class="sc">+</span> nitrogen <span class="sc">+</span> variety <span class="sc">+</span> <span class="fu">Error</span>(block<span class="sc">/</span>variety), <span class="at">data =</span> oats)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_aov_block_fixed_additive)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: block
+      Df Sum Sq Mean Sq
+block  5  15875    3175
+
+Error: block:variety
+          Df Sum Sq Mean Sq F value Pr(&gt;F)
+variety    2   1786   893.2   1.485  0.272
+Residuals 10   6013   601.3               
+
+Error: Within
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+nitrogen   3  20020    6673   41.05 1.23e-13 ***
+Residuals 51   8290     163                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="lmer-1" class="level4">
+<h4 class="anchored" data-anchor-id="lmer-1">lmer</h4>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-20_b0be6767848369c30545d2fcad76cb10">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mixed model approach, fixed block </span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_lmer_block_fixed &lt;- lmer(yield~ block + variety*nitrogen + (1 | block:variety), data = oats)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>oats_lmer_block_fixed <span class="ot">&lt;-</span> <span class="fu">lmer</span>(yield<span class="sc">~</span> block <span class="sc">+</span> variety<span class="sc">*</span>nitrogen <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> field), <span class="at">data =</span> oats)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(oats_lmer_block_fixed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+                  Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+block             4675.0   935.0     5    10  5.2800   0.01244 *  
+variety            526.1   263.0     2    10  1.4853   0.27239    
+nitrogen         20020.5  6673.5     3    45 37.6856 2.458e-12 ***
+variety:nitrogen   321.8    53.6     6    45  0.3028   0.93220    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># block random</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_lmer_block_random &lt;- lmer(yield~ variety*nitrogen + (1 | block) + (1|block:variety), data = oats)</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_lmer_block_random &lt;- lmer(yield~ variety*nitrogen + (1 | block/field123), data = oats) # shorthand</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_lmer_block_random &lt;- lmer(yield~ variety*nitrogen + (1 | block/field), data = oats) # as long as block:field reduces to a unique 18 terms</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># oats_lmer_block_random &lt;- lmer(yield~ variety*nitrogen + (1 | block) + (1|field), data = oats) # as long as block:field reduces to a unique 18 terms, we can specify random error however.</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>oats_lmer_block_random <span class="ot">&lt;-</span> <span class="fu">lmer</span>(yield<span class="sc">~</span> variety<span class="sc">*</span>nitrogen <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> block<span class="sc">/</span>variety), <span class="at">data =</span> oats) <span class="co"># shorthand</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(oats_lmer_block_random)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+                  Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+variety            526.1   263.0     2    10  1.4853    0.2724    
+nitrogen         20020.5  6673.5     3    45 37.6857 2.458e-12 ***
+variety:nitrogen   321.7    53.6     6    45  0.3028    0.9322    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Since interaction is non significant, and treating block as random doesn’t change the analysis, we drop interaction from model for the final model.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-21_403a5ad36fca6e5b9ff18606c230fc90">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dropping non-significant interaction term, fixed block</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>oats_lmer_block_fixed_additive <span class="ot">&lt;-</span> <span class="fu">lmer</span>(yield<span class="sc">~</span> block <span class="sc">+</span> variety <span class="sc">+</span> nitrogen <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> field), <span class="at">data =</span> oats) <span class="co"># shorthand</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># dropping non-significant interaction term, random block</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>oats_lmer_block_random_additive <span class="ot">&lt;-</span> <span class="fu">lmer</span>(yield<span class="sc">~</span> variety <span class="sc">+</span> nitrogen <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> block<span class="sc">/</span>variety), <span class="at">data =</span> oats) <span class="co"># shorthand</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-22_84c64cc4ce014eaffbcb351813d8b767">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_lmer_block_fixed_additive)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: yield ~ block + variety + nitrogen + (1 | field)
+   Data: oats
+
+REML criterion at convergence: 525.6
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-1.96728 -0.65956 -0.02455  0.61656  1.69168 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ field    (Intercept) 109.7    10.47   
+ Residual             162.6    12.75   
+Number of obs: 72, groups:  field, 18
+
+Fixed effects:
+                  Estimate Std. Error       df t value Pr(&gt;|t|)    
+(Intercept)       135.8611     8.1740  10.0000  16.621 1.30e-08 ***
+blockII           -28.0833    10.0111  10.0000  -2.805  0.01863 *  
+blockIII          -39.4167    10.0111  10.0000  -3.937  0.00279 ** 
+blockIV           -37.1667    10.0111  10.0000  -3.713  0.00402 ** 
+blockV            -44.4167    10.0111  10.0000  -4.437  0.00126 ** 
+blockVI           -39.0833    10.0111  10.0000  -3.904  0.00294 ** 
+varietyMarvellous   5.2917     7.0789  10.0000   0.748  0.47196    
+varietyVictory     -6.8750     7.0789  10.0000  -0.971  0.35436    
+nitrogen.L         32.9447     3.0052  51.0000  10.963 5.12e-15 ***
+nitrogen.Q         -5.1667     3.0052  51.0000  -1.719  0.09163 .  
+nitrogen.C         -0.4472     3.0052  51.0000  -0.149  0.88229    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) blckII blcIII blckIV blockV blckVI vrtyMr vrtyVc ntrg.L
+blockII     -0.612                                                        
+blockIII    -0.612  0.500                                                 
+blockIV     -0.612  0.500  0.500                                          
+blockV      -0.612  0.500  0.500  0.500                                   
+blockVI     -0.612  0.500  0.500  0.500  0.500                            
+vartyMrvlls -0.433  0.000  0.000  0.000  0.000  0.000                     
+varityVctry -0.433  0.000  0.000  0.000  0.000  0.000  0.500              
+nitrogen.L   0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000       
+nitrogen.Q   0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000
+nitrogen.C   0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000
+            ntrg.Q
+blockII           
+blockIII          
+blockIV           
+blockV            
+blockVI           
+vartyMrvlls       
+varityVctry       
+nitrogen.L        
+nitrogen.Q        
+nitrogen.C   0.000</code></pre>
+</div>
+</div>
+</section>
+<section id="emmeans-manual-calculation" class="level4">
+<h4 class="anchored" data-anchor-id="emmeans-manual-calculation">emmeans (manual calculation)</h4>
+<p>If we want to average across the random whole plots, and have an estimate for the variability of nitrogen, we are now considering two sources of variability, the subplot error (residual) and whole plot error. Thus, this is loosely a linear combination of chi-square distributions, thus we need a df approximation.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-23_89889386ade2c885998fa7dc131626f2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the manual calculation of the satterthwaite approximation</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>oats_lmer_block_fixed_additive_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(oats_lmer_block_fixed_additive, <span class="at">specs =</span> <span class="st">"nitrogen"</span>, <span class="at">lmer.df =</span> <span class="st">"satterthwaite"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>oats_lmer_block_fixed_additive_emm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> nitrogen emmean   SE   df lower.CL upper.CL
+ 0.0cwt     79.4 3.89 29.1     71.4     87.3
+ 0.2cwt     98.9 3.89 29.1     90.9    106.8
+ 0.4cwt    114.2 3.89 29.1    106.3    122.2
+ 0.6cwt    123.4 3.89 29.1    115.4    131.3
+
+Results are averaged over the levels of: block, variety 
+Degrees-of-freedom method: satterthwaite 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<p>When we treat block as random, we have even more uncertainty over the average levels because we’re incorporating more variability from block.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-24_4ce853ee4d6c887f6140700cc38f41bb">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>oats_lmer_block_random_additive_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(oats_lmer_block_random_additive, <span class="at">specs =</span> <span class="st">"nitrogen"</span>, <span class="at">lmer.df =</span> <span class="st">"satterthwaite"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>oats_lmer_block_random_additive_emm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> nitrogen emmean   SE   df lower.CL upper.CL
+ 0.0cwt     79.4 7.13 6.64     62.3     96.4
+ 0.2cwt     98.9 7.13 6.64     81.8    115.9
+ 0.4cwt    114.2 7.13 6.64     97.2    131.3
+ 0.6cwt    123.4 7.13 6.64    106.3    140.4
+
+Results are averaged over the levels of: variety 
+Degrees-of-freedom method: satterthwaite 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<p>In the output, we note a partial degree of freedom. How do we use satterthwaite formula to get this df approximation? (and subsequently, the standard error used to calculate the confidence limits). Nitrogen is indexed by <span class="math inline">j</span>, so we are ultimately interested in <span class="math inline">\overline{Y_{\cdot j \cdot}}</span>, this is the “emmean” estimate for average nitrogen, in which we average over variety and block.</p>
+<p><span class="math display">
+\begin{aligned}
+SE(\overline{Y_{\cdot j \cdot}}) &amp;= \sqrt{\hat{\operatorname{Var}}(\overline{Y_{\cdot j \cdot}})} \\
+\operatorname{Var}(\overline{Y_{\cdot j \cdot}}) &amp;= \operatorname{Var}\left(\frac{\sum_{i=1}^3\sum_{k=1}^6Y_{ijk}}{(3)(6)}\right) \\
+&amp;= \frac{1}{18} (\sigma_W^2 + \sigma^2)
+\end{aligned}
+</span></p>
+<p>From the expected mean squares, a moment estimator of the variances are</p>
+<p><span class="math display">
+\begin{aligned}
+\hat\sigma^2 &amp;= SPMSE \\
+\hat \sigma^2_W &amp;= \frac{1}{4}(WPMSE - SPMSE)
+\end{aligned}
+</span> <span class="math display">
+\begin{aligned}
+\hat{\operatorname{Var}}(\overline{Y_{\cdot j \cdot}}) &amp;= \frac{1}{72}WPMSE + \frac{3}{72}SPMSE
+\end{aligned}
+</span></p>
+<p>Now we also know that the mean squared errors have chi-squared distributions (because the are quadratic forms). This is where satterwaithe formula comes in. Now we just need to plug in the squared errors</p>
+<p><span class="math display">
+\begin{aligned}
+\nu \approx \frac{(\sum k_is_i^2)^2}{\sum_i\frac{(k_is^2_i)^2}{\nu_i}}
+\end{aligned}
+</span></p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-25_0069cc5442d17d670df1739b28d6ec9e">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>oats_lm_block_additive <span class="ot">&lt;-</span> <span class="fu">lm</span>(yield<span class="sc">~</span> block <span class="sc">+</span> variety <span class="sc">+</span> nitrogen <span class="sc">+</span> block<span class="sc">:</span>variety, <span class="at">data =</span> oats)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(oats_lm_block_additive)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: yield
+              Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+block          5 15875.3  3175.1 19.5317 8.101e-11 ***
+variety        2  1786.4   893.2  5.4945 0.0069026 ** 
+nitrogen       3 20020.5  6673.5 41.0528 1.228e-13 ***
+block:variety 10  6013.3   601.3  3.6992 0.0009032 ***
+Residuals     51  8290.5   162.6                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-26_d9c83fbc6ef5c1b526551ebc126c02c9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># with variance estimates</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>sperr <span class="ot">&lt;-</span> <span class="fl">162.6</span> <span class="co"># subplot error</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>wperr <span class="ot">&lt;-</span> (<span class="fl">601.3</span> <span class="sc">-</span> <span class="fl">162.6</span>) <span class="sc">/</span> <span class="dv">4</span> <span class="co"># whole plot variance estimate</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>avg_nitro_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">18</span><span class="sc">*</span>(wperr <span class="sc">+</span> sperr))</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>avg_nitro_se</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.889266</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-27_a73c3d87b8438689eb91bef1776ec144">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># with mean squared values</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>wpmse <span class="ot">&lt;-</span> <span class="fl">601.3</span> <span class="co"># Whole plot Mean Square</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>wpdf <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co"># Whole plot degrees of freedom</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>spmse <span class="ot">&lt;-</span> <span class="fl">162.6</span> <span class="co"># sub plot mean squared</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>spdf <span class="ot">&lt;-</span> <span class="dv">51</span> <span class="co"># sub plot degrees of freedom</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># satterwaithe approximation</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>approx_df <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">72</span><span class="sc">*</span>wpmse <span class="sc">+</span> <span class="dv">3</span><span class="sc">/</span><span class="dv">72</span><span class="sc">*</span>spmse)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> ((<span class="dv">1</span><span class="sc">/</span><span class="dv">72</span><span class="sc">*</span>wpmse)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> wpdf <span class="sc">+</span> (<span class="dv">3</span><span class="sc">/</span><span class="dv">72</span><span class="sc">*</span>spmse)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> spdf)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>approx_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 29.05648</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-28_a9b89c2ae8fb4f181deab3d3391f8502">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lower confidence limit</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>nitro1_est <span class="ot">&lt;-</span> oats <span class="sc">%&gt;%</span> <span class="fu">filter</span>(nitrogen <span class="sc">==</span> <span class="st">"0.0cwt"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(yield) <span class="sc">%&gt;%</span> <span class="fu">mean</span>()</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>nitro1_est <span class="sc">+</span> avg_nitro_se <span class="sc">*</span> <span class="fu">qt</span>(.<span class="dv">025</span>, approx_df) <span class="co"># Lower</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 71.43512</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>nitro1_est <span class="sc">+</span> avg_nitro_se <span class="sc">*</span> <span class="fu">qt</span>(.<span class="dv">975</span>, approx_df) <span class="co"># Upper</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 87.34266</code></pre>
+</div>
+</div>
+<p>We can see now all the values match up with emmeans!</p>
+</section>
+<section id="emmeans-plot-misleading" class="level4">
+<h4 class="anchored" data-anchor-id="emmeans-plot-misleading">emmeans plot (misleading)</h4>
+<p>This is a criticism from <a href="https://newprairiepress.org/cgi/viewcontent.cgi?referer=&amp;httpsredir=1&amp;article=1474&amp;context=agstatconference">Should blocks be random or fixed?</a> for when we treat blocks as random. He concludes by stating his preference for fixed blocks.</p>
+<p>The following graphic is a useful summarization for showing levels of nitrogen change, and often would like to show error bars around those mean estimates. However, when we treat blocks as random (field), we are adding an additional source of variation to the standard error estimates of the mean. When we plot it, the error bars thus look huge, compared to the fixed effects case. Whereas the significance for the difference between the two groups are the same. Even though they overlap, the difference can still be significant.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-29_63ed53ea687a9da189a5b208433ab06e">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(oats_lmer_block_random_additive_emm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> contrast        estimate   SE df t.ratio p.value
+ 0.0cwt - 0.2cwt   -19.50 4.25 51  -4.588  0.0002
+ 0.0cwt - 0.4cwt   -34.83 4.25 51  -8.196  &lt;.0001
+ 0.0cwt - 0.6cwt   -44.00 4.25 51 -10.353  &lt;.0001
+ 0.2cwt - 0.4cwt   -15.33 4.25 51  -3.608  0.0038
+ 0.2cwt - 0.6cwt   -24.50 4.25 51  -5.765  &lt;.0001
+ 0.4cwt - 0.6cwt    -9.17 4.25 51  -2.157  0.1493
+
+Results are averaged over the levels of: variety 
+Degrees-of-freedom method: satterthwaite 
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-30_2afae3359c7c7f70bd94ec117a3700b1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(oats_lmer_block_random_additive_emm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="experimentaldesign_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-31_8182db6fd61786944fca2de32ed46eed">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(oats_lmer_block_fixed_additive_emm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> contrast        estimate   SE df t.ratio p.value
+ 0.0cwt - 0.2cwt   -19.50 4.25 51  -4.588  0.0002
+ 0.0cwt - 0.4cwt   -34.83 4.25 51  -8.196  &lt;.0001
+ 0.0cwt - 0.6cwt   -44.00 4.25 51 -10.353  &lt;.0001
+ 0.2cwt - 0.4cwt   -15.33 4.25 51  -3.608  0.0038
+ 0.2cwt - 0.6cwt   -24.50 4.25 51  -5.765  &lt;.0001
+ 0.4cwt - 0.6cwt    -9.17 4.25 51  -2.157  0.1493
+
+Results are averaged over the levels of: block, variety 
+Degrees-of-freedom method: satterthwaite 
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-32_529143fb664666881e66357cd48b0b78">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(oats_lmer_block_fixed_additive_emm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="experimentaldesign_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="steel-example" class="level2 tabset" data-number="15.2">
+<h2 class="tabset anchored" data-number="15.2" data-anchor-id="steel-example"><span class="header-section-number">15.2</span> Steel Example</h2>
+<p>Based on (Box et. al 2005) Experiment designed to study the corrosion resistance of steel bars treated with 4 coatings, <span class="math inline">C_1, C_2, C_3, C_4</span> at three furnace temperatures <span class="math inline">360^{\circ}C, 370^{\circ}C,380^{\circ}C</span>. Furnace temperature is considered a hard to change factor because of the time it takes to reset the furnace and reach equilibriu temperature. Once the equilibrium temperature is reached, 4 steel bars with randomly assigned coating are randomly positioned in the furnace and heated. The first three temperatures were run on day 1, and the second three temperatures were run on day 2.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-33_7245116e58016d68be041ac3a6896d56">
+
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-34_d5ffbcf394b5c4aa3b43dd27e12620cc">
+<div class="cell-output cell-output-stdout">
+<pre><code>     y coating temp day
+1   73       2  360   1
+2   83       3  360   1
+3   67       1  360   1
+4   89       4  360   1
+5   65       1  370   1
+6   87       3  370   1
+7   86       4  370   1
+8   91       2  370   1
+9  147       3  380   1
+10 155       1  380   1
+11 127       2  380   1
+12 212       4  380   1
+13 153       4  380   2
+14  90       3  380   2
+15 100       2  380   2
+16 108       1  380   2
+17 150       4  370   2
+18 140       1  370   2
+19 121       3  370   2
+20 142       2  370   2
+21  33       1  360   2
+22  54       4  360   2
+23   8       2  360   2
+24  46       3  360   2</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-35_fdccd7a9f6ea23dacfab2f6f9595b66b">
+<div class="cell-output-display">
+<p><img src="experimentaldesign_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>If we pretend that the randomization was not done with day as a blocking factor, then we have a split plot with CRD in whole plots and CRD in subplots.</p>
+<section id="with-day-block" class="level3" data-number="15.2.1">
+<h3 data-number="15.2.1" class="anchored" data-anchor-id="with-day-block"><span class="header-section-number">15.2.1</span> with day block</h3>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-36_42c462d453f11d4881c3af319bb3fed2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># just get df table, and mean squares</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co"># wrong denominator for temp effect</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>steel_lm_block <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> day <span class="sc">+</span> coating<span class="sc">*</span>temp <span class="sc">+</span> day<span class="sc">:</span>temp, <span class="at">data =</span> steel)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(steel_lm_block)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: y
+             Df  Sum Sq Mean Sq  F value    Pr(&gt;F)    
+day           1   782.0   782.0   6.2794  0.033538 *  
+coating       3  4289.1  1429.7  11.4798  0.001977 ** 
+temp          2 26519.2 13259.6 106.4674 5.446e-07 ***
+coating:temp  6  3269.7   545.0   4.3757  0.024066 *  
+day:temp      2 13657.6  6828.8  54.8314 9.113e-06 ***
+Residuals     9  1120.9   124.5                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># correct split plot analysis</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>steel_aov_block <span class="ot">&lt;-</span> <span class="fu">aov</span>(y <span class="sc">~</span> day <span class="sc">+</span> coating<span class="sc">*</span>temp <span class="sc">+</span> <span class="fu">Error</span>(day<span class="sc">:</span>temp), <span class="at">data =</span> steel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in aov(y ~ day + coating * temp + Error(day:temp), data = steel):
+Error() model is singular</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(steel_aov_block)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: day:temp
+          Df Sum Sq Mean Sq F value Pr(&gt;F)
+day        1    782     782   0.115  0.767
+temp       2  26519   13260   1.942  0.340
+Residuals  2  13658    6829               
+
+Error: Within
+             Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+coating       3   4289  1429.7  11.480 0.00198 **
+coating:temp  6   3270   545.0   4.376 0.02407 * 
+Residuals     9   1121   124.5                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># correct split plot analysis</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>steel_lmer_block <span class="ot">&lt;-</span> <span class="fu">lmer</span>(y<span class="sc">~</span> day <span class="sc">+</span> coating<span class="sc">*</span>temp <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>temp<span class="sc">:</span>day), <span class="at">data =</span> steel)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(steel_lmer_block)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+             Sum Sq Mean Sq NumDF DenDF F value   Pr(&gt;F)   
+day            14.3   14.26     1     2  0.1145 0.767278   
+coating      4289.1 1429.71     3     9 11.4798 0.001977 **
+temp          483.7  241.83     2     2  1.9417 0.339937   
+coating:temp 3269.7  544.96     6     9  4.3757 0.024066 * 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="without-day-block" class="level3" data-number="15.2.2">
+<h3 data-number="15.2.2" class="anchored" data-anchor-id="without-day-block"><span class="header-section-number">15.2.2</span> without day block</h3>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-37_e97c5cfb4d23948f296973fe2a8714f9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># without blocking</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>steel_lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(y<span class="sc">~</span>coating<span class="sc">*</span>temp <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>temp<span class="sc">:</span>day), <span class="at">data =</span> steel)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(steel_lmer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+             Sum Sq Mean Sq NumDF DenDF F value   Pr(&gt;F)   
+coating      4289.1 1429.71     3     9 11.4798 0.001977 **
+temp          686.2  343.09     2     3  2.7548 0.209321   
+coating:temp 3269.7  544.96     6     9  4.3757 0.024066 * 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-38_78fb0b385d4c1e004936faddd0e36b89">
+<div class="cell-output-display">
+<p><img src="experimentaldesign_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="with-blocktreatment" class="level3" data-number="15.2.3">
+<h3 data-number="15.2.3" class="anchored" data-anchor-id="with-blocktreatment"><span class="header-section-number">15.2.3</span> with block:treatment</h3>
+<p>We just check the model seperating the block x sp-treatment out from the residual term.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-39_e495d72137d6cd3a29bfb85fd76be312">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>steel_lmer_block_interact <span class="ot">&lt;-</span> <span class="fu">lmer</span>(y <span class="sc">~</span> day <span class="sc">+</span> coating<span class="sc">*</span>temp <span class="sc">+</span> day<span class="sc">:</span>coating <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>temp<span class="sc">:</span>day), <span class="at">data =</span> steel)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(steel_lmer_block_interact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+             Sum Sq Mean Sq NumDF  DenDF F value   Pr(&gt;F)   
+day            16.5   16.54     1 2.0001  0.1145 0.767273   
+coating      4289.1 1429.71     3 6.0000  9.8969 0.009714 **
+temp          561.0  280.51     2 2.0001  1.9418 0.339922   
+coating:temp 3269.8  544.96     6 6.0000  3.7724 0.065509 . 
+day:coating   254.1   84.71     3 6.0000  0.5864 0.645799   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="fake-data" class="level3" data-number="15.2.4">
+<h3 data-number="15.2.4" class="anchored" data-anchor-id="fake-data"><span class="header-section-number">15.2.4</span> fake data</h3>
+<p>Here I try to simulate data</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-40_01c12aff3b9f384d4014dac12bbd3b63">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>fake_y <span class="ot">&lt;-</span> <span class="cf">function</span>(day, coating, temp){</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  temp <span class="ot">&lt;-</span> <span class="fu">scale</span>(<span class="fu">as.numeric</span>(temp), <span class="at">scale =</span> F)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  day <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(day)</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  coating <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(coating)</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(day)</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span> <span class="sc">*</span> day <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> temp <span class="sc">+</span> (day<span class="sc">*</span>temp)<span class="sc">*</span><span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">2</span>) <span class="sc">+</span> .<span class="dv">2</span><span class="sc">*</span>coating <span class="sc">+</span> <span class="dv">20</span><span class="sc">*</span>day<span class="sc">*</span>coating <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>fake_steel <span class="ot">&lt;-</span> steel <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">fake_y =</span> <span class="fu">fake_y</span>(steel<span class="sc">$</span>day, steel<span class="sc">$</span>coating, steel<span class="sc">$</span>temp)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-41_74f5f1009cbb9f31f927de467f479a88">
+<div class="cell-output-display">
+<p><img src="experimentaldesign_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-42_d08ca5f8902eef1438701be551c96b44">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>fake_steel_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(fake_y <span class="sc">~</span> (day <span class="sc">+</span> coating <span class="sc">+</span> temp)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> day<span class="sc">:</span>temp <span class="sc">+</span> <span class="fu">Error</span>(day<span class="sc">:</span>temp), <span class="at">data =</span> fake_steel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in aov(fake_y ~ (day + coating + temp)^2 - day:temp + Error(day:temp), :
+Error() model is singular</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>fake_steel_aov</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+aov(formula = fake_y ~ (day + coating + temp)^2 - day:temp + 
+    Error(day:temp), data = fake_steel)
+
+Grand Mean: 86.29519
+
+Stratum 1: day:temp
+
+Terms:
+                     day     temp Residuals
+Sum of Squares  21602.92 41460.73   1605.22
+Deg. of Freedom        1        2         2
+
+Residual standard error: 28.33036
+9 out of 12 effects not estimable
+Estimated effects may be unbalanced
+
+Stratum 2: Within
+
+Terms:
+                  coating day:coating coating:temp Residuals
+Sum of Squares  25013.316    2433.340     1007.761  1326.953
+Deg. of Freedom         3           3            6         6
+
+Residual standard error: 14.87141
+Estimated effects may be unbalanced</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fake_steel_aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: day:temp
+          Df Sum Sq Mean Sq F value Pr(&gt;F)  
+day        1  21603   21603   26.92 0.0352 *
+temp       2  41461   20730   25.83 0.0373 *
+Residuals  2   1605     803                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Error: Within
+             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+coating       3  25013    8338  37.700 0.000274 ***
+day:coating   3   2433     811   3.668 0.082345 .  
+coating:temp  6   1008     168   0.759 0.626583    
+Residuals     6   1327     221                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="nested-variable-labeling" class="level1" data-number="16">
+<h1 data-number="16"><span class="header-section-number">16</span> Nested Variable labeling</h1>
+<p>When working with a client, it seems that the labeling of nested variables is quite the headache, so this section is to work out the differences in the estimation in linear models. and where the differences in ANOVA appear.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-43_1e769393d6070815f7dd3bcad8a62137">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate the data for a nested block environment</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>simulate_data <span class="ot">&lt;-</span> <span class="cf">function</span>(environ, block, treat) {</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  environ_effect <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  block_effect <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">6</span>)</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>  treat_effect <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">2</span>)</span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> environ_effect[<span class="fu">as.numeric</span>(environ)] <span class="sc">+</span> </span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    block_effect[<span class="fu">as.numeric</span>(block)] <span class="sc">+</span> </span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>    treat_effect[<span class="fu">as.numeric</span>(treat)] <span class="sc">+</span></span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(<span class="fu">length</span>(environ))</span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>  y</span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">environ =</span> <span class="fu">gl</span>(<span class="dv">2</span>, <span class="dv">6</span>),</span>
+<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">block123 =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">4</span>)),</span>
+<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a>              <span class="at">block =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">times =</span> <span class="dv">2</span>), </span>
+<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">rep</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">times =</span> <span class="dv">2</span>))),</span>
+<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">treat =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">each =</span> <span class="dv">3</span>, <span class="at">times =</span> <span class="dv">2</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">simulate_data</span>(environ, block, treat))</span>
+<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-21"><a href="#cb70-21" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="at">n=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 5
+   environ block123 block treat     y
+   &lt;fct&gt;   &lt;fct&gt;    &lt;fct&gt; &lt;fct&gt; &lt;dbl&gt;
+ 1 1       1        1     a      3.54
+ 2 1       2        2     a      2.50
+ 3 1       3        3     a      4.00
+ 4 1       1        1     b      3.66
+ 5 1       2        2     b      3.61
+ 6 1       3        3     b      2.93
+ 7 2       1        4     a      6.36
+ 8 2       2        5     a      4.54
+ 9 2       3        6     a      4.22
+10 2       1        4     b      2.35</code></pre>
+</div>
+</div>
+<p>The numbering in this dataset is such that the block numbering goes across the environments. consider the following two models and their anova tables</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-44_03ab71b95818cbd79d0e80c4822585cd">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note the sum squares are all the same!</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>environ <span class="sc">+</span> environ<span class="sc">:</span>block123 <span class="sc">+</span> treat <span class="sc">+</span> treat<span class="sc">:</span>environ, <span class="at">data =</span> dat)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> environ <span class="sc">+</span> block <span class="sc">+</span> treat <span class="sc">+</span> treat<span class="sc">:</span>environ, <span class="at">data =</span> dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-45_a7cb39e799f9f804756474df5c5c7682">
+<div class="cell-output-display">
+
+<table class="table" style="width: auto !important; float: left; margin-right: 10px;">
+<caption>Numbered within Environments</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Df </th>
+   <th style="text-align:right;"> Sum Sq </th>
+   <th style="text-align:right;"> Mean Sq </th>
+   <th style="text-align:right;"> F value </th>
+   <th style="text-align:right;"> Pr(&gt;F) </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> environ </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3.7812335 </td>
+   <td style="text-align:right;"> 3.7812335 </td>
+   <td style="text-align:right;"> 1.9876925 </td>
+   <td style="text-align:right;"> 0.2313888 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> treat </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.8039892 </td>
+   <td style="text-align:right;"> 0.8039892 </td>
+   <td style="text-align:right;"> 0.4226354 </td>
+   <td style="text-align:right;"> 0.5510743 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> environ:block123 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0.5392957 </td>
+   <td style="text-align:right;"> 0.1348239 </td>
+   <td style="text-align:right;"> 0.0708733 </td>
+   <td style="text-align:right;"> 0.9874393 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> environ:treat </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9788858 </td>
+   <td style="text-align:right;"> 0.9788858 </td>
+   <td style="text-align:right;"> 0.5145739 </td>
+   <td style="text-align:right;"> 0.5128253 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Residuals </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 7.6092926 </td>
+   <td style="text-align:right;"> 1.9023231 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="cell-output-display">
+
+<table class="table" style="width: auto !important; ">
+<caption>Numbered across Environments</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Df </th>
+   <th style="text-align:right;"> Sum Sq </th>
+   <th style="text-align:right;"> Mean Sq </th>
+   <th style="text-align:right;"> F value </th>
+   <th style="text-align:right;"> Pr(&gt;F) </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> environ </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3.7812335 </td>
+   <td style="text-align:right;"> 3.7812335 </td>
+   <td style="text-align:right;"> 1.9876925 </td>
+   <td style="text-align:right;"> 0.2313888 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> block </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0.5392957 </td>
+   <td style="text-align:right;"> 0.1348239 </td>
+   <td style="text-align:right;"> 0.0708733 </td>
+   <td style="text-align:right;"> 0.9874393 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> treat </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.8039892 </td>
+   <td style="text-align:right;"> 0.8039892 </td>
+   <td style="text-align:right;"> 0.4226354 </td>
+   <td style="text-align:right;"> 0.5510743 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> environ:treat </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9788858 </td>
+   <td style="text-align:right;"> 0.9788858 </td>
+   <td style="text-align:right;"> 0.5145739 </td>
+   <td style="text-align:right;"> 0.5128253 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Residuals </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 7.6092926 </td>
+   <td style="text-align:right;"> 1.9023231 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Substituting <code>environ:block123</code> with <code>block</code> when the numbering is the same gives the same ANOVA table.</p>
+<p>The difference between these two models is that the nesting is more explicitly stated when the blocks are labeled within each environment and that there is no “aliasing” of effects either. It might not be clear from the second model that even though “block” has 6 levels, why the df = 4 in the anova table when it should intuitively be 5. It’s because there is aliasing with the environment variable, so environment takes 1 df away, and thus one of the estimates of the block is singular. This can be seen in the output of <code>summary(mod)</code>:</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-46_96c4cf1845a76f98c9131484673f9487">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2) <span class="co"># 1 coefficient is aliased</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ environ + block + treat + treat:environ, data = dat)
+
+Residuals:
+      1       2       3       4       5       6       7       8       9      10 
+-0.0357 -0.5294  0.5651  0.0357  0.5294 -0.5651  1.4607 -0.7701 -0.6907 -1.4607 
+     11      12 
+ 0.7701  0.6907 
+
+Coefficients: (1 not defined because of singularities)
+                 Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)      3.575392   1.126151   3.175   0.0337 *
+environ2         1.337100   1.592618   0.840   0.4484  
+block2          -0.549645   1.379247  -0.399   0.7106  
+block3          -0.135551   1.379247  -0.098   0.9264  
+block4          -0.008554   1.379247  -0.006   0.9953  
+block5           0.393766   1.379247   0.285   0.7894  
+block6                 NA         NA      NA       NA  
+treatb           0.053539   1.126151   0.048   0.9644  
+environ2:treatb -1.142445   1.592618  -0.717   0.5128  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.379 on 4 degrees of freedom
+Multiple R-squared:  0.4451,    Adjusted R-squared:  -0.526 
+F-statistic: 0.4583 on 7 and 4 DF,  p-value: 0.8269</code></pre>
+</div>
+</div>
+<p>Short aside - R knows the difference between nested and crossed data based on whether the main effect is included or not. Notice the difference between these examples, even though <code>environ:block123</code> is included in both models, it doesn’t have the same degrees of freedom.</p>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-47_319c48e31881928f26fc208890e3a640">
+<div class="cell-output-display">
+
+<table class="table" style="width: auto !important; float: left; margin-right: 10px;">
+<caption>Nested Factor ANOVA</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> source </th>
+   <th style="text-align:left;"> df </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Environ </td>
+   <td style="text-align:left;"> a - 1 = 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Environ:block123 </td>
+   <td style="text-align:left;"> a(b -1) = 4 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="cell-output-display">
+
+<table class="table" style="width: auto !important; ">
+<caption>Crossed Factor ANOVA</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> source </th>
+   <th style="text-align:left;"> df </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Environ </td>
+   <td style="text-align:left;"> a - 1 = 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> block123 </td>
+   <td style="text-align:left;"> b - 1 = 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Environ:block123 </td>
+   <td style="text-align:left;"> (a-1)(b -1) = 2 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell" data-hash="experimentaldesign_cache/html/unnamed-chunk-48_521bd428821f246c327f52b941c697b0">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># nest vs crossing df</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>mod_nest <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> environ <span class="sc">+</span> environ<span class="sc">:</span>block123, <span class="at">data =</span> dat)</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>mod_cross <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> environ <span class="sc">+</span> block123 <span class="sc">+</span> environ<span class="sc">:</span>block123, <span class="at">data =</span> dat)</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_nest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: y
+                 Df Sum Sq Mean Sq F value Pr(&gt;F)
+environ           1 3.7812  3.7812  2.4156 0.1711
+environ:block123  4 0.5393  0.1348  0.0861 0.9836
+Residuals         6 9.3922  1.5654               </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_cross)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: y
+                 Df Sum Sq Mean Sq F value Pr(&gt;F)
+environ           1 3.7812  3.7812  2.4156 0.1711
+block123          2 0.0127  0.0064  0.0041 0.9959
+environ:block123  2 0.5265  0.2633  0.1682 0.8490
+Residuals         6 9.3922  1.5654               </code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../epidemiology/epidemiology.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Epidemiology</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../exponential/exponential.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

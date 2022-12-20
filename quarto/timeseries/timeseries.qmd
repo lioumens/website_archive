@@ -1,0 +1,554 @@
+---
+title: "Time Series"
+author: "Michael Liou"
+date: "`r Sys.Date()`"
+execute:
+  cache: true
+---
+
+
+```{r setup, include=FALSE}
+#| code-summary: Libraries
+#| message: false
+library(tidyverse) # general data science
+library(glue)
+library(reshape2) # for melt function
+library(astsa)
+library(tseries)
+library(forecast) # time series forecasting, common package
+library(vars) # vector autoregression
+library(marima) # multivariate arima
+library(dlm) # dynamic linear models
+library(ggfortify) # adds some autoplot models, overwrites many functions from forecast
+library(KFAS) # kalman filter, sequential univariate (fast), exponential family
+# detach("package:forecast", unload = T)
+```
+
+# Introduction
+
+## Types of Models
+
+- Autoregression (AR)
+- Moving Average (AM)
+- Vector Autoregression (VAR)
+
+- HMM
+  - related to bayesian inference, special
+- State Space Models
+  - very broad space of models that includes arima models, and dynamic linear models. Can also account for linear/nonlinear gaussian/non-gaussian errors
+- Multivariate autoregression (MAR)
+
+## Software
+
+- `stats`
+  - `KalmanLike`, `KalmanRun`, `KalmanSmooth`, `KalmanForecast`
+- `dlm`
+- `KFAS`
+
+See also [State Space Models in R](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjng_vXx4P6AhWdk4kEHZ4KBUAQFnoECBoQAQ&url=https%3A%2F%2Fwww.jstatsoft.org%2Farticle%2Fdownload%2Fv041i04%2F488&usg=AOvVaw0bbJoxE4fWu74zhZs0qggz).
+
+## Theory
+
+Courses 
+
+- Kevin Kotzé's [Time Series Analysis Course](https://www.economodel.com/time-series-analysis)
+  - has a great overview and description, and packaged R commands for univariate and multivariate from an economics perspective.
+
+# Univariate time series
+
+## base tools
+
+```{r}
+# acf, ccf, pacf
+```
+
+## AR(1)
+
+Autoregressive of order 1 is the simplest time series you can have.
+
+$$
+\begin{aligned}
+Y_t = Y_{t-1} + \varepsilon_t
+\end{aligned}
+$$
+
+## Simulated Examples
+
+```{r}
+# AR models
+sim_ar <- tibble(p = 1:3,
+                 ar = list(.7,
+                           c(.7,-.3),
+                           c(.7, -.3, .5)),
+                 n = 200) %>% 
+  rowwise() %>% 
+  mutate(y = list(arima.sim(list(ar = ar), n = 200)),
+         x = list(time(y)))
+
+sim_ar %>% unnest(c(x, y)) %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  facet_grid(p~.)
+```
+
+
+```{r}
+# ma processes
+sim_ma <- tibble(q = 1:3,
+                 ma = list(.7,
+                           c(.7,-.3),
+                           c(.7, -.3, .5)),
+                 n = 200) %>% 
+  rowwise() %>% 
+  mutate(y = list(arima.sim(list(ma = ma), n = 200)),
+         x = list(time(y))) %>% 
+  ungroup()
+
+sim_ma %>% unnest(c(x, y)) %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  facet_grid(q~.)
+```
+
+
+
+
+
+## Examples: LA County
+
+We just examine the cardiovascular mortality from the LA Pollution study. These are average weekly cv mortality rates from `astsa` package.
+
+```{r}
+# ?cmort
+x <- cmort %>% as.numeric()
+x1 <- x %>% lag()
+# yt = u + beta * yt-1
+cmort_lm <- lm(x~x1)
+
+cbind(coef(cmort_lm)[1] + coef(cmort_lm)[2] * x1,
+      c(NA, fitted(cmort_lm)),
+      c(NA, predict(cmort_lm))) %>% 
+  head() # fitted/predicted values match up
+
+
+```
+
+
+```{r}
+qplot(time(cmort), x, geom = "line", color = "black") +
+  geom_line(aes(y =  c(NA, fitted(cmort_lm)), color = "red")) +
+  scale_color_manual(values = c("black", "red"),
+                     label = c("raw", "fitted"))
+```
+
+
+
+## Example: AirPassengers
+
+```{r}
+AirPassengers %>% plot()
+```
+
+```{r}
+sarima(AirPassengers, d = 1, p = 2, q = 0)
+```
+
+
+# Multivariate time series
+
+## Vector Autoregression
+
+### Example: LA County (VAR)
+
+
+```{r}
+# cardiovascular mortality, temperature and particulates in LA county, weekly.
+la <- cbind(cmort, tempr, part)
+
+# visualization
+# ts.plot(cmort, tempr, part, col = 1:3) # base r of autoplot 
+autoplot(la, color = "black") + facet_grid(series~., scales = "free_y")
+```
+
+
+```{r}
+la_var1 <- VAR(la, p = 1, type = "both") # w/ trend
+la_var2 <- VAR(la, p = 2, type = "both") # w/ trend
+
+# coefficient matrix
+sapply(coef(la_var1),rlang::as_function(~.x[,"Estimate"]))
+
+# vcov of coef estimates
+sapply(coef(la_var1), rlang::as_function(~round(.x[,"Std. Error"], 3)))
+
+# estimated covariance of errors
+summary(la_var1)$covres
+```
+
+
+```{r}
+la_var1_const <- VAR(la, p = 1, type = "const")
+
+sapply(coef(la_var1_const),rlang::as_function(~.x[,"Estimate"]))
+```
+
+
+```{r}
+# 
+la_ols <- ar.ols(la, order.max = 1, demean = FALSE, intercept = TRUE)
+
+# matches constant VAR coefficients
+rbind(t(la_ols$ar[1,,]),
+      const = la_ols$x.intercept)
+      
+```
+
+
+```{r}
+la %>% melt(c("time", "series")) %>% 
+  ggplot(aes(time, value)) + 
+  geom_line(color = "black") + 
+  geom_line(data = fitted(la_var1) %>% melt(c("time", "series")),
+            mapping = aes(time, value, color = "red"), alpha= .6) +  # var1
+  geom_line(data = fitted(la_var1_const) %>% melt(c("time", "series")),
+            mapping = aes(time, value, color = "blue"), alpha = .6) + # var1 const
+  geom_line(data = fitted(la_var2) %>% melt(c("time", "series")),
+            mapping = aes(time, value, color = "green"), alpha = .6) + # var2
+  scale_color_manual(values = c("red", "blue", "green"),
+                     labels = c("var1", "var1_const", "var2")) + 
+  facet_grid(series~.)
+```
+
+From looking at the models, they're quite difficult to tell which model is fitting better than the others.
+
+
+
+```{r}
+# var estimates using lm
+# Matrix of time series
+la_mat <- la %>% `class<-`("matrix")
+
+la_var1_manual <- lm(la_mat ~ cbind(lag(la_mat), 1:nrow(la_mat))) # w/ trend
+la_var1_const_manual <- lm(la_mat ~ lag(la_mat)) # const
+```
+
+```{r}
+# coefs match
+sapply(coef(la_var1),rlang::as_function(~.x[,"Estimate"]))
+coef(la_var1_manual)[c(2:4, 1, 5),] %>% # reorder to match
+  `rownames<-`(c("cmort", "tempr", "part", "const", "trend")) 
+
+# var matches
+# SSE / n-r-p
+# nobs - coefs_estimated - VAR_order
+crossprod(la_var1_const_manual$residuals) / (nrow(la_mat) - la_var1_const_manual$rank - 1) # 503
+summary(la_var1_const)$covres
+```
+
+```{r}
+# order selection
+VARselect(la) # selects 2 by BIC
+```
+
+
+```{r}
+acf(resid(la_var2), 52)$acf
+```
+
+The CCF plots should all be non significant. The second part of "x & y" are the ones that lead.
+
+```{r}
+# serial test
+serial.test(la_var2, lags.pt = 12, type = "PT.adjusted")
+la[,1]
+```
+
+There are some large sample properties of VAR's as well,
+
+```{r}
+library(marima)
+```
+
+
+# State Space Model
+
+These models have a hierarchical form, in which there is some underlying time series process, but then we also observe data on top of that. Thus, the general form of the equations look like this:
+
+$$
+\begin{aligned}
+\textbf{State Equation:}& \\
+x_t &= \Phi x_{t-1} + \Upsilon u_t +   w_t \\
+\textbf{Observation Equation:}& \\
+y_t &= A_t x_t + \Gamma u_t  + v_t
+\end{aligned}
+$$
+where:
+
+- $\Upsilon u_t$ - is time varying exogenous variables
+- $\Upsilon u_t$ - is time varying exogenous variables
+- $x_t$ is state at time $t$
+- $\Phi x_t$ is state at time $t$ describes how $x$ evolves
+- $w_t$ is state noise with $w_t \sim N(0, Q)$
+- $v_t$ is measurement noise with $v_t \sim N(0, R)$
+
+There are more general forms of the state space model: with correlated errors, see Durbin Koopman for more state space methods.
+
+It seems now that state space models are now also being superseded by recurrent neural networks, which can model dynamical properties.
+
+## Example: AR(1) with observational noise
+
+The state equation:
+
+$$
+\begin{aligned}
+\textbf{State Equation:}& \\
+x_t &= \phi x_{t-1} + w_t \\
+\textbf{Observation Equation:}& \\
+y_t &= x_t + v_t
+\end{aligned}
+$$
+
+What is interesting about this case with a hierarchical data structure, is that we can show it has the same error structure as an ARMA model. Shumway Stoffer notes that even though it has the same parameterization as an ARMA model, it is often easier to think about the state model form. See example 6.3 for more details.
+
+## Kalman Filter
+
+Kalman filter is a recursive, markovian updating algorithm for estimating a hidden state variable given noisy and partial observations. The common example is that we are tracking a truck by gps observations. Since the gps observations are imprecise, they will jump back and forth.
+
+An excellent resource explanation with pictures is found [from bzarg](https://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/)
+
+### Example: Local level Model
+
+Consider the equations:
+
+$$
+\begin{aligned}
+\textbf{State Equation:}& \\
+x_t &= x_{t-1} + w_t \\
+\textbf{Observation Equation:}& \\
+y_t &= x_t + v_t
+\end{aligned}
+$$
+where both $w_t, v_t \sim N(0, 1)$. We can make the Kalman filter here based on our observation equation. We assume that $A = 1$ (in this case) and $Phi = 1$ are known here. In reality, we can use maximum likelihood of the _innnovations_ (prediction errors) in order to estimate the 
+
+```{r}
+# generate the data
+set.seed(1)
+n <-  50
+x0 <- rnorm(1) # random initial state
+w <- rnorm(n, 0, 1) # state level noise
+v = rnorm(n, 0, 1) # observation level noise
+x <- cumsum(c(x0, w)) # true state variables
+y <- x[-1] + v # remove initial state
+ks <- Ksmooth0(num = 50, 
+               y = y, 
+               A = 1, 
+               mu0 = 10, # set initial values
+               Sigma0 = 20, # set initial values
+               Phi = 1,
+               cQ = 1,
+               cR = 1)
+```
+
+
+```{r}
+# plot all the predictions
+par(mfrow = c(3, 1),
+    mar = c(2, 4, 2, 4))
+# predictions
+plot(x[-1], main = "Prediction", ylim = c(-5, 10))
+lines(ks$xp[1,,])
+lines(ks$xp + 2*sqrt(ks$Pp[1,,]), lty = 2, col = 4)
+lines(ks$xp - 2*sqrt(ks$Pp[1,,]), lty = 2, col = 4) # variance matrices
+
+# filters
+plot(x[-1], main = "Filters", ylim = c(-5, 10), xlab = "")
+lines(ks$xf[1,,])
+lines(ks$xf + 2*sqrt(ks$Pf[1,,]), lty = 2, col = 4)
+lines(ks$xf - 2*sqrt(ks$Pf[1,,]), lty = 2, col = 4) # variance matrices
+
+
+# ks$xs[1,,] # smooth values
+plot(x[-1], main = "Smooth", ylim = c(-5, 10), xlab = "")
+lines(ks$xs[1,,])
+lines(ks$xs + 2*sqrt(ks$Ps[1,,]), lty = 2, col = 4)
+lines(ks$xs - 2*sqrt(ks$Ps[1,,]), lty = 2, col = 4) # variance matrices
+```
+
+```{r}
+# creating table for comparison
+tibble(predict = ks$xp[1,,],
+       filter = ks$xf[1,,],
+       smooth = ks$xs[1,,],
+       predict_sd = sqrt(ks$Pp[1,,]),
+       filter_sd = sqrt(ks$Pf[1,,]),
+       smooth_sd = sqrt(ks$Ps[1,,])) %>%
+  mutate(across(predict:smooth, ~scales::number(.x, accuracy = .001)),
+         across(predict_sd:smooth_sd, ~scales::number(.x,accuracy = .01))) %>% 
+  transmute(predict = glue("{predict} ({predict_sd})"),
+         filter = glue("{filter} ({filter_sd})"),
+         smooth = glue("{smooth} ({smooth_sd})"))
+```
+
+
+## Estimation of State Parameters
+
+There are bayesian methods for estimating the state parameters but also maximum likelihood w/ Newton Raphson or EM algorithmss
+
+## Example: Nile {.tabset}
+
+Annual flow of the river Nile from 1871 - 1970. There's an apparent changepoint near 1898.
+
+I found this example going through all the state space model libraries. The orginal paper is called "JSS Journal of Statistical Software, State Space Models in R".Specifically, we walk through the Nile example with 3 functions: 
+
+1. `stats::StructTS`
+2. `dlm:dlmMLE`
+3. `KFAS:kf`
+
+```{r}
+# change point analyses
+ts.plot(Nile)
+```
+
+### stats::StructTS
+
+
+```{r}
+nile_sts <- StructTS(Nile, "level")
+# nile_sts %>% tsdiag() # diagnostics of structural model
+
+# values from model.
+tibble(
+  times = time(Nile),
+  filtered = fitted(nile_sts)[,"level"], # filtered values
+  smoothed = tsSmooth(nile_sts)[,"level"]) # smoothed valuees
+
+# forecast values
+predict(nile_sts,n.ahead = 5)
+
+# plotting forecast values, with package forecast
+plot(forecast::forecast(nile_sts, # StructST object
+                   level = c(50, 90), # CI levels
+                   h = 10), # periods of forecasting
+     xlim = c(1950, 1980))
+```
+
+### dlm::dlm
+
+```{r}
+# set up the dlm object
+nile_dlm_ll <- function(theta){
+  dlmModPoly(order = 1, dV = theta[1], dW = theta[2]) # fits local level model
+}
+
+# calls optim internally to optimize model (default BFGS)
+# could use numDeriv::hessian for numerically accurate evaluation of Hessians
+nile_dlm_mle <- dlmMLE(Nile, # data
+                   parm = c(100, 2), # initial parameters
+                   nile_dlm_ll, # model
+                   lower = rep(1e-4, 2)) 
+
+nile_dlm_mle$par # similar variance parameters of local linear model
+```
+
+
+```{r}
+nile_dlm_ll_best <- nile_dlm_ll(nile_dlm_mle$par) # build model with best fit by optim
+W(nile_dlm_ll_best) # state randomnesss
+V(nile_dlm_ll_best) # observation error variance
+
+# can use fitted model to create smooth estimates now
+# $s has time series of smooth estimates
+# $U.S and $D.S have SVD of smoothing varriances (for std err)
+nile_dlm_ll_smooth <- dlmSmooth(Nile , nile_dlm_ll_best)
+# conf ints can be calculated by
+```
+
+
+```{r}
+# calculate standard errors
+hwidth <- sqrt(unlist(dlmSvd2var(nile_dlm_ll_smooth$U.S, nile_dlm_ll_smooth$D.S))) * qnorm(0.025, lower = FALSE)
+nile_dlm_ll_smooth_ci <- cbind(nile_dlm_ll_smooth$s, as.vector(nile_dlm_ll_smooth$s) + hwidth %o% c(-1, 1))
+autoplot(nile_dlm_ll_smooth_ci) + theme(legend.position = "") +
+  labs(title = "smoothed kalman with CI") +
+  geom_point(data = tibble(time = time(Nile),
+                           flow = Nile,
+                           series = "real"),
+             mapping = aes(time, flow))
+```
+
+### KFAS::KFS
+
+Kalman filtering/smoothing/simulation for linear state space models in the exponential family. KFAS uses the sequential processing method. This package uses a slightly different parameterization of their state space models.
+
+$$
+\begin{aligned}
+y_t &= Z_t\alpha_t + \varepsilon_t &\text{observation}\\
+\alpha_{t+1} &= T_t \alpha_t + R_t\eta_t &\text{transition}
+\end{aligned}
+$$
+
+```{r}
+# build the local linear model
+# can initialize a specific model with values
+# nile_kfas_ll_model <- SSModel(Nile ~ SSMtrend(1, Q = 15000), # Q = Transition error
+#                               H = 30) # Observation error
+
+# add NA for values you want to optimize
+nile_kfas_ll_model <- SSModel(Nile ~ SSMtrend(1, Q = list(matrix(NA))), # Q = Transition error
+                              H = matrix(NA)) # Observation error
+
+
+# fit the model with wrapper to `optim`
+# -logLik(nile_kfas_ll_model) # is the objective that is optimized
+nile_kfas_ll_fit <- fitSSM(nile_kfas_ll_model,
+       c(log(var(Nile)), log(var(Nile))), # initial parameters for optim
+       method = "BFGS")
+
+# extract just the optimal model
+nile_kfas_ll <- nile_kfas_ll_fit$model
+
+# Filter/smooth
+nile_kfas_ll_smooth <- KFS(nile_kfas_ll,
+    filtering = "state",
+    smoothing = "state")
+
+# autoplot calls fortify, grabbing some components of the model
+# ggfortify:::autoplot.KFS
+# fortify(nile_kfas_ll_smooth)  # create df with: time, raw y, alphahat (smoothed values), raw residual = raw y - alphahat
+# nile_kfas_ll_smooth$alphahat # contains smoothed state variable estimates. for some reason "fitted" doesn't return these.
+autoplot(nile_kfas_ll_smooth)
+```
+
+
+```{r}
+# these give same values
+# cbind(predict(nile_kfas_ll),
+      # nile_kfas_ll_smooth$alphahat)
+
+nile_kfas_ll_ci <- predict(nile_kfas_ll, interval = "confidence", level = .9)
+nile_kfas_ll_pi <- predict(nile_kfas_ll, interval = "prediction", level = .9)
+
+
+legend_labels <- c("lower_ci", "upper_ci", "fit", "lower_pi", "upper_pi")
+# forecast:::autoplot.mts
+autoplot(cbind(nile_kfas_ll_ci[,-1], nile_kfas_ll_pi),
+         mapping = aes(x, y, group = series, linetype = series)) +
+  scale_linetype_manual(values = c(2, 2, 1, 3, 3), labels = legend_labels) +
+  scale_color_manual(values = c(2, 2, 1, 3, 3), labels = legend_labels) +
+  labs(y = "Predicted Annual flow", main = "River Nile") 
+```
+
+
+```{r}
+# forecasting
+nile_kfs_mean <- KFS(nile_kfas_ll,
+    filtering = c('state')) # specifying "mean" only estimates the smooths (alphahat)
+
+cbind(predict = nile_kfs_mean$a, # one step ahead prediction
+      filter = nile_kfs_mean$att, # filter estimates
+      smooth = nile_kfs_mean$alphahat) %>%  # smoothed
+  autoplot() + 
+  coord_cartesian(ylim = c(700, 1250)) +
+  labs(title = "predict/filter/smooth estiamtes of Nile with KFS")
+```
+

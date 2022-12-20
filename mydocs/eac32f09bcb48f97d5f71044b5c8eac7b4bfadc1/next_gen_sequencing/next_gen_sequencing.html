@@ -1,0 +1,4764 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.203">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Liou">
+<meta name="dcterms.date" content="2022-01-15">
+
+<title>Personal Documentation - 22&nbsp; Next Generation Sequencing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../observable/observable.html" rel="next">
+<link href="../network/network_gnar.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Next Generation Sequencing</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Personal Documentation</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../advanced/advanced.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Advanced R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../approximation/approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Approximation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bayesian/bayesian.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../categorical/categorical.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../changepoint/changepoint.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Changepoint Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../crossover/crossover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Crossover Designs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../diffeq/diffeq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Differential Equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../experimentaldesign/experimentaldesign.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Experimental Design</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../gam/gam.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Additive Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/longitudinal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Longitudinal Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/randomcoef.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Coefficient Models (CALS)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Mixed Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed_variance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Mixed Models (Variance)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../next_gen_sequencing/next_gen_sequencing.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Next Generation Sequencing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../optimization/optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ordination/ordination.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Ordination</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallel/parallel.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Parallel Computing in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">From Informational</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#copy-number-variation-window-binning" id="toc-copy-number-variation-window-binning" class="nav-link active" data-scroll-target="#copy-number-variation-window-binning"><span class="toc-section-number">22.1</span>  Copy Number Variation (window binning)</a>
+  <ul class="collapse">
+  <li><a href="#readdepth" id="toc-readdepth" class="nav-link" data-scroll-target="#readdepth"><span class="toc-section-number">22.1.1</span>  readDepth</a></li>
+  </ul></li>
+  <li><a href="#primer-for-microbiomes" id="toc-primer-for-microbiomes" class="nav-link" data-scroll-target="#primer-for-microbiomes"><span class="toc-section-number">22.2</span>  Primer for Microbiomes</a>
+  <ul class="collapse">
+  <li><a href="#permanova" id="toc-permanova" class="nav-link" data-scroll-target="#permanova"><span class="toc-section-number">22.2.1</span>  permANOVA</a></li>
+  <li><a href="#corncob" id="toc-corncob" class="nav-link" data-scroll-target="#corncob"><span class="toc-section-number">22.2.2</span>  Corncob</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Next Generation Sequencing</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Liou </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 15, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="copy-number-variation-window-binning" class="level2" data-number="22.1">
+<h2 data-number="22.1" class="anchored" data-anchor-id="copy-number-variation-window-binning"><span class="header-section-number">22.1</span> Copy Number Variation (window binning)</h2>
+<section id="readdepth" class="level3" data-number="22.1.1">
+<h3 data-number="22.1.1" class="anchored" data-anchor-id="readdepth"><span class="header-section-number">22.1.1</span> readDepth</h3>
+<p>readDepth uses a negative binomial distribution to model the counts that fall into each bin.</p>
+</section>
+</section>
+<section id="primer-for-microbiomes" class="level2" data-number="22.2">
+<h2 data-number="22.2" class="anchored" data-anchor-id="primer-for-microbiomes"><span class="header-section-number">22.2</span> Primer for Microbiomes</h2>
+<section id="permanova" class="level3" data-number="22.2.1">
+<h3 data-number="22.2.1" class="anchored" data-anchor-id="permanova"><span class="header-section-number">22.2.1</span> permANOVA</h3>
+<p><a href="https://cran.r-project.org/web/packages/hagis/vignettes/betadiversity.html">Beta Diversity with Hagis</a></p>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-1_0e8ba81282d47e94c5a5fdb7fc5e7f0d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(P_sojae_survey) <span class="co"># survey sample data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Isolate         Line         Rps Total HR (1) Lesion (2)
+1:       1     Williams susceptible    10      0          0
+2:       1       Harlon      Rps 1a    10      4          0
+3:       1 Harosoy 13xx      Rps 1b     8      0          0
+4:       1     L75-3735      Rps 1c    10     10          0
+5:       1    PI 103091      Rps 1d     9      2          0
+6:       1  Williams 82      Rps 1k    10      0          0
+   Lesion to cotyledon (3) Dead (4) total.susc total.resis perc.susc perc.resis
+1:                       0       10         10           0       100          0
+2:                       0        6          6           4        60         40
+3:                       0        8          8           0       100          0
+4:                       0        0          0          10         0        100
+5:                       1        6          7           2        78         22
+6:                       0       10         10           0       100          0</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>P_sojae_survey<span class="sc">$</span>Isolate <span class="ot">&lt;-</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"MPS17_"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">replacement =</span> <span class="st">""</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> P_sojae_survey<span class="sc">$</span>Isolate)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>P_sojae_survey<span class="sc">$</span>Rps <span class="ot">&lt;-</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"Rps "</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">replacement =</span> <span class="st">""</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> P_sojae_survey<span class="sc">$</span>Rps)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>hagis_args <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> P_sojae_survey,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cutoff =</span> <span class="dv">60</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="st">"susceptible"</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample =</span> <span class="st">"Isolate"</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> <span class="st">"Rps"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">perc_susc =</span> <span class="st">"perc.susc"</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>P_sojae_survey.matrix <span class="ot">&lt;-</span> <span class="fu">do.call</span>(create_binary_matrix, hagis_args)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>P_sojae_survey.matrix.jaccard <span class="ot">&lt;-</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vegdist</span>(P_sojae_survey.matrix, <span class="st">"jaccard"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>groups <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"Michigan_1"</span>, <span class="dv">11</span>), <span class="fu">rep</span>(<span class="st">"Michigan_2"</span>, <span class="dv">10</span>)))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate beta dispersion for each group, when comparing 2 or more</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>pathotype.disp <span class="ot">&lt;-</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">betadisper</span>(P_sojae_survey.matrix.jaccard, groups)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># tests if centroid distances are significantly different from each other</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>pathotype.disp.anova <span class="ot">&lt;-</span> <span class="fu">anova</span>(pathotype.disp) </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>pathotype.disp.anova</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: Distances
+          Df   Sum Sq   Mean Sq F value Pr(&gt;F)
+Groups     1 0.008375 0.0083752  0.9672 0.3377
+Residuals 19 0.164523 0.0086591               </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the output gives p-value</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">adonis2</span>(P_sojae_survey.matrix.jaccard <span class="sc">~</span> groups)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = P_sojae_survey.matrix.jaccard ~ groups)
+         Df SumOfSqs      R2      F Pr(&gt;F)
+groups    1  0.11358 0.07869 1.6229  0.185
+Residual 19  1.32976 0.92131              
+Total    20  1.44335 1.00000              </code></pre>
+</div>
+</div>
+</section>
+<section id="corncob" class="level3" data-number="22.2.2">
+<h3 data-number="22.2.2" class="anchored" data-anchor-id="corncob"><span class="header-section-number">22.2.2</span> Corncob</h3>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-2_8d40f6bee9c324451301c9e53f90d46d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(soil_phylo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-3_e6ca4c77e074ef67e72d843a6cfe53e9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>soil_phylo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 7770 taxa and 119 samples ]
+sample_data() Sample Data:       [ 119 samples by 5 sample variables ]
+tax_table()   Taxonomy Table:    [ 7770 taxa by 7 taxonomic ranks ]</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">otu_table</span>(soil_phylo)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>OTU Table:          [3 taxa and 3 samples]
+                     taxa are rows
+        S009 S204 S112
+OTU.43   350   74  300
+OTU.2   1796 4204 1752
+OTU.187  280  709  426</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_data</span>(soil_phylo) <span class="co"># covariates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Plants DayAmdmt Amdmt ID Day
+S009      1       01     1  D   0
+S204      1       21     1  D   2
+S112      0       11     1  B   1
+S247      0       22     2  F   2
+S026      0       00     0  A   0
+S023      1       00     0  C   0
+S201      0       20     0  A   2
+S133      1       10     0  C   1
+S103      1       10     0  C   1
+S012      0       01     1  B   0
+S134      1       11     1  D   1
+S108      1       10     0  C   1
+S207      0       21     1  B   2
+S123      1       10     0  C   1
+S202      0       21     1  B   2
+S031      0       00     0  A   0
+S106      0       10     0  A   1
+S233      1       20     0  C   2
+S013      1       00     0  C   0
+S007      0       01     1  B   0
+S139      1       11     1  D   1
+S126      0       10     0  A   1
+S208      1       20     0  C   2
+S122      0       11     1  B   1
+S022      0       01     1  B   0
+S223      1       20     0  C   2
+S113      1       10     0  C   1
+S024      1       01     1  D   0
+S032      0       01     1  B   0
+S218      1       20     0  C   2
+S212      0       21     1  B   2
+S138      1       10     0  C   1
+S117      0       11     1  B   1
+S228      1       20     0  C   2
+S019      1       01     1  D   0
+S104      1       11     1  D   1
+S116      0       10     0  A   1
+S213      1       20     0  C   2
+S144      0       12     2  F   1
+S221      0       20     0  A   2
+S214      1       21     1  D   2
+S043      0       02     2  F   0
+S136      0       10     0  A   1
+S028      1       00     0  C   0
+S203      1       20     0  C   2
+S001      0       00     0  A   0
+S216      0       20     0  A   2
+S109      1       11     1  D   1
+S226      0       20     0  A   2
+S037      0       01     1  B   0
+S042      0       02     2  F   0
+S206      0       20     0  A   2
+S111      0       10     0  A   1
+S101      0       10     0  A   1
+S217      0       21     1  B   2
+S148      0       12     2  F   1
+S039      1       01     1  D   0
+S118      1       10     0  C   1
+S034      1       01     1  D   0
+S006      0       00     0  A   0
+S238      1       20     0  C   2
+S229      1       21     1  D   2
+S046      0       02     2  F   0
+S033      1       00     0  C   0
+S041      0       02     2  F   0
+S132      0       11     1  B   1
+S121      0       10     0  A   1
+S209      1       21     1  D   2
+S245      0       22     2  F   2
+S243      0       22     2  F   2
+S227      0       21     1  B   2
+S107      0       11     1  B   1
+S142      0       12     2  F   1
+S237      0       21     1  B   2
+S224      1       21     1  D   2
+S003      1       00     0  C   0
+S231      0       20     0  A   2
+S127      0       11     1  B   1
+S137      0       11     1  B   1
+S036      0       00     0  A   0
+S241      0       22     2  F   2
+S038      1       00     0  C   0
+S114      1       11     1  D   1
+S147      0       12     2  F   1
+S124      1       11     1  D   1
+S017      0       01     1  B   0
+S143      0       12     2  F   1
+S021      0       00     0  A   0
+S047      0       02     2  F   0
+S011      0       00     0  A   0
+S119      1       11     1  D   1
+S219      1       21     1  D   2
+S027      0       01     1  B   0
+S232      0       21     1  B   2
+S246      0       22     2  F   2
+S131      0       10     0  A   1
+S044      0       02     2  F   0
+S129      1       11     1  D   1
+S002      0       01     1  B   0
+S102      0       11     1  B   1
+S004      1       01     1  D   0
+S234      1       21     1  D   2
+S244      0       22     2  F   2
+S248      0       22     2  F   2
+S128      1       10     0  C   1
+S016      0       00     0  A   0
+S236      0       20     0  A   2
+S029      1       01     1  D   0
+S018      1       00     0  C   0
+S141      0       12     2  F   1
+S146      0       12     2  F   1
+S048      0       02     2  F   0
+S222      0       21     1  B   2
+S045      0       02     2  F   0
+S008      1       00     0  C   0
+S239      1       21     1  D   2
+S145      0       12     2  F   1
+S242      0       22     2  F   2
+S014      1       01     1  D   0</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tax_table</span>(soil_phylo)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,] <span class="co"># taxonomic information of </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Taxonomy Table:     [3 taxa by 7 taxonomic ranks]:
+        Kingdom    Phylum           Class                 Order             
+OTU.43  "Bacteria" "Nitrospirae"    "Nitrospira"          "Nitrospirales"   
+OTU.2   "Bacteria" "Proteobacteria" "Alphaproteobacteria" "Rhizobiales"     
+OTU.187 "Bacteria" "Acidobacteria"  "Acidobacteriia"      "Acidobacteriales"
+        Family              Genus            Species
+OTU.43  "Nitrospiraceae"    "Nitrospira"     ""     
+OTU.2   "Bradyrhizobiaceae" "Bradyrhizobium" ""     
+OTU.187 "Koribacteraceae"   ""               ""     </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-4_de66376aeacef8328a785528ffe73230">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modeling</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(soil_phylum_small)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>soil <span class="ot">&lt;-</span> soil_phylum_small</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>cob <span class="ot">&lt;-</span> <span class="fu">bbdml</span>(<span class="at">formula =</span> OTU<span class="fl">.1</span> <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">phi.formula =</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> soil)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cob, <span class="at">B =</span> <span class="dv">50</span>, <span class="at">total =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"DayAmdmt"</span>) <span class="co"># bootstrap simulations, total counts scale instead of relative abundance.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="next_gen_sequencing_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_data</span>(soil) <span class="sc">%&gt;%</span> <span class="fu">rownames_to_column</span>(<span class="st">"sample"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sample) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  summarize</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 1
+  sample
+  &lt;chr&gt; 
+1 S112  
+2 S134  
+3 S139  
+4 S202  
+5 S204  
+6 S207  </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">otu_table</span>(soil) <span class="sc">%&gt;%</span> <span class="fu">margin.table</span>(<span class="at">margin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  S204   S112   S134   S207   S202   S139   S122   S212   S117   S104   S214 
+194231  66259 160528  92195 177576 154140 144165 182194  42672 114744  80111 
+  S109   S217   S229   S132   S209   S227   S107   S237   S224   S127   S137 
+ 67595  50267  79751 159316  66304  70264  89279  58707  71862 102896  39923 
+  S114   S124   S119   S219   S232   S129   S102   S234   S222   S239 
+ 32270  80993 107700  80076  58509  20502  53441  61880  65645  25626 
+attr(,"class")
+[1] "otu_table"
+attr(,"class")attr(,"package")
+[1] "phyloseq"</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">otu_table</span>(soil)[<span class="fu">c</span>(<span class="st">"OTU.1"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>OTU Table:          [1 taxa and 32 samples]
+                     taxa are rows
+       S204  S112  S134  S207  S202  S139  S122  S212  S117  S104  S214  S109
+OTU.1 70300 24858 54847 30271 62920 57219 52490 62570 16760 54818 26890 28420
+       S217  S229  S132  S209  S227  S107  S237  S224  S127  S137  S114  S124
+OTU.1 16811 27760 69870 21679 24939 33999 20473 25134 41171 14948 10803 30108
+       S119  S219  S232 S129  S102  S234  S222 S239
+OTU.1 43700 31658 21926 8408 20578 21069 23182 9449</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-5_b83b75d3f024c9bf2a4e0c7407bb1e73">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>corncob_da <span class="ot">&lt;-</span> <span class="fu">bbdml</span>(<span class="at">formula =</span> OTU<span class="fl">.1</span> <span class="sc">~</span> DayAmdmt,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">phi.formula =</span> <span class="sc">~</span> DayAmdmt,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> soil)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(corncob_da, <span class="at">color =</span> <span class="st">"DayAmdmt"</span>, <span class="at">total =</span> <span class="cn">TRUE</span>, <span class="at">B =</span> <span class="dv">50</span>) <span class="co"># bars are from bootstrap samples, while</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="next_gen_sequencing_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-6_8db7c6d84e38ef29ef8953ea39bf46de">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple Taxa</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>da_analysis <span class="ot">&lt;-</span> <span class="fu">differentialTest</span>(<span class="at">formula =</span> <span class="sc">~</span> DayAmdmt,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">phi.formula =</span> <span class="sc">~</span> DayAmdmt,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">formula_null =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">phi.formula_null =</span> <span class="sc">~</span> DayAmdmt,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">test =</span> <span class="st">"Wald"</span>, <span class="at">boot =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">data =</span> soil,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">fdr_cutoff =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.42877    0.06086 -23.478   &lt;2e-16 ***
+DayAmdmt21   0.02974    0.06574   0.452    0.654    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.6767     0.3532 -13.240 1.41e-13 ***
+DayAmdmt21   -1.7872     0.5025  -3.557  0.00136 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -286.69
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.40322    0.02313  -60.68   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.6503     0.3528 -13.183 8.94e-14 ***
+DayAmdmt21   -1.8142     0.5024  -3.611  0.00114 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -286.79
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.44595    0.03604 -12.375 7.18e-13 ***
+DayAmdmt21  -0.16791    0.04067  -4.129 0.000297 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.3077     0.3537 -15.008 6.44e-15 ***
+DayAmdmt21   -1.3518     0.5029  -2.688    0.012 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -286.53
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.59202    0.02141  -27.66   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.6344     0.3803 -12.186 6.23e-13 ***
+DayAmdmt21   -1.9370     0.5857  -3.307  0.00252 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -292.89
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept) -3.61543    0.03262 -110.818  &lt; 2e-16 ***
+DayAmdmt21   0.31196    0.04284    7.283 6.28e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -7.77759    0.36661 -21.215   &lt;2e-16 ***
+DayAmdmt21  -0.02873    0.52045  -0.055    0.956    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -225
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -3.34218    0.03464  -96.49   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.8873     0.4175 -14.102 1.63e-14 ***
+DayAmdmt21   -1.8364     0.6451  -2.847  0.00803 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -238.94
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.91977    0.06024 -31.869   &lt;2e-16 ***
+DayAmdmt21  -0.06460    0.07211  -0.896    0.378    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.0356     0.3544 -14.209 2.51e-14 ***
+DayAmdmt21   -0.8928     0.5021  -1.778   0.0862 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -282.08
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.96479    0.03416  -57.52   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.0352     0.3523 -14.292 1.16e-14 ***
+DayAmdmt21   -0.8634     0.5096  -1.694    0.101    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -282.48
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.7089     0.1618  -47.64   &lt;2e-16 ***
+DayAmdmt21    0.3377     0.2072    1.63    0.114    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.6554     0.3961 -21.852   &lt;2e-16 ***
+DayAmdmt21   -0.1264     0.5627  -0.225    0.824    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -142.93
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.4883     0.1112  -67.35   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.3391     0.4154  -20.07   &lt;2e-16 ***
+DayAmdmt21   -0.5102     0.5545   -0.92    0.365    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -144.19
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.81356    0.06024 -46.706  &lt; 2e-16 ***
+DayAmdmt21   0.23068    0.07101   3.248  0.00301 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.7785     0.3563 -16.218 9.12e-16 ***
+DayAmdmt21   -0.7473     0.5056  -1.478    0.151    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -261.61
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -2.6290     0.0409  -64.28   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.1801     0.3967 -13.057 1.14e-13 ***
+DayAmdmt21   -1.2947     0.5870  -2.206   0.0355 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -265.89
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.95534    0.05915 -49.966   &lt;2e-16 ***
+DayAmdmt21   0.12338    0.06727   1.834   0.0773 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.9430     0.3562 -16.684 4.43e-16 ***
+DayAmdmt21   -1.1278     0.5066  -2.226   0.0342 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -253.23
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.85646    0.03088  -92.49   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.6999     0.3702  -15.40 1.71e-15 ***
+DayAmdmt21   -1.3551     0.5336   -2.54   0.0167 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -254.78
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -6.32235    0.07835 -80.695  &lt; 2e-16 ***
+DayAmdmt21   1.70905    0.18966   9.011  9.1e-10 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.7388     0.3864 -22.616  &lt; 2e-16 ***
+DayAmdmt21    3.3670     0.5363   6.279 8.68e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -202.38
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.9259     0.2205  -22.34   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.7749     0.5303  -9.005 6.73e-10 ***
+DayAmdmt21   -0.7264     0.6390  -1.137    0.265    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -226.7
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -3.06165    0.03772 -81.157   &lt;2e-16 ***
+DayAmdmt21  -0.03607    0.05019  -0.719    0.478    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.9507     0.3611 -19.249   &lt;2e-16 ***
+DayAmdmt21   -0.2990     0.5105  -0.586    0.563    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -241.34
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -3.08193    0.02549  -120.9   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.9506     0.3600 -19.310   &lt;2e-16 ***
+DayAmdmt21   -0.2700     0.5164  -0.523    0.605    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -241.6
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.34777    0.07945 -54.725   &lt;2e-16 ***
+DayAmdmt21  -0.14662    0.09294  -1.578    0.126    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.6782     0.3601 -18.546   &lt;2e-16 ***
+DayAmdmt21   -1.1650     0.5130  -2.271    0.031 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -217.85
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.45481    0.04495  -99.11   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.6758     0.3537 -18.876   &lt;2e-16 ***
+DayAmdmt21   -1.0881     0.5350  -2.034   0.0512 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -219.07
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.12339    0.08148 -50.606  &lt; 2e-16 ***
+DayAmdmt21  -0.30875    0.09587  -3.221  0.00323 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.4055     0.3588 -17.853   &lt;2e-16 ***
+DayAmdmt21   -1.2776     0.5138  -2.486   0.0191 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -223.5
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.35496    0.05918  -73.59   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.2089     0.3677 -16.884   &lt;2e-16 ***
+DayAmdmt21   -1.2655     0.6269  -2.019   0.0529 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -228.08
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.84772    0.03473 -82.001  &lt; 2e-16 ***
+DayAmdmt21   0.20132    0.04202   4.791 4.92e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.9228     0.3582 -19.328   &lt;2e-16 ***
+DayAmdmt21   -0.6013     0.5105  -1.178    0.249    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -244.2
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.68075    0.02922  -91.76   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.9069     0.4184 -14.119 1.58e-14 ***
+DayAmdmt21   -1.5160     0.6470  -2.343   0.0262 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -252.16
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.7649     0.1713 -27.808   &lt;2e-16 ***
+DayAmdmt21   -0.3431     0.2280  -1.505    0.144    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.5378     0.3718 -14.894 7.79e-15 ***
+DayAmdmt21   -0.6037     0.5234  -1.153    0.259    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -228.14
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -4.944      0.124  -39.87   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.6535     0.3322 -17.021   &lt;2e-16 ***
+DayAmdmt21   -0.2653     0.5012  -0.529    0.601    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -229.25
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -8.421950   0.203475 -41.391   &lt;2e-16 ***
+DayAmdmt21   0.005792   0.257610   0.022    0.982    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.9334     0.4816 -18.548   &lt;2e-16 ***
+DayAmdmt21   -0.5671     0.6704  -0.846    0.405    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -120.02
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.4183     0.1248  -67.45   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.9299     0.4571 -19.534   &lt;2e-16 ***
+DayAmdmt21   -0.5727     0.6235  -0.918    0.366    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -120.02
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.9683     0.2160 -27.633   &lt;2e-16 ***
+DayAmdmt21   -0.5946     0.2877  -2.067   0.0481 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.2718     0.3943  -15.91 1.49e-15 ***
+DayAmdmt21   -0.8578     0.5500   -1.56     0.13    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -190.03
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.2581     0.1686  -37.12   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.4594     0.3304 -19.550   &lt;2e-16 ***
+DayAmdmt21   -0.2477     0.5193  -0.477    0.637    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -192.07
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept) -4.82762    0.04166 -115.876  &lt; 2e-16 ***
+DayAmdmt21   0.37129    0.05810    6.391 6.43e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.5025     0.3745 -22.701   &lt;2e-16 ***
+DayAmdmt21    0.3339     0.5287   0.632    0.533    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -198.2
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.53318    0.06124  -74.03   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.8361     0.4996 -13.684  3.5e-14 ***
+DayAmdmt21   -1.1889     0.7909  -1.503    0.144    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -210.73
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.7877     0.1950 -39.931  &lt; 2e-16 ***
+DayAmdmt21   -1.0579     0.2311  -4.578 8.78e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.3420     0.4153 -20.087   &lt;2e-16 ***
+DayAmdmt21   -2.3748     0.7183  -3.306   0.0026 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -119.79
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.4975     0.2374  -35.79   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.3883     0.3397  -24.70   &lt;2e-16 ***
+DayAmdmt21   -1.4065     1.0578   -1.33    0.194    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -128.69
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.4897     0.1453 -51.547   &lt;2e-16 ***
+DayAmdmt21   -0.3720     0.1696  -2.194   0.0367 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.6532     0.3922 -22.061   &lt;2e-16 ***
+DayAmdmt21   -1.6629     0.6404  -2.597   0.0148 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -132.12
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -7.75950    0.08932  -86.88   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.7105     0.3569 -24.408   &lt;2e-16 ***
+DayAmdmt21   -1.3719     0.6696  -2.049   0.0496 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -134.43
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.7442     0.1076  -53.37  &lt; 2e-16 ***
+DayAmdmt21   -0.3495     0.1217   -2.87  0.00772 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.4617     0.3704 -20.145  &lt; 2e-16 ***
+DayAmdmt21   -1.7218     0.5560  -3.097  0.00442 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -177.79
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -6.02424    0.06211  -96.99   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.3705     0.3553  -20.75   &lt;2e-16 ***
+DayAmdmt21   -1.6492     0.6200   -2.66   0.0126 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -181.56
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept) -8.25352    0.08151 -101.259  &lt; 2e-16 ***
+DayAmdmt21   0.74375    0.11429    6.508 4.72e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.1494     0.6852 -16.273 8.38e-16 ***
+DayAmdmt21    1.0650     0.8364   1.273    0.213    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -117.53
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.6297     0.0975  -78.26   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.5990     0.4856 -17.707   &lt;2e-16 ***
+DayAmdmt21   -1.4656     0.7549  -1.941    0.062 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -129.47
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -7.71137    0.16867 -45.720   &lt;2e-16 ***
+DayAmdmt21   0.02581    0.23042   0.112    0.912    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.5710     0.4402 -19.470   &lt;2e-16 ***
+DayAmdmt21   -0.1270     0.5954  -0.213    0.833    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -141.06
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -7.697      0.115  -66.96   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.5571     0.4264 -20.068   &lt;2e-16 ***
+DayAmdmt21   -0.1524     0.5513  -0.276    0.784    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -141.07
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.9544     0.1825  -49.06  &lt; 2e-16 ***
+DayAmdmt21   -1.2187     0.3009   -4.05 0.000368 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.8205     0.5089 -19.299   &lt;2e-16 ***
+DayAmdmt21   -0.8794     0.8056  -1.092    0.284    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -87.12
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.1706     0.2025  -45.28   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.9179     0.4573 -21.687   &lt;2e-16 ***
+DayAmdmt21    1.1583     0.7370   1.572    0.127    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -92.888
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -7.95026    0.07182  -110.7  &lt; 2e-16 ***
+DayAmdmt21   1.34854    0.11054    12.2 1.01e-12 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.0449     0.7011 -15.754  1.9e-15 ***
+DayAmdmt21    2.1581     0.8072   2.674   0.0124 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -136.48
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -6.675      0.089     -75   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.5655     0.3673 -17.876  &lt; 2e-16 ***
+DayAmdmt21   -2.3485     0.5454  -4.306 0.000173 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -157.36
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.1863     0.2707 -33.940   &lt;2e-16 ***
+DayAmdmt21   -0.4446     0.3494  -1.273    0.214    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.1518     0.4545 -20.136   &lt;2e-16 ***
+DayAmdmt21   -1.0233     0.7052  -1.451    0.158    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -93.017
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.4378     0.1821  -51.83   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.3470     0.3778 -24.742   &lt;2e-16 ***
+DayAmdmt21   -0.5742     0.6386  -0.899    0.376    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -93.828
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.6220     0.1058  -81.47   &lt;2e-16 ***
+DayAmdmt21    0.1644     0.1848    0.89    0.381    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.9081     0.6160 -17.708   &lt;2e-16 ***
+DayAmdmt21    1.2503     0.7708   1.622    0.116    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -108.65
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -8.56622    0.09042  -94.74   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.7993     0.6181 -17.473   &lt;2e-16 ***
+DayAmdmt21    1.0725     0.7483   1.433    0.162    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -109.05
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.0551     0.1469 -61.648   &lt;2e-16 ***
+DayAmdmt21   -0.1178     0.2307  -0.511    0.613    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.5325     0.5402 -19.497   &lt;2e-16 ***
+DayAmdmt21    0.3916     0.7415   0.528    0.602    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -96.038
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.1022     0.1147  -79.37   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.5693     0.5221 -20.246   &lt;2e-16 ***
+DayAmdmt21    0.5074     0.7118   0.713    0.482    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -96.168
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.8230     0.4705 -25.127   &lt;2e-16 ***
+DayAmdmt21   -0.9028     0.9276  -0.973    0.339    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.1635     0.9544 -11.697 2.72e-12 ***
+DayAmdmt21    0.2931     1.6942   0.173    0.864    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -25.731
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -12.0059     0.4686  -25.62   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.2808     0.8769 -12.864 1.64e-13 ***
+DayAmdmt21    1.4251     1.5629   0.912    0.369    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -26.149
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.8184     0.1208 -64.734  &lt; 2e-16 ***
+DayAmdmt21    0.9065     0.1749   5.184 1.68e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.4473     0.4093 -23.084   &lt;2e-16 ***
+DayAmdmt21    1.0930     0.5698   1.918   0.0653 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -144.67
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.1585     0.1663  -43.04   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.8226     0.5567 -14.052 1.79e-14 ***
+DayAmdmt21   -0.5711     0.7507  -0.761    0.453    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -154.37
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.8840     0.1288 -68.981   &lt;2e-16 ***
+DayAmdmt21    0.1337     0.1474   0.907    0.372    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.6505     0.5479 -19.439   &lt;2e-16 ***
+DayAmdmt21   -2.8542     4.3331  -0.659    0.515    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -93.567
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -8.78215    0.06541  -134.3   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.5243     0.5624 -18.712   &lt;2e-16 ***
+DayAmdmt21   -2.8615     3.8419  -0.745    0.462    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -93.975
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.4509     0.1040 -81.261  &lt; 2e-16 ***
+DayAmdmt21   -0.4499     0.1623  -2.772  0.00978 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.6731     0.5452 -19.578   &lt;2e-16 ***
+DayAmdmt21   -0.1065     0.8830  -0.121    0.905    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -102.11
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.6004     0.1116  -77.07   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.6636     0.5328 -20.013   &lt;2e-16 ***
+DayAmdmt21    0.7366     0.9486   0.777    0.444    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -105.53
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.2528     0.3916 -28.737   &lt;2e-16 ***
+DayAmdmt21   -0.2756     0.5536  -0.498    0.623    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.8557     0.8145 -13.328 1.21e-13 ***
+DayAmdmt21   -0.7310     1.3597  -0.538    0.595    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -42.629
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.3889     0.2838  -40.12   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.9587     0.7430 -14.750 5.18e-15 ***
+DayAmdmt21   -0.4141     1.1736  -0.353    0.727    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -42.752
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.49718    0.30983 -37.107   &lt;2e-16 ***
+DayAmdmt21   -0.06755    0.51287  -0.132    0.896    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -12.484      1.725  -7.236 7.08e-08 ***
+DayAmdmt21     1.091      2.017   0.541    0.593    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -38.526
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.5219     0.2497  -46.14   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -12.488      1.696  -7.364 4.11e-08 ***
+DayAmdmt21     1.149      1.949   0.590     0.56    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -38.535
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.8290     1.5532  -8.903 1.17e-09 ***
+DayAmdmt21    0.3602     1.7077   0.211    0.834    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)  -11.646      4.585  -2.540   0.0169 *
+DayAmdmt21    -6.376     73.166  -0.087   0.9312  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -11.349
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.5296     0.6683  -20.24   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -11.030      2.549  -4.327 0.000164 ***
+DayAmdmt21    -6.992     58.830  -0.119 0.906212    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -11.37
+[1] " -- model --"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in waldt(object): Singular Hessian! Cannot calculate p-values in this
+setting.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -14.12         NA      NA       NA
+DayAmdmt21    -23.41         NA      NA       NA
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) -13.8079         NA      NA       NA
+DayAmdmt21    0.5128         NA      NA       NA
+
+
+Log-likelihood: -4.2899</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -14.124      1.426  -9.906 8.18e-11 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -13.81      19.89  -0.694    0.493
+DayAmdmt21     23.49   10718.95   0.002    0.998
+
+
+Log-likelihood: -4.2899</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod_null): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.1607     0.3773 -26.928   &lt;2e-16 ***
+DayAmdmt21    0.1108     0.4747   0.234    0.817    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.5102     0.6443 -14.761 9.75e-15 ***
+DayAmdmt21   -0.5470     0.8600  -0.636     0.53    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -73.271
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.0897     0.2298   -43.9   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.4362     0.5840 -16.159 4.85e-16 ***
+DayAmdmt21   -0.6606     0.7171  -0.921    0.365    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -73.298
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -12.7933     0.5656 -22.621   &lt;2e-16 ***
+DayAmdmt21    0.9582     0.9953   0.963    0.344    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -12.911      2.918  -4.424 0.000134 ***
+DayAmdmt21     3.261      3.135   1.040 0.307174    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -23.19
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -12.4581     0.5089  -24.48   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -12.173      2.847  -4.276 0.000188 ***
+DayAmdmt21     2.055      2.813   0.731 0.470916    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -23.675
+[1] " -- model --"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in waldt(object): Singular Hessian! Cannot calculate p-values in this
+setting.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -36.02         NA      NA       NA
+DayAmdmt21     22.55         NA      NA       NA
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -8.842         NA      NA       NA
+DayAmdmt21    -9.180         NA      NA       NA
+
+
+Log-likelihood: -5.6685</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.4692     0.7075  -19.04   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -1.392     37.396  -0.037    0.971
+DayAmdmt21   -16.630     43.444  -0.383    0.705
+
+
+Log-likelihood: -5.6694</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod_null): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)    -28.24  371272.78       0        1
+DayAmdmt21      14.08  371272.78       0        1
+
+
+Coefficients associated with dispersion:
+              Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  6.597e-01  4.258e+05       0        1
+DayAmdmt21  -1.868e+01  4.258e+05       0        1
+
+
+Log-likelihood: -3.0518</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -14.16       1.00  -14.16 1.48e-14 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -1.491     50.653  -0.029    0.977
+DayAmdmt21   -16.530     55.718  -0.297    0.769
+
+
+Log-likelihood: -3.0523</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod_null): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.49971    0.33418 -34.412   &lt;2e-16 ***
+DayAmdmt21    0.01679    0.49675   0.034    0.973    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.9873     1.0451 -11.470 4.29e-12 ***
+DayAmdmt21    0.4004     1.5478   0.259    0.798    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -39.541
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -11.492      0.247  -46.53   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.9815     1.0336 -11.592 2.09e-12 ***
+DayAmdmt21    0.3846     1.4754   0.261    0.796    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -39.541</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>da_analysis <span class="sc">%&gt;%</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "p"                    "p_fdr"                "significant_taxa"    
+ [4] "significant_models"   "all_models"           "restrictions_DA"     
+ [7] "restrictions_DV"      "discriminant_taxa_DA" "discriminant_taxa_DV"
+[10] "data"                 "full_output"         </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>da_analysis<span class="sc">$</span>restrictions_DA <span class="co"># differential abundance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "DayAmdmt21"
+attr(,"index")
+[1] 2</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>da_analysis<span class="sc">$</span>restrictions_DV <span class="co"># differential variability (because phi.formula and phi.formula_null are the same)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>character(0)</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(da_analysis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="next_gen_sequencing_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>da_analysis<span class="sc">$</span>significant_taxa <span class="co"># switch from OTU labels to taxonomy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "OTU.1"    "OTU.15"   "OTU.8"    "OTU.69"   "OTU.6"    "OTU.59"  
+ [7] "OTU.695"  "OTU.628"  "OTU.703"  "OTU.908"  "OTU.1570" "OTU.417" 
+[13] "OTU.584"  "OTU.1672"</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">otu_to_taxonomy</span>(da_analysis<span class="sc">$</span>significant_taxa, <span class="at">data =</span> soil)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      OTU.1                      OTU.15 
+  "Bacteria_Proteobacteria" "Bacteria_Gemmatimonadetes" 
+                      OTU.8                      OTU.69 
+   "Bacteria_Bacteroidetes"    "Bacteria_Cyanobacteria" 
+                      OTU.6                      OTU.59 
+      "Bacteria_Firmicutes"   "Bacteria_Planctomycetes" 
+                    OTU.695                     OTU.628 
+ "Bacteria_Armatimonadetes"     "Bacteria_Spirochaetes" 
+                    OTU.703                     OTU.908 
+   "Bacteria_Elusimicrobia"             "Bacteria_BRC1" 
+                   OTU.1570                     OTU.417 
+             "Bacteria_OP3"              "Bacteria_FBP" 
+                    OTU.584                    OTU.1672 
+        "Bacteria_Chlorobi"              "Bacteria_TM6" </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-7_750cb54c30e9407764638b3428df3163">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Looking at differentially variable taxa</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>dv_analysis <span class="ot">&lt;-</span> <span class="fu">differentialTest</span>(<span class="at">formula =</span> <span class="sc">~</span> DayAmdmt,</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">phi.formula =</span> <span class="sc">~</span> DayAmdmt,</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">formula_null =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">phi.formula_null =</span> <span class="sc">~</span> DayAmdmt,</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">test =</span> <span class="st">"Wald"</span>, <span class="at">boot =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">data =</span> soil,</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">fdr_cutoff =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.42877    0.06086 -23.478   &lt;2e-16 ***
+DayAmdmt21   0.02974    0.06574   0.452    0.654    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.6767     0.3532 -13.240 1.41e-13 ***
+DayAmdmt21   -1.7872     0.5025  -3.557  0.00136 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -286.69
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.40322    0.02313  -60.68   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.6503     0.3528 -13.183 8.94e-14 ***
+DayAmdmt21   -1.8142     0.5024  -3.611  0.00114 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -286.79
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.44595    0.03604 -12.375 7.18e-13 ***
+DayAmdmt21  -0.16791    0.04067  -4.129 0.000297 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.3077     0.3537 -15.008 6.44e-15 ***
+DayAmdmt21   -1.3518     0.5029  -2.688    0.012 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -286.53
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.59202    0.02141  -27.66   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.6344     0.3803 -12.186 6.23e-13 ***
+DayAmdmt21   -1.9370     0.5857  -3.307  0.00252 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -292.89
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept) -3.61543    0.03262 -110.818  &lt; 2e-16 ***
+DayAmdmt21   0.31196    0.04284    7.283 6.28e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -7.77759    0.36661 -21.215   &lt;2e-16 ***
+DayAmdmt21  -0.02873    0.52045  -0.055    0.956    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -225
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -3.34218    0.03464  -96.49   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.8873     0.4175 -14.102 1.63e-14 ***
+DayAmdmt21   -1.8364     0.6451  -2.847  0.00803 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -238.94
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.91977    0.06024 -31.869   &lt;2e-16 ***
+DayAmdmt21  -0.06460    0.07211  -0.896    0.378    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.0356     0.3544 -14.209 2.51e-14 ***
+DayAmdmt21   -0.8928     0.5021  -1.778   0.0862 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -282.08
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.96479    0.03416  -57.52   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.0352     0.3523 -14.292 1.16e-14 ***
+DayAmdmt21   -0.8634     0.5096  -1.694    0.101    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -282.48
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.7089     0.1618  -47.64   &lt;2e-16 ***
+DayAmdmt21    0.3377     0.2072    1.63    0.114    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.6554     0.3961 -21.852   &lt;2e-16 ***
+DayAmdmt21   -0.1264     0.5627  -0.225    0.824    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -142.93
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.4883     0.1112  -67.35   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.3391     0.4154  -20.07   &lt;2e-16 ***
+DayAmdmt21   -0.5102     0.5545   -0.92    0.365    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -144.19
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.81356    0.06024 -46.706  &lt; 2e-16 ***
+DayAmdmt21   0.23068    0.07101   3.248  0.00301 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.7785     0.3563 -16.218 9.12e-16 ***
+DayAmdmt21   -0.7473     0.5056  -1.478    0.151    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -261.61
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -2.6290     0.0409  -64.28   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.1801     0.3967 -13.057 1.14e-13 ***
+DayAmdmt21   -1.2947     0.5870  -2.206   0.0355 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -265.89
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.95534    0.05915 -49.966   &lt;2e-16 ***
+DayAmdmt21   0.12338    0.06727   1.834   0.0773 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.9430     0.3562 -16.684 4.43e-16 ***
+DayAmdmt21   -1.1278     0.5066  -2.226   0.0342 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -253.23
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.85646    0.03088  -92.49   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.6999     0.3702  -15.40 1.71e-15 ***
+DayAmdmt21   -1.3551     0.5336   -2.54   0.0167 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -254.78
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -6.32235    0.07835 -80.695  &lt; 2e-16 ***
+DayAmdmt21   1.70905    0.18966   9.011  9.1e-10 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.7388     0.3864 -22.616  &lt; 2e-16 ***
+DayAmdmt21    3.3670     0.5363   6.279 8.68e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -202.38
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.9259     0.2205  -22.34   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.7749     0.5303  -9.005 6.73e-10 ***
+DayAmdmt21   -0.7264     0.6390  -1.137    0.265    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -226.7
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -3.06165    0.03772 -81.157   &lt;2e-16 ***
+DayAmdmt21  -0.03607    0.05019  -0.719    0.478    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.9507     0.3611 -19.249   &lt;2e-16 ***
+DayAmdmt21   -0.2990     0.5105  -0.586    0.563    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -241.34
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -3.08193    0.02549  -120.9   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.9506     0.3600 -19.310   &lt;2e-16 ***
+DayAmdmt21   -0.2700     0.5164  -0.523    0.605    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -241.6
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.34777    0.07945 -54.725   &lt;2e-16 ***
+DayAmdmt21  -0.14662    0.09294  -1.578    0.126    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.6782     0.3601 -18.546   &lt;2e-16 ***
+DayAmdmt21   -1.1650     0.5130  -2.271    0.031 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -217.85
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.45481    0.04495  -99.11   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.6758     0.3537 -18.876   &lt;2e-16 ***
+DayAmdmt21   -1.0881     0.5350  -2.034   0.0512 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -219.07
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.12339    0.08148 -50.606  &lt; 2e-16 ***
+DayAmdmt21  -0.30875    0.09587  -3.221  0.00323 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.4055     0.3588 -17.853   &lt;2e-16 ***
+DayAmdmt21   -1.2776     0.5138  -2.486   0.0191 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -223.5
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.35496    0.05918  -73.59   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.2089     0.3677 -16.884   &lt;2e-16 ***
+DayAmdmt21   -1.2655     0.6269  -2.019   0.0529 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -228.08
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.84772    0.03473 -82.001  &lt; 2e-16 ***
+DayAmdmt21   0.20132    0.04202   4.791 4.92e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.9228     0.3582 -19.328   &lt;2e-16 ***
+DayAmdmt21   -0.6013     0.5105  -1.178    0.249    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -244.2
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.68075    0.02922  -91.76   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.9069     0.4184 -14.119 1.58e-14 ***
+DayAmdmt21   -1.5160     0.6470  -2.343   0.0262 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -252.16
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -4.7649     0.1713 -27.808   &lt;2e-16 ***
+DayAmdmt21   -0.3431     0.2280  -1.505    0.144    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.5378     0.3718 -14.894 7.79e-15 ***
+DayAmdmt21   -0.6037     0.5234  -1.153    0.259    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -228.14
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -4.944      0.124  -39.87   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.6535     0.3322 -17.021   &lt;2e-16 ***
+DayAmdmt21   -0.2653     0.5012  -0.529    0.601    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -229.25
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -8.421950   0.203475 -41.391   &lt;2e-16 ***
+DayAmdmt21   0.005792   0.257610   0.022    0.982    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.9334     0.4816 -18.548   &lt;2e-16 ***
+DayAmdmt21   -0.5671     0.6704  -0.846    0.405    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -120.02
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.4183     0.1248  -67.45   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.9299     0.4571 -19.534   &lt;2e-16 ***
+DayAmdmt21   -0.5727     0.6235  -0.918    0.366    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -120.02
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.9683     0.2160 -27.633   &lt;2e-16 ***
+DayAmdmt21   -0.5946     0.2877  -2.067   0.0481 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.2718     0.3943  -15.91 1.49e-15 ***
+DayAmdmt21   -0.8578     0.5500   -1.56     0.13    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -190.03
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.2581     0.1686  -37.12   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.4594     0.3304 -19.550   &lt;2e-16 ***
+DayAmdmt21   -0.2477     0.5193  -0.477    0.637    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -192.07
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept) -4.82762    0.04166 -115.876  &lt; 2e-16 ***
+DayAmdmt21   0.37129    0.05810    6.391 6.43e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.5025     0.3745 -22.701   &lt;2e-16 ***
+DayAmdmt21    0.3339     0.5287   0.632    0.533    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -198.2
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -4.53318    0.06124  -74.03   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.8361     0.4996 -13.684  3.5e-14 ***
+DayAmdmt21   -1.1889     0.7909  -1.503    0.144    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -210.73
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.7877     0.1950 -39.931  &lt; 2e-16 ***
+DayAmdmt21   -1.0579     0.2311  -4.578 8.78e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.3420     0.4153 -20.087   &lt;2e-16 ***
+DayAmdmt21   -2.3748     0.7183  -3.306   0.0026 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -119.79
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.4975     0.2374  -35.79   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.3883     0.3397  -24.70   &lt;2e-16 ***
+DayAmdmt21   -1.4065     1.0578   -1.33    0.194    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -128.69
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.4897     0.1453 -51.547   &lt;2e-16 ***
+DayAmdmt21   -0.3720     0.1696  -2.194   0.0367 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.6532     0.3922 -22.061   &lt;2e-16 ***
+DayAmdmt21   -1.6629     0.6404  -2.597   0.0148 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -132.12
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -7.75950    0.08932  -86.88   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.7105     0.3569 -24.408   &lt;2e-16 ***
+DayAmdmt21   -1.3719     0.6696  -2.049   0.0496 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -134.43
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.7442     0.1076  -53.37  &lt; 2e-16 ***
+DayAmdmt21   -0.3495     0.1217   -2.87  0.00772 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.4617     0.3704 -20.145  &lt; 2e-16 ***
+DayAmdmt21   -1.7218     0.5560  -3.097  0.00442 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -177.79
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -6.02424    0.06211  -96.99   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.3705     0.3553  -20.75   &lt;2e-16 ***
+DayAmdmt21   -1.6492     0.6200   -2.66   0.0126 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -181.56
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept) -8.25352    0.08151 -101.259  &lt; 2e-16 ***
+DayAmdmt21   0.74375    0.11429    6.508 4.72e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.1494     0.6852 -16.273 8.38e-16 ***
+DayAmdmt21    1.0650     0.8364   1.273    0.213    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -117.53
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.6297     0.0975  -78.26   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.5990     0.4856 -17.707   &lt;2e-16 ***
+DayAmdmt21   -1.4656     0.7549  -1.941    0.062 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -129.47
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -7.71137    0.16867 -45.720   &lt;2e-16 ***
+DayAmdmt21   0.02581    0.23042   0.112    0.912    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.5710     0.4402 -19.470   &lt;2e-16 ***
+DayAmdmt21   -0.1270     0.5954  -0.213    0.833    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -141.06
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -7.697      0.115  -66.96   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.5571     0.4264 -20.068   &lt;2e-16 ***
+DayAmdmt21   -0.1524     0.5513  -0.276    0.784    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -141.07
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.9544     0.1825  -49.06  &lt; 2e-16 ***
+DayAmdmt21   -1.2187     0.3009   -4.05 0.000368 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.8205     0.5089 -19.299   &lt;2e-16 ***
+DayAmdmt21   -0.8794     0.8056  -1.092    0.284    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -87.12
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.1706     0.2025  -45.28   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.9179     0.4573 -21.687   &lt;2e-16 ***
+DayAmdmt21    1.1583     0.7370   1.572    0.127    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -92.888
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -7.95026    0.07182  -110.7  &lt; 2e-16 ***
+DayAmdmt21   1.34854    0.11054    12.2 1.01e-12 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.0449     0.7011 -15.754  1.9e-15 ***
+DayAmdmt21    2.1581     0.8072   2.674   0.0124 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -136.48
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -6.675      0.089     -75   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -6.5655     0.3673 -17.876  &lt; 2e-16 ***
+DayAmdmt21   -2.3485     0.5454  -4.306 0.000173 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -157.36
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.1863     0.2707 -33.940   &lt;2e-16 ***
+DayAmdmt21   -0.4446     0.3494  -1.273    0.214    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.1518     0.4545 -20.136   &lt;2e-16 ***
+DayAmdmt21   -1.0233     0.7052  -1.451    0.158    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -93.017
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.4378     0.1821  -51.83   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.3470     0.3778 -24.742   &lt;2e-16 ***
+DayAmdmt21   -0.5742     0.6386  -0.899    0.376    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -93.828
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.6220     0.1058  -81.47   &lt;2e-16 ***
+DayAmdmt21    0.1644     0.1848    0.89    0.381    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.9081     0.6160 -17.708   &lt;2e-16 ***
+DayAmdmt21    1.2503     0.7708   1.622    0.116    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -108.65
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -8.56622    0.09042  -94.74   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.7993     0.6181 -17.473   &lt;2e-16 ***
+DayAmdmt21    1.0725     0.7483   1.433    0.162    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -109.05
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.0551     0.1469 -61.648   &lt;2e-16 ***
+DayAmdmt21   -0.1178     0.2307  -0.511    0.613    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.5325     0.5402 -19.497   &lt;2e-16 ***
+DayAmdmt21    0.3916     0.7415   0.528    0.602    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -96.038
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.1022     0.1147  -79.37   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.5693     0.5221 -20.246   &lt;2e-16 ***
+DayAmdmt21    0.5074     0.7118   0.713    0.482    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -96.168
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.8230     0.4705 -25.127   &lt;2e-16 ***
+DayAmdmt21   -0.9028     0.9276  -0.973    0.339    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.1635     0.9544 -11.697 2.72e-12 ***
+DayAmdmt21    0.2931     1.6942   0.173    0.864    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -25.731
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -12.0059     0.4686  -25.62   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.2808     0.8769 -12.864 1.64e-13 ***
+DayAmdmt21    1.4251     1.5629   0.912    0.369    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -26.149
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.8184     0.1208 -64.734  &lt; 2e-16 ***
+DayAmdmt21    0.9065     0.1749   5.184 1.68e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.4473     0.4093 -23.084   &lt;2e-16 ***
+DayAmdmt21    1.0930     0.5698   1.918   0.0653 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -144.67
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.1585     0.1663  -43.04   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -7.8226     0.5567 -14.052 1.79e-14 ***
+DayAmdmt21   -0.5711     0.7507  -0.761    0.453    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -154.37
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.8840     0.1288 -68.981   &lt;2e-16 ***
+DayAmdmt21    0.1337     0.1474   0.907    0.372    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.6505     0.5479 -19.439   &lt;2e-16 ***
+DayAmdmt21   -2.8542     4.3331  -0.659    0.515    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -93.567
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -8.78215    0.06541  -134.3   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.5243     0.5624 -18.712   &lt;2e-16 ***
+DayAmdmt21   -2.8615     3.8419  -0.745    0.462    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -93.975
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.4509     0.1040 -81.261  &lt; 2e-16 ***
+DayAmdmt21   -0.4499     0.1623  -2.772  0.00978 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.6731     0.5452 -19.578   &lt;2e-16 ***
+DayAmdmt21   -0.1065     0.8830  -0.121    0.905    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -102.11
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -8.6004     0.1116  -77.07   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.6636     0.5328 -20.013   &lt;2e-16 ***
+DayAmdmt21    0.7366     0.9486   0.777    0.444    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -105.53
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.2528     0.3916 -28.737   &lt;2e-16 ***
+DayAmdmt21   -0.2756     0.5536  -0.498    0.623    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.8557     0.8145 -13.328 1.21e-13 ***
+DayAmdmt21   -0.7310     1.3597  -0.538    0.595    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -42.629
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.3889     0.2838  -40.12   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.9587     0.7430 -14.750 5.18e-15 ***
+DayAmdmt21   -0.4141     1.1736  -0.353    0.727    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -42.752
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.49718    0.30983 -37.107   &lt;2e-16 ***
+DayAmdmt21   -0.06755    0.51287  -0.132    0.896    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -12.484      1.725  -7.236 7.08e-08 ***
+DayAmdmt21     1.091      2.017   0.541    0.593    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -38.526
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.5219     0.2497  -46.14   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -12.488      1.696  -7.364 4.11e-08 ***
+DayAmdmt21     1.149      1.949   0.590     0.56    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -38.535
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.8290     1.5532  -8.903 1.17e-09 ***
+DayAmdmt21    0.3602     1.7077   0.211    0.834    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)  -11.646      4.585  -2.540   0.0169 *
+DayAmdmt21    -6.376     73.166  -0.087   0.9312  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -11.349
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.5296     0.6683  -20.24   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -11.030      2.549  -4.327 0.000164 ***
+DayAmdmt21    -6.992     58.830  -0.119 0.906212    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -11.37
+[1] " -- model --"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in waldt(object): Singular Hessian! Cannot calculate p-values in this
+setting.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -14.12         NA      NA       NA
+DayAmdmt21    -23.41         NA      NA       NA
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) -13.8079         NA      NA       NA
+DayAmdmt21    0.5128         NA      NA       NA
+
+
+Log-likelihood: -4.2899</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -14.124      1.426  -9.906 8.18e-11 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -13.81      19.89  -0.694    0.493
+DayAmdmt21     23.49   10718.95   0.002    0.998
+
+
+Log-likelihood: -4.2899</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod_null): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.1607     0.3773 -26.928   &lt;2e-16 ***
+DayAmdmt21    0.1108     0.4747   0.234    0.817    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.5102     0.6443 -14.761 9.75e-15 ***
+DayAmdmt21   -0.5470     0.8600  -0.636     0.53    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -73.271
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -10.0897     0.2298   -43.9   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -9.4362     0.5840 -16.159 4.85e-16 ***
+DayAmdmt21   -0.6606     0.7171  -0.921    0.365    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -73.298
+[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -12.7933     0.5656 -22.621   &lt;2e-16 ***
+DayAmdmt21    0.9582     0.9953   0.963    0.344    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -12.911      2.918  -4.424 0.000134 ***
+DayAmdmt21     3.261      3.135   1.040 0.307174    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -23.19
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -12.4581     0.5089  -24.48   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -12.173      2.847  -4.276 0.000188 ***
+DayAmdmt21     2.055      2.813   0.731 0.470916    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -23.675
+[1] " -- model --"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in waldt(object): Singular Hessian! Cannot calculate p-values in this
+setting.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -36.02         NA      NA       NA
+DayAmdmt21     22.55         NA      NA       NA
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -8.842         NA      NA       NA
+DayAmdmt21    -9.180         NA      NA       NA
+
+
+Log-likelihood: -5.6685</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.4692     0.7075  -19.04   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -1.392     37.396  -0.037    0.971
+DayAmdmt21   -16.630     43.444  -0.383    0.705
+
+
+Log-likelihood: -5.6694</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod_null): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)    -28.24  371272.78       0        1
+DayAmdmt21      14.08  371272.78       0        1
+
+
+Coefficients associated with dispersion:
+              Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  6.597e-01  4.258e+05       0        1
+DayAmdmt21  -1.868e+01  4.258e+05       0        1
+
+
+Log-likelihood: -3.0518</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -14.16       1.00  -14.16 1.48e-14 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -1.491     50.653  -0.029    0.977
+DayAmdmt21   -16.530     55.718  -0.297    0.769
+
+
+Log-likelihood: -3.0523</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in print.bbdml(mod_null): This model is based on a discriminant taxa.
+You may see NAs in the model summary because Wald testing is invalid.
+Likelihood ratio testing can be used, but valid standard errors cannot be calculated.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] " -- model --"
+
+Call:
+bbdml(formula = formula_i, phi.formula = phi.formula, data = data_i, 
+    link = link, phi.link = phi.link, inits = inits)
+
+
+Coefficients associated with abundance:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.49971    0.33418 -34.412   &lt;2e-16 ***
+DayAmdmt21    0.01679    0.49675   0.034    0.973    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.9873     1.0451 -11.470 4.29e-12 ***
+DayAmdmt21    0.4004     1.5478   0.259    0.798    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -39.541
+[1] " -- null model --"
+
+Call:
+bbdml(formula = formula_null_i, phi.formula = phi.formula_null, 
+    data = data_i, link = link, phi.link = phi.link, inits = inits_null)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -11.492      0.247  -46.53   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.9815     1.0336 -11.592 2.09e-12 ***
+DayAmdmt21    0.3846     1.4754   0.261    0.796    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -39.541</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">abbreviate</span>(<span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"aa"</span>, <span class="st">"aaaaaaaaaaaaaaaaaaaaa"</span>, <span class="st">"bbbbbbbbbbbbb"</span>, <span class="st">"aasdlfjas;ldkfja;sdixckvjlsdjfiosjdlk"</span>)) <span class="co"># can be useful for plotting long names</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                    a                                    aa 
+                                  "a"                                  "aa" 
+                aaaaaaaaaaaaaaaaaaaaa                         bbbbbbbbbbbbb 
+                               "aaaa"                                "bbbb" 
+aasdlfjas;ldkfja;sdixckvjlsdjfiosjdlk 
+                               "as;;" </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-8_0753c5c6b99079f6410aaff8859b6267">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model selection</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(<span class="at">mod_null =</span> cob, <span class="at">mod =</span> corncob_da)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.550571e-05</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="next_gen_sequencing_cache/html/unnamed-chunk-9_0470f36c9cfc2e0a93305b66bdadca76">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(corncob_da)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+bbdml(formula = OTU.1 ~ DayAmdmt, phi.formula = ~DayAmdmt, data = soil)
+
+
+Coefficients associated with abundance:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.44595    0.03604 -12.375 7.18e-13 ***
+DayAmdmt21  -0.16791    0.04067  -4.129 0.000297 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Coefficients associated with dispersion:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.3077     0.3537 -15.008 6.44e-15 ***
+DayAmdmt21   -1.3518     0.5029  -2.688    0.012 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+Log-likelihood: -286.53</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../network/network_gnar.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GNAR</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../observable/observable.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Observable Testing</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.203">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Liou">
+<meta name="dcterms.date" content="2019-07-02">
+
+<title>Personal Documentation - 18&nbsp; Mixed Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../mixed/mixed_variance.html" rel="next">
+<link href="../meta/meta.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Mixed Models</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Personal Documentation</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Front Page</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../advanced/advanced.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Advanced R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../approximation/approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Approximation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bayesian/bayesian.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../categorical/categorical.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../changepoint/changepoint.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Changepoint Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../crossover/crossover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Crossover Designs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../diffeq/diffeq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Differential Equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../epidemiology/epidemiology.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Epidemiology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../experimentaldesign/experimentaldesign.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Experimental Design</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exponential/exponential.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Exponential Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../gam/gam.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Additive Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/longitudinal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Longitudinal Data Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/randomcoef.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Coefficient Models (CALS)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../longitudinal/within_between.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Within-Between Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../matrix/matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Matrix Math</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../meta/meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Meta Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Mixed Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed/mixed_variance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Mixed Models (Variance)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_centrality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Network Centrality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../network/network_gnar.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GNAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../next_gen_sequencing/next_gen_sequencing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Next Generation Sequencing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/observable.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Observable Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../optimization/optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ordination/ordination.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Ordination</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallel/parallel.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Parallel Computing in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stochastic/stochastic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Stochastic</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../spatial/carbayes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">CARBayes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">From Informational</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bootstrap/bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../causal/causal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Causal Statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../color/color.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Colors in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-mixed-models" id="toc-introduction-to-mixed-models" class="nav-link active" data-scroll-target="#introduction-to-mixed-models"><span class="toc-section-number">19</span>  Introduction to Mixed Models</a>
+  <ul class="collapse">
+  <li><a href="#mixed-model-ecosystem" id="toc-mixed-model-ecosystem" class="nav-link" data-scroll-target="#mixed-model-ecosystem"><span class="toc-section-number">19.1</span>  Mixed Model Ecosystem</a>
+  <ul class="collapse">
+  <li><a href="#r-package-overview" id="toc-r-package-overview" class="nav-link" data-scroll-target="#r-package-overview"><span class="toc-section-number">19.1.1</span>  R Package Overview</a></li>
+  <li><a href="#sas-overview" id="toc-sas-overview" class="nav-link" data-scroll-target="#sas-overview"><span class="toc-section-number">19.1.2</span>  SAS Overview</a></li>
+  </ul></li>
+  <li><a href="#example-datasets" id="toc-example-datasets" class="nav-link" data-scroll-target="#example-datasets"><span class="toc-section-number">19.2</span>  Example Datasets</a>
+  <ul class="collapse">
+  <li><a href="#oats" id="toc-oats" class="nav-link" data-scroll-target="#oats"><span class="toc-section-number">19.2.1</span>  Oats</a></li>
+  <li><a href="#sleepstudy" id="toc-sleepstudy" class="nav-link" data-scroll-target="#sleepstudy"><span class="toc-section-number">19.2.2</span>  Sleepstudy</a></li>
+  </ul></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"><span class="toc-section-number">19.3</span>  Resources</a></li>
+  </ul></li>
+  <li><a href="#basic-theory" id="toc-basic-theory" class="nav-link" data-scroll-target="#basic-theory"><span class="toc-section-number">20</span>  Basic Theory</a></li>
+  <li><a href="#reml-theory" id="toc-reml-theory" class="nav-link" data-scroll-target="#reml-theory"><span class="toc-section-number">21</span>  REML Theory</a></li>
+  <li><a href="#software" id="toc-software" class="nav-link" data-scroll-target="#software"><span class="toc-section-number">22</span>  Software</a>
+  <ul class="collapse">
+  <li><a href="#nlme" id="toc-nlme" class="nav-link" data-scroll-target="#nlme"><span class="toc-section-number">22.1</span>  nlme</a></li>
+  <li><a href="#lme4" id="toc-lme4" class="nav-link" data-scroll-target="#lme4"><span class="toc-section-number">22.2</span>  lme4</a></li>
+  <li><a href="#lmeinfo" id="toc-lmeinfo" class="nav-link" data-scroll-target="#lmeinfo"><span class="toc-section-number">22.3</span>  lmeInfo</a></li>
+  <li><a href="#sommer" id="toc-sommer" class="nav-link" data-scroll-target="#sommer"><span class="toc-section-number">22.4</span>  sommer</a></li>
+  <li><a href="#glmmtmb" id="toc-glmmtmb" class="nav-link" data-scroll-target="#glmmtmb"><span class="toc-section-number">22.5</span>  glmmTMB</a></li>
+  </ul></li>
+  <li><a href="#basics-of-mixed-models-in-r" id="toc-basics-of-mixed-models-in-r" class="nav-link" data-scroll-target="#basics-of-mixed-models-in-r"><span class="toc-section-number">23</span>  Basics of Mixed Models in R</a>
+  <ul class="collapse">
+  <li><a href="#fixed-effects" id="toc-fixed-effects" class="nav-link" data-scroll-target="#fixed-effects"><span class="toc-section-number">23.1</span>  Fixed Effects</a></li>
+  <li><a href="#random-effects" id="toc-random-effects" class="nav-link" data-scroll-target="#random-effects"><span class="toc-section-number">23.2</span>  Random Effects</a>
+  <ul class="collapse">
+  <li><a href="#random-effect-variance" id="toc-random-effect-variance" class="nav-link" data-scroll-target="#random-effect-variance"><span class="toc-section-number">23.2.1</span>  Random Effect Variance</a></li>
+  </ul></li>
+  <li><a href="#plotting-effects" id="toc-plotting-effects" class="nav-link" data-scroll-target="#plotting-effects"><span class="toc-section-number">23.3</span>  Plotting Effects</a></li>
+  </ul></li>
+  <li><a href="#inference-in-mixed-models" id="toc-inference-in-mixed-models" class="nav-link" data-scroll-target="#inference-in-mixed-models"><span class="toc-section-number">24</span>  Inference in Mixed Models</a></li>
+  <li><a href="#correlation-structures" id="toc-correlation-structures" class="nav-link" data-scroll-target="#correlation-structures"><span class="toc-section-number">25</span>  Correlation structures</a>
+  <ul class="collapse">
+  <li><a href="#varfunc-variance-functions" id="toc-varfunc-variance-functions" class="nav-link" data-scroll-target="#varfunc-variance-functions"><span class="toc-section-number">25.1</span>  varFunc variance functions</a></li>
+  <li><a href="#lme-corstruct" id="toc-lme-corstruct" class="nav-link" data-scroll-target="#lme-corstruct"><span class="toc-section-number">25.2</span>  lme corstruct</a></li>
+  <li><a href="#variograms" id="toc-variograms" class="nav-link" data-scroll-target="#variograms"><span class="toc-section-number">25.3</span>  Variograms</a></li>
+  <li><a href="#example-bodyweight" id="toc-example-bodyweight" class="nav-link" data-scroll-target="#example-bodyweight"><span class="toc-section-number">25.4</span>  Example: BodyWeight</a></li>
+  </ul></li>
+  <li><a href="#computational-notes" id="toc-computational-notes" class="nav-link" data-scroll-target="#computational-notes"><span class="toc-section-number">26</span>  Computational Notes</a></li>
+  <li><a href="#cookbook" id="toc-cookbook" class="nav-link" data-scroll-target="#cookbook"><span class="toc-section-number">27</span>  Cookbook</a>
+  <ul class="collapse">
+  <li><a href="#using-covariate-as-both-random-and-fixed-effect" id="toc-using-covariate-as-both-random-and-fixed-effect" class="nav-link" data-scroll-target="#using-covariate-as-both-random-and-fixed-effect"><span class="toc-section-number">27.1</span>  Using covariate as both random and fixed effect</a></li>
+  <li><a href="#plot-of-shrinkage-sleepstudy" id="toc-plot-of-shrinkage-sleepstudy" class="nav-link" data-scroll-target="#plot-of-shrinkage-sleepstudy"><span class="toc-section-number">27.2</span>  Plot of Shrinkage (sleepstudy)</a>
+  <ul class="collapse">
+  <li><a href="#no-pooling" id="toc-no-pooling" class="nav-link" data-scroll-target="#no-pooling"><span class="toc-section-number">27.2.1</span>  No Pooling</a></li>
+  <li><a href="#pooled" id="toc-pooled" class="nav-link" data-scroll-target="#pooled"><span class="toc-section-number">27.2.2</span>  Pooled</a></li>
+  <li><a href="#partial-pooling" id="toc-partial-pooling" class="nav-link" data-scroll-target="#partial-pooling"><span class="toc-section-number">27.2.3</span>  Partial Pooling</a></li>
+  <li><a href="#plot-comparing-all-versions" id="toc-plot-comparing-all-versions" class="nav-link" data-scroll-target="#plot-comparing-all-versions"><span class="toc-section-number">27.2.4</span>  Plot comparing all versions</a></li>
+  <li><a href="#linear-model-version-estimates" id="toc-linear-model-version-estimates" class="nav-link" data-scroll-target="#linear-model-version-estimates"><span class="toc-section-number">27.2.5</span>  Linear Model Version Estimates</a></li>
+  </ul></li>
+  <li><a href="#getting-subject-level-standard-errors" id="toc-getting-subject-level-standard-errors" class="nav-link" data-scroll-target="#getting-subject-level-standard-errors"><span class="toc-section-number">27.3</span>  Getting Subject level standard errors</a></li>
+  <li><a href="#emmeans-with-mixed-models-oats" id="toc-emmeans-with-mixed-models-oats" class="nav-link" data-scroll-target="#emmeans-with-mixed-models-oats"><span class="toc-section-number">27.4</span>  Emmeans with Mixed Models (oats)</a>
+  <ul class="collapse">
+  <li><a href="#manual-calculation-of-emmeans-and-se" id="toc-manual-calculation-of-emmeans-and-se" class="nav-link" data-scroll-target="#manual-calculation-of-emmeans-and-se"><span class="toc-section-number">27.4.1</span>  Manual calculation of emmeans and SE</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#additional-resources" id="toc-additional-resources" class="nav-link" data-scroll-target="#additional-resources"><span class="toc-section-number">28</span>  Additional Resources</a></li>
+  <li><a href="#faq" id="toc-faq" class="nav-link" data-scroll-target="#faq"><span class="toc-section-number">29</span>  FAQ</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Mixed Models</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Liou </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 2, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-1_7614b21fecb5683990e2ac5fcc6473b2">
+<details>
+<summary>Libraries</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lattice)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB) <span class="co"># template model builder, designed as improved glmmADMB</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom.mixed) <span class="co"># clean mixed model outputs</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sommer) <span class="co"># asREML replacement</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sjPlot) <span class="co"># for plottinge effects</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra) <span class="co"># for tables</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(afex) <span class="co"># easy anova</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2) <span class="co"># for melt function</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="introduction-to-mixed-models" class="level1" data-number="19">
+<h1 data-number="19"><span class="header-section-number">19</span> Introduction to Mixed Models</h1>
+<section id="mixed-model-ecosystem" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="mixed-model-ecosystem"><span class="header-section-number">19.1</span> Mixed Model Ecosystem</h2>
+<p>Mixed model software is widely available for most use case scenarios in most commonly used statistical software. Although there are some implementational differences between the software (optimizers, defaults, design philosophy).</p>
+<section id="r-package-overview" class="level3" data-number="19.1.1">
+<h3 data-number="19.1.1" class="anchored" data-anchor-id="r-package-overview"><span class="header-section-number">19.1.1</span> R Package Overview</h3>
+<ul>
+<li><strong>lme4</strong></li>
+<li><strong>nlme</strong></li>
+</ul>
+</section>
+<section id="sas-overview" class="level3" data-number="19.1.2">
+<h3 data-number="19.1.2" class="anchored" data-anchor-id="sas-overview"><span class="header-section-number">19.1.2</span> SAS Overview</h3>
+</section>
+</section>
+<section id="example-datasets" class="level2 tabset" data-number="19.2">
+<h2 class="tabset anchored" data-number="19.2" data-anchor-id="example-datasets"><span class="header-section-number">19.2</span> Example Datasets</h2>
+<ul>
+<li><p>Oats from <code>nlme</code> package (balanced split plot design)</p></li>
+<li><p>sleepstudy from <code>lme4</code> package</p></li>
+</ul>
+<section id="oats" class="level3" data-number="19.2.1">
+<h3 data-number="19.2.1" class="anchored" data-anchor-id="oats"><span class="header-section-number">19.2.1</span> Oats</h3>
+<ul>
+<li>Oats is a good example of a balanced split-plot design, from the <strong>nlme</strong> package.</li>
+<li>We will remove some data observations to make it incomplete, like they do in <a href="https://cran.r-project.org/web/packages/emmeans/vignettes/sophisticated.html">emmeans documentation</a></li>
+</ul>
+<p>Oats has 3 factors, <code>yield ~ nitro | block/variety</code></p>
+<ul>
+<li>yield (continuous)</li>
+<li>nitro (4 levels)
+<ul>
+<li>0.0</li>
+<li>0.2</li>
+<li>0.4</li>
+<li>0.6</li>
+</ul></li>
+<li>Variety (3 levels)
+<ul>
+<li>Victory</li>
+<li>Golden Rain</li>
+<li>Marvellous</li>
+</ul></li>
+<li>Blocks (6 levels)</li>
+</ul>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-2_85fd3c81997b4dfbe4e64a040562b048">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># intentionally removing some observations</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>oats_miss <span class="ot">&lt;-</span> Oats[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">8</span>, <span class="dv">13</span>, <span class="dv">21</span>, <span class="dv">34</span>, <span class="dv">55</span>),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="sleepstudy" class="level3" data-number="19.2.2">
+<h3 data-number="19.2.2" class="anchored" data-anchor-id="sleepstudy"><span class="header-section-number">19.2.2</span> Sleepstudy</h3>
+<ul>
+<li>sleepstudy is a good example of random intercept and coefficient with subject random effect.</li>
+<li>sleep study is accessible from <strong>lme4</strong> package with <code>sleepstudy</code></li>
+<li>most examples for lme4 will feature this dataset.</li>
+</ul>
+</section>
+</section>
+<section id="resources" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="resources"><span class="header-section-number">19.3</span> Resources</h2>
+<ul>
+<li><a href="https://bbolker.github.io/morelia_2018/notes/mixedlab.html">Ben’s Introduction to Mixed Models</a> - basic lab with examples of how to approach mixed models by a prominant mixed models expert.</li>
+</ul>
+</section>
+</section>
+<section id="basic-theory" class="level1" data-number="20">
+<h1 data-number="20"><span class="header-section-number">20</span> Basic Theory</h1>
+<p>For a model that shows this ,</p>
+<p><span class="math display">\begin{equation}
+         Y_i = X_i\beta + Zu_i + e_i
+\end{equation}</span></p>
+<p>with assumptions,</p>
+<ol type="1">
+<li><span class="math inline">u_i\sim MVN(0, D)</span></li>
+<li><span class="math inline">e_i\sim MVN(0, R)</span></li>
+<li><span class="math inline">Cov(u, e) = 0</span> (Violation of this results in parameter confounding.)</li>
+</ol>
+</section>
+<section id="reml-theory" class="level1" data-number="21">
+<h1 data-number="21"><span class="header-section-number">21</span> REML Theory</h1>
+<p>A step-by-step proof of the mixed model equations can be found on <a href="https://rh8liuqy.github.io/Linear_mixed_model_equations.html">Kevin Liu’s Website: Linear Mixed Model Equations</a>.</p>
+<ul>
+<li><a href="https://www.stats.net.au/Maths_REML_manual.pdf">Introduction to REML equations</a></li>
+</ul>
+</section>
+<section id="software" class="level1 tabset" data-number="22">
+<h1 class="tabset" data-number="22"><span class="header-section-number">22</span> Software</h1>
+<section id="nlme" class="level2" data-number="22.1">
+<h2 data-number="22.1" class="anchored" data-anchor-id="nlme"><span class="header-section-number">22.1</span> nlme</h2>
+<p>This section we use the “Oxide” example p167 in Mixed-Effects Models in S and S-PLUS.</p>
+<p>nlme introduces the class “groupedData”, for which has a natural methods for which we can use</p>
+<p>lme also has a LOT of variance classes that can fit R variances of individuals according to covariates as well! See ?varClasses for the documentation of this and see <a href="https://quantdev.ssri.psu.edu/sites/qdev/files/ILD_Ch06_2017_MLMwithHeterogeneousVariance.html">MLM Heterogenous Variance</a> for an example.</p>
+<p>Many methods that apply to class <code>lme</code> objects,</p>
+<ul>
+<li><code>intervals(lmod)</code> - confidence intervals around parameters
+<ul>
+<li>“using a normal approximation to the distribution of the (restricted) maximum likelihood estimators (the estimators are assumed to have a normal distribution centered at the true parameter values and with covariance matrix equal to the negative inverse Hessian matrix of the (restricted) log-likelihood evaluated at the estimated parameters).” ~ from documentation</li>
+</ul></li>
+<li><code>augPred</code> - produces preditions of the response for each group, and produces plot of predicted lines for each subject superposed on the original data.</li>
+<li><code>plot(compareFits(coef(mod), coef(mod2)))</code> - plot estimates of two models, (like REML vs ML) estimates.</li>
+<li><code>getVarCov</code> - gives marginal and conditional covariance matrices, very useful!</li>
+<li><code>VarCorr</code> - instead of covariances, list the correlations</li>
+</ul>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-3_01599a5187fa825506b4f1a909172941">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># random defaults to the rhs of grouped Data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">formula</span>(Oxide) <span class="co"># shows that it has a grouping structure</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Thickness ~ 1 | Lot/Wafer</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-4_2e7d929f25925c8a6f62577cb14413df">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The example of how to create a new grouped object</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Orth.new <span class="ot">&lt;-</span>  <span class="co"># create a new copy of the groupedData object</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">groupedData</span>(distance <span class="sc">~</span> age <span class="sc">|</span> Subject,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> <span class="fu">as.data.frame</span>( Orthodont ),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">FUN =</span> mean,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">outer =</span> <span class="sc">~</span> Sex,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">labels =</span> <span class="fu">list</span>( <span class="at">x =</span> <span class="st">"Age"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> <span class="st">"Distance from pituitary to pterygomaxillary fissure"</span> ),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">units =</span> <span class="fu">list</span>( <span class="at">x =</span> <span class="st">"(yr)"</span>, <span class="at">y =</span> <span class="st">"(mm)"</span>) )</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># formula(Orth.new)</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(Orth.new)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gsummary(Orth.new)</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>orth_lmod <span class="ot">&lt;-</span> <span class="fu">lme</span>(Orth.new)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># orth_vario &lt;- Variogram(orth_lmod) # doesn't quite look right....</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="lme4" class="level2" data-number="22.2">
+<h2 data-number="22.2" class="anchored" data-anchor-id="lme4"><span class="header-section-number">22.2</span> lme4</h2>
+<p>Some common accessor functions for working with mixed models and what they return:</p>
+<ul>
+<li><code>summary()</code> - all the important information</li>
+<li><code>fixef()</code> - the <span class="math inline">\beta</span> part of the equation</li>
+<li><code>ranef()</code> - the <span class="math inline">u</span> part of the equation</li>
+<li><code>getME()</code> - Get very specific components of an object of class <code>merMod</code>. See the help function for full list
+<ul>
+<li><code>X</code> - fixed-effects model matrix</li>
+<li><code>Z</code> - random-effects model matrix</li>
+<li><code>mu</code> - conditional mean of response</li>
+<li><code>b</code> - conditional mode of random effects variable</li>
+<li><code>theta</code> - just the parameters in the covariance matrix <span class="math inline">G</span></li>
+<li><code>sigma</code> - relative variance factor</li>
+<li><code>Lambda</code> - squareroot of random effect covariance, <span class="math inline">G = \sigma^2LL'</span></li>
+</ul></li>
+<li><code>predict(mod, re.form = "NA | NULL | ~subject")</code> - predictions with different levels of random effect structures</li>
+</ul>
+</section>
+<section id="lmeinfo" class="level2" data-number="22.3">
+<h2 data-number="22.3" class="anchored" data-anchor-id="lmeinfo"><span class="header-section-number">22.3</span> lmeInfo</h2>
+<p>Gives expected information and variance components from information matrices of “lme” models. Useful because lme doesn’t report the standard errors from the objects</p>
+</section>
+<section id="sommer" class="level2" data-number="22.4">
+<h2 data-number="22.4" class="anchored" data-anchor-id="sommer"><span class="header-section-number">22.4</span> sommer</h2>
+</section>
+<section id="glmmtmb" class="level2" data-number="22.5">
+<h2 data-number="22.5" class="anchored" data-anchor-id="glmmtmb"><span class="header-section-number">22.5</span> glmmTMB</h2>
+</section>
+</section>
+<section id="basics-of-mixed-models-in-r" class="level1" data-number="23">
+<h1 data-number="23"><span class="header-section-number">23</span> Basics of Mixed Models in R</h1>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-5_ccdc460d909d4962b94a4dda4b101916">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Oats Model</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>oats_mod <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(yield<span class="sc">~</span>Variety <span class="sc">+</span> <span class="fu">factor</span>(nitro) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Block<span class="sc">/</span>Variety), <span class="at">data =</span> oats_miss, <span class="at">REML =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sleep_mod <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> (Days <span class="sc">|</span> Subject), <span class="at">data=</span>sleepstudy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-6_f25451391444160343b3947acb3748d4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML ['lmerMod']
+Formula: yield ~ Variety + factor(nitro) + (1 | Block/Variety)
+   Data: oats_miss
+
+REML criterion at convergence: 495.9
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-1.77507 -0.69966 -0.06888  0.55169  1.64128 
+
+Random effects:
+ Groups        Name        Variance Std.Dev.
+ Variety:Block (Intercept)  76.28    8.734  
+ Block         (Intercept) 209.44   14.472  
+ Residual                  180.49   13.435  
+Number of obs: 63, groups:  Variety:Block, 18; Block, 6
+
+Fixed effects:
+                  Estimate Std. Error t value
+(Intercept)         80.585      8.180   9.851
+VarietyMarvellous    3.229      6.545   0.493
+VarietyVictory      -8.306      6.674  -1.245
+factor(nitro)0.2    18.142      5.005   3.625
+factor(nitro)0.4    35.306      5.004   7.055
+factor(nitro)0.6    45.176      4.925   9.172
+
+Correlation of Fixed Effects:
+            (Intr) VrtyMr VrtyVc f()0.2 f()0.4
+VartyMrvlls -0.405                            
+VarityVctry -0.383  0.495                     
+fctr(nt)0.2 -0.338  0.024 -0.002              
+fctr(nt)0.4 -0.323 -0.014 -0.021  0.543       
+fctr(nt)0.6 -0.320 -0.016 -0.055  0.544  0.545</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sleep_mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: Reaction ~ Days + (Days | Subject)
+   Data: sleepstudy
+
+REML criterion at convergence: 1743.6
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.9536 -0.4634  0.0231  0.4634  5.1793 
+
+Random effects:
+ Groups   Name        Variance Std.Dev. Corr
+ Subject  (Intercept) 612.10   24.741       
+          Days         35.07    5.922   0.07
+ Residual             654.94   25.592       
+Number of obs: 180, groups:  Subject, 18
+
+Fixed effects:
+            Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)  251.405      6.825  17.000  36.838  &lt; 2e-16 ***
+Days          10.467      1.546  17.000   6.771 3.26e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+     (Intr)
+Days -0.138</code></pre>
+</div>
+</div>
+<section id="fixed-effects" class="level2" data-number="23.1">
+<h2 data-number="23.1" class="anchored" data-anchor-id="fixed-effects"><span class="header-section-number">23.1</span> Fixed Effects</h2>
+<p>The reported fixed effects from <code>fixef(mod)</code> is really just the average of all across all the individual fits that were created</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-7_81943c8bf6cd9e6d052497c0a6129c18">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># These are the same! </span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fixef</span>(sleep_mod) <span class="co"># %&gt;% as.data.frame() # makes it nicer to work with</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)        Days </span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="do">##   251.40510    10.46729</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(<span class="fu">coef</span>(sleep_mod)<span class="sc">$</span>Subject)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)        Days </span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="do">##   251.40510    10.46729</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-8_a5b33c1516917a59258c5ec73ce3d349">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Results aren't shown, but this is how to get them.</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(oats_mod)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ranef</span>(oats_mod) <span class="co"># %&gt;% as.data.frame() # makes it nicer to work with</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">fixef</span>(oats_mod) <span class="co"># %&gt;% as.data.frame() # makes it nicer to work with</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Something to do with subject level standard errors</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(<span class="fu">ranef</span>(oats_mod, <span class="at">condVar =</span> <span class="cn">TRUE</span>, <span class="at">drop =</span> <span class="cn">TRUE</span>)<span class="sc">$</span><span class="st">`</span><span class="at">Variety:Block</span><span class="st">`</span>, <span class="st">"postVar"</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard errors for random effects</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(vc <span class="ot">&lt;-</span> <span class="fu">VarCorr</span>(oats_mod), <span class="at">comp =</span> <span class="fu">c</span>(<span class="st">"Variance"</span>, <span class="st">"Std.Dev."</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="at">order =</span> <span class="st">"lower.tri"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="random-effects" class="level2" data-number="23.2">
+<h2 data-number="23.2" class="anchored" data-anchor-id="random-effects"><span class="header-section-number">23.2</span> Random Effects</h2>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-9_0dd405ebd72090dace8027f84b8a1382">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From the help on ranef</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">ranef</span>(sleep_mod))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">ranef</span>(sleep_mod))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>rr <span class="ot">&lt;-</span> <span class="fu">ranef</span>(sleep_mod)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(rr)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(rr,<span class="at">scales =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">list</span>(<span class="at">relation =</span> <span class="st">'free'</span>)))[[<span class="st">"Subject"</span>]] <span class="co"># This just allows the x access to be different between the two objects</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-10_0164544e9e8224fe9f73d9ed7736eced">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How to replicate dotplot in ggplot!</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The "free_x" is allowing different value scales...</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dd, <span class="fu">aes</span>(<span class="at">y=</span>grp,<span class="at">x=</span>condval)) <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>term,<span class="at">scales=</span><span class="st">"free_x"</span>) <span class="sc">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin=</span>condval <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>condsd,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmax=</span>condval <span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>condsd), <span class="at">height=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="random-effect-variance" class="level3" data-number="23.2.1">
+<h3 data-number="23.2.1" class="anchored" data-anchor-id="random-effect-variance"><span class="header-section-number">23.2.1</span> Random Effect Variance</h3>
+<p>More specifically, these are the variances of the conditional modes</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-11_58d2a0799c0275a72e8d975533a12138">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cov_mat <span class="ot">&lt;-</span> <span class="fu">VarCorr</span>(sleep_mod)[[<span class="st">"Subject"</span>]]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cov_mat <span class="co"># shows the correlation between random effects as well</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            (Intercept)      Days
+(Intercept)  612.100158  9.604409
+Days           9.604409 35.071714
+attr(,"stddev")
+(Intercept)        Days 
+  24.740658    5.922138 
+attr(,"correlation")
+            (Intercept)       Days
+(Intercept)  1.00000000 0.06555124
+Days         0.06555124 1.00000000</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">VarCorr</span>(sleep_mod), <span class="at">comp=</span><span class="fu">c</span>(<span class="st">"Variance"</span>)) <span class="co"># extract the variance estimates of random effects (shown in summary)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> Groups   Name        Variance Corr 
+ Subject  (Intercept) 612.100       
+          Days         35.072  0.066
+ Residual             654.940       </code></pre>
+</div>
+</div>
+<p>Similarly, the conditional variance-covariance matrix of the random effects can be extracted by the following. These variances are conditional on the data and</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-12_39454a4eb0e745ef92afcab72fac8e99">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(<span class="fu">ranef</span>(sleep_mod)<span class="sc">$</span>Subject, <span class="st">"postVar"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>, , 1
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 2
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 3
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 4
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 5
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 6
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 7
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 8
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 9
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 10
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 11
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 12
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 13
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 14
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 15
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 16
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 17
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283
+
+, , 18
+
+         [,1]       [,2]
+[1,] 145.7056 -21.444504
+[2,] -21.4445   5.312283</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ?ranef</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>A cleaner data frame version of the above with standard deviations, (no correlation)</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-13_0beca154c8af5b18162920d25cd917af">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">ranef</span>(sleep_mod))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    grpvar        term grp     condval    condsd
+1  Subject (Intercept) 308   2.2585509 12.070857
+2  Subject (Intercept) 309 -40.3987381 12.070857
+3  Subject (Intercept) 310 -38.9604090 12.070857
+4  Subject (Intercept) 330  23.6906196 12.070857
+5  Subject (Intercept) 331  22.2603126 12.070857
+6  Subject (Intercept) 332   9.0395679 12.070857
+7  Subject (Intercept) 333  16.8405086 12.070857
+8  Subject (Intercept) 334  -7.2326151 12.070857
+9  Subject (Intercept) 335  -0.3336684 12.070857
+10 Subject (Intercept) 337  34.8904868 12.070857
+11 Subject (Intercept) 349 -25.2102286 12.070857
+12 Subject (Intercept) 350 -13.0700342 12.070857
+13 Subject (Intercept) 351   4.5778642 12.070857
+14 Subject (Intercept) 352  20.8636782 12.070857
+15 Subject (Intercept) 369   3.2754656 12.070857
+16 Subject (Intercept) 370 -25.6129993 12.070857
+17 Subject (Intercept) 371   0.8070461 12.070857
+18 Subject (Intercept) 372  12.3145921 12.070857
+19 Subject        Days 308   9.1989758  2.304839
+20 Subject        Days 309  -8.6196806  2.304839
+21 Subject        Days 310  -5.4488565  2.304839
+22 Subject        Days 330  -4.8143503  2.304839
+23 Subject        Days 331  -3.0699116  2.304839
+24 Subject        Days 332  -0.2721770  2.304839
+25 Subject        Days 333  -0.2236361  2.304839
+26 Subject        Days 334   1.0745816  2.304839
+27 Subject        Days 335 -10.7521652  2.304839
+28 Subject        Days 337   8.6282652  2.304839
+29 Subject        Days 349   1.1734322  2.304839
+30 Subject        Days 350   6.6142178  2.304839
+31 Subject        Days 351  -3.0152621  2.304839
+32 Subject        Days 352   3.5360011  2.304839
+33 Subject        Days 369   0.8722149  2.304839
+34 Subject        Days 370   4.8224850  2.304839
+35 Subject        Days 371  -0.9881562  2.304839
+36 Subject        Days 372   1.2840221  2.304839</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># broom.mixed alternative, with same output</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(sleep_mod, <span class="at">effects =</span> <span class="st">"ran_vals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 36 × 6
+   effect   group   level term        estimate std.error
+   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+ 1 ran_vals Subject 308   (Intercept)    2.26       12.1
+ 2 ran_vals Subject 309   (Intercept)  -40.4        12.1
+ 3 ran_vals Subject 310   (Intercept)  -39.0        12.1
+ 4 ran_vals Subject 330   (Intercept)   23.7        12.1
+ 5 ran_vals Subject 331   (Intercept)   22.3        12.1
+ 6 ran_vals Subject 332   (Intercept)    9.04       12.1
+ 7 ran_vals Subject 333   (Intercept)   16.8        12.1
+ 8 ran_vals Subject 334   (Intercept)   -7.23       12.1
+ 9 ran_vals Subject 335   (Intercept)   -0.334      12.1
+10 ran_vals Subject 337   (Intercept)   34.9        12.1
+# … with 26 more rows
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="plotting-effects" class="level2" data-number="23.3">
+<h2 data-number="23.3" class="anchored" data-anchor-id="plotting-effects"><span class="header-section-number">23.3</span> Plotting Effects</h2>
+<p>There are a few packages that automate the effect plotting</p>
+<ul>
+<li>“effects”</li>
+<li>“ggeffects”</li>
+<li><a href="https://cran.r-project.org/web/packages/sjPlot/vignettes/plot_model_estimates.html">“sjPlot”</a></li>
+</ul>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-14_751722bfdefd5ae155eca3b1e006b95d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sjPLot</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_model</span>(oats_mod,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">show.values =</span> <span class="cn">TRUE</span>,  <span class="co"># show overlay</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">value.offset =</span> .<span class="dv">3</span>) <span class="co"># offset above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>some useful options</p>
+<ul>
+<li><code>terms = c("factor(nitro)0.2", "factor(nitro)0.4"</code></li>
+</ul>
+</section>
+</section>
+<section id="inference-in-mixed-models" class="level1" data-number="24">
+<h1 data-number="24"><span class="header-section-number">24</span> Inference in Mixed Models</h1>
+<p>A wonderful resource for discussing inference in mixed models is given by <a href="https://people.bath.ac.uk/jjf23/mixchange/index.html#worked-examples">Faraway’s Inferential Methods for Linear Mixed Models</a></p>
+</section>
+<section id="correlation-structures" class="level1" data-number="25">
+<h1 data-number="25"><span class="header-section-number">25</span> Correlation structures</h1>
+<section id="varfunc-variance-functions" class="level2" data-number="25.1">
+<h2 data-number="25.1" class="anchored" data-anchor-id="varfunc-variance-functions"><span class="header-section-number">25.1</span> varFunc variance functions</h2>
+<p>varfunc is for modeling variance with covariate, for heterogeneity</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-15_2e597165a5293d0caaf085c97224d4dd">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>Dialyzer<span class="sc">$</span>QB</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200
+ [19] 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200
+ [37] 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200
+ [55] 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 300 300
+ [73] 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300
+ [91] 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300
+[109] 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300 300
+[127] 300 300 300 300 300 300 300 300 300 300 300 300 300 300
+Levels: 200 300</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Dialyzer <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(pressure, rate, <span class="at">group =</span> Subject)) <span class="sc">+</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>QB)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># relevel so 300 is first</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>Dialyzer<span class="sc">$</span>QB <span class="ot">&lt;-</span> <span class="fu">factor</span>(Dialyzer<span class="sc">$</span>QB, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">200</span>))</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(Dialyzer<span class="sc">$</span>QB) <span class="ot">&lt;-</span> <span class="fu">contr.sum</span>(<span class="fu">levels</span>(Dialyzer<span class="sc">$</span>QB))</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>dial_lme <span class="ot">&lt;-</span> <span class="fu">lme</span>(rate <span class="sc">~</span> pressure<span class="sc">*</span>QB <span class="sc">+</span> <span class="fu">I</span>(pressure<span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span>QB <span class="sc">+</span> <span class="fu">I</span>(pressure<span class="sc">^</span><span class="dv">3</span>)<span class="sc">*</span>QB <span class="sc">+</span> <span class="fu">I</span>(pressure<span class="sc">^</span><span class="dv">4</span>)<span class="sc">*</span>QB,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span>  Dialyzer,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">random =</span> <span class="sc">~</span>pressure <span class="sc">+</span> pressure<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dial_lme)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: Dialyzer 
+       AIC      BIC    logLik
+  705.0693 745.2148 -338.5347
+
+Random effects:
+ Formula: ~pressure + pressure^2 | Subject
+ Structure: General positive-definite, Log-Cholesky parametrization
+            StdDev   Corr  
+(Intercept) 2.334516 (Intr)
+pressure    1.546108 -0.398
+Residual    2.188620       
+
+Fixed effects:  rate ~ pressure * QB + I(pressure^2) * QB + I(pressure^3) * QB +      I(pressure^4) * QB 
+                      Value Std.Error  DF   t-value p-value
+(Intercept)       -16.70523  1.723312 112 -9.693679  0.0000
+pressure           89.12680  6.790445 112 13.125327  0.0000
+QB1                -1.02095  1.723312  18 -0.592433  0.5609
+I(pressure^2)     -43.31114  8.110964 112 -5.339827  0.0000
+I(pressure^3)       9.49376  3.669924 112  2.586910  0.0110
+I(pressure^4)      -0.81949  0.556104 112 -1.473624  0.1434
+pressure:QB1        1.84205  6.790445 112  0.271271  0.7867
+QB1:I(pressure^2)  -0.16107  8.110964 112 -0.019859  0.9842
+QB1:I(pressure^3)   0.80053  3.669924 112  0.218133  0.8277
+QB1:I(pressure^4)  -0.19529  0.556104 112 -0.351169  0.7261
+ Correlation: 
+                  (Intr) pressr QB1    I(p^2) I(p^3) I(p^4) pr:QB1 QB1:I(^2
+pressure          -0.923                                                   
+QB1                0.098 -0.087                                            
+I(pressure^2)      0.872 -0.984  0.077                                     
+I(pressure^3)     -0.828  0.955 -0.070 -0.992                              
+I(pressure^4)      0.789 -0.923  0.064  0.974 -0.995                       
+pressure:QB1      -0.087  0.076 -0.923 -0.066  0.058 -0.053                
+QB1:I(pressure^2)  0.077 -0.066  0.872  0.056 -0.049  0.044 -0.984         
+QB1:I(pressure^3) -0.070  0.058 -0.828 -0.049  0.043 -0.038  0.955 -0.992  
+QB1:I(pressure^4)  0.064 -0.053  0.789  0.044 -0.038  0.034 -0.923  0.974  
+                  QB1:I(^3
+pressure                  
+QB1                       
+I(pressure^2)             
+I(pressure^3)             
+I(pressure^4)             
+pressure:QB1              
+QB1:I(pressure^2)         
+QB1:I(pressure^3)         
+QB1:I(pressure^4) -0.995  
+
+Standardized Within-Group Residuals:
+       Min         Q1        Med         Q3        Max 
+-2.4923834 -0.5199016 -0.0168656  0.4604300  2.6001042 
+
+Number of Observations: 140
+Number of Groups: 20 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dial_lme, <span class="fu">resid</span>(., <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">~</span>pressure, <span class="at">abline =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># update the weights by pressure</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>dial_lme2 <span class="ot">&lt;-</span> <span class="fu">update</span>(dial_lme,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">weights =</span> <span class="fu">varPower</span>(<span class="at">form =</span> <span class="sc">~</span>pressure))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dial_lme2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: Dialyzer 
+       AIC      BIC    logLik
+  681.9085 724.9216 -325.9543
+
+Random effects:
+ Formula: ~pressure + pressure^2 | Subject
+ Structure: General positive-definite, Log-Cholesky parametrization
+            StdDev   Corr  
+(Intercept) 1.899460 (Intr)
+pressure    1.679911 -0.344
+Residual    1.712085       
+
+Variance function:
+ Structure: Power of variance covariate
+ Formula: ~pressure 
+ Parameter estimates:
+    power 
+0.6416526 
+Fixed effects:  rate ~ pressure * QB + I(pressure^2) * QB + I(pressure^3) * QB +      I(pressure^4) * QB 
+                      Value Std.Error  DF    t-value p-value
+(Intercept)       -17.54492  0.964974 112 -18.181745  0.0000
+pressure           93.06697  4.242482 112  21.936918  0.0000
+QB1                -1.07348  0.964974  18  -1.112445  0.2806
+I(pressure^2)     -48.35597  5.761060 112  -8.393588  0.0000
+I(pressure^3)      11.85545  2.886244 112   4.107570  0.0001
+I(pressure^4)      -1.18275  0.472928 112  -2.500914  0.0138
+pressure:QB1        1.97424  4.242482 112   0.465350  0.6426
+QB1:I(pressure^2)  -0.26514  5.761060 112  -0.046023  0.9634
+QB1:I(pressure^3)   0.83421  2.886244 112   0.289030  0.7731
+QB1:I(pressure^4)  -0.19923  0.472928 112  -0.421260  0.6744
+ Correlation: 
+                  (Intr) pressr QB1    I(p^2) I(p^3) I(p^4) pr:QB1 QB1:I(^2
+pressure          -0.886                                                   
+QB1                0.115 -0.100                                            
+I(pressure^2)      0.831 -0.977  0.084                                     
+I(pressure^3)     -0.783  0.939 -0.072 -0.989                              
+I(pressure^4)      0.738 -0.898  0.064  0.965 -0.993                       
+pressure:QB1      -0.100  0.084 -0.886 -0.068  0.057 -0.050                
+QB1:I(pressure^2)  0.084 -0.068  0.831  0.054 -0.045  0.039 -0.977         
+QB1:I(pressure^3) -0.072  0.057 -0.783 -0.045  0.037 -0.032  0.939 -0.989  
+QB1:I(pressure^4)  0.064 -0.050  0.738  0.039 -0.032  0.027 -0.898  0.965  
+                  QB1:I(^3
+pressure                  
+QB1                       
+I(pressure^2)             
+I(pressure^3)             
+I(pressure^4)             
+pressure:QB1              
+QB1:I(pressure^2)         
+QB1:I(pressure^3)         
+QB1:I(pressure^4) -0.993  
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-2.08149251 -0.57786661 -0.04607249  0.47502441  2.58366062 
+
+Number of Observations: 140
+Number of Groups: 20 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">AIC</span>(dial_lme),</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>      <span class="fu">AIC</span>(dial_lme2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]     [,2]
+[1,] 705.0693 681.9085</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dial_lme2, </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">resid</span>(., <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">~</span>pressure,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">abline =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-15-3.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dial_lme2,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">resid</span>(., <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">~</span>pressure <span class="sc">|</span> QB,</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">abline =</span><span class="dv">0</span>) <span class="co"># increasing heterogeneity in both </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-15-4.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dial_lme,</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">resid</span>(., <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">~</span>pressure <span class="sc">|</span> QB,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">abline =</span><span class="dv">0</span>) <span class="co"># increasing heterogeneity in both </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-15-5.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getVarCov</span>(dial_lme2, <span class="at">type =</span> <span class="st">"marginal"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Subject 1 
+Marginal variance covariance matrix
+       1      2      3       4       5       6       7
+1 3.7128 3.1317 2.9254  2.7190  2.4938  2.2938  2.0937
+2 3.1317 4.4381 3.3784  3.5385  3.7134  3.8686  4.0238
+3 2.9254 3.3784 7.1286  5.0538  5.9685  6.7805  7.5926
+4 2.7190 3.5385 5.0538 11.4380  8.2236  9.6925 11.1610
+5 2.4938 3.7134 5.9685  8.2236 17.9120 12.8720 15.0580
+6 2.2938 3.8686 6.7805  9.6925 12.8720 25.1700 18.5170
+7 2.0937 4.0238 7.5926 11.1610 15.0580 18.5170 33.8280
+  Standard Deviations: 1.9269 2.1067 2.6699 3.382 4.2323 5.017 5.8162 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dist</span>(Dialyzer<span class="sc">$</span>pressure[Dialyzer<span class="sc">$</span>Subject <span class="sc">==</span> <span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      1     2     3     4     5     6
+2 0.265                              
+3 0.755 0.490                        
+4 1.245 0.980 0.490                  
+5 1.780 1.515 1.025 0.535            
+6 2.255 1.990 1.500 1.010 0.475      
+7 2.730 2.465 1.975 1.485 0.950 0.475</code></pre>
+</div>
+</div>
+</section>
+<section id="lme-corstruct" class="level2" data-number="25.2">
+<h2 data-number="25.2" class="anchored" data-anchor-id="lme-corstruct"><span class="header-section-number">25.2</span> lme corstruct</h2>
+<p>corstructs are for modeling with “distances”</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-16_d9a62e1d0a3df9a62454fc7e42b7546d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>spatDat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">5</span>, .<span class="dv">75</span>, <span class="dv">1</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">5</span>, .<span class="dv">75</span>, <span class="dv">1</span>))</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>example_cormat <span class="ot">&lt;-</span> <span class="fu">Initialize</span>(<span class="fu">corExp</span>(<span class="fu">c</span>(<span class="dv">1</span>,.<span class="dv">2</span>),</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">form =</span> <span class="sc">~</span>x <span class="sc">+</span> y, <span class="co"># specifies the position vector and | grouping variable</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">nugget =</span> <span class="cn">TRUE</span>), spatDat)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="fu">corMatrix</span>(example_cormat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]      [,2]      [,3]      [,4]      [,5]
+[1,] 1.0000000 0.5617508 0.3944550 0.2769817 0.1944934
+[2,] 0.5617508 1.0000000 0.5617508 0.3944550 0.2769817
+[3,] 0.3944550 0.5617508 1.0000000 0.5617508 0.3944550
+[4,] 0.2769817 0.3944550 0.5617508 1.0000000 0.5617508
+[5,] 0.1944934 0.2769817 0.3944550 0.5617508 1.0000000</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">Variogram</span>(example_cormat, <span class="at">distance =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, .<span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="variograms" class="level2" data-number="25.3">
+<h2 data-number="25.3" class="anchored" data-anchor-id="variograms"><span class="header-section-number">25.3</span> Variograms</h2>
+<p>(semi) variogram are a way of plotting and visualizing correlations over time/space</p>
+<p><span class="math display">
+\begin{aligned}
+\gamma[d(\varepsilon_x, \varepsilon_y), \mathbf{\lambda}] &amp;= \frac{1}{2}\operatorname{Var}(\varepsilon_x - \varepsilon_y) \\
+&amp;= \frac{1}{2}E[\varepsilon_x - \varepsilon_y]^2
+\end{aligned}
+</span></p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-17_cc3de7041326594fd07fd25526b260a6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating the variogram manually</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">Variogram</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">5</span>), <span class="co"># time points</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>               <span class="fu">c</span>(<span class="dv">1</span>, .<span class="dv">3</span>, .<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">7</span>, .<span class="dv">2</span>))) <span class="co"># values at time points</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+pseudoinverse used at 0.166</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+neighborhood radius 0.334</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+reciprocal condition number 0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+There are other near singularities as well. 36.409</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+pseudoinverse used at 0.166</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+neighborhood radius 0.334</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+reciprocal condition number 0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+There are other near singularities as well. 36.409</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+pseudoinverse used at 0.166</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+neighborhood radius 0.334</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+reciprocal condition number 0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, :
+There are other near singularities as well. 36.409</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">outer</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">5</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">5</span>), <span class="cf">function</span>(x, y) (y <span class="sc">-</span> x)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> val[<span class="fu">lower.tri</span>(val)]</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>val <span class="co"># the variogram values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  2  2  8  8  2 18</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-18_e0d93dc147a269eb1e6e973ee96fd793">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="co"># 20 obs</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># nodes</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>randomwalk <span class="ot">&lt;-</span> <span class="cf">function</span>(N) {</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cumsum</span>(<span class="fu">rnorm</span>(N))</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>rw_mat <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>,</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>          <span class="fu">randomwalk</span>(<span class="dv">6</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-19_ff6ff53ce4a639f12c031cc5da898435">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>rw_dat <span class="ot">&lt;-</span> rw_mat <span class="sc">%&gt;%</span> <span class="fu">melt</span>(<span class="fu">c</span>(<span class="st">"node"</span>,<span class="st">"obs"</span>))</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>rw_mat <span class="sc">%&gt;%</span> <span class="fu">t</span>() <span class="sc">%&gt;%</span> <span class="fu">cov</span>() <span class="co"># sample covariance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]     [,2]     [,3]     [,4]     [,5]     [,6]
+[1,] 1.065027 1.069246 1.083659 1.067816 1.093611 1.149804
+[2,] 1.069246 2.068872 2.093093 2.113653 2.145208 2.199581
+[3,] 1.083659 2.093093 3.211379 3.242694 3.287997 3.324031
+[4,] 1.067816 2.113653 3.242694 4.286559 4.353058 4.374326
+[5,] 1.093611 2.145208 3.287997 4.353058 5.426274 5.461257
+[6,] 1.149804 2.199581 3.324031 4.374326 5.461257 6.552920</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>rw_dat <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(node, value)) <span class="sc">+</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>rw_gls <span class="ot">&lt;-</span> <span class="fu">gls</span>(value<span class="sc">~</span><span class="dv">1</span>,  <span class="at">data =</span> rw_dat,</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs),</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> node))</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="fu">getVarCov</span>(rw_gls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marginal variance covariance matrix
+       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]
+[1,] 1.0650 1.0692 1.0836 1.0677 1.0935 1.1497
+[2,] 1.0692 2.0679 2.0919 2.1127 2.1440 2.1983
+[3,] 1.0836 2.0919 3.2093 3.2401 3.2857 3.3218
+[4,] 1.0677 2.1127 3.2401 4.2836 4.3496 4.3707
+[5,] 1.0935 2.1440 3.2857 4.3496 5.4218 5.4567
+[6,] 1.1497 2.1983 3.3218 4.3707 5.4567 6.5473
+  Standard Deviations: 1.032 1.438 1.7915 2.0697 2.3285 2.5588 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getVarCov</span>(rw_gls, <span class="at">individual =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marginal variance covariance matrix
+       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]
+[1,] 1.0650 1.0692 1.0836 1.0677 1.0935 1.1497
+[2,] 1.0692 2.0679 2.0919 2.1127 2.1440 2.1983
+[3,] 1.0836 2.0919 3.2093 3.2401 3.2857 3.3218
+[4,] 1.0677 2.1127 3.2401 4.2836 4.3496 4.3707
+[5,] 1.0935 2.1440 3.2857 4.3496 5.4218 5.4567
+[6,] 1.1497 2.1983 3.3218 4.3707 5.4567 6.5473
+  Standard Deviations: 1.032 1.438 1.7915 2.0697 2.3285 2.5588 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>rw_cs_cov <span class="ot">&lt;-</span> <span class="fu">corMatrix</span>(<span class="fu">Initialize</span>(<span class="fu">corCompSymm</span>(<span class="at">value =</span> .<span class="dv">3</span>, <span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> obs), rw_dat))</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>rw_cs_cov <span class="sc">%&gt;%</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1000</code></pre>
+</div>
+</div>
+</section>
+<section id="example-bodyweight" class="level2" data-number="25.4">
+<h2 data-number="25.4" class="anchored" data-anchor-id="example-bodyweight"><span class="header-section-number">25.4</span> Example: BodyWeight</h2>
+<p>body weight of rats measured over 64 days and 3 different diets</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-20_74e1f19cf4e1497f4869a593d9322b60">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>BodyWeight <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(Time, weight, <span class="at">group =</span> Rat)) <span class="sc">+</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuals</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>bw_lme <span class="ot">&lt;-</span> <span class="fu">lme</span>(weight <span class="sc">~</span> Time <span class="sc">*</span> Diet, BodyWeight,</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">random =</span> <span class="sc">~</span>Time <span class="sc">|</span> Rat)</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a><span class="co"># model with varPower</span></span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>bw_lme2 <span class="ot">&lt;-</span> <span class="fu">update</span>(bw_lme, <span class="at">weights =</span> <span class="fu">varPower</span>())</span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bw_lme, <span class="fu">resid</span>(., <span class="at">type =</span> <span class="st">"p"</span>) <span class="sc">~</span> Time) <span class="co"># Residual plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bw_lme2, <span class="fu">resid</span>(., <span class="at">type =</span> <span class="st">"p"</span>)<span class="sc">~</span>Time) <span class="co"># such a subtle difference... how much effect does it really have. yet it's strongly statistically significant</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-20-3.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(bw_lme, bw_lme2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+bw_lme      1 10 1171.720 1203.078 -575.8599                        
+bw_lme2     2 11 1163.921 1198.415 -570.9607 1 vs 2 9.798326  0.0017</code></pre>
+</div>
+</div>
+<p>The anova gives a significant result, meaning that the covariance with heterogenous modeling is better, but if you look summary of the results, the standard errors are really not that different, maybe a difference of about 10%.</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-21_532eb5b5d21af96a92b29d4a70895ac4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bw_lme)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: BodyWeight 
+      AIC      BIC    logLik
+  1171.72 1203.078 -575.8599
+
+Random effects:
+ Formula: ~Time | Rat
+ Structure: General positive-definite, Log-Cholesky parametrization
+            StdDev     Corr  
+(Intercept) 36.9390723 (Intr)
+Time         0.2484113 -0.149
+Residual     4.4436052       
+
+Fixed effects:  weight ~ Time * Diet 
+                Value Std.Error  DF   t-value p-value
+(Intercept) 251.65165 13.094025 157 19.218816  0.0000
+Time          0.35964  0.091140 157  3.946019  0.0001
+Diet2       200.66549 22.679516  13  8.847873  0.0000
+Diet3       252.07168 22.679516  13 11.114509  0.0000
+Time:Diet2    0.60584  0.157859 157  3.837858  0.0002
+Time:Diet3    0.29834  0.157859 157  1.889903  0.0606
+ Correlation: 
+           (Intr) Time   Diet2  Diet3  Tm:Dt2
+Time       -0.160                            
+Diet2      -0.577  0.092                     
+Diet3      -0.577  0.092  0.333              
+Time:Diet2  0.092 -0.577 -0.160 -0.053       
+Time:Diet3  0.092 -0.577 -0.053 -0.160  0.333
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-3.25558796 -0.42196874  0.08229384  0.59933559  2.78994477 
+
+Number of Observations: 176
+Number of Groups: 16 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bw_lme2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: BodyWeight 
+       AIC      BIC    logLik
+  1163.921 1198.415 -570.9607
+
+Random effects:
+ Formula: ~Time | Rat
+ Structure: General positive-definite, Log-Cholesky parametrization
+            StdDev     Corr  
+(Intercept) 36.8980214 (Intr)
+Time         0.2436518 -0.145
+Residual     0.1751704       
+
+Variance function:
+ Structure: Power of variance covariate
+ Formula: ~fitted(.) 
+ Parameter estimates:
+    power 
+0.5428447 
+Fixed effects:  weight ~ Time * Diet 
+                Value Std.Error  DF   t-value p-value
+(Intercept) 251.60215 13.067335 157 19.254281  0.0000
+Time          0.36109  0.088378 157  4.085720  0.0001
+Diet2       200.77697 22.656249  13  8.861881  0.0000
+Diet3       252.17017 22.661603  13 11.127640  0.0000
+Time:Diet2    0.60183  0.155424 157  3.872180  0.0002
+Time:Diet3    0.29524  0.155892 157  1.893847  0.0601
+ Correlation: 
+           (Intr) Time   Diet2  Diet3  Tm:Dt2
+Time       -0.152                            
+Diet2      -0.577  0.088                     
+Diet3      -0.577  0.088  0.333              
+Time:Diet2  0.087 -0.569 -0.157 -0.050       
+Time:Diet3  0.086 -0.567 -0.050 -0.158  0.322
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-2.93736805 -0.44386633  0.07986351  0.58084818  2.26489822 
+
+Number of Observations: 176
+Number of Groups: 16 </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-22_487ed451cff476a479910f8fa3cee9d3">
+
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-23_ee235ff7cf4db7bd2585ba8fabd4461c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co"># variogram seems to increase at 20 days, so model with exponential spatial</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">Variogram</span>(bw_lme, <span class="at">form =</span> <span class="sc">~</span>Time, <span class="at">maxDist =</span> <span class="dv">42</span>)) <span class="co"># loess smoother</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>bw_lme3 <span class="ot">&lt;-</span> <span class="fu">update</span>(bw_lme, <span class="at">corr =</span> <span class="fu">corExp</span>(<span class="at">form =</span> <span class="sc">~</span>Time))</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">Variogram</span>(bw_lme3, <span class="at">maxDist =</span> <span class="dv">42</span>, <span class="at">form =</span> <span class="sc">~</span>Time, </span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">resType =</span> <span class="st">"normalized"</span>,</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">robust =</span> T), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.4</span>)) <span class="co"># fit with time variogram</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-23-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Use the normalized residuals and robust</p>
+</section>
+</section>
+<section id="computational-notes" class="level1" data-number="26">
+<h1 data-number="26"><span class="header-section-number">26</span> Computational Notes</h1>
+<ul>
+<li>For large models, with crossed and partially crossed factors, you should consider adding <code>gradient = FALSE, niterEM = 0)</code>, because the gradient calculation and EMCE iteration both require a calculation that needs to invert a cholesky factor of crossproduct matrix. It’s a slow process and can slow down the optimization. Bates said maybe it could be default when there are multiple, non-nested grouping factors. See <a href="https://stat.ethz.ch/pipermail/r-help/2006-October/115572.html">thread</a> for more details.</li>
+</ul>
+</section>
+<section id="cookbook" class="level1" data-number="27">
+<h1 data-number="27"><span class="header-section-number">27</span> Cookbook</h1>
+<section id="using-covariate-as-both-random-and-fixed-effect" class="level2" data-number="27.1">
+<h2 data-number="27.1" class="anchored" data-anchor-id="using-covariate-as-both-random-and-fixed-effect"><span class="header-section-number">27.1</span> Using covariate as both random and fixed effect</h2>
+<p>There is a blog post with this phenomena</p>
+</section>
+<section id="plot-of-shrinkage-sleepstudy" class="level2" data-number="27.2">
+<h2 data-number="27.2" class="anchored" data-anchor-id="plot-of-shrinkage-sleepstudy"><span class="header-section-number">27.2</span> Plot of Shrinkage (sleepstudy)</h2>
+<p>This stuff is from this blog post: https://www.tjmahr.com/plotting-partial-pooling-in-mixed-effects-models/</p>
+<p>Looking at the shrinkage stuff though, there’s also from <a href="http://lme4.r-forge.r-project.org/slides/2011-03-16-Amsterdam/2Longitudinal.pdf">Bates</a></p>
+<div class="cell" data-hash="mixed_cache/html/Initialization_ba643c925d4490c4a04f4fc48a56596b">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>sleepstudy <span class="ot">&lt;-</span> sleepstudy <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Subject =</span> <span class="fu">as.character</span>(Subject))</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>sleepstudy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 180 × 3
+   Reaction  Days Subject
+      &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  
+ 1     250.     0 308    
+ 2     259.     1 308    
+ 3     251.     2 308    
+ 4     321.     3 308    
+ 5     357.     4 308    
+ 6     415.     5 308    
+ 7     382.     6 308    
+ 8     290.     7 308    
+ 9     431.     8 308    
+10     466.     9 308    
+# … with 170 more rows
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding two participants to illustrate partial pooling</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>df_sleep <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  sleepstudy,</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">Reaction =</span> <span class="fu">c</span>(<span class="dv">286</span>, <span class="dv">288</span>), <span class="at">Days =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">Subject =</span> <span class="st">"374"</span>),</span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">Reaction =</span> <span class="dv">245</span>, <span class="at">Days =</span> <span class="dv">0</span>, <span class="at">Subject =</span> <span class="st">"373"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-24_17f766743b4bc4ff30d854b3559316bd">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_sleep, <span class="fu">aes</span>(Days, Reaction)) <span class="sc">+</span> </span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Subject) <span class="sc">+</span></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span>lm, <span class="at">se=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Fitting all the linear models all at once, <code>lme4</code> provides a convenience function for that with s3 methods defined as well: coef, confint, fitted, fixef, formula, logLik, pairs, plot, predict, print, qqnorm, ranef, residuals, sigma, summary, and update</p>
+<section id="no-pooling" class="level3" data-number="27.2.1">
+<h3 data-number="27.2.1" class="anchored" data-anchor-id="no-pooling"><span class="header-section-number">27.2.1</span> No Pooling</h3>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-25_2faf0c6d2653f02671462843cf410b9a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating the no pooling model</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This is basically an ANCOVA lm(Reaction ~ Days + Subject)</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>df_no_pooling <span class="ot">&lt;-</span> <span class="fu">lmList</span>(Reaction <span class="sc">~</span> Days <span class="sc">|</span> Subject, <span class="at">data=</span>df_sleep) <span class="sc">%&gt;%</span> </span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"Subject"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Intercept =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>, <span class="at">Slope_Days =</span> Days) <span class="sc">%&gt;%</span> </span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">Model =</span> <span class="st">"No Pooling"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Subject <span class="sc">!=</span> <span class="st">"373"</span>)</span>
+<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ?lmList # Creates a linear model for each one.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="pooled" class="level3" data-number="27.2.2">
+<h3 data-number="27.2.2" class="anchored" data-anchor-id="pooled"><span class="header-section-number">27.2.2</span> Pooled</h3>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-26_805dd0edd375e5cc18687ba2b0923f5d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating pooled model</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>m_pooled <span class="ot">&lt;-</span> <span class="fu">lm</span>(Reaction <span class="sc">~</span> Days, df_sleep)</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>df_pooled <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="st">"Complete pooling"</span>,</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Subject =</span> <span class="fu">unique</span>(df_sleep<span class="sc">$</span>Subject),</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Intercept =</span> <span class="fu">coef</span>(m_pooled)[<span class="dv">1</span>], </span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Slope_Days =</span> <span class="fu">coef</span>(m_pooled)[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-27_a19f66141989ccd5e54f9d6b01552a58">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># combine the two models</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>df_models <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(df_pooled, df_no_pooling) <span class="sc">%&gt;%</span></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(df_sleep, <span class="at">by =</span> <span class="st">"Subject"</span>)</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>df_models</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 365 × 6
+   Model            Subject Intercept Slope_Days Reaction  Days
+   &lt;chr&gt;            &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;
+ 1 Complete pooling 308          252.       10.3     250.     0
+ 2 Complete pooling 308          252.       10.3     259.     1
+ 3 Complete pooling 308          252.       10.3     251.     2
+ 4 Complete pooling 308          252.       10.3     321.     3
+ 5 Complete pooling 308          252.       10.3     357.     4
+ 6 Complete pooling 308          252.       10.3     415.     5
+ 7 Complete pooling 308          252.       10.3     382.     6
+ 8 Complete pooling 308          252.       10.3     290.     7
+ 9 Complete pooling 308          252.       10.3     431.     8
+10 Complete pooling 308          252.       10.3     466.     9
+# … with 355 more rows
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="partial-pooling" class="level3" data-number="27.2.3">
+<h3 data-number="27.2.3" class="anchored" data-anchor-id="partial-pooling"><span class="header-section-number">27.2.3</span> Partial Pooling</h3>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-28_243ce08c57183b23797a0f215a16ef3c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>lmm <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">|</span> Subject), df_sleep)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a dataframe with the fitted effects</span></span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>df_partial_pooling <span class="ot">&lt;-</span> <span class="fu">coef</span>(lmm)[[<span class="st">"Subject"</span>]] <span class="sc">%&gt;%</span> </span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"Subject"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Intercept =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>, <span class="at">Slope_Days =</span> Days) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">Model =</span> <span class="st">"Partial pooling"</span>)</span>
+<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-10"><a href="#cb92-10" aria-hidden="true" tabindex="-1"></a>df_models <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(df_pooled, df_no_pooling, df_partial_pooling) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-11"><a href="#cb92-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(df_sleep, <span class="at">by =</span> <span class="st">"Subject"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="plot-comparing-all-versions" class="level3" data-number="27.2.4">
+<h3 data-number="27.2.4" class="anchored" data-anchor-id="plot-comparing-all-versions"><span class="header-section-number">27.2.4</span> Plot comparing all versions</h3>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-29_0170f6e9a3281c188da6cf8dcf9a2201">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create initial base plot without partial pooling lines</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>p_model_comparison <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_models) <span class="sc">+</span> </span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction) <span class="sc">+</span> </span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set the color mapping in this layer so the points don't get a color</span></span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="fu">aes</span>(<span class="at">intercept =</span> Intercept, <span class="at">slope =</span> Slope_Days, <span class="at">color =</span> Model),</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">size =</span> .<span class="dv">75</span>) <span class="sc">+</span></span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Subject) <span class="sc">+</span></span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">4</span> <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb93-10"><a href="#cb93-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Days of Sleep Deprivation"</span>, <span class="at">y =</span> <span class="st">"Average Reaction Time"</span>) <span class="sc">+</span></span>
+<span id="cb93-11"><a href="#cb93-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span> </span>
+<span id="cb93-12"><a href="#cb93-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a><span class="co"># p_model_comparison # to view without partial pooling</span></span>
+<span id="cb93-14"><a href="#cb93-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-15"><a href="#cb93-15" aria-hidden="true" tabindex="-1"></a>p_model_comparison</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="linear-model-version-estimates" class="level3" data-number="27.2.5">
+<h3 data-number="27.2.5" class="anchored" data-anchor-id="linear-model-version-estimates"><span class="header-section-number">27.2.5</span> Linear Model Version Estimates</h3>
+<p>The fixed version of this is the same as the no pooling case. The plot completely overlaps with the no pooling</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-30_1e622455f9f10f3a3f6f20838f8259cc">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> Reaction <span class="sc">~</span> Days<span class="sc">*</span>Subject, <span class="at">data =</span> df_sleep)</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    (Intercept)            Days      Subject309      Subject310      Subject330 
+    244.1926691      21.7647024     -39.1377236     -40.7084436      45.4924236 
+     Subject331      Subject332      Subject333      Subject334      Subject335 
+     41.5462964      20.0589455      30.8264364      -4.0297545      18.8420236 
+     Subject337      Subject349      Subject350      Subject351      Subject352 
+     45.9114582     -29.0808964     -18.3580655      16.9543418      32.1794000 
+     Subject369      Subject370      Subject371      Subject372      Subject373 
+     10.7754800     -33.7435782       9.4433691      22.8521309       0.8073309 
+     Subject374 Days:Subject309 Days:Subject310 Days:Subject330 Days:Subject331 
+     41.8073309     -19.5029170     -15.6498036     -18.7566297     -16.4986836 
+Days:Subject332 Days:Subject333 Days:Subject334 Days:Subject335 Days:Subject337 
+    -12.1979345     -12.6226570      -9.5115612     -24.6457364      -2.7387285 
+Days:Subject349 Days:Subject350 Days:Subject351 Days:Subject352 Days:Subject369 
+     -8.2707697      -2.2606855     -15.3312048      -8.1981533     -10.4165933 
+Days:Subject370 Days:Subject371 Days:Subject372 Days:Subject373 Days:Subject374 
+     -3.7085515     -12.5762576     -10.4666291              NA     -19.7647024 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In this information, there is really a line for each subject, need to create that matrix</span></span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>mcoef <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Subject =</span> <span class="st">"308"</span>, <span class="at">Intercept =</span> <span class="fu">coef</span>(m)[<span class="dv">1</span>], <span class="at">Slope_Days =</span> <span class="fu">coef</span>(m)[<span class="dv">2</span>])</span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>mcoef <span class="ot">&lt;-</span> <span class="fu">rbind</span>(mcoef, </span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>               <span class="fu">tibble</span>(</span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Subject =</span> <span class="fu">substr</span>(<span class="fu">names</span>(<span class="fu">coef</span>(m)[<span class="dv">3</span><span class="sc">:</span><span class="dv">21</span>]), <span class="dv">8</span>,<span class="dv">10</span>),</span>
+<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Intercept =</span> <span class="fu">coef</span>(m)[<span class="dv">3</span><span class="sc">:</span><span class="dv">21</span>] <span class="sc">+</span> <span class="fu">coef</span>(m)[<span class="dv">1</span>],</span>
+<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Slope_Days =</span> <span class="fu">coef</span>(m)[<span class="dv">22</span><span class="sc">:</span><span class="dv">40</span>] <span class="sc">+</span> <span class="fu">coef</span>(m)[<span class="dv">2</span>]))</span>
+<span id="cb96-9"><a href="#cb96-9" aria-hidden="true" tabindex="-1"></a>mcoef<span class="sc">$</span>Model <span class="ot">&lt;-</span> <span class="st">"Linear Model"</span></span>
+<span id="cb96-10"><a href="#cb96-10" aria-hidden="true" tabindex="-1"></a>df_ancova <span class="ot">&lt;-</span> mcoef</span>
+<span id="cb96-11"><a href="#cb96-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-12"><a href="#cb96-12" aria-hidden="true" tabindex="-1"></a>df_models <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(df_pooled, df_no_pooling, df_partial_pooling, df_ancova) <span class="sc">%&gt;%</span> </span>
+<span id="cb96-13"><a href="#cb96-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(df_sleep, <span class="at">by =</span> <span class="st">"Subject"</span>)</span>
+<span id="cb96-14"><a href="#cb96-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-15"><a href="#cb96-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Oh it's the same as no pooling</span></span>
+<span id="cb96-16"><a href="#cb96-16" aria-hidden="true" tabindex="-1"></a>df_models <span class="sc">%&gt;%</span> <span class="fu">filter</span>((Model <span class="sc">==</span> <span class="st">"Linear Model"</span> <span class="sc">|</span> Model <span class="sc">==</span> <span class="st">"No Pooling"</span>) <span class="sc">&amp;</span> Subject <span class="sc">==</span> <span class="st">"370"</span> <span class="sc">&amp;</span> Days <span class="sc">==</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  Model        Subject Intercept Slope_Days Reaction  Days
+  &lt;chr&gt;        &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;
+1 No Pooling   370          210.       18.1     225.     0
+2 Linear Model 370          210.       18.1     225.     0</code></pre>
+</div>
+</div>
+<p>Effectively, this is the same as filtering the data and running a linear regression on each subset. That is what is meant by “no pooling”</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-31_97fd7ad043c073e0628dc95b0713c76c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">lm</span>(Reaction <span class="sc">~</span> Days, <span class="fu">subset</span>(df_sleep, Subject <span class="sc">==</span> <span class="st">"308"</span>))</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        Days 
+   244.1927     21.7647 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(m)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        Days 
+   244.1927     21.7647 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fixef</span>(lmm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        Days 
+  252.54256    10.45212 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(lmm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$Subject
+    (Intercept)       Days
+308    253.9478 19.6264337
+309    211.7331  1.7319161
+310    213.1582  4.9061511
+330    275.1425  5.6436007
+331    273.7286  7.3862730
+332    260.6504 10.1632571
+333    268.3683 10.2246059
+334    244.5524 11.4837802
+335    251.3702 -0.3355788
+337    286.2319 19.1090424
+349    226.7663 11.5531844
+350    238.7807 17.0156827
+351    256.2344  7.4119456
+352    272.3511 13.9920878
+369    254.9484 11.2985770
+370    226.3701 15.2027877
+371    252.5051  9.4335409
+372    263.8916 11.7253429
+373    248.9753 10.3915288
+374    271.1450 11.0782516
+
+attr(,"class")
+[1] "coef.mer"</code></pre>
+</div>
+</div>
+<p>The standard errors is where it matters… let’s look at that… say I’m interested in saying something about the subject 308. How would I go about that? The answer is that it’s difficult without making some egregarious assumptions.</p>
+<p>https://stackoverflow.com/questions/26198958/extracting-coefficients-and-their-standard-error-from-lme</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-32_78cf8bcb3fc7995def6d01377f49fb82">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># filtered model for patient 308</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">summary</span>(mf))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error  t value     Pr(&gt;|t|)
+(Intercept) 244.1927   28.08269 8.695486 2.385022e-05
+Days         21.7647    5.26037 4.137485 3.264657e-03</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Coef of blocked model</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">summary</span>(m))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   Estimate Std. Error     t value     Pr(&gt;|t|)
+(Intercept)     244.1926691  15.041687 16.23439348 2.419368e-34
+Days             21.7647024   2.817566  7.72464642 1.741840e-12
+Subject309      -39.1377236  21.272158 -1.83985675 6.784831e-02
+Subject310      -40.7084436  21.272158 -1.91369599 5.764319e-02
+Subject330       45.4924236  21.272158  2.13858996 3.415609e-02
+Subject331       41.5462964  21.272158  1.95308328 5.274863e-02
+Subject332       20.0589455  21.272158  0.94296711 3.472771e-01
+Subject333       30.8264364  21.272158  1.44914476 1.494714e-01
+Subject334       -4.0297545  21.272158 -0.18943797 8.500163e-01
+Subject335       18.8420236  21.272158  0.88575985 3.772237e-01
+Subject337       45.9114582  21.272158  2.15828869 3.256308e-02
+Subject349      -29.0808964  21.272158 -1.36708726 1.737283e-01
+Subject350      -18.3580655  21.272158 -0.86300907 3.895675e-01
+Subject351       16.9543418  21.272158  0.79702030 4.267514e-01
+Subject352       32.1794000  21.272158  1.51274731 1.325355e-01
+Subject369       10.7754800  21.272158  0.50655321 6.132431e-01
+Subject370      -33.7435782  21.272158 -1.58627902 1.148695e-01
+Subject371        9.4433691  21.272158  0.44393094 6.577589e-01
+Subject372       22.8521309  21.272158  1.07427421 2.844966e-01
+Subject373        0.8073309  29.684902  0.02719668 9.783405e-01
+Subject374       41.8073309  29.684902  1.40837020 1.611769e-01
+Days:Subject309 -19.5029170   3.984640 -4.89452386 2.609126e-06
+Days:Subject310 -15.6498036   3.984640 -3.92753235 1.326622e-04
+Days:Subject330 -18.7566297   3.984640 -4.70723286 5.841112e-06
+Days:Subject331 -16.4986836   3.984640 -4.14057040 5.875009e-05
+Days:Subject332 -12.1979345   3.984640 -3.06123857 2.630447e-03
+Days:Subject333 -12.6226570   3.984640 -3.16782847 1.875589e-03
+Days:Subject334  -9.5115612   3.984640 -2.38705643 1.828240e-02
+Days:Subject335 -24.6457364   3.984640 -6.18518475 6.072281e-09
+Days:Subject337  -2.7387285   3.984640 -0.68732139 4.929857e-01
+Days:Subject349  -8.2707697   3.984640 -2.07566282 3.970366e-02
+Days:Subject350  -2.2606855   3.984640 -0.56734995 5.713599e-01
+Days:Subject351 -15.3312048   3.984640 -3.84757562 1.786891e-04
+Days:Subject352  -8.1981533   3.984640 -2.05743875 4.144801e-02
+Days:Subject369 -10.4165933   3.984640 -2.61418662 9.894962e-03
+Days:Subject370  -3.7085515   3.984640 -0.93071174 3.535604e-01
+Days:Subject371 -12.5762576   3.984640 -3.15618391 1.946990e-03
+Days:Subject372 -10.4666291   3.984640 -2.62674378 9.553514e-03
+Days:Subject374 -19.7647024  36.301801 -0.54445515 5.869704e-01</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">CAUTION</span><span class="co">: Ignoring Covariances, and directly adding the variances for Conditional Variance and fixed eff variance</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(lmm)) <span class="sc">+</span> <span class="fu">diag</span>(<span class="fu">attr</span>(<span class="fu">ranef</span>(lmm)<span class="sc">$</span>Subject, <span class="st">"postVar"</span>)[,,<span class="dv">1</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        Days 
+  13.575606    2.758914 </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-33_3cf9ee0e431c3c292fb62746997beb72">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>df_fixef <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="st">"Partial pooling (average)"</span>,</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Intercept =</span> <span class="fu">fixef</span>(lmm)[<span class="dv">1</span>],</span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Slope_Days =</span> <span class="fu">fixef</span>(lmm)[<span class="dv">2</span>])</span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Complete pooling / fixed effects are center of gravity in the plot</span></span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a>df_gravity <span class="ot">&lt;-</span> df_pooled <span class="sc">%&gt;%</span> </span>
+<span id="cb112-8"><a href="#cb112-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(Model, Intercept, Slope_Days) <span class="sc">%&gt;%</span> </span>
+<span id="cb112-9"><a href="#cb112-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(df_fixef)</span>
+<span id="cb112-10"><a href="#cb112-10" aria-hidden="true" tabindex="-1"></a>df_gravity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  Model                     Intercept Slope_Days
+  &lt;chr&gt;                         &lt;dbl&gt;      &lt;dbl&gt;
+1 Complete pooling               252.       10.3
+2 Partial pooling (average)      253.       10.5</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>df_pulled <span class="ot">&lt;-</span>  <span class="fu">bind_rows</span>(df_no_pooling, df_partial_pooling)</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_pulled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Subject Intercept Slope_Days      Model
+1     308  244.1927  21.764702 No Pooling
+2     309  205.0549   2.261785 No Pooling
+3     310  203.4842   6.114899 No Pooling
+4     330  289.6851   3.008073 No Pooling
+5     331  285.7390   5.266019 No Pooling
+6     332  264.2516   9.566768 No Pooling</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_pulled, <span class="fu">aes</span>(Intercept, Slope_Days, <span class="at">color=</span>Model)) <span class="sc">+</span> </span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>df_gravity, <span class="at">size=</span><span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">group=</span>Subject), <span class="at">arrow=</span><span class="fu">arrow</span>(<span class="at">length=</span><span class="fu">unit</span>(.<span class="dv">02</span>, <span class="st">"npc"</span>))) <span class="sc">+</span></span>
+<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label=</span>Subject), <span class="at">data=</span>df_no_pooling, <span class="at">nudge_y =</span> .<span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="mixed_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="getting-subject-level-standard-errors" class="level2" data-number="27.3">
+<h2 data-number="27.3" class="anchored" data-anchor-id="getting-subject-level-standard-errors"><span class="header-section-number">27.3</span> Getting Subject level standard errors</h2>
+<p>Complicated Issue, according to <a href="https://stackoverflow.com/questions/26198958/extracting-coefficients-and-their-standard-error-from-lme">Ben Bolker</a></p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-34_68318441b50b70f0c4e81a3b6180a0d5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>fixed_vars <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">vcov</span>(mod))</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(<span class="fu">ranef</span>(mod, <span class="at">condVar=</span><span class="cn">TRUE</span>, <span class="at">drop=</span><span class="cn">TRUE</span>)<span class="sc">$</span>Subject)</span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(<span class="fu">ranef</span>(mod)<span class="sc">$</span>Subject)</span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(<span class="fu">ranef</span>(mod)<span class="sc">$</span>Subject, <span class="st">"postVar"</span>)</span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a>cmode_vars <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">apply</span>(<span class="fu">attr</span>(<span class="fu">ranef</span>(mod)<span class="sc">$</span>Subject, <span class="st">"postVar"</span>), <span class="dv">3</span>, diag)) <span class="co"># columns of intercept variance and day variance</span></span>
+<span id="cb117-7"><a href="#cb117-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-8"><a href="#cb117-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">sweep</span>(cmode_vars, <span class="dv">2</span>, fixed_vars, <span class="st">"+"</span>)) <span class="co"># Standard errors  (basically add fixed_vars to respective columns)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="emmeans-with-mixed-models-oats" class="level2" data-number="27.4">
+<h2 data-number="27.4" class="anchored" data-anchor-id="emmeans-with-mixed-models-oats"><span class="header-section-number">27.4</span> Emmeans with Mixed Models (oats)</h2>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-35_50402e7ad738b4a5b28e4ead57546bbc">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>oats_emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(oats_mod, <span class="fu">c</span>(<span class="st">"Variety"</span>, <span class="st">"nitro"</span>), <span class="at">lmer.df =</span> <span class="st">"satterthwaite"</span>) <span class="co"># Also affects the SE slightly</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>oats_emm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> Variety     nitro emmean   SE    df lower.CL upper.CL
+ Golden Rain   0.0   80.6 8.18 10.54     62.5     98.7
+ Marvellous    0.0   83.8 8.15 10.40     65.8    101.9
+ Victory       0.0   72.3 8.34 11.26     54.0     90.6
+ Golden Rain   0.2   98.7 8.02  9.76     80.8    116.6
+ Marvellous    0.2  102.0 8.08 10.07     84.0    119.9
+ Victory       0.2   90.4 8.17 10.39     72.3    108.5
+ Golden Rain   0.4  115.9 8.09 10.14     97.9    133.9
+ Marvellous    0.4  119.1 8.00  9.69    101.2    137.0
+ Victory       0.4  107.6 8.17 10.39     89.5    125.7
+ Golden Rain   0.6  125.8 8.09 10.07    107.8    143.8
+ Marvellous    0.6  129.0 7.99  9.61    111.1    146.9
+ Victory       0.6  117.5 8.03  9.79     99.5    135.4
+
+Degrees-of-freedom method: satterthwaite 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<section id="manual-calculation-of-emmeans-and-se" class="level3" data-number="27.4.1">
+<h3 data-number="27.4.1" class="anchored" data-anchor-id="manual-calculation-of-emmeans-and-se"><span class="header-section-number">27.4.1</span> Manual calculation of emmeans and SE</h3>
+<p>Emmeans simply takes advantage of the fact that the marginal means are the linear combinations of the coefficients. Thus, if the model coefficient standard deviations are incorrect, then the estimated marginal means standard errrors are incorrect.</p>
+<p>To replicate the standard errors within emmeans, you must use REML estimates of standards errors.</p>
+<p>Reminder: modesl by default in R use the factor encoding, so to get (0.0 nitro, marvellous), we know the (0.0 nitro, Victory) is the intercept, and the coefficeint for variety marvellous is the effect, so (0.0 nitro, Marevellous) = (Intercept) + VarietyMarvellous.</p>
+<p>Overall, we can create the reference grid manually and calculate the marginal means from the grid</p>
+<div class="cell" data-hash="mixed_cache/html/unnamed-chunk-36_1bcc1ee1af1261a84d30c6da269bf4e9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate reference grid manually</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>oats_grid <span class="ot">&lt;-</span> <span class="fu">with</span>(oats_miss, <span class="fu">expand.grid</span>(<span class="at">Variety =</span> <span class="fu">levels</span>(Variety),</span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">nitro =</span> <span class="fu">levels</span>(<span class="fu">factor</span>(nitro))))</span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>oats_X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>Variety <span class="sc">+</span> nitro, <span class="at">data =</span> oats_grid) <span class="co"># the combinations</span></span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>oats_B <span class="ot">&lt;-</span> <span class="fu">fixef</span>(oats_mod)</span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a>oats_V <span class="ot">&lt;-</span> <span class="fu">vcov</span>(oats_mod)</span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate my version</span></span>
+<span id="cb120-9"><a href="#cb120-9" aria-hidden="true" tabindex="-1"></a>oats_my_emm <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">emmean =</span> <span class="fu">c</span>(oats_X <span class="sc">%*%</span> oats_B), <span class="co"># marginal means are just X\betahat</span></span>
+<span id="cb120-10"><a href="#cb120-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">SE =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(oats_X <span class="sc">%*%</span> oats_V <span class="sc">%*%</span> <span class="fu">t</span>(oats_X)))) <span class="co"># cov(X\beta) = Xcov(\betahat)X'</span></span>
+<span id="cb120-11"><a href="#cb120-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-12"><a href="#cb120-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the package version</span></span>
+<span id="cb120-13"><a href="#cb120-13" aria-hidden="true" tabindex="-1"></a>oats_package_emm <span class="ot">&lt;-</span> oats_emm <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(emmean, SE) <span class="sc">%&gt;%</span> <span class="fu">as.list</span>()</span>
+<span id="cb120-14"><a href="#cb120-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-15"><a href="#cb120-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-16"><a href="#cb120-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Show that emmean estimates are the same</span></span>
+<span id="cb120-17"><a href="#cb120-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(oats_my_emm<span class="sc">$</span>emmean, oats_package_emm<span class="sc">$</span>emmean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]      [,2]
+ [1,]  80.58462  80.58462
+ [2,]  83.81332  83.81332
+ [3,]  72.27827  72.27827
+ [4,]  98.72680  98.72680
+ [5,] 101.95550 101.95550
+ [6,]  90.42045  90.42045
+ [7,] 115.89071 115.89071
+ [8,] 119.11941 119.11941
+ [9,] 107.58436 107.58436
+[10,] 125.76112 125.76112
+[11,] 128.98982 128.98982
+[12,] 117.45477 117.45477</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show that SE calculations are the same (note, they're only the same when you use Satter)</span></span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(oats_my_emm<span class="sc">$</span>SE, oats_package_emm<span class="sc">$</span>SE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       [,1]     [,2]
+1  8.180084 8.180084
+2  8.145113 8.145113
+3  8.342494 8.342494
+4  8.015913 8.015913
+5  8.078163 8.078163
+6  8.171648 8.171648
+7  8.093027 8.093027
+8  8.001749 8.001749
+9  8.171293 8.171293
+10 8.087191 8.087191
+11 7.985790 7.985790
+12 8.030997 8.030997</code></pre>
+</div>
+</div>
+<p>Note:</p>
+<ul>
+<li>SE are the same when you calculate them with <code>REML = TRUE</code> and <code>lmer.df = "satterthwaite"</code>.</li>
+</ul>
+<p>In order to average these down (by Variety) we then just get the appropriate linear combinations and calculate them with the appropriate variance-covariance.</p>
+</section>
+</section>
+</section>
+<section id="additional-resources" class="level1" data-number="28">
+<h1 data-number="28"><span class="header-section-number">28</span> Additional Resources</h1>
+</section>
+<section id="faq" class="level1" data-number="29">
+<h1 data-number="29"><span class="header-section-number">29</span> FAQ</h1>
+<ul>
+<li><p>Why aren’t there p-values in lme4?</p>
+<ul>
+<li>Great question. it’s due to the denominator degrees of freedom. really</li>
+<li>Bates response is at <code>?pvalues</code></li>
+</ul></li>
+<li><p>What’s the difference between nlme and lme4</p>
+<ul>
+<li>[gn]lmer now produces objects of class merMod rather than class mer as before</li>
+<li>the new version uses a combination of S3 and reference classes (see ReferenceClasses, merPredD-class, and lmResp-class) as well as S4 classes; partly for this reason it is more interoperable with nlme</li>
+<li>The internal structure of [gn]lmer is now more modular, allowing finer control of the different steps of argument checking; construction of design matrices and data structures; parameter estimation; and construction of the final merMod object (see modular)</li>
+<li>profiling and parametric bootstrapping are new in the current version</li>
+<li>the new version of lme4 does not provide an mcmcsamp (post-hoc MCMC sampling) method, because this was deemed to be unreliable. Alternatives for computing p-values include parametric bootstrapping (bootMer) or methods implemented in the pbkrtest package and leveraged by the lmerTest package and the Anova function in the car package (see pvalues for more details).</li>
+</ul></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../meta/meta.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Meta Analysis</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../mixed/mixed_variance.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Mixed Models (Variance)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

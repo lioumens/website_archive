@@ -1,0 +1,155 @@
+---
+title: "Next Generation Sequencing"
+author: "Michael Liou"
+date: "1/15/2022"
+execute:
+  cache: true
+---
+
+```{r setup, include=FALSE}
+#| message: false
+#| code-summary: Libraries
+library(ape)
+library(vegan)
+library(dplyr)
+library(hagis)
+library(ggplot2)
+library(corncob)
+library(phyloseq)
+library(tidyverse)
+```
+
+## Copy Number Variation (window binning)
+
+### readDepth
+
+readDepth uses a negative binomial distribution to model the counts that fall into each bin.
+
+
+## Primer for Microbiomes
+
+### permANOVA
+
+[Beta Diversity with Hagis](https://cran.r-project.org/web/packages/hagis/vignettes/betadiversity.html)
+
+```{r}
+head(P_sojae_survey) # survey sample data
+P_sojae_survey$Isolate <-
+  gsub(pattern = "MPS17_",
+       replacement = "",
+       x = P_sojae_survey$Isolate)
+P_sojae_survey$Rps <-
+  gsub(pattern = "Rps ",
+       replacement = "",
+       x = P_sojae_survey$Rps)
+hagis_args <- list(
+  x = P_sojae_survey,
+  cutoff = 60,
+  control = "susceptible",
+  sample = "Isolate",
+  gene = "Rps",
+  perc_susc = "perc.susc"
+)
+P_sojae_survey.matrix <- do.call(create_binary_matrix, hagis_args)
+P_sojae_survey.matrix.jaccard <-
+  vegdist(P_sojae_survey.matrix, "jaccard", na.rm = TRUE)
+groups <- factor(c(rep("Michigan_1", 11), rep("Michigan_2", 10)))
+
+# calculate beta dispersion for each group, when comparing 2 or more
+pathotype.disp <-
+  betadisper(P_sojae_survey.matrix.jaccard, groups)
+
+# tests if centroid distances are significantly different from each other
+pathotype.disp.anova <- anova(pathotype.disp) 
+pathotype.disp.anova
+
+# the output gives p-value
+adonis2(P_sojae_survey.matrix.jaccard ~ groups)
+```
+
+
+### Corncob
+
+```{r}
+data(soil_phylo)
+```
+
+```{r}
+soil_phylo
+otu_table(soil_phylo)[1:3, 1:3]
+sample_data(soil_phylo) # covariates
+tax_table(soil_phylo)[1:3,] # taxonomic information of 
+
+```
+
+
+```{r}
+# Modeling
+data(soil_phylum_small)
+soil <- soil_phylum_small
+cob <- bbdml(formula = OTU.1 ~ 1, 
+      phi.formula = ~ 1,
+      data = soil)
+plot(cob, B = 50, total = TRUE, color = "DayAmdmt") # bootstrap simulations, total counts scale instead of relative abundance.
+
+sample_data(soil) %>% rownames_to_column("sample") %>% 
+  group_by(sample) %>% 
+  summarize
+
+otu_table(soil) %>% margin.table(margin = 2)
+
+otu_table(soil)[c("OTU.1")]
+```
+
+```{r}
+corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
+                    phi.formula = ~ DayAmdmt,
+                    data = soil)
+plot(corncob_da, color = "DayAmdmt", total = TRUE, B = 50) # bars are from bootstrap samples, while
+```
+
+```{r}
+# Multiple Taxa
+da_analysis <- differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~1,
+                                phi.formula_null = ~ DayAmdmt,
+                                test = "Wald", boot = FALSE,
+                                data = soil,
+                                fdr_cutoff = 0.05)
+
+da_analysis %>% names()
+
+da_analysis$restrictions_DA # differential abundance
+da_analysis$restrictions_DV # differential variability (because phi.formula and phi.formula_null are the same)
+
+plot(da_analysis)
+da_analysis$significant_taxa # switch from OTU labels to taxonomy
+otu_to_taxonomy(da_analysis$significant_taxa, data = soil)
+```
+
+```{r message = FALSE}
+# Looking at differentially variable taxa
+dv_analysis <- differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~1,
+                                phi.formula_null = ~ DayAmdmt,
+                                test = "Wald", boot = FALSE,
+                                data = soil,
+                                fdr_cutoff = 0.05)
+abbreviate(c("a", "aa", "aaaaaaaaaaaaaaaaaaaaa", "bbbbbbbbbbbbb", "aasdlfjas;ldkfja;sdixckvjlsdjfiosjdlk")) # can be useful for plotting long names
+```
+
+
+```{r}
+# model selection
+lrtest(mod_null = cob, mod = corncob_da)
+```
+
+```{r}
+summary(corncob_da)
+```
+
+
+
+

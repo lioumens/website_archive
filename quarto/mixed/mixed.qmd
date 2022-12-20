@@ -1,0 +1,714 @@
+---
+title: "Mixed Models"
+author: "Michael Liou"
+date: "7/2/2019"
+execute: 
+  cache: true
+---
+
+```{r}
+#| message: false
+#| code-summary: Libraries
+library(lattice)
+library(lme4)
+library(nlme)
+library(glmmTMB) # template model builder, designed as improved glmmADMB
+library(tidyverse)
+library(emmeans)
+library(broom.mixed) # clean mixed model outputs
+library(sommer) # asREML replacement
+library(sjPlot) # for plottinge effects
+library(kableExtra) # for tables
+library(afex) # easy anova
+library(reshape2) # for melt function
+```
+
+# Introduction to Mixed Models
+
+## Mixed Model Ecosystem
+
+Mixed model software is widely available for most use case scenarios in most commonly used statistical software. Although there are some implementational differences between the software (optimizers, defaults, design philosophy).
+
+### R Package Overview
+
+* **lme4**
+* **nlme**
+
+### SAS Overview
+
+## Example Datasets {.tabset}
+
+* Oats from `nlme` package (balanced split plot design)
+  
+* sleepstudy from `lme4` package
+
+### Oats
+
+* Oats is a good example of a balanced split-plot design, from the **nlme** package.
+* We will remove some data observations to make it incomplete, like they do in [emmeans documentation](https://cran.r-project.org/web/packages/emmeans/vignettes/sophisticated.html)
+
+Oats has 3 factors, `yield ~ nitro | block/variety`
+
+* yield (continuous)
+* nitro (4 levels)
+  - 0.0
+  - 0.2
+  - 0.4
+  - 0.6
+* Variety (3 levels)
+  - Victory
+  - Golden Rain
+  - Marvellous
+* Blocks (6 levels)
+
+
+```{r}
+# intentionally removing some observations
+oats_miss <- Oats[-c(1, 2, 3, 5, 8, 13, 21, 34, 55),]
+```
+
+### Sleepstudy
+
+* sleepstudy is a good example of random intercept and coefficient with subject random effect.
+* sleep study is accessible from **lme4** package with `sleepstudy`
+* most examples for lme4 will feature this dataset.
+
+## Resources
+
+* [Ben's Introduction to Mixed Models](https://bbolker.github.io/morelia_2018/notes/mixedlab.html) - basic lab with examples of how to approach mixed models by a prominant mixed models expert.
+
+# Basic Theory
+
+For a model that shows this \textit{per subject},
+
+\begin{equation}
+         Y_i = X_i\beta + Zu_i + e_i
+\end{equation}
+
+with assumptions,
+
+ 1. $u_i\sim MVN(0, D)$
+ 2. $e_i\sim MVN(0, R)$
+ 3. $Cov(u, e) = 0$  (Violation of this results in parameter confounding.)
+
+# REML Theory
+
+A step-by-step proof of the mixed model equations can be found on [Kevin Liu's Website: Linear Mixed Model Equations](https://rh8liuqy.github.io/Linear_mixed_model_equations.html).
+
+- [Introduction to REML equations](https://www.stats.net.au/Maths_REML_manual.pdf)
+
+# Software {.tabset}
+
+## nlme
+
+This section we use the "Oxide" example p167 in Mixed-Effects Models in S and S-PLUS.
+
+nlme introduces the class "groupedData", for which has a natural methods for which we can use
+
+lme also has a LOT of variance classes that can fit R variances of individuals according to covariates as well! See ?varClasses for the documentation of this and see [MLM Heterogenous Variance](https://quantdev.ssri.psu.edu/sites/qdev/files/ILD_Ch06_2017_MLMwithHeterogeneousVariance.html) for an example.
+
+Many methods that apply to class `lme` objects,
+
+* `intervals(lmod)` - confidence intervals around parameters
+  * "using a normal approximation to the distribution of the (restricted) maximum likelihood estimators (the estimators are assumed to have a normal distribution centered at the true parameter values and with covariance matrix equal to the negative inverse Hessian matrix of the (restricted) log-likelihood evaluated at the estimated parameters)." ~ from documentation
+* `augPred` - produces preditions of the response for each group, and produces plot of predicted lines for each subject superposed on the original data.
+* `plot(compareFits(coef(mod), coef(mod2)))` - plot estimates of two models, (like REML vs ML) estimates.
+* `getVarCov` - gives marginal and conditional covariance matrices, very useful!
+* `VarCorr` - instead of covariances, list the correlations
+
+
+```{r}
+# random defaults to the rhs of grouped Data
+formula(Oxide) # shows that it has a grouping structure
+```
+
+```{r}
+# The example of how to create a new grouped object
+Orth.new <-  # create a new copy of the groupedData object
+  groupedData(distance ~ age | Subject,
+              data = as.data.frame( Orthodont ),
+              FUN = mean,
+              outer = ~ Sex,
+              labels = list( x = "Age",
+                y = "Distance from pituitary to pterygomaxillary fissure" ),
+              units = list( x = "(yr)", y = "(mm)") )
+# formula(Orth.new)
+# plot(Orth.new)
+# gsummary(Orth.new)
+orth_lmod <- lme(Orth.new)
+# orth_vario <- Variogram(orth_lmod) # doesn't quite look right....
+
+```
+
+## lme4
+
+Some common accessor functions for working with mixed models and what they return:
+
+- `summary()` - all the important information
+- `fixef()` - the $\beta$ part of the equation
+- `ranef()` - the $u$ part of the equation
+- `getME()` - Get very specific components of an object of class `merMod`. See the help function for full list
+  - `X` - fixed-effects model matrix
+  - `Z` - random-effects model matrix
+  - `mu` - conditional mean of response
+  - `b` - conditional mode of random effects variable
+  - `theta` - just the parameters in the covariance matrix $G$
+  - `sigma` - relative variance factor
+  - `Lambda` - squareroot of random effect covariance,  $G = \sigma^2LL'$
+- `predict(mod, re.form = "NA | NULL | ~subject")` - predictions with different levels of random effect structures
+
+## lmeInfo
+
+Gives expected information and variance components from information matrices of "lme" models. Useful because lme doesn't report the standard errors from the objects 
+
+## sommer
+
+## glmmTMB
+
+# Basics of Mixed Models in R
+ 
+```{r}
+# Oats Model
+oats_mod <- lme4::lmer(yield~Variety + factor(nitro) + (1|Block/Variety), data = oats_miss, REML = TRUE)
+sleep_mod <- lmer(Reaction ~ Days + (Days | Subject), data=sleepstudy)
+```
+
+
+```{r}
+summary(oats_mod)
+summary(sleep_mod)
+```
+
+
+## Fixed Effects
+
+The reported fixed effects from `fixef(mod)` is really just the average of all across all the individual fits that were created
+
+```{r collapse=TRUE}
+# These are the same! 
+fixef(sleep_mod) # %>% as.data.frame() # makes it nicer to work with
+colMeans(coef(sleep_mod)$Subject)
+```
+
+
+```{r eval = FALSE}
+# Results aren't shown, but this is how to get them.
+summary(oats_mod)
+ranef(oats_mod) # %>% as.data.frame() # makes it nicer to work with
+fixef(oats_mod) # %>% as.data.frame() # makes it nicer to work with
+
+# Something to do with subject level standard errors
+attr(ranef(oats_mod, condVar = TRUE, drop = TRUE)$`Variety:Block`, "postVar")
+
+# Standard errors for random effects
+print(vc <- VarCorr(oats_mod), comp = c("Variance", "Std.Dev.")) %>%
+  as.data.frame(order = "lower.tri")
+```
+
+
+## Random Effects
+
+```{r results='hide'}
+# From the help on ranef
+str(ranef(sleep_mod))
+as.data.frame(ranef(sleep_mod))
+rr <- ranef(sleep_mod)
+dd <- as.data.frame(rr)
+dotplot(rr,scales = list(x = list(relation = 'free')))[["Subject"]] # This just allows the x access to be different between the two objects
+```
+
+
+```{r collapse=TRUE}
+# How to replicate dotplot in ggplot!
+# The "free_x" is allowing different value scales...
+ggplot(dd, aes(y=grp,x=condval)) +
+  geom_point() + facet_wrap(~term,scales="free_x") +
+  geom_errorbarh(aes(xmin=condval -2*condsd,
+                     xmax=condval +2*condsd), height=0)
+```
+
+### Random Effect Variance
+
+More specifically, these are the variances of the conditional modes
+
+```{r}
+cov_mat <- VarCorr(sleep_mod)[["Subject"]]
+cov_mat # shows the correlation between random effects as well
+print(VarCorr(sleep_mod), comp=c("Variance")) # extract the variance estimates of random effects (shown in summary)
+```
+
+Similarly, the conditional variance-covariance matrix of the random effects can be extracted by the following. These variances are conditional on the data and 
+
+```{r}
+attr(ranef(sleep_mod)$Subject, "postVar")
+# ?ranef
+```
+
+A cleaner data frame version of the above with standard deviations, (no correlation)
+
+```{r}
+as.data.frame(ranef(sleep_mod))
+# broom.mixed alternative, with same output
+broom.mixed::tidy(sleep_mod, effects = "ran_vals")
+```
+
+## Plotting Effects
+
+There are a few packages that automate the effect plotting
+
+- "effects"
+- "ggeffects"
+- ["sjPlot"](https://cran.r-project.org/web/packages/sjPlot/vignettes/plot_model_estimates.html)
+
+```{r}
+# sjPLot
+plot_model(oats_mod,
+           show.values = TRUE,  # show overlay
+           value.offset = .3) # offset above
+```
+some useful options
+
+- `terms = c("factor(nitro)0.2", "factor(nitro)0.4"`
+
+
+# Inference in Mixed Models
+
+A wonderful resource for discussing inference in mixed models is given by [Faraway's Inferential Methods for Linear Mixed Models](https://people.bath.ac.uk/jjf23/mixchange/index.html#worked-examples)
+
+# Correlation structures
+
+
+
+## varFunc variance functions
+
+varfunc is for modeling variance with covariate, for heterogeneity
+
+```{r}
+Dialyzer$QB
+Dialyzer %>% ggplot(aes(pressure, rate, group = Subject)) + 
+  geom_point() +
+  geom_line() + 
+  facet_wrap(~QB)
+
+# relevel so 300 is first
+Dialyzer$QB <- factor(Dialyzer$QB, levels = c(300, 200))
+contrasts(Dialyzer$QB) <- contr.sum(levels(Dialyzer$QB))
+
+dial_lme <- lme(rate ~ pressure*QB + I(pressure^2)*QB + I(pressure^3)*QB + I(pressure^4)*QB,
+                data =  Dialyzer,
+                random = ~pressure + pressure^2)
+
+summary(dial_lme)
+plot(dial_lme, resid(., type = "pearson")~pressure, abline = 0)
+
+# update the weights by pressure
+dial_lme2 <- update(dial_lme,
+       weights = varPower(form = ~pressure))
+
+summary(dial_lme2)
+cbind(AIC(dial_lme),
+      AIC(dial_lme2))
+
+plot(dial_lme2, 
+     resid(., type = "pearson")~pressure,
+     abline = 0)
+
+plot(dial_lme2,
+     resid(., type = "pearson")~pressure | QB,
+           abline =0) # increasing heterogeneity in both 
+
+plot(dial_lme,
+     resid(., type = "pearson")~pressure | QB,
+           abline =0) # increasing heterogeneity in both 
+
+getVarCov(dial_lme2, type = "marginal")
+dist(Dialyzer$pressure[Dialyzer$Subject == 1])
+```
+
+## lme corstruct
+
+corstructs are for modeling with "distances"
+
+```{r}
+spatDat <- data.frame(x = c(0, .25, .5, .75, 1), y = c(0, .25, .5, .75, 1))
+example_cormat <- Initialize(corExp(c(1,.2),
+                                    form = ~x + y, # specifies the position vector and | grouping variable
+                                    nugget = TRUE), spatDat)
+
+corMatrix(example_cormat)
+plot(Variogram(example_cormat, distance = seq(0, 3, .1)))
+```
+
+## Variograms
+
+(semi) variogram are a way of plotting and visualizing correlations over time/space
+
+$$
+\begin{aligned}
+\gamma[d(\varepsilon_x, \varepsilon_y), \mathbf{\lambda}] &= \frac{1}{2}\operatorname{Var}(\varepsilon_x - \varepsilon_y) \\
+&= \frac{1}{2}E[\varepsilon_x - \varepsilon_y]^2
+\end{aligned}
+$$
+
+
+```{r}
+# calculating the variogram manually
+plot(Variogram(c(1, 3, -1, 5), # time points
+               c(1, .3, .5, 2, 7, .2))) # values at time points
+
+
+
+val <- outer(c(1, 3, -1, 5), c(1, 3, -1, 5), function(x, y) (y - x)^2 / 2)
+val <- val[lower.tri(val)]
+val # the variogram values
+```
+
+
+```{r}
+n <- 20 # 20 obs
+N <- 100 # nodes
+
+randomwalk <- function(N) {
+  cumsum(rnorm(N))
+}
+set.seed(1)
+rw_mat <- replicate(1000,
+          randomwalk(6))
+```
+
+
+```{r}
+rw_dat <- rw_mat %>% melt(c("node","obs"))
+
+rw_mat %>% t() %>% cov() # sample covariance
+
+rw_dat %>% ggplot(aes(node, value)) +
+  geom_point()
+
+rw_gls <- gls(value~1,  data = rw_dat,
+          correlation = corSymm(form = ~1|obs),
+          weights = varIdent(form = ~1 | node))
+
+
+getVarCov(rw_gls)
+getVarCov(rw_gls, individual = 4)
+
+rw_cs_cov <- corMatrix(Initialize(corCompSymm(value = .3, form = ~1 | obs), rw_dat))
+
+rw_cs_cov %>% length()
+```
+
+
+## Example: BodyWeight
+
+body weight of rats measured over 64 days and 3 different diets
+
+```{r}
+BodyWeight %>% ggplot(aes(Time, weight, group = Rat)) +
+  geom_line() +
+  facet_wrap(~Diet)
+
+# Residuals
+bw_lme <- lme(weight ~ Time * Diet, BodyWeight,
+    random = ~Time | Rat)
+
+
+
+# model with varPower
+bw_lme2 <- update(bw_lme, weights = varPower())
+plot(bw_lme, resid(., type = "p") ~ Time) # Residual plot
+plot(bw_lme2, resid(., type = "p")~Time) # such a subtle difference... how much effect does it really have. yet it's strongly statistically significant
+
+anova(bw_lme, bw_lme2)
+```
+
+The anova gives a significant result, meaning that the covariance with heterogenous modeling is better, but if you look summary of the results, the standard errors are really not that different, maybe a difference of about 10%.
+
+```{r}
+summary(bw_lme)
+summary(bw_lme2)
+```
+
+
+```{r}
+```
+
+
+```{r}
+# variogram seems to increase at 20 days, so model with exponential spatial
+plot(Variogram(bw_lme, form = ~Time, maxDist = 42)) # loess smoother
+bw_lme3 <- update(bw_lme, corr = corExp(form = ~Time))
+
+plot(Variogram(bw_lme3, maxDist = 42, form = ~Time, 
+               resType = "normalized",
+               robust = T), ylim = c(0, 1.4)) # fit with time variogram
+```
+
+Use the normalized residuals and robust
+
+
+
+
+
+
+
+# Computational Notes
+
+* For large models, with crossed and partially crossed factors, you should consider adding `gradient = FALSE, niterEM = 0)`, because the gradient calculation and EMCE iteration both require a calculation that needs to invert a cholesky factor of crossproduct matrix. It's a slow process and can slow down the optimization. Bates said maybe it could be default when there are multiple, non-nested grouping factors. See [thread](https://stat.ethz.ch/pipermail/r-help/2006-October/115572.html) for more details.
+
+
+# Cookbook
+
+## Using covariate as both random and fixed effect
+
+There is a blog post with this phenomena
+
+## Plot of Shrinkage (sleepstudy)
+
+This stuff is from this blog post: https://www.tjmahr.com/plotting-partial-pooling-in-mixed-effects-models/
+
+Looking at the shrinkage stuff though, there's also from [Bates](http://lme4.r-forge.r-project.org/slides/2011-03-16-Amsterdam/2Longitudinal.pdf)
+
+```{r Initialization}
+sleepstudy <- sleepstudy %>% as_tibble() %>% mutate(Subject = as.character(Subject))
+sleepstudy
+
+# Adding two participants to illustrate partial pooling
+df_sleep <- bind_rows(
+  sleepstudy,
+  tibble(Reaction = c(286, 288), Days = 0:1, Subject = "374"),
+  tibble(Reaction = 245, Days = 0, Subject = "373"))
+```
+
+```{r}
+ggplot(df_sleep, aes(Days, Reaction)) + 
+  facet_wrap(~Subject) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE)
+```
+
+Fitting all the linear models all at once, `lme4` provides a convenience function for that with s3 methods defined as well: coef, confint, fitted, fixef, formula, logLik, pairs, plot, predict, print, qqnorm, ranef, residuals, sigma, summary, and update
+
+### No Pooling
+```{r warning=FALSE}
+# Creating the no pooling model
+# This is basically an ANCOVA lm(Reaction ~ Days + Subject)
+
+df_no_pooling <- lmList(Reaction ~ Days | Subject, data=df_sleep) %>% 
+  coef() %>%
+  rownames_to_column("Subject") %>%
+  rename(Intercept = `(Intercept)`, Slope_Days = Days) %>% 
+  add_column(Model = "No Pooling") %>% 
+  filter(Subject != "373")
+# ?lmList # Creates a linear model for each one.
+```
+
+
+
+### Pooled
+
+```{r warning=FALSE}
+# Creating pooled model
+m_pooled <- lm(Reaction ~ Days, df_sleep)
+df_pooled <- tibble(
+  Model = "Complete pooling",
+  Subject = unique(df_sleep$Subject),
+  Intercept = coef(m_pooled)[1], 
+  Slope_Days = coef(m_pooled)[2])
+```
+
+
+```{r warning=FALSE}
+# combine the two models
+df_models <- bind_rows(df_pooled, df_no_pooling) %>%
+  left_join(df_sleep, by = "Subject")
+df_models
+```
+
+
+### Partial Pooling
+
+```{r}
+lmm <- lmer(Reaction ~ 1 + Days + (1 + Days | Subject), df_sleep)
+
+# Make a dataframe with the fitted effects
+df_partial_pooling <- coef(lmm)[["Subject"]] %>% 
+  rownames_to_column("Subject") %>% 
+  as_tibble() %>% 
+  rename(Intercept = `(Intercept)`, Slope_Days = Days) %>% 
+  add_column(Model = "Partial pooling")
+
+df_models <- bind_rows(df_pooled, df_no_pooling, df_partial_pooling) %>% 
+  left_join(df_sleep, by = "Subject")
+```
+
+
+### Plot comparing all versions
+
+```{r}
+# Create initial base plot without partial pooling lines
+p_model_comparison <- ggplot(df_models) + 
+  aes(x = Days, y = Reaction) + 
+  # Set the color mapping in this layer so the points don't get a color
+  geom_abline(aes(intercept = Intercept, slope = Slope_Days, color = Model),
+              size = .75) +
+  geom_point() + 
+  facet_wrap(~Subject) +
+  scale_x_continuous(breaks = 0:4 * 2) + 
+  labs(x = "Days of Sleep Deprivation", y = "Average Reaction Time") +
+  scale_color_brewer(palette = "Dark2") + 
+  theme(legend.position = "top")
+# p_model_comparison # to view without partial pooling
+
+p_model_comparison
+```
+
+### Linear Model Version Estimates
+
+The fixed version of this is the same as the no pooling case. The plot completely overlaps with the no pooling
+```{r}
+m <- lm(formula = Reaction ~ Days*Subject, data = df_sleep)
+coef(m)
+# In this information, there is really a line for each subject, need to create that matrix
+
+mcoef <- tibble(Subject = "308", Intercept = coef(m)[1], Slope_Days = coef(m)[2])
+mcoef <- rbind(mcoef, 
+               tibble(
+                 Subject = substr(names(coef(m)[3:21]), 8,10),
+                 Intercept = coef(m)[3:21] + coef(m)[1],
+                 Slope_Days = coef(m)[22:40] + coef(m)[2]))
+mcoef$Model <- "Linear Model"
+df_ancova <- mcoef
+
+df_models <- bind_rows(df_pooled, df_no_pooling, df_partial_pooling, df_ancova) %>% 
+  left_join(df_sleep, by = "Subject")
+
+# Oh it's the same as no pooling
+df_models %>% filter((Model == "Linear Model" | Model == "No Pooling") & Subject == "370" & Days == 0)
+```
+
+Effectively, this is the same as filtering the data and running a linear regression on each subset. That is what is meant by "no pooling"
+
+```{r}
+mf <- lm(Reaction ~ Days, subset(df_sleep, Subject == "308"))
+coef(mf)
+coef(m)[1:2]
+fixef(lmm)
+coef(lmm)
+```
+
+The standard errors is where it matters... let's look at that... say I'm interested in saying something about the subject 308. How would I go about that? The answer is that it's difficult without making some egregarious assumptions.
+
+https://stackoverflow.com/questions/26198958/extracting-coefficients-and-their-standard-error-from-lme
+
+```{r}
+# filtered model for patient 308
+coef(summary(mf))
+# Coef of blocked model
+coef(summary(m))
+# CAUTION: Ignoring Covariances, and directly adding the variances for Conditional Variance and fixed eff variance
+sqrt(diag(vcov(lmm)) + diag(attr(ranef(lmm)$Subject, "postVar")[,,1]))
+```
+
+```{r}
+df_fixef <- tibble(
+  Model = "Partial pooling (average)",
+  Intercept = fixef(lmm)[1],
+  Slope_Days = fixef(lmm)[2])
+
+# Complete pooling / fixed effects are center of gravity in the plot
+df_gravity <- df_pooled %>% 
+  distinct(Model, Intercept, Slope_Days) %>% 
+  bind_rows(df_fixef)
+df_gravity
+
+df_pulled <-  bind_rows(df_no_pooling, df_partial_pooling)
+head(df_pulled)
+ggplot(df_pulled, aes(Intercept, Slope_Days, color=Model)) + 
+  geom_point() +
+  geom_point(data=df_gravity, size=4) +
+  geom_path(aes(group=Subject), arrow=arrow(length=unit(.02, "npc"))) +
+  geom_text(aes(label=Subject), data=df_no_pooling, nudge_y = .8)
+
+```
+
+
+
+## Getting Subject level standard errors
+
+Complicated Issue, according to [Ben Bolker](https://stackoverflow.com/questions/26198958/extracting-coefficients-and-their-standard-error-from-lme)
+
+```{r eval = FALSE}
+fixed_vars <- diag(vcov(mod))
+attributes(ranef(mod, condVar=TRUE, drop=TRUE)$Subject)
+
+attributes(ranef(mod)$Subject)
+attr(ranef(mod)$Subject, "postVar")
+cmode_vars <- t(apply(attr(ranef(mod)$Subject, "postVar"), 3, diag)) # columns of intercept variance and day variance
+
+sqrt(sweep(cmode_vars, 2, fixed_vars, "+")) # Standard errors  (basically add fixed_vars to respective columns)
+```
+
+## Emmeans with Mixed Models (oats)
+
+```{r}
+oats_emm <- emmeans(oats_mod, c("Variety", "nitro"), lmer.df = "satterthwaite") # Also affects the SE slightly
+oats_emm
+```
+
+### Manual calculation of emmeans and SE
+
+Emmeans simply takes advantage of the fact that the marginal means are the linear combinations of the coefficients. Thus, if the model coefficient standard deviations are incorrect, then the estimated marginal means standard errrors are incorrect.
+
+To replicate the standard errors within emmeans, you must use REML estimates of standards errors. 
+
+
+Reminder: modesl by default in R use the factor encoding, so to get (0.0 nitro, marvellous), we know the (0.0 nitro, Victory) is the intercept, and the coefficeint for variety marvellous is the effect, so (0.0 nitro, Marevellous) = (Intercept) + VarietyMarvellous.
+
+Overall, we can create the reference grid manually and calculate the marginal means from the grid
+```{r}
+# calculate reference grid manually
+oats_grid <- with(oats_miss, expand.grid(Variety = levels(Variety),
+                                         nitro = levels(factor(nitro))))
+oats_X <- model.matrix(~Variety + nitro, data = oats_grid) # the combinations
+oats_B <- fixef(oats_mod)
+oats_V <- vcov(oats_mod)
+
+# Calculate my version
+oats_my_emm <- list(emmean = c(oats_X %*% oats_B), # marginal means are just X\betahat
+                    SE = sqrt(diag(oats_X %*% oats_V %*% t(oats_X)))) # cov(X\beta) = Xcov(\betahat)X'
+
+# Calculate the package version
+oats_package_emm <- oats_emm %>% as_tibble() %>% dplyr::select(emmean, SE) %>% as.list()
+
+
+# Show that emmean estimates are the same
+cbind(oats_my_emm$emmean, oats_package_emm$emmean)
+
+# Show that SE calculations are the same (note, they're only the same when you use Satter)
+cbind(oats_my_emm$SE, oats_package_emm$SE)
+```
+
+Note:
+
+* SE are the same when you calculate them with `REML = TRUE` and `lmer.df = "satterthwaite"`.
+
+In order to average these down (by Variety) we then just get the appropriate linear combinations and calculate them with the appropriate variance-covariance.
+
+# Additional Resources
+
+# FAQ
+
+* Why aren't there p-values in lme4?
+  - Great question. it's due to the denominator degrees of freedom. really
+  - Bates response is at `?pvalues`
+  
+* What's the difference between nlme and lme4
+
+  - [gn]lmer now produces objects of class merMod rather than class mer as before
+  - the new version uses a combination of S3 and reference classes (see ReferenceClasses, merPredD-class, and lmResp-class) as well as S4 classes; partly for this reason it is more interoperable with nlme
+  - The internal structure of [gn]lmer is now more modular, allowing finer control of the different steps of argument checking; construction of design matrices and data structures; parameter estimation; and construction of the final merMod object (see modular)
+  - profiling and parametric bootstrapping are new in the current version
+  - the new version of lme4 does not provide an mcmcsamp (post-hoc MCMC sampling) method, because this was deemed to be unreliable. Alternatives for computing p-values include parametric bootstrapping (bootMer) or methods implemented in the pbkrtest package and leveraged by the lmerTest package and the Anova function in the car package (see pvalues for more details).
+
+

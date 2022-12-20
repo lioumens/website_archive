@@ -1,0 +1,14 @@
+{
+  "hash": "9533a756210368ebf520705fbde7253f",
+  "result": {
+    "markdown": "---\ntitle: \"Changepoint Analysis\"\nauthor: \"Michael Liou\"\ndate: \"12/10/2021\"\nexecute:\n  cache: true\n---\n\n::: {.cell hash='changepoint_cache/html/unnamed-chunk-1_672b7b2a3acb6a0c519710f5b6673b84'}\n\n```{.r .cell-code  code-summary=\"Libraries\"}\nlibrary(tidyverse)\n```\n:::\n\n\n\n## Simulate the data\n\n\n::: {.cell hash='changepoint_cache/html/unnamed-chunk-2_44577b5fb89c6f364ff0d9e6d19b16fe'}\n\n```{.r .cell-code}\ndays <- 1:30\nbp <- 10 # Breakpoint\nn <- 4 # number of measurements\nbeta <- 3 # estimated slope of change at bp\nsigma <- 3 # estimated residual error\n\n# True model\ntm <- Vectorize(function(days, bp, beta, n, sigma) {\n  if (days < 10) {\n    return(rnorm(n, mean = 0, sd = sigma))\n  }\n  else if (days >= 10) {\n    return(rnorm(n, mean = (days - bp)*beta, sd = sigma))\n  }\n}, \"days\")\n\ndat_sim <- tm(1:30, bp, beta, n, sigma)\n```\n:::\n\n::: {.cell hash='changepoint_cache/html/unnamed-chunk-3_9b6bfee209f4dcf063c4e6fcc6538bc3'}\n\n```{.r .cell-code}\ndat <- data.frame(days = rep(days, each = n),\n                  y = c(dat_sim)) # stack all columns of matrix into vector\n\ndat %>% ggplot(aes(days, y)) +\n  geom_point()\n```\n\n::: {.cell-output-display}\n![](changepoint_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n\n::: {.cell hash='changepoint_cache/html/unnamed-chunk-4_b290366eaf6e0e9a12afef3dea21c4e6'}\n\n```{.r .cell-code}\nmod <- nls(y ~ ifelse(days < 10, constant, (days - 10) *beta + constant),\n    data = dat,\n    start = c(constant = 0, beta = 3))\n\nsummary\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nfunction (object, ...) \nUseMethod(\"summary\")\n<bytecode: 0x7fa874db5110>\n<environment: namespace:base>\n```\n:::\n\n```{.r .cell-code}\nplot(dat$days, dat$y)\ncurve(predict(mod, newdata = data.frame(days = x)), add = TRUE)\n```\n\n::: {.cell-output-display}\n![](changepoint_files/figure-html/unnamed-chunk-4-1.png){width=672}\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
