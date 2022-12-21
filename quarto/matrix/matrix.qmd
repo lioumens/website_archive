@@ -4,6 +4,9 @@ author: "Michael Liou"
 format: 
   html: 
     page-layout: full
+toc-depth: 4
+execute:
+  cache: true
 bibliography: ../references.bib
 ---
 
@@ -109,7 +112,75 @@ $$
 
 ## Adjacency Matrix
 
+### Spectral Bounds
+
+#### Simple
+
+All 3 of these proofs and results can be found in @newmanNetworks2018, section 18.2.3.
+
+1.  Largest Eigenvalue, undirected, unweighted, lower bound by average degree
+
+$$
+\begin{aligned}
+\lambda_1(A) \geq d_{avg}
+\end{aligned}
+$$
+
+proof: use 1 vector as test vector in courant fischer
+
+2.  Largest Eigenvalue, undirected, unweighted, lower bound by max degree
+
+$$
+\begin{aligned}
+\lambda_1(A) \geq \sqrt{d_{max}}
+\end{aligned}
+$$ proof: use \[sqrt(dmax), 1, 0\] for max degree node, connected to max degree, else (respectively) as test vector in courant fischer
+
+3.  Smallest Eigenvalue, undirected, unweighted, upper bound by max degree
+
+$$
+\begin{aligned}
+\lambda_n (A) \leq -\sqrt{k_{max}}
+\end{aligned}
+$$ proof: use \[sqrt(dmax), -1, 0\] for max degree node, connected to max degree, else (respectively) as test vector in courant fischer.
+
 ### Example Spectrums
+
+First we'll examine how all the adjacency matrices vary in terms of their eigenvalues.
+
+```{r}
+#| fig-cap-location: bottom
+#| fig-cap: "Eigenvalues of undirected, adjacency matrices. All matrices are connected 5 graphs. We note that there are both postive and negative eigenvalues unless the graph has no edges."
+g5_list <- read_file6("data/graph5c.g6", type = "adjacency")
+
+g5_list |> enframe(name = "gid", value = "adj") |> 
+  rowwise() |> 
+  mutate(eig_values = list(zapsmall(eigen(adj)$values)),
+         gid = factor(gid),
+         max_eig = max(eig_values)) |>
+  mutate(gid_name = recode(gid,
+                           "9" = "9 (line)",
+                           "1" = "1 (cross)",
+                           "21" = "21 (complete)",
+                           "7" = "7 (wakanda)")) |> 
+  dplyr::select(gid, gid_name, eig_values, max_eig) |> 
+  unnest_longer(col = c("eig_values")) |>
+  group_by(gid, gid_name, eig_values, max_eig) |> 
+  summarize(
+    multiplicity = factor(n(), levels = 1:4, ordered = TRUE),
+    .groups = "drop_last") |> 
+  ggplot(aes(x = fct_reorder(gid_name, max_eig), y = eig_values, color = multiplicity)) +
+  geom_point() +
+  scale_color_manual(values = colorRampPalette(colors = c("#69CAFF", "#9900FF"), interpolate = "spline")(4)) +
+  labs(x = "Graph Number",
+       y = "Eigenvalue",
+       color = "Multiplicity") +
+  coord_cartesian(ylim = c(-4, 4)) +
+  theme_test() +
+  theme(panel.grid.major.y = element_line(color = "gray90"),
+        panel.border = element_blank(),
+        axis.line = element_line(color = "black"))
+```
 
 ### Spectral Radius Bounds
 
