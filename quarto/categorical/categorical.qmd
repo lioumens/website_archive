@@ -15,6 +15,8 @@ library(DescTools)
 library(kableExtra)
 library(VGAM)
 library(nnet)
+library(vcd) # visualizing categorical data
+library(vcdExtra) # additional companion code
 ```
 
 ## Overview
@@ -192,6 +194,8 @@ tribble(~test, ~parameter, ~sampling, ~pvalue, ~hypothesis,
 ```
 
 
+A list of summary
+
 A list of tests:
 
 - Cochran summary test
@@ -200,6 +204,7 @@ A list of tests:
 - Cochran's Q test
 - Pearson Chi Squared
 - Cochran-Armitrage Trend Test
+- Cochran-Q Test
 - Mann-Whitney U test (Wilcoxon Rank Sum)
 - Wilcoson Signed Rank Test (paired samples)
 - Krustkal Wallis
@@ -401,6 +406,108 @@ A good reference is 11.1 in Categorical Data Analysis, 3rd edition by Agresti
 
 a test of homogeneity.
 
+### Wilcox Test
+
+Is a test of location for two samples. This somewhat analogous to a nonparametric t-test.
+
+### Krustkal Wallis
+
+Also a test of location for K samples. This is an extension of the Wilcox test that is also nonparametric. this can be thought of a nonparameteric anova.
+
+### Cochran-Armitrage Trend Test (ordinal)
+
+Appropriate for IxJ tables in which _both_ directions are ordinal. This assumes the tables are sampled by binomial fixed proportions for the two groups. We can kind of think of fitting some weighted regression to a surface that is determined by the scores along X and Y.
+
+In the 2xJ case, this reduces to a Wilcoxon test, (also known as Mann-Whitney).
+
+These tests are more powerful for testing specific hypotheses, like a specific trend. If we don't know what the trend is, then we may be better off testing with a pearson test which just looks for general association.
+
+```{r}
+#| include: false
+#| eval: false
+dose <- matrix(c(10,9,10,7,
+                 0,1,0,3), byrow=TRUE, nrow=2,
+               dimnames=list(resp=0:1, dose=0:3))
+
+dose_df <- melt(dose)
+
+dose_lm <- lm(value~resp + dose, data = dose_df)
+summary(dose_lm)
+
+dose_sum <- marginSums(dose, margin = 2)
+dose_rowsum <- marginSums(dose, margin = 1)
+N <- marginSums(dose)
+
+x <- dose
+nidot <- apply(x, 1, sum)
+n <- sum(nidot)
+Ri <- DescTools:::scores(x, 1, "table")
+Rbar <- sum(nidot * Ri)/n
+s2 <- sum(nidot * (Ri - Rbar)^2)
+pdot1 <- sum(x[, 1])/n
+z <- sum(x[, 1] * (Ri - Rbar)) / z
+z_var <- sqrt(pdot1 * (1 - pdot1) * s2)
+
+score <- 1:4
+total <- 0
+for (i in 1:ncol(dose)) {
+  total <- total + score[i] * (dose[1, i] * dose_rowsum[2] - dose[2, i]*dose_rowsum[1]) 
+}
+total
+
+total_var <- prod(dose_rowsum) / N *
+  (sum(score^2 * dose_sum * (N - dose_sum)) - 
+     2 * sum(combn(dose_sum, 2, prod) * combn(1:4, 2, prod)))
+
+total / sqrt(total_var)
+
+# Desc(dose)
+CochranArmitageTest(dose)
+prop.trend.test(dose[1,], dose_sum) # they match... but how
+independence_test(dose~resp, )
+
+wilcox.test(dose, correct = FALSE)
+
+dosep <- dose[1, ] / dose_sum
+
+# scores X
+u <- 0:1
+v <- 1:4
+uc <- scale(u) |> as.numeric()
+vc <- scale(v) |> as.numeric()
+
+
+p <- dose / N
+
+r <- sum(outer(u, v) * p) # .109
+
+r^2 * (N - 1)
+```
+
+
+```{r}
+#| include: false
+#| eval: false
+pol <- matrix(c(13, 23, 14, 29, 59, 67, 15, 47, 54), ncol = 3,
+              dimnames = list("political" = c("lib", "mod", "cons"),
+                              "happiness" = c("not", "pretty", "very")))
+# scores X
+u <- 1:3
+v <- 1:3
+uc <- scale(u) |> as.numeric()
+vc <- scale(v) |> as.numeric()
+
+N <- marginSums(pol)
+p <- pol / N
+r <- sum(outer(uc, vc) * p)
+r^2 * (N-1)
+
+Desc(pol, verbose = 3)
+CochranArmitageTest()
+CochranQTest()
+```
+
+
 ### CMH testing
 
 The CMH testing is technically supposed to be done on tables in strata. the data type is an I X J X K, in which we have K strata and an I X J contingency table in each.
@@ -409,6 +516,16 @@ The CMH testing is technically supposed to be done on tables in strata. the data
 - this reduces to the N-1 adjusted pearson chisquared statistic for 1 strata
 - the test assumes that there is a common odds ratio to estimate, but in order to test the hypothesis we can use a Breslow-Day Test of Homogeneity
 - Conditional logistic regression gives a similar answer, `clogit` in package `survival` because similar to cox model as well.
+
+
+#### Generalized CMH Testing
+
+
+CMH is extended to IxJxK with possibly ordinal factors for I and J. An implementation of these statistics can be found: 
+
+- `coin::cmh_test()`
+- `vcdExtra:CHMtest()`
+
 
  
 
@@ -903,3 +1020,14 @@ deviance(housing_vglm)
 dropterm(housing_vglm, test = "Chisq")
 
 ```
+
+## Evaluating Results
+
+There are a lot of multiclass metrics that are difficult to keep straight, especially as it comes to confusion matrix.
+
+<figure>
+<img src="classification/classification_metrics.jpg" style="width:100%"></img>
+<figcaption></figcaption>
+</figure>
+
+

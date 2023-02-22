@@ -205,7 +205,7 @@ param <- param.net(inf.prob = 0.5, act.rate = 2, rec.rate=0.01)
 init <- init.net(i.num = 10)
 control <- control.net(type = "SIS", nsteps = 500, nsims = 5, verbose = FALSE)
 sim <- netsim(est, param, init, control)
-#plot(sim)
+plot(sim)
 
 formation.concur <- ~edges+concurrent
 mean.con<-.15

@@ -570,9 +570,6 @@ summary(m.gen)
 weights <- 1/(ThirdWave$seTE^2)
 fe_est <- with(ThirdWave, sum(TE * weights) / sum(weights)) # pooled estimate 
 Q <- sum(with(ThirdWave, (TE - fe_est)^2 / seTE^2))
-
-
-
 ```
 
 ```{r}
@@ -595,3 +592,67 @@ esc_mean_sd(grp1m = grp1m, grp2m = grp2m,
             grp1sd = grp1sd, grp2sd = grp2sd, 
             grp1n = grp1n, grp2n = grp2n)
 ```
+
+## Subgroup Analysis
+
+Once you have the lists of effect sizes and standard errors associated with each of the studies, now you can combine them "generically" with metagen. The "gen" part stands for generic, 
+
+```{r}
+m.gen <- metagen(TE = TE,
+                 seTE = seTE,
+                 studlab = Author, # study labels (optional)
+                 data = ThirdWave, # study information (optional)
+                 sm = "SMD", # underlying effect
+                 fixed = FALSE,
+                 random = TRUE,
+                 method.tau = "REML",
+                 hakn = TRUE,
+                 title = "Third Wave Psychotherapies")
+
+# with prediction interval
+update.meta(m.gen, prediction = TRUE)
+```
+
+Assumes that there's a random effect, and the heterogeneity is the variance of the true effects from each of the studies.
+
+
+```{r}
+# need to refit with rma for gosh plot
+m.rma <- rma(yi = m.gen$TE,
+             sei = m.gen$seTE,
+             method = m.gen$method.tau,
+             test = "knha")
+summary(m.rma)
+# gosh(m.rma) # computationally intensive, but used for sensitivity of outliers.
+```
+
+When doing random effect models, there's just 2 sources of variance to consider, the sample (within study) and the heterogeneity (between study). together they're considered the total variance, and there are various metrics to quantify if there is between study heterogeneity.
+
+```{r}
+#| include: false
+#| eval: false
+1 - pchisq(45.5026, 17) # Q is chisq distributed
+```
+
+
+When doing subgroup analysis, you can start to take into account study characteristics and try to correct for them. In this case, maybe we'd like to split it by two. Careful because they lack power, and often not enough to give differences.
+
+```{r}
+update.meta(m.gen, 
+            subgroup = RiskOfBias, 
+            tau.common = FALSE) # heterogeneity in the subgroups
+```
+
+There's the extra section in the middle, in which we can see separate analysis for the two groups. This logic can be extended to meta regression.
+
+## meta Regression
+
+```{r}
+#| eval: false
+
+# 3 level hierarchical mixed model for variance studies
+?rma.mv() # mods = ~a + b + c
+
+```
+
+

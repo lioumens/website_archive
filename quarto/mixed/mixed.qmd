@@ -97,6 +97,8 @@ A step-by-step proof of the mixed model equations can be found on [Kevin Liu's W
 
 - [Introduction to REML equations](https://www.stats.net.au/Maths_REML_manual.pdf)
 
+The main concept of REML, is that instead of using the likelihood of $y \sim N(X\beta, V)$, we should instead look at the likelihood of $Ky$
+
 # Software {.tabset}
 
 ## nlme
@@ -277,8 +279,6 @@ A wonderful resource for discussing inference in mixed models is given by [Faraw
 
 # Correlation structures
 
-
-
 ## varFunc variance functions
 
 varfunc is for modeling variance with covariate, for heterogeneity
@@ -427,10 +427,6 @@ The anova gives a significant result, meaning that the covariance with heterogen
 ```{r}
 summary(bw_lme)
 summary(bw_lme2)
-```
-
-
-```{r}
 ```
 
 
@@ -629,7 +625,6 @@ ggplot(df_pulled, aes(Intercept, Slope_Days, color=Model)) +
   geom_point(data=df_gravity, size=4) +
   geom_path(aes(group=Subject), arrow=arrow(length=unit(.02, "npc"))) +
   geom_text(aes(label=Subject), data=df_no_pooling, nudge_y = .8)
-
 ```
 
 
@@ -695,7 +690,8 @@ Note:
 
 In order to average these down (by Variety) we then just get the appropriate linear combinations and calculate them with the appropriate variance-covariance.
 
-# Additional Resources
+
+# Additional Resources m
 
 # FAQ
 

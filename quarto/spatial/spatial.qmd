@@ -6,10 +6,11 @@ execute:
   cache: true
 ---
 
-```{r setup, include=FALSE}
+```{r setup}
 #| code-summary: Libraries
 #| message: false
 library(tidyverse)
+library(here)
 library(cowplot) # assembling multiple graphs
 library(sp)
 library(ggspatial)
@@ -29,14 +30,15 @@ library(spacetime)
 library(CARBayes)
 library(CARBayesdata)
 library(GGally)
-
+library(gstat) # spatial calculations
+library(nlme) # generalized least squares
+library(microbenchmark)
 
 # devtools::install_github("andrewzm/STRbook")
 library(STRbook) # Accompanying code for Spatio-Temporal statistics with R book
 
 # `rgeos` needed by leaflet
 
-library(microbenchmark)
 ```
 
 # Spatial Classes
@@ -1251,10 +1253,223 @@ microbenchmark(times = 100L,
                "2" = Diagonal(x = 1/ Aj[,1]) %*% A) # multiply by diag matrix
 ```
 
+# Plotting variograms of spatial data
+
+## Using GLS in spatial context
+
+This section roughly follows [Rossiter's Tutorial, Demonstrating Generalized Least Squares](https://www.css.cornell.edu/faculty/dgr2/_static/files/R_html/DemonstateGLSregression.html)
+
+This example dataset studies spatial relationship of 20 rows and 25 columns
+
+- `r` : rows
+- `c` : columns
+- `straw` : 
+- `grain` : something else
+
+```{r}
+#| include: false
+#| eval: false
+mhw <- read.csv(here("spatial/data/mhw.csv"))
+
+ha2ac <- 1 / 2.471054  # hectares per acre
+ft2m <- .3048      # metres per foot
+field.area <- 10000*ha2ac
+plot_len <- sqrt(field.area)/20 # length of plot
+plot_wid <- sqrt(field.area)/25
+n_row <- length(unique(mhw$r))
+n_col <- length(unique(mhw$c))
+# creates plotting grid, with real measurement units, ie, creating coordinates of observations
+sx <- seq(plot_wid/2, plot_wid/2+(n_col-1)*plot_wid, length=n_col)
+sy <- seq(plot_len/2+(n_row-1)*plot_len, plot_len/2, length=n_row)
+xy <- expand.grid(x=sx, y=sy)
+
+# create the sp version of the data
+mhw_sp <- mhw
+coordinates(mhw_sp) <- xy
+summary(mhw_sp)
+spplot(mhw_sp, zcol="grain")
+spplot(mhw_sp, zcol="straw", col.regions=topo.colors(64))
+mhw_sp$sgr <- mhw_sp$straw/mhw_sp$grain # straw grain ratio
+spplot(mhw_sp, zcol="sgr", col.regions=terrain.colors(64))
+```
+
+
+```{r}
+# version with sf package is easier
+mhw <- read.csv(here("spatial/data/mhw.csv"))
+
+ha2ac <- 1 / 2.471054  # hectares per acre
+ft2m <- .3048      # metres per foot
+field.area <- 10000*ha2ac
+plot_len <- sqrt(field.area)/20 # length of plot
+plot_wid <- sqrt(field.area)/25
+n_row <- length(unique(mhw$r))
+n_col <- length(unique(mhw$c))
+# creates plotting grid, with real measurement units, ie, creating coordinates of observations
+sx <- seq(plot_wid/2, plot_wid/2+(n_col-1)*plot_wid, length=n_col)
+sy <- seq(plot_len/2+(n_row-1)*plot_len, plot_len/2, length=n_row)
+xy <- expand.grid(x=sx, y=sy)
+
+mhw_sp <- mhw
+coordinates(mhw_sp) <- xy
+mhw_sf <- st_as_sf(mhw_sp) # spatial points object
+
+# alternatively: convert data frame to sf object
+# mhw_sf <- st_as_sf(bind_cols(mhw, xy), coords = c("x", "y")) # specify the coords, which are points in space
+
+# mhw_sf[, "grain"] |> plot() # looks decent
+# mhw_sf |> ggplot() +
+#   geom_sf(aes(color = grain))
+
+# plot(mhw_sf[,"grain"]) # straightforward plotting with sf
+# plot of the raw data
+
+mhw_sf |> ggplot() +
+  geom_sf(aes(color = straw)) +
+  scale_color_viridis_c(option = "rocket") + #
+  theme_half_open()
+
+mhw_lm <- lm(straw ~ grain, data = mhw_sf)
+mhw_sf |> ggplot() +
+  geom_sf(aes(size = abs(mhw_lm$residuals)), 
+          color = ifelse(sign(mhw_lm$residuals) > 0, "black", "red")) +
+  theme_half_open() # with residuals
+```
+
+We've created two plots here, one in which we plot the raw data of the straw out in the field, and another in which we are regressing straw against grain and plotting the residuals.
+
+Now we make a variogram of the residuals. Just a reminder, the components of a variogram are
+
+<figure>
+<img src="img/variogram.jpg" style="width:100%"></img>
+<figcaption></figcaption>
+</figure>
+
+
+```{r}
+vr <- gstat::variogram(mhw_lm$residuals ~ 1, data = mhw_sf) # location = coordinates(mhw_sf)
+vrmf_sph <- fit.variogram(vr, model = vgm("Sph")) # psill, model, range, nugget
+vrmf_exp <- fit.variogram(vr, model = vgm("Exp"))
+vrmf_exp_ols <- fit.variogram(vr, model = vgm("Exp"), fit.method = 6)
+vrmf_exp_1 <- fit.variogram(vr, model = vgm("Exp"), fit.method = 1)
+vrmf_exp_reml <- fit.variogram.reml(straw~grain, data = mhw_sp, model = vgm(.1, "Exp", .4, .2))
+# ?plot.gstatVariogram
+# par(mfrow =c(2,1))
+# plot(vr, plot.numbers = T, model = vrmf_sph) # show the plot numbers
+# plot(vr, plot.numbers = T, model = vrmf_exp) # show the plot numbers
+
+plot(vr$dist, vr$gamma, ylim = c(0, .5), pch = 16, main = "Different Methods of Fitting Exp Form Function")
+lines(variogramLine(vrmf_exp_1, maxdist = 30)$dist, variogramLine(vrmf_exp_1, maxdist = 30)$gamma, col = 2)
+lines(variogramLine(vrmf_exp, maxdist = 30)$dist, variogramLine(vrmf_exp, maxdist = 30)$gamma, col = 1)
+lines(variogramLine(vrmf_exp_reml, maxdist = 30)$dist, variogramLine(vrmf_exp_reml, maxdist = 30)$gamma, col = 3) # weird, not a good fit
+lines(variogramLine(vrmf_exp_ols, maxdist = 30)$dist, variogramLine(vrmf_exp_ols, maxdist = 30)$gamma, col = 4)
+legend("bottomright", legend = c("Exp", "Exp(N weight)", "Exp(reml)", "Exp(OLS"), col = c(1,2, 3, 4), lty = c(1, 1, 1, 1))
+```
+
+The actual parameters for the fit are:
+
+```{r}
+vrmf_exp
+```
+
+
+::: {.callout-warning appearance="simple"}
+
+"range" here means the "range _parameter_, which is slightly different than the common use of the term "range" to denote when the variogram levels off. The reason it's called the `range` parameter is because it does control when the variogram levels off, but in general we should not expect the range parameter and the range to be the same.
+
+:::
+
+By default the spatial dependence is calculated out to a distance of 25, which is 1/3 of the diagonal of the bounding box, but the dependence seems to start to level out 10 or 12. so we can specify the cutoff of the variogram model as well.
+
+```{r}
+#| include: false
+#| eval: false
+plot(vrmf_exp, cutoff = 27)
+abline(v=27.11)
+class(vrmf_exp)
+methods(class = "variogramModel") # not much available
+```
+
+Now we try fitting with nlme, the values are slightly different with nlme, and we'll try to resolve the differences:
+
+```{r}
+mhw_xy <- bind_cols(mhw, xy) # data frame with position location
+mhw_gls_exp <- gls(straw~grain,
+                   correlation = corExp(form = ~x + y, nugget = TRUE),
+                   data = mhw_xy,
+                   method = "ML")
+
+summary(mhw_gls_exp)
+```
+
+
+```{r}
+#| results: hold
+# lets try to manually recreate these calculations
+gls_cor_exp <- mhw_gls_exp$modelStruct$corStruct
+gls_cor_exp[1:2] # the parameterization does not match
+```
+
+The parameterization of the corExp is a little weird, in the sense that the printed range and nugget do not match the "values" held in the vector for the corStruct. `nlme:::coef.corSpatial` shows that the nugget is calculated by $x_2 / (1 + x_2)$ and the range is calculated as $exp(range)$
+
+```{r}
+#| echo: true
+rng <- exp(gls_cor_exp[1]) # range
+nug <- exp(gls_cor_exp[2]) / (1 + exp(gls_cor_exp[2]))# nugget
+cbind(c(rng, nug))
+```
+
+Now the range and nugget parameter match! The correlation function is
+
+$\text{correlation} = (1 - n)exp(-r / d)$ where $d$ is the rang and $r$ is the distance.
+
+```{r}
+#| results: hold
+
+D <- st_distance(mhw_sf)
+
+corMatrix(gls_cor_exp)[1:5, 1:5] |> 
+  round(digits = 3) # the correlation matrix is scaled so that the variance is 1
+S <- (1 - nug) * (exp(-D / rng)) + diag(rep(nug, nrow(D))) # correlation + the nugget at 0 distance
+S[1:5, 1:5] |> round(digits = 3) # how do the estimates actually differ
+```
+The correlations match from the models, but the fitting is slightly different in these cases, wonder how the variance structures are fit. I also can't seem to get multiple models to show up on the same plot
+
+```{r}
+# ?Variogram.gls
+mhw_gls_vg <- Variogram(mhw_gls_exp, maxDist = 30, metric = "euclidean") # defaults to pearson residuals (standardized)
+# corExp(value = c(log(0.2375852), 3.299723), nugget = T)
+# ?plot.variogramModel
+attr(mhw_gls_vg, "modelVariog") <- Variogram(Initialize(corSpher(form = ~x +y, nugget = T), data = mhw_xy), maxDist = 30)
+plot(mhw_gls_vg, showModel = FALSE, smooth = FALSE) 
+plot(mhw_gls_vg)
+```
+
+It seems like I'm not the only one having difficulty reproducing how nlme produces it's best variogram fit for the given specification. [SO Matching geor,](https://gis.stackexchange.com/questions/109824/variogram-model-fit-compatability-among-geor-gstat-and-nlme-packages-in-r)
+
+
+## sf package
+
+All sf functions start with "st" which make them easy to spot
+
+```{r}
+#| include: false
+#| eval: false
+p1 <- st_point(c(7.35, 52.42)) # sfg, single geometry
+p2 <- st_point(c(7.22, 52.18))
+p3 <- st_point(c(7.44, 52.19))
+sfc <- st_sfc(list(p1, p2, p3), crs = "OGC:CRS84") # geometry list column, 
+st_sf(elev = c(33.2, 52.1, 81.2),
+      marker = c("Id01", "Id02", "Id03"), geom = sfc) # simple feature set
+
+# reading from external data source
+file <- system.file("gpkg/nc.gpkg", package = "sf")
+nc <- st_read(file)
+```
+
+
 # General Resources
 
 - [Geospatial Health with R-INLA and Shiny](https://www.paulamoraga.com/book-geospatial/sec-spatialdataandCRS.html)
-
-spatialspatial
 
 

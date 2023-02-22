@@ -1,0 +1,121 @@
+---
+title: "Nonlinear"
+author: "Michael Liou"
+---
+
+```{r}
+#| code-summary: Libraries and Setup
+library(drc)
+library(tidyverse)
+```
+
+## Standard Nonlinear Models
+
+Use nls mostly, but it can be quite clunky to use. Consider more robust tool
+
+## Dose Response Curves
+
+Dose Response curves are popular in the physical sciences and many biological methods also require some form of calibration.
+
+For example, spectroscopy is common to determine the concentration of a particular analyte in a solution. This involves shining a light onto the chemical.
+
+- transmittance : $T = I / I_0$ light intensity measured by the initial light intensity supplied
+- absorbance : $\log T$ the amount of light absorbed, the signal
+
+The models that you can fit are numerous
+
+- Log Logistic
+- Weibull
+
+We follow along [a blog](http://www.darrenkoppel.com/2020/09/04/dose-response-modelling-and-model-selection-in-r/) for this section.
+
+`ryegrass` is the dataset here, which just has 2 variables
+
+```{r}
+ryegrass |> ggplot(aes(x = conc, y = rootl)) +
+  geom_point() + 
+  geom_smooth(se = FALSE, color = "red", size = .5, method = "loess", formula = y~x)
+```
+
+The most popular model to fit to dose responses with a log logistic function
+
+```{r}
+#| warning: false
+mod <- drm(rootl~conc, data = ryegrass, fct=LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")))
+plot(mod, type = "all") # average
+ED(mod, c(10, 20, 50), interval = "delta") # effective dose, with delta method intervals
+```
+If we want to work on a percentage scale 0-100, we can transform our data and then fix some parameters of the log logistic function that's being fit.
+
+```{r}
+#| warning: false
+mean_rootl_control <- mean(ryegrass$rootl[ryegrass$conc == 0])
+ryegrass_relative <- ryegrass |> mutate(per_response = rootl/ mean_rootl_control * 100)
+mod_fixed <- drm(per_response~conc, data = ryegrass_relative,
+                 fct = LL.3(fixed = c(NA, 100, NA),
+                            names = c("Slope", "Upper Limit", "ED50"))) # LL3 lower bound is 0, and we fix upper bound to be 100
+plot(mod_fixed, main = "LL.3(fixed = c(NA, 100, NA))", type = "all")
+```
+
+We use `mselect` to choose a model from a list of models. `maED` to do model averaging
+
+```{r}
+#| warning: false
+
+# Model selection
+mselect(mod, fctList = list(W1.3(fixed=c(NA, 100, NA)),W1.4(), W2.3(fixed=c(NA, 100, NA)), W2.4(),  LL.4()),linreg=TRUE) |> 
+  suppressWarnings() # not sure why warnings are produced 
+
+# here the interpretation is we can calculate effective dose for 10 and 50, using the averages of all the models included in the list
+maED(mod, 
+     list(W2.4(),
+          LL.4(),
+          LL.3(fixed=c(NA, 100, NA)),
+          W1.4()),
+     c(10, 50), 
+     interval="kang")
+```
+
+
+## Nonlinear Mixed Models
+
+The package landscape in nonlinear mixed models is
+
+### Exploring RxODE
+
+RxODE is a package that simulates nonlinear mixed models with ODE language
+
+```{r}
+#| include: false
+#| eval: false
+library(RxODE)
+mod1 <-RxODE({
+    C2 = centr/V2;
+    C3 = peri/V3;
+    d/dt(depot) =-KA*depot;
+    d/dt(centr) = KA*depot - CL*C2 - Q*C2 + Q*C3;
+    d/dt(peri)  =                    Q*C2 - Q*C3;
+    d/dt(eff)  = Kin - Kout*(1-C2/(EC50+C2))*eff;
+})
+
+theta <- 
+   c(KA=2.94E-01, CL=1.86E+01, V2=4.02E+01, # central 
+     Q=1.05E+01,  V3=2.97E+02,              # peripheral
+     Kin=1, Kout=1, EC50=200)               # effects
+inits <- c(eff=1);
+# eff(0) = 1
+
+# specify dosing
+ev <- eventTable(amount.units="mg", time.units="hours") %>%
+  add.dosing(dose=10000, nbr.doses=10, dosing.interval=12) %>%
+  add.dosing(dose=20000, nbr.doses=5, start.time=120,
+             dosing.interval=24) %>%
+  add.sampling(0:240)
+
+head(ev$get.dosing())
+head(ev$get.sampling())
+
+# solve ode
+x <- mod1$solve(theta, ev, inits);
+knitr::kable(head(x))
+```

@@ -1,0 +1,68 @@
+---
+title: "Lasso"
+author: "Michael Liou"
+---
+
+
+```{r}
+#| code-summary: Libraries and Code
+library(qgraph)
+library(glasso)
+library(psych)
+library(genlasso)
+library(glmnet)
+```
+
+```{r}
+set.seed(1)
+n = 100
+p = 10
+X = matrix(rnorm(n*p), ncol = p)
+y = X[,1] + rnorm(n)
+D <- diag(1, p)
+out <- genlasso(y, X=X, D=D)
+summary(out)
+plot(out)
+```
+
+```{r}
+# fused lasso
+set.seed(1)
+n <-  100
+i <-  1:n
+y <- (i > 20 & i < 30) + 5*(i > 50 & i < 70) + rnorm(n, sd = 0.1)
+out <- fusedlasso1d(y)
+
+getD1d(5) # matrix of first differences
+
+
+plot(out)
+```
+
+```{r}
+# fused lasso 2d
+set.seed(1)
+y <- matrix(runif(256), 16, 16)
+i <- (row(y) - 8.5)^2 + (col(y) - 8.5)^2 <=4^2
+y[i] = y[i] + 1
+co = coef(out, nlam = 5)
+```
+
+```{r}
+# could use genlasso to motivate the problem.... 
+# vector of observations
+x <- c(2, 6, 4, 8)
+
+g <- make_graph(~1-2-3-4-5-6-7, 6-8, 2-4-3)
+plot(g)
+A <- as_adj(g) # A
+g_el <- as_edgelist(g)
+weight <- runif(nrow(g_el), 0, 1)
+L <- laplacian_matrix(g)
+# optimize for nonlinear programs
+eigen(L)$values
+
+
+```
+
+

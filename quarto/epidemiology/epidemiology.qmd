@@ -4,6 +4,16 @@ author: "Michael Liou"
 format: html
 ---
 
+```{r}
+#| code-summary: Libraries and Setup
+#| messages: false
+library(tidyverse)
+library(EpiModel)
+# install.packages("Rglpk")
+# Rglpk used for large linear programming
+```
+
+
 ## Contagion Process on Time-Varying Networks
 
 This section will explore some of the results of the paper [Temporal Gillespie Algorithm: Fast Simulation of Contagion Processes on Time-Varying Networks](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004579).
@@ -23,3 +33,167 @@ where:
   outputTimeResolution - time-resolution of the average number of infected
     and recovered nodes that the program gives as output.
 ```
+
+## EpiModel
+
+This section is walking through the [EpiModel Tutorial](https://www.epimodel.org/tut.html)
+
+Largely, the package is split into
+
+- Deterministic Compartmental Models (DCM) : macroview
+- Individual Contact Models (ICM) : microscopic analogues to DCMS
+- Network Models : dynamically changing models here
+
+
+### First DCM Model
+
+The model is 
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= -\frac{\beta c I}{N}S \\
+\frac{dI}{dt} &= \frac{\beta c I}{N}S
+\end{aligned}
+$$
+
+where $\beta$ and $c$ are the infection and contact rate. This is a logistic differential equation
+
+```{r}
+param <- param.dcm(inf.prob = .2, act.rate = .25) # infection rate, and contact rate
+init <- init.dcm(s.num = 500, i.num = 1) # initial population
+control <- control.dcm(type = "SI", nsteps = 500) # SI, SIS, SIR
+
+# dcm fitting uses deSolve
+mod <- dcm(param, init, control) # class dcm
+summary(mod, at = 200) # summary at specific time
+```
+
+```{r}
+# Exact solution of SI model is a logistic function
+si_init <- binomial()$linkfun(500/501) # initial constant (intercept)
+beta <- param$inf.prob * param$act.rate # .05 in this example
+eta <- 0:499 * beta - si_init
+exact_result <- binomial()$linkinv(eta) * 501
+
+as.data.frame(mod) |> add_column(exact.i = exact_result) |> 
+  pivot_longer(c("s.num", "i.num", "exact.i")) |> 
+  ggplot(aes(x = time, y = value, color = name, linetype = name)) +
+  geom_line() +
+  scale_linetype_manual(values = c(4, 2, 1)) +
+  labs(title = "Solutions of SI model")
+```
+
+It's clear that the model matches with our analytical solution.
+
+### SIR w/ Vital dynamics
+
+We can also model leaving rates to all S, I, and R, as well as a birth rate into S.
+
+```{r}
+param <- param.dcm(inf.prob = 0.2, act.rate = 1, rec.rate = 1/20,
+                   a.rate = 1/95, ds.rate = 1/100, di.rate = 1/80, dr.rate = 1/100)
+init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
+control <- control.dcm(type = "SIR", nsteps = 500, dt = 0.5)
+
+# model
+mod <- dcm(param, init, control)
+
+comp_plot(mod, at = 50, digits = 1) # summary of the model at particular moment
+```
+
+
+```{r}
+par(mar = c(3.2, 3, 2, 1), mgp = c(2, 1, 0), mfrow = c(1, 2))
+plot(mod, popfrac = FALSE, alpha = 0.5,
+     lwd = 4, main = "Compartment Sizes")
+plot(mod, y = "si.flow", lwd = 4, col = "firebrick",
+     main = "Disease Incidence", legend = "n")
+```
+
+
+The tutorial ends by stating multiple parameters, and multiple groups can be modeled.
+
+
+## ICM
+
+Features: 
+
+- Discrete Time (dcm was continuous time)
+- Parameters are random draws from poisson, normal or binomial distributions
+- a unit is an individual
+
+```{r}
+param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
+init <- init.icm(s.num = 500, i.num = 1)
+control <- control.icm(type = "SI", nsims = 10, nsteps = 300)
+mod <- icm(param, init, control)
+
+summary(mod, at = 125)
+```
+
+```{r}
+plot(mod)
+```
+
+The averages are shown
+
+## Network Models
+
+Tutorial for Network Models can be found in original paper or in [Workshop Materials](https://statnet.org/nme/d3-s2-SISBasic.html)
+
+- network models are modeled with tergm
+
+functions commonly used
+
+- `netest` : estimates generative model, ergm and stergm
+- `netdx` : simulaties replications over time from model in netest. Diagnostics for whether empirically observed one matches the simulation
+- `netsim` : stochastic epidemic process. Independent models, dynamics first simulated, then the epidemic simulation over the realization. For dependent models, both are updated in each time step.
+
+
+```{r}
+nw <- network_initialize(n = 500)
+formation <- ~edges + concurrent + degrange(from = 4)
+target.stats <- c(175, 110, 0) # 175 edges, d
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
+
+# estimate network
+est <- netest(nw, formation, target.stats, coef.diss)
+```
+
+dissolution coef are constraints on estimation, for how long the ties last.
+
+```{r}
+# parallel::detectCores() # 8
+dx <- netdx(est, nsims = 10, nsteps = 1000,
+            nwstats.formula = ~edges + meandeg + degree(0:4) + concurrent,
+            keep.tedgelist = TRUE, ncores = 8)
+print(dx)
+```
+
+```{r}
+plot(dx)
+par(mfrow = c(1, 2))
+# when duration.imputed = TRUE, edges are censored at time 1, so we must estimate them.
+plot(dx, type = "duration", duration.imputed = FALSE) # check the duration of how long edges last, right around 50 time steps.
+plot(dx, type = "dissolution") # as a percentage across all time
+```
+
+This gives the timed edge list, `keep.tedgelist = TRUE` option
+
+- `onset` when edge started
+- `terminus` when edge stopped
+- `tail`, `head` from who to who
+
+```{r}
+tel <- as.data.frame(dx, sim = 1)
+head(tel, 20)
+```
+
+```{r}
+param <- param.net(inf.prob = 0.4, act.rate = 2, rec.rate = 0.1)
+init <- init.net(i.num = 10)
+control <- control.net(type = "SIS", nsims = 5, nsteps = 500)
+
+sim <- netsim(est, param, init, control)
+```
+

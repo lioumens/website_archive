@@ -1,0 +1,161 @@
+---
+title: "Classification"
+author: "Michael Liou"
+---
+
+```{r}
+#| code-summary: Libraries and Loading
+#| message: false
+
+# install "ggord"
+# Enable the r-universe repo
+# options(repos = c(
+#     fawda123 = 'https://fawda123.r-universe.dev',
+#     CRAN = 'https://cloud.r-project.org'))
+# install.packages("ggord")
+
+
+# Install ggord
+library(MASS) # lda
+library(ggord) # ordination biplot
+library(GGally)
+library(tidyverse)
+```
+
+
+## Linear Discriminant Analysis
+
+- must already have the labels
+- project onto a line, and choose a boundary
+
+### Case of 2 populations
+
+We'll use the iris dataset which is visualized as follows
+
+```{r}
+#| message: false
+ggpairs(iris,columns = 1:4,
+        mapping = ggplot2::aes(color = Species, alpha = .7))
+```
+
+
+We'll start with 2 groups for the lda first, classifying setosa and seeing if we can visualize the boundary/ how it's calculated.
+
+```{r}
+iris2d <- iris |> mutate(setosa = as.numeric(Species == "setosa")) |> 
+  dplyr::select(1,2, setosa)
+```
+```{r}
+iris2d_lda <- lda(setosa~., data = iris2d)
+
+X <- iris2d[,1:2] |> data.matrix()
+
+ng <- 2 # number of groups
+
+xbar <- colMeans(X) # overall mean
+Xbar <- cbind(rep(1, nrow(X))) %*% Xm # duplicated for every observation
+
+Xc <- X - Xbar # overall centered matrix
+
+G <- cbind(iris2d$setosa, 1-iris2d$setosa) # Group membership, N x 2
+M <- iris2d |> group_by(setosa) |>  # Group mean
+  summarize(across(1:2, mean)) |> 
+  arrange(desc(setosa)) |> 
+  column_to_rownames("setosa") |> 
+  data.matrix()
+
+Xgbar <- G %*% M # group mean for each observations
+Xgc <- X - Xgbar  # centered by group mean
+
+W <- crossprod(Xgc) / (nrow(G) - 2) # within covariance
+B <- crossprod(Xc) / (2-1) # between covariance
+
+# minimize a'Ba / a'Wa
+# a <- eigen(B)$vectors[,1]
+# sqrt(eigen(B)$values[1]) * a
+
+# whitening transformation of Xgc so W is identity
+S <- svd(Xgc)
+# tcrossprod(diag(1/S$d) %*% t(S$u) %*% Xgc) # identity
+# crossprod(Xgc %*% S$v %*% diag(1/S$d)) |> zapsmall()
+
+whiten <- t(S$u) %*% Xgc
+
+#TODO: add the boundary
+
+```
+
+
+
+```{r}
+setosa_lda <- lda(setosa~., data = iris2)
+
+w <- (setosa_lda$means[2, ] - setosa_lda$means[1, ]) * setosa_lda$svd
+```
+
+
+```{r}
+z <- (iris2[,1:4] |> data.matrix()) %*% setosa_lda$scaling 
+plot(z, rep(0, length(z)), col = iris2[,5]+1)
+
+
+# in sepal dim
+with(iris2, plot(Sepal.Length, Sepal.Width, col = iris2[,5] + 1)
+
+     # perp line between means
+perp(setosa_lda$means[1, 1:2],
+     setosa_lda$means[2, 1:2])
+
+ellipse(iris2[iris2$setosa==1, 1:4)
+lines(c(0, .4813756), c(0, 1.7704))
+abline(a = x[1], b = x[2])
+perp <- function(x, y) {
+  m <- (x+y)/2
+  s <- - (x[1] - y[1])/(x[2] - y[2])
+  # c(m[2] - s*m[1], s)
+  abline(c(m[2] - s*m[1], s))
+  invisible()
+}
+```
+
+
+```{r}
+plot(setosa_lda)
+```
+
+
+```{r}
+Iris <- data.frame(rbind(iris3[,,1], iris3[,,2], iris3[,,3]),
+                   Sp = rep(c("s","c","v"), rep(50,3)))
+
+set.seed(1)
+train <- sample(1:150, 75)
+table(Iris$Sp[train])
+```
+
+```{r}
+z <- MASS::lda(Sp ~ ., Iris, prior = c(1, 1, 1)/3, subset = train)
+predict(z, Iris[-train,]) $class
+(z1 <- update(z, . ~ . - Petal.W.))
+
+ggord(z)
+```
+
+```{r}
+iris_qda <- qda(Species~., data = iris, CV = TRUE)
+contour(iris$Length, iris$Width, iris_qda$posterior)
+
+iris |> names()
+
+
+```
+
+```{r}
+plot(iris$Sepal.Length, iris$Sepal.Width, col = (iris$Species=="setosa") + 1) # True colors
+```
+
+
+## Quadratic Discriminant Analysis
+
+## PCA vs Factor Analysis vs Discriminant Analysis
+

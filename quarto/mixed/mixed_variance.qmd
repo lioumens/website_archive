@@ -218,7 +218,6 @@ ans1c <- mmec(Yield~Env,
 summary(ans1c)$varcomp
 ```
 
-
 ### nlme
 
 ```{r}

@@ -7,26 +7,37 @@ execute:
 ---
 
 
-```{r setup, include=FALSE}
-#| code-summary: Libraries
+```{r}
+#| code-summary: Libraries and Setup
 #| message: false
-library(tidyverse) # general data science
+library(tidyverse)  # general data science
 library(glue)
-library(reshape2) # for melt function
+library(reshape2)   # for melt function
 library(astsa)
+library(kableExtra) # kableExtra
 library(tseries)
-library(forecast) # time series forecasting, common package
-library(vars) # vector autoregression
-library(marima) # multivariate arima
-library(dlm) # dynamic linear models
-library(ggfortify) # adds some autoplot models, overwrites many functions from forecast
-library(KFAS) # kalman filter, sequential univariate (fast), exponential family
+library(forecast)   # time series forecasting, common package
+library(vars)       # vector autoregression
+library(broom)      # tidy results
+library(sparsevar)  # sparse vector autoregression
+library(marima)     # multivariate arima
+library(dlm)        # dynamic linear models
+library(ggfortify)  # adds some autoplot models, overwrites many functions from forecast
+library(KFAS)       # kalman filter, sequential univariate (fast), exponential family
+library(fGarch)    # garch models
+library(kableExtra) # Kable extra
+library(TSrepr)   # lower dimensional representation of time series
+library(here) # for relative file finding
+
+
 # detach("package:forecast", unload = T)
+
+source(here("scripts/knit_latex.R"))
 ```
 
-# Introduction
+## Introduction
 
-## Types of Models
+### Types of Models
 
 - Autoregression (AR)
 - Moving Average (AM)
@@ -38,7 +49,7 @@ library(KFAS) # kalman filter, sequential univariate (fast), exponential family
   - very broad space of models that includes arima models, and dynamic linear models. Can also account for linear/nonlinear gaussian/non-gaussian errors
 - Multivariate autoregression (MAR)
 
-## Software
+### Software
 
 - `stats`
   - `KalmanLike`, `KalmanRun`, `KalmanSmooth`, `KalmanForecast`
@@ -47,34 +58,49 @@ library(KFAS) # kalman filter, sequential univariate (fast), exponential family
 
 See also [State Space Models in R](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjng_vXx4P6AhWdk4kEHZ4KBUAQFnoECBoQAQ&url=https%3A%2F%2Fwww.jstatsoft.org%2Farticle%2Fdownload%2Fv041i04%2F488&usg=AOvVaw0bbJoxE4fWu74zhZs0qggz).
 
-## Theory
+### Theory
 
 Courses 
 
 - Kevin Kotzé's [Time Series Analysis Course](https://www.economodel.com/time-series-analysis)
   - has a great overview and description, and packaged R commands for univariate and multivariate from an economics perspective.
 
-# Univariate time series
+## ARIMAX
 
-## base tools
+The general pattern for univariate time series analysis is as follows
+
+1. figure out how to make stationary
+  - by trend modeling (exogenous), or differencing
+  - ["Breusch-Godfrey"](https://stats.stackexchange.com/questions/518737/durbin-vs-breusch-godfrey-test-for-autocorrelation-which-is-better) : up to p order ar
+  - "Durbin-Watson" : first order ar testing
+2. 
+
+### base tools
 
 ```{r}
-# acf, ccf, pacf
+# acf, ccf, pacf, arima, arima.sim
 ```
 
-## AR(1)
+### AR(1) and MA(1)
 
 Autoregressive of order 1 is the simplest time series you can have.
 
 $$
 \begin{aligned}
-Y_t = Y_{t-1} + \varepsilon_t
+Y_t = \alpha Y_{t-1} + \varepsilon_t
 \end{aligned}
 $$
 
-## Simulated Examples
+
+### Simulated Examples
+
+this section we'll simulate a number of AR and MA models so that you get a better sense of what they look like.
+
+
 
 ```{r}
+#| fig-cap: AR Model Simulations
+#| cap-location: margin
 # AR models
 sim_ar <- tibble(p = 1:3,
                  ar = list(.7,
@@ -93,7 +119,8 @@ sim_ar %>% unnest(c(x, y)) %>%
 
 
 ```{r}
-# ma processes
+#| fig-cap: MA Model Simulations
+# MA processes
 sim_ma <- tibble(q = 1:3,
                  ma = list(.7,
                            c(.7,-.3),
@@ -110,11 +137,72 @@ sim_ma %>% unnest(c(x, y)) %>%
   facet_grid(q~.)
 ```
 
+### Analyzing simulations
+
+```{r}
+#| message: false
+#| results: hold
+# ar1
+set.seed(1)
+ar1 <- arima.sim(list(order = c(1, 0, 0), ar = .2), 100)
+
+invisible(capture.output(
+  mod_sar1 <- sarima(ar1, p = 1, d = 0, q = 0) # asta
+  ))
+mod_Ar1 <- Arima(ar1, order = c(1, 0, 0)) # forecast
+mod_ar1 <- arima(ar1, order = c(1, 0, 0)) # base
+
+bind_rows(
+  tidy(mod_Ar1) |> add_column(model = "forecast::Arima", .before = 1),
+  tidy(mod_ar1) |> add_column(model = "stats::arima", .before = 1),
+  mod_sar1$ttable[, 1:2] |> 
+  as_tibble(rownames = "term", .name_repair = ~c("estimate", "std.error")) |>
+  add_column(model = "astsa::sarima", .before = 1)
+) |> arrange(desc(term), model) |> 
+  kable() |> kable_minimal()
+```
+
+```{r}
+#| message: false
+#| results: hold
+# arx1
+set.seed(1)
+x <- sort(runif(400))
+beta <- 2
+arx1 <- arima.sim(list(ar=.3), 400) + x * beta
+
+mod_Arx1 <- Arima(arx1, order = c(1, 0, 0), xreg = x)
+mod_arx1 <- arima(arx1, order = c(1, 0, 0), xreg = x)
+invisible(capture.output(
+  mod_sarx1 <- sarima(arx1, p = 1, d = 0, q = 0, xreg = x)
+))
+
+bind_rows(
+  mod_Arx1 |> tidy()|> add_column(model = "forecast::Arima", .before = 1),
+  mod_arx1 |> tidy() |> add_column(model = "stats::arima", .before = 1),
+  mod_sarx1$ttable[,1:2] |>
+    as_tibble(rownames = "term", .name_repair = ~c("estimate", "std.error")) |>
+    add_column(model = "astsa::sarima", .before = 1)
+) |> arrange(desc(term)) |> 
+  kbl() |> kable_minimal()
+```
 
 
+It's pretty clear from both of these tests, of the AR1 model and the AR1X model that they estimate very similarly,
+
+### Diagnostics
+
+There are hypothesis tests, and graphical checks for stationarity
+
+unit root tests are for stability/stationarity:
+
+- Augmented Dickey Fulley Test
+  - want low p value
+- KPSS Test
+  - want high p value for stationarity
 
 
-## Examples: LA County
+### Examples: LA County
 
 We just examine the cardiovascular mortality from the LA Pollution study. These are average weekly cv mortality rates from `astsa` package.
 
@@ -142,8 +230,7 @@ qplot(time(cmort), x, geom = "line", color = "black") +
 ```
 
 
-
-## Example: AirPassengers
+### Example: AirPassengers
 
 ```{r}
 AirPassengers %>% plot()
@@ -153,13 +240,422 @@ AirPassengers %>% plot()
 sarima(AirPassengers, d = 1, p = 2, q = 0)
 ```
 
+## Exponential smoothing
 
-# Multivariate time series
+- `ets()` is probably the function you want
+
+```{r}
+data(oil)
+fc <- ses(oil, h = 5, alpha = .1) # can leave out the alpha to estimate alpha instead
+
+# oil |> autoplot() +
+#   geom_line(data = data.frame(time = index(fitted(fc)),
+#                        fitted = fitted(fc)),
+#             mapping = aes(time, fitted),
+#             color = "red")
+
+autoplot(fc) + 
+  autolayer(fitted(fc)) +
+  theme(legend.position ="none")
+
+```
+
+
+## TSrepr
+
+This R package is designed to give smaller dimension representations of time series. If there are $n$ observations of the time series, this package would like to represent that as $p$. parameters. This roughly equates to nonparametric regression of the signals. We'll investigate how these work by following along in the [tutorial given](https://petolau.github.io/TSrepr-time-series-representations/):
+
+```{r}
+data("elec_load")
+
+elec <- as.numeric(elec_load[1,])
+ 
+ggplot(data.frame(Time = 1:length(elec), Value = elec), aes(Time, Value)) +
+  geom_line() +
+  theme_bw()
+
+```
+
+
+```{r}
+# DWT with level of 2^3
+data_dwt <- repr_dwt(elec, level = 3) # discrete wavelet transform
+# first 84 DFT coefficients are extracted and then inverted
+data_dft <- repr_dft(elec, coef = 84)
+# first 84 DCT coefficients are extracted and then inverted
+data_dct <- repr_dct(elec, coef = 84)
+# Classical PAA
+data_paa <- repr_paa(elec, q = 8, func = mean)
+```
+
+```{r}
+data_plot <- data.frame(Value = c(data_dwt, data_dft, data_dct, data_paa),
+                        Time = rep(1:length(data_dwt), 4),
+                        Method = factor(rep(c("DWT", "DFT", "DCT", "PAA"),
+                                            each = length(data_dwt))))
+ 
+ggplot(data_plot, aes(Time, Value)) +
+  geom_line(aes(color = Method), alpha = 0.80, size = 0.8) +
+  geom_line(mapping = aes(Time, Value), data = data.frame(Time = 1:length(elec), Value = elec)) + 
+  theme_bw()
+```
+
+
+## ARCH
+
+Arch models have variance that depend on the previous timepoint as well. That is, an ARCH(1) model has dependence on the previous error term.
+
+$$
+\begin{aligned}
+y_t &= b'x_t + \varepsilon_t \\
+\varepsilon_t &\overset{i.i.d.}{\sim} N(0, \sigma^2_t) \\
+\text{Var}(\varepsilon_t) = \sigma^2_t &= \omega + \alpha_1\varepsilon_{t-1}^2
+\end{aligned}
+$$
+
+We can write the zero centered process a little easier, 
+
+$$
+\begin{aligned}
+y_t &= \sigma_t\epsilon_t \\
+\sigma_t^2 &= \omega + \alpha_1y^2_{t-1} \\
+\varepsilon_t &\overset{i.i.d}{\sim} N(0, 1)
+\end{aligned}
+$$
+
+Let's simulate the ARCH model and see the basic characteristics, we're simulating a zero mean 
+
+$$
+\begin{aligned}
+\sigma^2_t = 5 + .5 y^2_{t-1}
+\end{aligned}
+$$
+
+```{r}
+# helper functions to simulate arch/garch models
+sim_arch <- function(y0 = 2, omega = 5, alpha1 = .5, n = 100) {
+  y <- vector("numeric", n)
+  y[1] <- y0
+  inn <- rnorm(n)
+  for (i in 2:n) {
+    y[i] <- inn[i] * sqrt(omega + alpha1 * y[i-1]^2) # arch
+  }
+  y
+}
+```
+
+```{r}
+#| layout: [[100], [50, 50], [50, 50]]
+set.seed(1)
+y <- sim_arch(n=1000)
+plot(y, type = "l", main = "Time Series Plot")
+Acf(y, main = "ACF y")
+Pacf(y, main = "PACF y")
+Acf(y^2, main = "ACF y^2")
+Pacf(y^2, main = "PACF y^2")
+```
+
+In the time series plot, we can see why this is stochastically volatile plot, since there are regions of the time series that go way more wild when the values start to get high. The characteristics of an ARCH(1) model, are that the series $y$ look like white noise, and $y^2$ look like an AR(1) process. There's a spike in the PACF model for lag 1, and a geometric decay in the acf plot of $y^2$ indicating AR(1).
+
+```{r}
+#| message: false
+#| warning: false
+#| results: hold
+invisible(capture.output(
+  mod_arch <- garch(y, order = c(0, 1))
+))
+summary(mod_arch)
+```
+
+The above is the output for fitting an ARCH(1) model, and we can see that the estimates are quite close to one another for the parameters that are controlling the variance of the function. Also notice that we have almost 1000 values that we had to feed in too though, it seems that estimating the variance coefficients is quite inefficient.
+
+## GARCH
+
+A garch model will use the last error value, as well as the last variance for the error model.
+
+$$
+\begin{aligned}
+y_t &= b'x_t + \varepsilon_t \\
+\varepsilon_t &\overset{i.i.d.}{\sim} N(0, \sigma^2_t) \\
+\text{Var}(\varepsilon_t) = \sigma^2_t &= \omega + \alpha_1\varepsilon_{t-1}^2 + \beta_1\sigma_{t-1}^2
+\end{aligned}
+$$
+
+The following we are simulating
+
+$$
+\begin{aligned}
+Var(\varepsilon_t) = \sigma^2 = .1 + .1\varepsilon_{t-1}^2 + .8 \sigma^2_{t-1}
+\end{aligned}
+$$
+
+```{r}
+# see also fGarch::garchSim
+sim_garch <- function(y0 = 2, omega = .1, alpha1 = .1, beta1 = .8, n = 100, xt = 0, b = .4) {
+  if (xt != 0 & length(xt) != n) rlang::abort("length of xt should be length of simulation")
+  y <- vector("numeric", n)
+  err <- vector("numeric", n)
+  sds <- vector("numeric", n)
+  y[1] <- y0
+  inn <- rnorm(n)
+  for (i in 2:n) {
+    sds[i] <- sqrt(omega + alpha1 * err[i-1]^2 + beta1 * sds[i-1]^2)
+    err[i] <- rnorm(1, mean = 0, sd = sds[i])
+    y[i] <- xt * b + err[i]
+    # y[i] <- inn[i] * (sqrt(a + b * y[i-1]^2 + c * inn[i-1]^2)) # garch
+  }
+  y
+}
+# spec <- garchSpec(model = list())
+# y <- garchSim(spec, n = 100)
+invisible(capture.output(
+  mod_garch <- fGarch::garchFit(formula = ~garch(1, 1), y, include.mean = FALSE)
+))
+```
+
+```{r}
+#| layout: [[100], [50, 50], [50, 50]]
+# garch
+set.seed(1)
+y <- sim_garch(n=500)
+plot(y, type = "l")
+
+Acf(y) # supposed to be white noise
+Pacf(y)
+Acf(y^2) # supposed to be arma pattern
+Pacf(y^2) # MA(2) maybe
+```
+
+
+```{r}
+#| message: false
+#| warning: false
+# fitting the garch model
+invisible(capture.output(
+  mod_garch <- fGarch::garchFit(~garch(1, 1), y,  include.mean = FALSE)
+))
+summary(mod_garch)
+```
+
++ Jarque-Bera Test - null is normally distributed residuals
++ Ljung-Box - is portmanteau test for autocorrelation, testing for a set of lags.
++ LM arch test - fit the model, and examine the square of the residuals for length of ARCH lags. Null is that there is no AR trend in the squared residuals. See [ARCH wiki](https://en.wikipedia.org/wiki/Autoregressive_conditional_heteroskedasticity)
+
+
+```{r}
+coef(mod_garch) |> kbl() |> kable_minimal(full_width = FALSE)
+```
+
+
 
 ## Vector Autoregression
 
-### Example: LA County (VAR)
+The simplest vector autoregressive model we can make is VAR(1), which takes the form 
 
+We assume that the process is stable, which implies that the function is stationary.
+
+
+### Simulation
+
+https://www.r-econometrics.com/timeseries/svarintro/
+
+This is an example of a "B"-model structural, VAR(1) model in which the coefficients are given. Let's see what we can do with given coefficients.
+
+$$
+y_t = A_1y_{t-1} + B\epsilon_t
+$$
+$$
+A_1 = \begin{bmatrix} 0.3 & 0.12 & 0.69 \\ 0 & 0.3 & 0.48 \\ 0.24 & 0.24 & 0.3 \end{bmatrix} \text{, }
+B = \begin{bmatrix} 1 & 0 & 0 \\ -0.14 & 1 & 0 \\ -0.06 & 0.39 & 1 \end{bmatrix} \text{ and } \epsilon_t \sim N(0, I_3)
+$$
+
+```{r}
+# Reset random number generator for reproducibility
+set.seed(24579)
+
+tt <- 500 # Number of time series observations
+
+# Coefficient matrix
+A_1 <- matrix(c(0.3, 0, 0.24,
+                0.12, 0.3, 0.24,
+                0.69, 0.48, 0.3), 3)
+
+# Structural coefficients
+B <- diag(1, 3)
+B[lower.tri(B)] <- c(-0.14, -0.06, 0.39)
+
+# Generate series
+series <- matrix(rnorm(3, 0, 1), 3, tt + 1) # Raw series with zeros
+for (i in 2:(tt + 1)){
+  series[, i] <- A_1 %*% series[, i - 1] +  B %*% rnorm(3, 0, 1)
+}
+
+series <- ts(t(series)) # Convert to time series object
+dimnames(series)[[2]] <- c("S1", "S2", "S3") # Rename variables
+
+# Plot the series
+plot.ts(series, main = "Artificial time series")
+```
+
+I this case, we've been handed the correct model, and we can quickly note some properties of the model. We can check for stability (which implies stationarity) by looking at the eigenvalues and checking that they're magnitude is less than 1. It's also clear that the innovations are correlated with one another,
+
+```{r}
+eigen(A_1)$values
+```
+
+
+```{r}
+#| results: hold
+var_est <- VAR(series, p = 1, type = "none")
+
+# estimated A_1 matrix
+as_latex("\\hat A_1 = ") + as_latex(round(Bcoef(var_est), digits = 3))
+
+# estimate structural equation for A Model
+a <- diag(1, 3)
+a[lower.tri(a)] <- NA
+
+svar_est_a <- SVAR(var_est, Amat = a, max.iter = 1000)
+as_latex("\\hat A^{-1} = ") + as_latex(round(solve(svar_est_a$A), digits = 33)) # pretty close to B
+
+# estimate structural equation for B Model
+b <- diag(1, 3)
+b[lower.tri(b)] <- NA # specify restriction with NA
+
+svar_est_b <- SVAR(var_est, Bmat = b)
+as_latex("\\hat B = ") + as_latex(round(svar_est_b$B, digits = 3))
+```
+
+The estimated $A_1$ is given directly by the function `Bcoef` on the fitted VAR model.
+We invert the matrix A because we need to translate this into a "B" model from the estimated "A" model, we estimated and find that it's quite correct.
+
+### Moving Average Representations
+
+We can get the basic moving average representation
+
+$$
+\begin{aligned}
+y_t = \Phi_0 u_t + \Phi_1 u_{t-1} + ...
+\end{aligned}
+$$
+
+Phi is normally calculated recursively from the last observations, starting with 
+
+1. $\Phi_0 = I_K$
+2. $\Phi_i = \sum_{j=1}^{i}\Phi_{i-j}A_j$
+  
+  + for the VAR(1) case, the sequence is simply $\Phi = I, A_1, A_1^2, A_1^3, \dots$.
+
+```{r}
+# Bcoef(var_est) # A_1
+# Bcoef(var_est) %^% 2 #A_1^2
+Phi(var_est, nstep = 2)
+```
+
+For the other MA representation with orthogonal coefficients,
+
+```{r}
+# Sigmahat <- crossprod(resid(var_est))/497 # estimated covariance, 500 total obs
+# summary(var_est)$covres # i don't know how to get them to match exactly
+# P <- t(chol(Sigmahat))
+# apply(Phi(var_est, nstep = 2), 3, {\(x) x %*% P}, simplify = FALSE) # multiply all Phi by P
+Psi(var_est, nstep = 2)
+```
+
+### Impulse Response Analysis
+
+There are two types of basic impulse responses:
+
+1. (forecast error impulse responses) These are on the scale of the original error, `Sigma.u` and let `c(0, 0, 1)` reverberate in the system 
+
+  + these have the disadvantage that
+2. (orthogonal error impulse responses) These are on the scale of `Sigma.eps` and let `P^{-1}c(0, 0, 1)` reverberate in the system where $Sigma.u = PP'$ by cholesky decomposition
+
+$$
+\begin{aligned}
+y_t &= \Phi_0 u_t + \Phi_1 u_{t-1} + \dots \\
+&= \underbrace{\Phi_0 P}_{\Psi_0}\underbrace{P^{-1}u_t}_{\epsilon_{t}} +  \dots
+\end{aligned}
+$$
+
+3. (accumulated error impulse response)
+
+
+```{r}
+#| layout: [[33, 33, 33], [33, 33, 33], [33, 33, 33]]
+# First three rows of irf1
+# Phi(var_est, nstep = 2) # First columns of this
+## even more manually, with A matrix and unit impulse
+# Ahat <- Bcoef(var_est)
+# Ahat %*% cbind(c(1, 0, 0)) # A e_1
+# (Ahat %^% 2) %*% cbind(c(1, 0, 0)) #A_1^2 e_1
+irf1 <- irf(var_est, orth = FALSE, boot = FALSE)
+
+# First three rows of irf2
+# Psi(var_est, nstep= 2 )
+## more manually for VAR(1)
+# Sigmahat <- crossprod(resid(var_est))/497 # estimated covariance, 500 total obs
+# P <- t(chol(Sigmahat))
+# P  %*% cbind(c(1, 0, 0)) # P e_1
+# Ahat %*% P %*%cbind(c(1, 0, 0)) # A_1 P e_1
+# (Ahat %^% 2) %*% P %*% cbind(c(1, 0, 0)) # A_1 P e_1
+irf2 <- irf(var_est, orth = TRUE, boot = FALSE)
+# row 2 
+# P  %*% cbind(c(1, 0, 0)) + Ahat %*% P %*%cbind(c(1, 0, 0)) 
+irf3 <- irf(var_est, cumulative = TRUE, boot = FALSE) # accumulates rowwise of regular irf
+plot(irf1)
+plot(irf2)
+plot(irf3) 
+```
+
+
+The impulse response functions are simply ways of answering the question, "what would happen if I send a shock through the system". For non orthogonal 
+
+We assume the process is mean 0, and $irf_1(0) = c(1, 0, 0)$
+$irf_1(1) = A \begin{bmatrix}1, 0, 0\end{bmatrix}$
+
+```{r}
+# varsim_orthirf <- irf(var_est, orth = TRUE, boot = FALSE)
+# varsim_orthirf$irf$S1
+# Bcoef(var_est) # gives as large matrix
+```
+
+
+```{r}
+# 
+# # ?Psi # MA orthogonal representation
+# Psi(var_est) # W = PD^{-1} =
+# 
+# D <- diag(P)
+# W <- P %*% diag((1 / D)) # matches with Psi(1)
+# Psi(var_est)[,,1] # I don't know why these are slightly off... but using d
+# 
+# Psi(var_est)
+# 
+# P%*% t(P) # Sigmahat
+
+```
+
+```{r}
+# P %*% diag(1/D)
+# svar_est_b$B
+# 
+# solve(svar_est_a$A) # This is estimate of B matrix
+```
+
+
+```{r}
+# svar_est_a$Sigma.U / 100
+# tcrossprod(svar_est_b$B) # is Sigma.U
+# tcrossprod(W) # Sigma U = PD^{-1}
+# Sigmahat
+# solve(W) %*% (svar_est_b$Sigma.U / 100) %*% t(solve(W)) # Identity, Sigma_epsilon
+# Psi(var_est)[,,2]
+# Acoef(var_est) # gives as list
+```
+
+
+### Example: LA County (VAR)
 
 ```{r}
 # cardiovascular mortality, temperature and particulates in LA county, weekly.
@@ -171,36 +667,33 @@ autoplot(la, color = "black") + facet_grid(series~., scales = "free_y")
 ```
 
 
+
 ```{r}
+#| render: normal_print
 la_var1 <- VAR(la, p = 1, type = "both") # w/ trend
 la_var2 <- VAR(la, p = 2, type = "both") # w/ trend
 
 # coefficient matrix
-sapply(coef(la_var1),rlang::as_function(~.x[,"Estimate"]))
+sapply(coef(la_var1),rlang::as_function(~.x[,"Estimate"])) |> as.data.frame()
 
 # vcov of coef estimates
-sapply(coef(la_var1), rlang::as_function(~round(.x[,"Std. Error"], 3)))
+sapply(coef(la_var1), rlang::as_function(~round(.x[,"Std. Error"], 3))) |> as.data.frame()
 
 # estimated covariance of errors
-summary(la_var1)$covres
+summary(la_var1)$covres |> as.data.frame()
 ```
 
 
 ```{r}
 la_var1_const <- VAR(la, p = 1, type = "const")
-
-sapply(coef(la_var1_const),rlang::as_function(~.x[,"Estimate"]))
-```
-
-
-```{r}
+# matching manaully with ar.ols
+# la_ols <- ar.ols(la, order.max = 1, demean = FALSE, intercept = TRUE)
 # 
-la_ols <- ar.ols(la, order.max = 1, demean = FALSE, intercept = TRUE)
+# # matches constant VAR coefficients
+# rbind(t(la_ols$ar[1,,]),
+#       const = la_ols$x.intercept)
 
-# matches constant VAR coefficients
-rbind(t(la_ols$ar[1,,]),
-      const = la_ols$x.intercept)
-      
+sapply(coef(la_var1_const),rlang::as_function(~.x[,"Estimate"])) |> as.data.frame()
 ```
 
 
@@ -219,58 +712,86 @@ la %>% melt(c("time", "series")) %>%
   facet_grid(series~.)
 ```
 
-From looking at the models, they're quite difficult to tell which model is fitting better than the others.
-
+From looking at the models, they're quite difficult to tell which model is fitting better than the others. 
 
 
 ```{r}
+#| include: false
+#| eval: false
 # var estimates using lm
 # Matrix of time series
 la_mat <- la %>% `class<-`("matrix")
 
-la_var1_manual <- lm(la_mat ~ cbind(lag(la_mat), 1:nrow(la_mat))) # w/ trend
-la_var1_const_manual <- lm(la_mat ~ lag(la_mat)) # const
+la_var1_manual <- lm(la_mat ~ 
+                       cbind(lag(la_mat), # regress on lag
+                             1:nrow(la_mat))) # w/ trend
+la_var1_const_manual <- lm(la_mat ~ lag(la_mat)) # const version
 ```
 
 ```{r}
+#| include: false
+#| eval: false
 # coefs match
-sapply(coef(la_var1),rlang::as_function(~.x[,"Estimate"]))
+sapply(coef(la_var1),rlang::as_function(~.x[,"Estimate"])) |> as.data.frame()
 coef(la_var1_manual)[c(2:4, 1, 5),] %>% # reorder to match
-  `rownames<-`(c("cmort", "tempr", "part", "const", "trend")) 
+  `rownames<-`(c("cmort", "tempr", "part", "const", "trend")) |> as.data.frame() 
 
 # var matches
 # SSE / n-r-p
 # nobs - coefs_estimated - VAR_order
-crossprod(la_var1_const_manual$residuals) / (nrow(la_mat) - la_var1_const_manual$rank - 1) # 503
-summary(la_var1_const)$covres
+# crossprod(la_var1_const_manual$residuals) / (nrow(la_mat) - la_var1_const_manual$rank - 1) # 503
+summary(la_var1_const)$covres |> as.data.frame()
 ```
+We can try to do some automatic VAR order selection with the function `VARselect()`, which uses a number of other criteria.
 
 ```{r}
+#| echo: true
 # order selection
 VARselect(la) # selects 2 by BIC
-```
-
-
-```{r}
-acf(resid(la_var2), 52)$acf
 ```
 
 The CCF plots should all be non significant. The second part of "x & y" are the ones that lead.
 
 ```{r}
-# serial test
+#| results: hold
+# serial test, BG test for 
 serial.test(la_var2, lags.pt = 12, type = "PT.adjusted")
-la[,1]
+serial.test(la_var2, lags.pt = 12, type = "BG")
+serial.test(la_var2, lags.pt = 12, type = "ES")
 ```
 
-There are some large sample properties of VAR's as well,
+`serial.test` will check for portmanteau, and BG
+
+### sparsevar
+
+Since VAR models can grow $O(np^2)$, this is a high dimensional problem when we're tracking many states. We can use sparsity constraints during fitting.
+
+The theoretical properties of this estimator are studied by VAR
+
+The [SCAD penalty](https://statisticaloddsandends.wordpress.com/2018/07/31/the-scad-penalty/), and [MCP penalty](https://statisticaloddsandends.wordpress.com/2019/12/09/the-minimax-concave-penalty-mcp/) are used in this package
+
+$$
+\begin{aligned}
+\min_\beta \frac{1}{2} \|y - X\beta\|^2_2 + p(\beta)
+\end{aligned}
+$$
 
 ```{r}
-library(marima)
+set.seed(1)
+
+# 5% of non-zero entries and a Toeplitz variance-covariance matrix with rho = 0.5.
+sim <- simulateVAR(N = 20, p = 2)
+
+fit <- fitVAR(sim$series, p = 2, threshold = TRUE)
+plotVAR(sim, fit) # recovered quite well
 ```
+The top image is the true generating values of $A$ in the vector autoregression model.
 
 
-# State Space Model
+
+
+
+## State Space Model
 
 These models have a hierarchical form, in which there is some underlying time series process, but then we also observe data on top of that. Thus, the general form of the equations look like this:
 
@@ -291,11 +812,13 @@ where:
 - $w_t$ is state noise with $w_t \sim N(0, Q)$
 - $v_t$ is measurement noise with $v_t \sim N(0, R)$
 
-There are more general forms of the state space model: with correlated errors, see Durbin Koopman for more state space methods.
+There are more general forms of the state space model: with correlated errors,
+see Durbin Koopman for more state space methods.
 
-It seems now that state space models are now also being superseded by recurrent neural networks, which can model dynamical properties.
+It seems now that state space models are now also being superseded by recurrent
+neural networks, which can model dynamical properties.
 
-## Example: AR(1) with observational noise
+### Example: AR(1) with observational noise
 
 The state equation:
 
@@ -390,11 +913,11 @@ tibble(predict = ks$xp[1,,],
 ```
 
 
-## Estimation of State Parameters
+### Estimation of State Parameters
 
 There are bayesian methods for estimating the state parameters but also maximum likelihood w/ Newton Raphson or EM algorithmss
 
-## Example: Nile {.tabset}
+### Example: Nile {.tabset}
 
 Annual flow of the river Nile from 1871 - 1970. There's an apparent changepoint near 1898.
 
@@ -409,7 +932,7 @@ I found this example going through all the state space model libraries. The orgi
 ts.plot(Nile)
 ```
 
-### stats::StructTS
+#### stats::StructTS
 
 
 ```{r}
@@ -432,7 +955,7 @@ plot(forecast::forecast(nile_sts, # StructST object
      xlim = c(1950, 1980))
 ```
 
-### dlm::dlm
+#### dlm::dlm
 
 ```{r}
 # set up the dlm object
@@ -476,7 +999,7 @@ autoplot(nile_dlm_ll_smooth_ci) + theme(legend.position = "") +
              mapping = aes(time, flow))
 ```
 
-### KFAS::KFS
+#### KFAS::KFS
 
 Kalman filtering/smoothing/simulation for linear state space models in the exponential family. KFAS uses the sequential processing method. This package uses a slightly different parameterization of their state space models.
 
@@ -528,14 +1051,14 @@ autoplot(nile_kfas_ll_smooth)
 nile_kfas_ll_ci <- predict(nile_kfas_ll, interval = "confidence", level = .9)
 nile_kfas_ll_pi <- predict(nile_kfas_ll, interval = "prediction", level = .9)
 
-
+                                                                              
 legend_labels <- c("lower_ci", "upper_ci", "fit", "lower_pi", "upper_pi")
 # forecast:::autoplot.mts
 autoplot(cbind(nile_kfas_ll_ci[,-1], nile_kfas_ll_pi),
          mapping = aes(x, y, group = series, linetype = series)) +
   scale_linetype_manual(values = c(2, 2, 1, 3, 3), labels = legend_labels) +
   scale_color_manual(values = c(2, 2, 1, 3, 3), labels = legend_labels) +
-  labs(y = "Predicted Annual flow", main = "River Nile") 
+  labs(y = "Predicted Annual flow", main = "River Nile")
 ```
 
 

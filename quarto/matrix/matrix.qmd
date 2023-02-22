@@ -36,11 +36,11 @@ as_latex.character = function(x) {
 
 # A character string of class latex is rendered in display mode
 # Define a knit_print() method for the latex class
-knit_print.latex = function(x, ...) {
+knit_print.latex = function(x, options...) {
   knitr::asis_output(
     paste0('$$', x, '$$')
   )
-} 
+}
 
 # Now, define a method as_latex for matrix
 as_latex.matrix = function(x, ...) {
@@ -86,7 +86,8 @@ library(purrr)
 library(rgraph6)
 library(fs)
 library(forcats)
-
+library(plotly)
+library(expm)
 
 # devtools::install_github("lioumens/Lmisc") # private repo
 library(Lmisc)
@@ -863,3 +864,351 @@ This section aims to quantify and give intuition behind the following matrix nor
 -   spectral
 -   frobenius
 -   $L^n$
+
+## Matrix differentials
+
+### Example: Trace
+
+Matrix differentials are confusing as hell, but normally we want to optimize some functions by linearizing around some point. That is if we perturb the matrix at some particular point, what is the effect that we'll see?
+
+The animals of the derivative zoo are plenty. We can define the derivative of a function that is a combination of scalar, vector, matrix *arguments* with scalar, vector, matrix *results*. This makes the concept of the differential (and derivative) confusing because the layout of where the derivatives are all different. What's worse, is that authors generally don't agree on the form that these derivatives should take,
+
+Let's take the example of a *matrix* argument, with a *scalar* output. For the first example, let's take a _linear_ function and show how the derivative can give us an approximation of the perturbation. Suppose $f(X) = \mathrm{tr}(AX)$ where $A\in\mathbb{R}^{m\times n}$ is some given constant matrix, and $X \in \mathbb{R}^{n\times p}$. 
+
+$$
+\mathrm{D}f = \frac{\mathrm{d}\, f}{\mathrm{d}X} = \frac{\mathrm{d}\,\mathrm{tr}(AX)}{\mathrm{d}X} = \begin{cases}
+A & \text{numerator layout} \\
+A' & \text{denominator layout} \\
+A' & \text{mixed layout} \\
+(\mathrm{vec}A')' & \text{vectorized layout}
+\end{cases}
+$$
+This notation reads "the derivative of $f$ with respect to X", and I think it's quite bad. We note that the _differential_ is much more clear about the effect of a perturbation. 
+
+$$
+\begin{aligned}
+\mathrm{d}\,\mathrm{tr}(AX) =  \mathrm{tr} (A\,\mathrm{d}X)
+\end{aligned}
+$$
+
+Let's let $A = \begin{bmatrix}4 & 2 \\ 3 & 2\end{bmatrix}$ and just so I can plot the surface, $X = \begin{bmatrix}x & 2 \\ y & -1\end{bmatrix}$. If I vary both $x$ and $y$, I can plot some surface with components $(x, y, f(X))$.
+
+```{r}
+A <- matrix(c(4, 2, 
+              3, 2), ncol = 2, byrow = TRUE)
+sum(diag(A)) # trace
+# Just so we can visualize the surface of 
+x <- seq(-3, 3, .1)
+y <- seq(-3, 3, .1)
+
+f <- Vectorize(function(x, y) {
+  X <- matrix(c(x, 2,
+                y, -1), ncol = 2, byrow = TRUE)
+  sum(diag(A %*% X))
+})
+
+# f(1, 3)
+# f(1, 4)
+# f(2, 3)
+# f(2, 4)
+# outer(1:2, 3:4, FUN = f) # columns iterate first arg
+
+Z <- outer(x, y, f)
+
+# it's a linear function, as in it only depends on the matrix A
+fplot <- plotly::plot_ly(x = ~x, y = ~y, scene = "scene") |> add_surface(z = Z)
+config(fplot, displaylogo = FALSE) |> layout(scene = list(camera = list(eye = list(x = -1.25, y = -1.25, z = .5))))
+```
+
+Suppose we want to know $f(X + H)$ using our nicely calculated derivatives, we should have some taylor series looking approximation, linearization
+
+$$
+\begin{aligned}
+f(X + U) = f(X) + \fbox{?(U)?} + R(H)
+\end{aligned}
+$$
+where $R$ is the remainder dependent on $U$ that goes to 0 faster than linear. Roughly we know that $\fbox{?U?}$, should be a function of the step $U$. Most of the forms of Taylor's theorem I've seen don't work here because $U$ is a matrix.
+
+- $f(x + a) = f(x) + af'(x) + R(a)$ (scalar -> scalar)
+- $f(\mathbf{x} + \mathbf{a}) = f(\mathbf{x}) + \mathbf{a}'\nabla f(x) + R(\mathbf{a})$ (vector -> scalar)
+- $f(\mathbf{x} + \mathbf{a}) = f(\mathbf{x}) + \mathbf{a} \cdot \nabla f(x) + R(\mathbf{a})$  (vector -> scalar)
+- $f(\mathbf{x} + \mathbf{a}) = f(\mathbf{x}) + \langle \nabla f(\mathbf{x}), \mathbf{a}\rangle + R(\mathbf{a})$ (vector -> scalor)
+- $f(X + U) = f(\mathbf{x}) + \langle D f(X), U\rangle + R(\mathbf{a})$ (matrix -> scalar)
+
+Since $\mathrm{tr}$ is linear in this case, we can figure out what the answer _should_ be,
+
+$$
+\begin{aligned}
+\mathrm{tr}(A(X + H)) &= \mathrm{tr}(AX) + \mathrm{tr}(AH) \\
+&=  \mathrm{tr}(AX) + \langle A', H\rangle_F \\
+&=  \mathrm{tr}(AX)+  \mathrm{vec(A')}'\mathrm{vec}(H)
+\end{aligned}
+$$
+
+where $\langle A, H\rangle$ is the standard inner product on real valued matrices (frobenius innner product).
+
+The easiest method I see is just substitude $H$ for $\mathrm{d}X$ in the differential equation, so something like:
+
+$$
+\begin{aligned}
+f(X + U) = f(X) + \mathrm{d}f\big|_{\mathrm{d}X = U} \\
+f(X + U) = f(X) + \langle Df, U\rangle
+\end{aligned}
+$$
+The inner product formulation also works quite well and gets us the right answer when using the _denominator_ or _mixed_ layout of derivative.
+
+```{r}
+#| include: false
+#| eval: false
+# expand aroumd 0,0
+# f(0, 1) - f(0, 0) # 2
+U <- matrix(c(0, 0,
+              1, 0), ncol = 2, byrow = T)
+
+# c(t(A))
+# c(U) # 3
+# sum(c(t(A)) * c(U)) # vec(A')'vec(U)
+# sum(diag(t(U)%*%t(A))) # tr(U'A')
+```
+
+
+### Example: Determinant
+
+Now let's walk through an example that is not a linear function, something more interesting like the determinant of the [gram matrix](https://en.wikipedia.org/wiki/Gram_matrix). 
+
+$$
+\begin{aligned}
+g(X) &=|X'X| \\
+\mathrm{d}g &= 2|X'X|\,\mathrm{tr}\left[\mathrm{(X'X)^{-1}X'\mathrm{d}X}\right]
+\end{aligned}
+$$
+The linear approximation is thus,
+
+$$
+g(X + U)\approx |X'X| + 2|X'X|\mathrm{tr}\left[(X'X)^{-1}X'U\right] 
+$$
+while the quadratic approximation is
+
+$$
+\begin{aligned}
+g(X+U)&\approx g(X) + \mathrm{d}g(X) + \frac{1}{2}\mathrm{d}^2g(X) \\
+&\approx |X'X| + 2|X'X|\mathrm{tr}\left[(X'X)^{-1}X'U\right] + \\ &\qquad \left(2|X'X|\mathrm{tr}\left[(X'X)^{-1}X'U\right]\right)\mathrm{tr}\left[(X'X)^{-1}X'U\right] + \\&\qquad 
+|X'X|\mathrm{tr}\left[-(X'X)^{-1}(X'U +U'X)(X'X)^{-1}X'U + U'(X'X)^{-1}U\right]
+\end{aligned}
+$$
+
+Just so we can plot the thing, again we're constraining the matrix to be $X=\begin{bmatrix}x & 2 \\ -1 & y\end{bmatrix}$. Let's do the approximation at $x=y=1$, so $X = \begin{bmatrix}1 & 2 \\ -1 & 1\end{bmatrix}$, and extend the approximation by $dx = dy = 1$ in each direction, so $U=\begin{bmatrix}dx & 0 \\ 0 & dy\end{bmatrix}$.
+
+```{r}
+A <- matrix(c(4, 2, 
+              3, 2), ncol = 2, byrow = TRUE)
+g <- Vectorize(function(x, y) {
+  X <- matrix(c(x, 2,
+                -1, y), ncol = 2, byrow = T)
+  det(t(X) %*% X)
+})
+
+x <- seq(-2.5,2.5, .1)
+y <- seq(-2.5,2.5, .1)
+
+Z <- outer(x, y, g)
+# X <- matrix(c(0, 2,
+#               -1, 0), ncol = 2, byrow = T)
+# g(.1, -.1)
+
+# plot without any approximations
+fplot <- plotly::plot_ly(x = ~x, y = ~y, scene = "dflkj") |> add_surface(z = Z, showlegend = F)
+# scene <-  list(camera = list(eye = list(x = -1.25, y = -1.25, z = .5)))
+# config(fplot, displaylogo = FALSE) |> layout(scene = scene)
+
+# Linear approximation
+dg <- Vectorize(function(x, y, dx, dy) {
+  X <- matrix(c(x, 2,
+                -1, y), ncol = 2, byrow = T)
+  U <- matrix(c(dx, 0,
+                0, dy), ncol = 2, byrow = T)
+  2 * det(crossprod(X)) *sum(diag(solve(crossprod(X)) %*% t(X) %*% U))
+})
+dx <- seq(-1, 1, .1)
+dy <- seq(-1, 1, .1)
+
+dg_surf <- outer(dx, dy, dg, x = 1, y = 1)
+
+approx_Z <- g(1, 1) + dg_surf # linear approximation
+
+fplot1 <- plotly::plot_ly(x = ~x, y = ~y, scene = "scene") |> 
+  add_surface(z = Z, showscale=F) |> 
+   add_surface(x = ~1 + dx, y =~ 1 + dy, z = approx_Z, 
+               inherit = FALSE, 
+               # cmin = min(Z), cmax = max(Z),
+               colorscale = list(c(0, 1), c("#FFFAEB", "#FF2704")),
+               showscale = FALSE,
+               scene = "scene")
+
+# quadratic approximation
+d2g <- Vectorize(function(x,y, dx, dy) {
+  # don't look at this its ugly :P
+  X <- matrix(c(x, 2,
+                -1, y), ncol = 2, byrow = T)
+  U <- matrix(c(dx, 0,
+                0, dy), ncol = 2, byrow = T)
+  xx <- crossprod(X)
+  xx1 <- solve(crossprod(X))
+  xx1x <- xx1 %*% t(X)
+  xx1xU <- xx1x %*% U
+  2 * dg(x,y,dx,dy) * sum(diag(xx1xU)) + 2 * det(xx) * sum(diag(
+    -xx1xU  %*% xx1xU - xx1 %*% t(U)%*% X %*% xx1xU + U %*% xx1 %*% U
+  ))
+})
+dx <- seq(-1, 1, .1)
+dy <- seq(-1, 1, .1)
+dg2_surf <- outer(dx, dy, d2g, x = 1, y = 1)
+
+approx_Z2 <- g(1, 1) + dg_surf + dg2_surf / 2 # quadratic approximation
+fplot2 <- plot_ly(x= ~x, y = ~y, scene = "scene2") |>
+  add_surface(z = Z, showscale = FALSE) |> 
+  add_surface(x = ~1 + dx, y =~ 1 + dy, z = approx_Z2, 
+               inherit = FALSE, 
+               # cmin = min(Z), cmax = max(Z),
+               colorscale = list(c(0, 1), c("#FFFAEB", "#FF2704")),
+              showscale = FALSE,
+              scene = "scene2")
+
+# custom grid style
+axx <- list(
+  gridcolor='rgb(255, 255, 255)',
+  zerolinecolor='rgb(255, 255, 255)',
+  showbackground=TRUE,
+  backgroundcolor='rgb(230, 230,230)'
+)
+all_plot <- subplot(fplot1, fplot2, nrows = 1) |>
+  config(displaylogo = FALSE) |>
+  layout(title = "Approximations to det(X'X)",
+         # scene = list(domain = list(x = c(0, .5), y = c(0, 1)),
+         #              xaxis = axx, yaxis = axx, zaxis = axx,
+         #              aspectmode = "cube",
+         #              camera = list(eye = list(x = .3, y = -2.3, z = .3))),
+         # scene2 = list(domain = list(x = c(.5, 1), y = c(0, 1)),
+         #               xaxis = axx, yaxis = axx, zaxis = axx,
+         #               aspectmode = "cube",
+         #               camera = list(eye = list(x = .3, y = -2.3, z = .3))),
+         annotations = list(
+           list(text = "Linear Approximation",
+                x = .25,
+                y = .9,
+                showarrow = FALSE,
+                xanchor = "center",
+                yanchor = "bottom"),
+           list(text = "Quadratic Approximation",
+                x = .75,
+                y = .9,
+                showarrow = FALSE,
+                xanchor = "center",
+                yanchor = "bottom")
+         ))
+# library(htmlwidgets)
+# saveWidget(all_plot, file = "det_approx.html", selfcontained = FALSE, libdir = "plotly_lib")
+fplot # |> layout(dflkj = list(domain = list(x = .3, y=-2.3, z=.3))) # no idea why this one is skipped
+```
+
+
+```{r}
+all_plot
+```
+
+### Example: Matrix Powers
+
+This is an example of a matrix value, with matrix argument. Suppose we want to find some linear approximation of the matrix power function: 
+
+$$
+\begin{aligned}
+h &= X^3 \\
+\mathrm{d}h &= (\mathrm{d}X)XX + X (\mathrm{d}X)X + XX(\mathrm{d}X) \\
+\mathrm{d}^2h &= 2\left[(\mathrm{d}X)(\mathrm{d}X)X + (\mathrm{d}X) X (\mathrm{d}X) + X(\mathrm{d}X)(\mathrm{d}X)\right] \\
+\mathrm{d}^3h &= 6(dX)^3
+\end{aligned}
+$$
+
+```{r}
+#| layout: [[50, 50], [50, 50]]
+# plot options
+par(mar = c(0, 0, 2, 0))
+
+mat_pow3 <- Vectorize(function(x, y) {
+  X <- matrix(c(x, 2,
+                y, -1), ncol = 2, byrow = T)
+  X %^% 3
+}, SIMPLIFY = FALSE)
+
+x <- seq(-1, 1, .1)
+y <- seq(-1, 1, .1)
+
+dh <- Vectorize(function(x, y, dx, dy) {
+  X <- matrix(c(x, 2,
+                y, -1), ncol = 2, byrow = T)
+  U <- matrix(c(dx, 0,
+                dy, 0), ncol = 2, byrow = T)
+  xx <- X %*% X
+  U %*% xx + X %*% U %*% X + xx %*% U
+}, SIMPLIFY = FALSE)
+Z <- outer(x, y, mat_pow3) # The matrix surface
+# norm(Z[[1,3]], type = "F")
+
+Z_frob <- mapply(norm, Z, type = "F") # apply frobenius
+dim(Z_frob) <- dim(Z)
+persp(x, y,Z_frob, phi = 30, theta = 45, ticktype = "detailed", shade = .4, col = "cadetblue1", main = expression("\u2016"~h(X)~"\u2016"[F]))
+
+dy <- dx <- seq(-1, 1, .1)
+
+# dh(1, 1, .5, .3)
+dh_surf <- outer(dx, dy, dh, x = 0, y = 0)
+
+# linear approximations
+approx_Z <- mapply(function(x, y) list(x - (mat_pow3(0, 0)[[1]] + y)), Z, dh_surf)
+dim(approx_Z) <- dim(Z)
+
+# frobenius residuals of linear approximation
+res_linear_frob <- mapply(norm, approx_Z, type = "F")
+dim(res_linear_frob) <- dim(Z)
+persp(dx, dy, res_linear_frob, phi = 20, theta = 50, ticktype = "detailed", nticks = 3,  zlim = c(-.01, 8), main = expression("\u2016"~h(X) - h[1](X)~"\u2016"[F]))
+
+# quadratic approximation
+dh2 <- Vectorize(function(x, y, dx, dy) {
+  X <- matrix(c(x, 2,
+                y, -1), ncol = 2, byrow = T)
+  U <- matrix(c(dx, 0,
+                dy, 0), ncol = 2, byrow = T)
+  UU <- U %*% U
+  2 * (UU %*% X + U %*% X %*% U + X %*% UU)
+}, SIMPLIFY = FALSE)
+
+dh2_surf <- outer(dx, dy, dh2, x=0, y = 0)
+
+# h(X + H) - [h(X) + dh(X) + d^2h(X) / 2]
+approx_Z2 <- mapply(function(x, y, z) list(x - (mat_pow3(0, 0)[[1]] + y + z/2)), Z, dh_surf, dh2_surf)
+
+res_quad_frob <- mapply(norm, approx_Z2, type = "F")
+dim(res_quad_frob) <- dim(Z)
+persp(dx, dy, res_quad_frob, phi = 20, theta = 50, ticktype = "detailed", nticks = 3,  zlim = c(-.01, 8), main = expression("\u2016"~h(X) - h[2](X)~"\u2016"[F]))
+# mapply(rep, 1:4, 4:1)
+
+# cubic approx? 
+dh3 <- Vectorize(function(x, y, dx, dy) {
+  X <- matrix(c(x, 2,
+                y, -1), ncol = 2, byrow = T)
+  U <- matrix(c(dx, 0,
+                dy, 0), ncol = 2, byrow = T)
+  6 * U%^%3
+}, SIMPLIFY = FALSE)
+
+dh3_surf <- outer(dx, dy, dh3, x=0, y = 0)
+approx_Z3 <- mapply(function(x, y, z, w) list(x - (mat_pow3(0, 0)[[1]] + y + z/2 + w/6)), Z, dh_surf, dh2_surf, dh3_surf)
+res_cubic_frob <- mapply(function(x) round(norm(x, type = "F"), 10), approx_Z3)
+dim(res_cubic_frob) <- dim(Z)
+persp(dx, dy, res_cubic_frob, phi = 20, theta = 50, ticktype = "detailed", nticks = 3, zlim = c(-.01, 8), mar = c(0, 0, 0, 0), main = expression("\u2016"*h(X) - h[3](X)*"\u2016"[F]))
+
+```
+
+Panel 1 shows the Frobenius norm of the matrix power, which is some quantification of how the matrices are changing. Then in subsequent panels, we show that
+
+

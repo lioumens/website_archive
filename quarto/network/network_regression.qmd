@@ -1,0 +1,23 @@
+---
+title: "Network Regressions"
+author: "Michael Liou"
+---
+
+```{r}
+#| code-summary: "Library and Setup"
+#| message: false
+library(vars)
+library(GNAR)
+library(mIVAR)
+library(graphicalVAR)
+```
+## GNAR
+
+## graphicalVAR
+
+
+
+
+
+
+
