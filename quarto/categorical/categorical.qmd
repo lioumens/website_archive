@@ -4,6 +4,9 @@ author: "Michael Liou"
 date: "`r Sys.Date()`"
 execute:
   cache: true
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r}
@@ -17,22 +20,33 @@ library(VGAM)
 library(nnet)
 library(vcd) # visualizing categorical data
 library(vcdExtra) # additional companion code
+library(reshape2)
+library(coin)
+library(rlang)
+
+library(glmtoolbox)
+library(glmulti) # model averaging and model selection
+library(rms) # regression modeling strategies, residuals implements gof tests
+library(ResourceSelection)
+
+# devtools::install_github("https://github.com/cran/LogisticDx")
+library(LogisticDx)
+
 ```
 
 ## Overview
 
-This is a very broad area, but I feel like it's also super confusing because it's all very confouded in terms of all the chisq tests that are scattered throughout the place. I'm trying to organize everything for myself here.
+This is a very broad area, but I feel like it's also super confusing because it's all very confouded in terms of all the chisq tests that are scattered throughout the place.
+I'm trying to organize everything for myself here.
 
-- CMH test
-- score test for table
-- Pearson
-- Yates (continuity correction of Pearson)
-- Barnard test (based on fixing 1 margin)
-- fisher exact (based on fixing all margins)
-- McNemar Test
-- Generalized CMH test
-
-
+-   CMH test
+-   score test for table
+-   Pearson
+-   Yates (continuity correction of Pearson)
+-   Barnard test (based on fixing 1 margin)
+-   fisher exact (based on fixing all margins)
+-   McNemar Test
+-   Generalized CMH test
 
 ## 2x2 sampling mechanisms
 
@@ -40,25 +54,23 @@ The many different sampling mechanisms arise from different study designs, and a
 
 In an epidemiological context, the data is given as
 
-|             | disease | no disease |    |
-|-------------+:---------+:------------+----|
-| exposure    | a       | b          | n1 |
-| no exposure | c       | d          | n0 |
-|             | m1      | m0         | N  |
+|             | disease | no disease |     |
+|-------------|:--------|:-----------|-----|
+| exposure    | a       | b          | n1  |
+| no exposure | c       | d          | n0  |
+|             | m1      | m0         | N   |
 
+-   Poisson (nothing fixed)
+-   Multinomial (N) total is fixed
+    -   "Cross Sectional" studies
+-   Two-sample Binomial (1 margin fixed)
+    -   "Cohort Study" = n1, n0 fixed
+    -   "Case Control Study" = m1, m0 fixed
+        -   a type of "retrospective" study.
+-   Hypergeometric (2 margins fixed)
+    -   very rarely the case in real experiments, but unfortunately many methods are based on this assumption for the 2x2 table.
 
-* Poisson (nothing fixed)
-* Multinomial (N) total is fixed
-  - "Cross Sectional" studies
-* Two-sample Binomial (1 margin fixed)
-  - "Cohort Study" = n1, n0 fixed
-  - "Case Control Study" = m1, m0 fixed
-    - a type of "retrospective" study.
-* Hypergeometric (2 margins fixed)
-  - very rarely the case in real experiments, but unfortunately many methods are based on this assumption for the 2x2 table.
-
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Poisson
 
 ```{r class.source = "fold-hide"}
@@ -108,8 +120,10 @@ apply(multinom_table_examples,
       simplify = FALSE)
 ```
 
-
 ### Binomial
+
+When not in the 2x2 case, this can also be called an independent multinomial.
+This is still a case in which one of the margins is fixed.
 
 ```{r}
 # Sample a 2x2 table
@@ -129,7 +143,6 @@ apply(binom_table_examples,
       FUN = addmargins,
       simplify = FALSE)
 ```
-
 
 ### Hypergeometric
 
@@ -157,33 +170,1014 @@ apply(hyper_table_examples,
       FUN = addmargins,
       simplify = FALSE)
 ```
-
 :::
+
+## Chi Squared Distribution
+
+
+For testing, the lower the degree of freedom, the more power we have, so 1-df tests are generally good and powerful, but quite specific in the alternative that's tested.
+
+```{r}
+#| layout: "[[50, 50]]"
+x <- seq(0, 8, .05)
+c1 <- dchisq(x, 1)
+c2 <- dchisq(x, 2)
+c3 <- dchisq(x, 3)
+c5 <- dchisq(x, 5)
+c7 <- dchisq(x, 7)
+c8 <- dchisq(x, 8)
+
+ggplot(mapping = aes(x = x)) +
+  geom_line(mapping = aes(y = c1, color = "df = 1")) + 
+  geom_line(aes(y = c2, color = "df = 2")) +
+  geom_line(aes(y = c3, color = "df = 3")) +
+  geom_line(aes(y = c5, color = "df = 5")) +
+  geom_line(aes(y = c7, color = "df = 7")) +
+  geom_line(aes(y = c8, color = "df = 8")) +
+  coord_cartesian(ylim = c(0, .5)) +
+  labs(y = "density",
+       color = "df",
+       title = "Density") +
+  theme_test()
+
+# chisq 3, increasing ncf
+ncp <- c(0, 1, 2, 3, 5, 8)
+tibble(x = list(x), ncp = ncp) |> rowwise() |> 
+  mutate(density = list(dchisq(x, df = 3, ncp))) |> 
+  unnest(c(x, density)) |> 
+  ggplot(aes(x=x, y = density, color = factor(ncp))) +
+  geom_line() +
+  labs(color = "Noncentrality Parameter",
+       title = "chisq(df=3) with varying ncp") +
+  theme_test()
+```
+
+
+```{r}
+ncp <- seq(0, 20, .1)
+qplot(ncp, pchisq(3,ncp,lower.tail = FALSE), geom = "line", color = "df = 3") +
+  geom_line(aes(x = ncp , y = pchisq(7, ncp, lower.tail = FALSE), color = "df = 7")) +
+  labs(y = "Power",
+       x = "Noncentrality",
+       title = "Power and Noncentrality") +
+  theme_test()
+```
+
+For the same noncentrality parameter, the distribution with lower df will have more power. We can compensate for different degrees of freedom with different noncentrality patterns. That is, a lower degree of freedom test will have more power as long as the noncentrality is the same. If the "model is not true" (the ncp is larger) we could still potentially have higher power. The motivation for this figure comes from the Cochran Trend Test.
 
 ## Measures of Association
 
-Given tables, it's important to distinguish the properties of how to make comparisons, and summarize the information given. When dealing with percentages and ratios, it's sometimes difficult to have an intuitive understanding of meaning on the percentage scale. The example Professor Guanhua Chen gives to stimulate you for this thinking is from [cartalk](https://www.cartalk.com/radio/puzzler/porch-potatoes):
+Given tables, it's important to distinguish the properties of how to make comparisons, and summarize the information given.
+When dealing with percentages and ratios, it's sometimes difficult to have an intuitive understanding of meaning on the percentage scale.
+The example Professor Guanhua Chen gives to stimulate you for this thinking is from [cartalk](https://www.cartalk.com/radio/puzzler/porch-potatoes):
 
-> RAY: Potatoes are 99 percent water and one percent what? Potato. So say you take a bunch of potatoes, like 100 pounds of potatoes and you set them out on your back porch to dry out.
-TOM: Yeah, when they are dry they should weigh about a pound.
-RAY: Well, we’re not drying out completely. And as the potatoes dry out the water begins to evaporate. And after a while, enough water has evaporated so that they are now 98 percent water. If you were to weigh those potatoes at that moment...
-TOM: They'd be lighter.
-RAY: Yes, how much lighter? That's the question. Now you can solve this puzzler algebraically, and if you don't solve it algebraically, you are going to get the wrong answer.
-TOM: Really?
-RAY: Really.What's your answer, off the top of your head?
-TOM: 99 pounds.
-RAY: You are wrong.
-> Answer: 
-RAY: Now, unencumbered by the thought process as usual, my brother guessed 99 pounds.
-TOM: Yeah.
-RAY: Now, when I guessed, off the top of my head, I guessed about 90 pounds.
-TOM: 'Cause it just feels right.
-RAY: But if you do the math, 1 percent of 100 --which is what the potato is-- is one pound. As we told you, that's 1 percent. So 2 percent, when it’s 98 percent water, two percent of the new weight of the mass is still going to be equal to that one pound, and 2 percent of 50 pounds is a pound. So the potato weight is now 50 pounds, not 100.
+> RAY: Potatoes are 99 percent water and one percent what?
+> Potato.
+> So say you take a bunch of potatoes, like 100 pounds of potatoes and you set them out on your back porch to dry out.
+> TOM: Yeah, when they are dry they should weigh about a pound.
+> RAY: Well, we're not drying out completely.
+> And as the potatoes dry out the water begins to evaporate.
+> And after a while, enough water has evaporated so that they are now 98 percent water.
+> If you were to weigh those potatoes at that moment... TOM: They'd be lighter.
+> RAY: Yes, how much lighter?
+> That's the question.
+> Now you can solve this puzzler algebraically, and if you don't solve it algebraically, you are going to get the wrong answer.
+> TOM: Really?
+> RAY: Really.What's your answer, off the top of your head?
+> TOM: 99 pounds.
+> RAY: You are wrong.
+> Answer: RAY: Now, unencumbered by the thought process as usual, my brother guessed 99 pounds.
+> TOM: Yeah.
+> RAY: Now, when I guessed, off the top of my head, I guessed about 90 pounds.
+> TOM: 'Cause it just feels right.
+> RAY: But if you do the math, 1 percent of 100 --which is what the potato is-- is one pound.
+> As we told you, that's 1 percent.
+> So 2 percent, when it's 98 percent water, two percent of the new weight of the mass is still going to be equal to that one pound, and 2 percent of 50 pounds is a pound.
+> So the potato weight is now 50 pounds, not 100.
 
-* Risk Ratio: 
-  - not symmetric
-* Odds Ratio
-  - symmetric, exposure gives information about disease and vice versa
+-   Risk Ratio: $p1 / p2$
+    -   not symmetric
+-   Odds Ratio ($[p1/(1 -p1)] / [p2 / (1 - p2)]$)
+    -   symmetric, exposure gives information about disease and vice versa, meaning this is useful for
+    - when the condition is RARE, odds ratio is similar to risk ratio and may permit interpretation as risk ratio. Should definitely be below p < .1
+-   Risk Difference ($p1 - p2$)
+
+## Goodness of Fit
+
+The following three tests are provided by this R file, from [Analysis of Categorical Data in R](http://www.chrisbilder.com/categorical/programs_and_data.html).
+
+Low p-values tend to indicate lack of fit.
+
+We'll use the "Placekicking" Dataset from the textbook, as well as borrowing some of the code from placekicking.R for the analysis.
+
+For all of the goodness of fits, we should work on the "aggregated data". The textbooks refer to this as the exploratory variable pattern (EVP). The reason for this is so the approximation is closer to correct.
+
+```{r}
+source("AllGOFTests.R")
+placekick <- read.csv("Placekick.csv")
+```
+
+```{r}
+#| layout: "[[50, 50], [50, 50]]"
+placekick_search_aicc <- glmulti(y = good ~ .,
+                                 data = placekick,
+                                 fitfunction = "glm",
+                                 level = 1, 
+                                 method = "h", # h|g|l|d, exhuastive|genetic(large)|branchbound(fast)|summary
+                                 crit = "aicc", # aic|bic|aicc|qaic|qaicc
+                                 family = binomial(link = "logit"))
+
+weightable(placekick_search_aicc) |> head()
+```
+
+We can look at the top models for model selection here, and find that df
+
+```{r}
+placekick_bin_data <- placekick |> group_by(distance) |> dplyr::summarize(y = sum(good),n = n(), p = y/n)
+placekick_bin_data
+
+# unweighted logistic function by distance
+placekick_l <- glm(good ~ distance, data = placekick, family = binomial())
+summary(placekick_l)
+
+# weighted logistic function by distance
+placekick_wl <- glm(y/n ~ distance, weights = n, family = binomial, data = placekick_bin_data)
+summary(placekick_wl)
+```
+
+
+```{r}
+#| include: false
+#| eval: false
+
+## Approach with vcdExtra package
+placekick_wl_hl <- HLtest(placekick_wl, g = 10)
+summary(placekick_wl_hl)
+placekick_wl_hl$table
+
+## RMS
+# with rms instead
+# no idea what is happening here
+placekick_wl_lrm <- lrm(y/n ~ distance, data =placekick_bin_data, weights = n, y = TRUE, x = TRUE, model = TRUE, linear.predictors = TRUE, se.fit = FALSE)
+residuals(placekick_wl_lrm, type = "gof") # uh, no idea what this means.
+resid(placekick_wl_lrm, "partial", pl = TRUE)
+resid(placekick_wl_lrm, "score.binary", pl = TRUE)
+plot(placekickresiduals(placekick_wl_lrm, type = "li.shepherd"))
+residuals(placekick_wl_lrm, type = "gof")
+```
+
+
+### Hosmer Lemeshow
+
+Why is Hosmer Lemeshow different than just taking the pearson residuals, summing and testing on the error residual degrees of freedom?
+
+The motivation for grouping the fitted values into groups, is so that the chisq approximation is "more correct". The approximation/large sample deviation is only true when there are a _fixed_ number of categories, and if we were to sample more values for x, we don't get any new values. That is, assuming that every single residual in the sum has a standard normal error is not quite correct.
+
+One downside of HL test, is that the cuts are done by predicted values. It's possible we have very different covariate values that have similar predicted values, but they're grouped together.
+
+There are many ways to do a HLtest, but we'll walk through them individually. Ultimately I recommend Desctools, or the one created by Prof. Bilder.
+
+::: {.panel-tabset}
+
+#### Manually
+
+```{r}
+#| include: false
+#| eval: false
+# my version of hosmer lemeshow... a little rough
+g <- 10 # number of groups
+yhat <- fitted(placekick_wl)
+# yhat_all <- rep(fitted(placekick_wl),placekick_wl$prior.weights) # expanded
+# cut on the fitted values because otherwise quantiles are not unique, and cutting on same value will error.
+y_cut <- cut(yhat, quantile(yhat, 0:g/g), include.lowest = TRUE)
+y_cut_all <- rep(y_cut, placekick_wl$prior.weights)
+N <- placekick_wl$prior.weights
+Y0 <- placekick_wl$y * N
+Y1 <- N - Y0
+Y0_exp <- yhat * N
+Y1_exp <- N - Y0_exp
+cut_df <- aggregate(cbind(Y0, Y1, Y0_exp, Y1_exp, N) ~ y_cut, FUN = sum)
+
+cut_df
+
+aggregate( ~ y_cut, FUN = weighted.mean, w = N)
+
+pretab <-  tibble(Y0, Y1, Y0_exp, Y1_exp, N, y_cut)
+tab <- pretab |> 
+  group_by(y_cut) |> dplyr::summarize(
+    Y0_tot = sum(Y0),
+    Y0_exp_tot = sum(Y0_exp),
+    Y1_tot = sum(Y1),
+    Y1_exp_tot = sum(Y1_exp),
+    N_tot = sum(N),
+    pbar = weighted.mean(Y1_exp/N, N),
+    pbar_var = sum(N * Y1_exp/N * (1 - Y1_exp/N)),
+    var = N_tot * pbar * (1 - pbar),
+    .groups = "drop_last")
+
+sum((tab$Y1_tot - tab$N_tot * tab$pbar)^2 / (tab$N_tot * tab$pbar * (1 - tab$pbar))) # alt statistic
+
+sum((tab$Y1_tot - tab$N_tot * tab$pbar)^2 / tab$pbar_var) # Xu 1996 statistic (slightly larger)
+
+
+
+sum((cut_df$Y1 - cut_df$Y1_exp)^2 / cut_df$Y1_exp + (cut_df$Y0 - cut_df$Y0_exp)^2 / cut_df$Y0_exp)
+```
+
+
+```{r}
+#| include: false
+#| eval: false
+# true decile method
+sort(rep_len(1:10, length.out = 24))
+
+g <- 10
+yhat <- fitted(placekick_l)
+sort_idx <- order(fitted(placekick_l))
+
+yhat_sort <- yhat[sort_idx]
+split_idx <- sort(rep(1:g, length.out = length(yhat)))
+
+deciles <- split(yhat_sort, split_idx)
+deciles_idx <- split(sort_idx, split_idx)
+
+y <- placekick_l$y
+
+foo <- tibble(deciles_idx) |> 
+  rownames_to_column("decile") |>
+  unnest(cols = deciles_idx) |> 
+  mutate(yhat = yhat[deciles_idx],
+         distance = placekick$distance[deciles_idx]) |> 
+  group_by(decile, distance) |> 
+  nest() |> ungroup() |> rowwise() |> 
+  mutate(Mj = nrow(data)) |> group_by(decile) |>  # Mj is number of 
+  mutate(Ck = n(),
+         yyhat = data[[1]][[1, "yhat"]])# Ck is number of unique distances in group
+
+foo
+foo[[1, "data"]][[1]][[1, "yhat"]]
+
+placekick_wl$model
+# covariates
+attr(placekick_wl$terms, "variables") |> eval(envir = placekick_wl$data)
+placekick_wl$formula |> all.vars() # sometimes
+
+cov_str <- attr(placekick_wl$terms, "term.labels")
+
+g <- 10
+wdat <- placekick_wl$model |> 
+  add_column(yhat = fitted(placekick_wl)) |> 
+  mutate(y1 = `y/n` * `(weights)`)
+
+# creates random 0-1 vector with x 1's and length n
+hot_index <- function(x, n) {
+  result <- vector(length = n, mode = "integer")
+  result[sample(n, x, replace = FALSE)] <- 1
+  result
+}
+
+decile <- sort(rep_len(1:g, length.out = sum(wdat$`(weights)`)))
+
+# unweighted with deciles
+dat <- wdat |> rowwise() |> 
+  mutate(yyhat = list(rep(yhat, `(weights)`)),
+         y = list(hot_index(y1, `(weights)`))) |> 
+  dplyr::select(distance, yyhat, y) |> 
+  unnest(cols = c(yyhat, y)) |> 
+  arrange(yyhat) |> 
+  add_column(decile)
+
+tab <- dat |> dplyr::group_by(decile, !!!syms(cov_str)) |>
+  # summarize at level of deciles + covariates
+  dplyr::summarize(Mj = n(),
+                   y1 = sum(y),
+                   y0 = Mj - y1,
+                   phat = mean(yyhat),
+                   y1_exp = sum(yyhat),
+                   y0_exp = Mj - y1_exp, 
+                   .groups = "drop_last") |>
+  # summarize at level of deciles
+  dplyr::summarize(Ck = n(),
+                   pbar = weighted.mean(phat, Mj),
+                   pbar_var = sum(Mj * phat * (1 - phat)),
+                   Y0 = sum(y0),
+                   Y1 = sum(y1),
+                   Y0_exp = sum(y0_exp),
+                   Y1_exp = sum(y1_exp),
+                   Ni = sum(Mj),
+                   stat = (Y0- Y0_exp)^2 / Y0_exp + (Y1 - Y1_exp)^2 / Y1_exp,
+                   stat2 = (Y1 - Ni * pbar)^2 / (Ni * pbar * (1 - pbar)), # same, but calculated differently
+                   stat_adj = (Y1 - Ni * pbar)^2 / pbar_var, # pigeon heyse adjusted
+                   .groups = "drop_last")
+tab$stat |> sum() # would say it's not a good fit. my oh my it's very sensitive to the breaks
+
+# would probably like to do some power analyses and rejection power sims for these statistics
+dat |> group_by(decile, !!!syms(cov_str)) |> mutate(Mj = n()) |> slice(1) |> 
+  ungroup() |> 
+  group_by(decile) # |> 
+  dplyr::summarize(pbar = weighted.mean(yyhat, Mj),
+                   Ni = 
+  
+
+# expanded df ( )
+
+# given the weighted regression
+
+# 0. expand dataframe to unique w/ weights
+# 1. assign deciles with equal grouping (maybe overlapping)
+# 2. df with deciles, distance, yhat, and number in group
+```
+
+
+```{r}
+#| include: false
+#| eval: false
+cut_df <-  
+  rowwise() |> 
+  mutate(
+    breakpoint = max(yhat[deciles_idx]),
+        Ni = length(deciles_idx),
+         Y1 = sum(y[deciles_idx]),
+         Y1_exp = sum(yhat[deciles_idx]),
+         Y0 = Ni - Y1,
+         Y0_exp = Ni - Y1_exp)
+
+cut_df
+
+deciles |> sapply(max)
+cut(yhatl, breaks = deciles |> sapply(max))
+
+deciles
+
+
+split(sort(rep(1:10, length.out = 24))
+```
+
+```{r}
+#' Hosmer-Lemeshow Goodness of Fit Test
+#' 
+#' This method implements a few varieties of the popular Hosmer-Lemeshow Goodness of Fit Test, in which the null hypothesis is that the model is a good fit. The most widely used and implemented is splitting into 10 groups dependent on the quantiles of the data, and then summing pearson statistics across each of the groups. Here is a list of the different methods to calculate the Hosmer-Lemeshow (and related) statistics.
+#' 
+#' 1. "deciles_unweighted"
+#' 2. "deciles_weighted"
+#' 3. "fixed"
+#' 4. "fixed_minmax"
+#' 
+#' 
+#' @param mod (glm-object) weighted, binomial glm model
+#' @param g (integer) number of groups
+#' @param fixed (logical) whether the categories used should be equally spaced between the min and max of predicted values
+#' @param adjust (logical) use Pigeon and Heyse correction to denominator of HL Statistic
+#' @param breaks (numeric) manual specification of the category groupings. Will include 0 and 1 as min/max.
+#' @param deciles (logical) calculate the statistic with the deciles of risk
+#'
+#' @return Hypothesis test for Goodness of Fit of Logistic Regression
+#' @export
+#'
+#' @examples
+gof_hl <- function(mod, g = 10, fixed = FALSE, adjust = FALSE, breaks = NULL) {
+  # model object checking
+  if (!inherits(mod, "glm") | # glm
+      mod$family$family != "binomial" | # binomial glm
+      !("(weights)" %in% names(mod$model))) # weighted regression
+  {
+    rlang::abort(message = "Hosmer Lemeshow Test only implemented for weighted, binomial, glm objects.")
+  }
+    
+  y_hat <- fitted(mod)
+  
+  if (!missing(breaks)) { # manually specified groups
+    breaks <- unique(sort(c(0, breaks, 1)))
+      
+      if (max(breaks) > 1 | min(breaks) < 0) {
+        rlang::abort(message = "breaks should be between 0, 1")
+      }
+    method <- "Hosmer-Lemeshow GOF Test"
+    
+  } else if (fixed) { # equally separated groups
+    breaks <- seq(min(y_hat), max(y_hat), length.out = g + 1)
+    method <- "Hosmer-Lemeshow GOF fixed H Test"
+
+  } else {
+   breaks <- quantile(y_hat, 0:g/g)
+   method <- "Hosmer-Lemeshow GOF C Test"
+  }
+  
+  y_cut <- cut(y_hat, unique(breaks), include.lowest = TRUE)
+  
+  Mj <- mod$prior.weights
+  y0 <- mod$y * Mj
+  y1 <- Mj - y0
+  y0_exp <- y_hat * Mj
+  y1_exp <- Mj - y0_exp
+  
+  # aggregate table
+  cut_df <- tibble(y_cut, y0, y0_exp, y1, y1_exp, Mj) |> 
+    group_by(y_cut) |> 
+    dplyr::summarise(Y0 = sum(y0),
+                     Y0_exp = sum(y0_exp),
+                     Y1 = sum(y1),
+                     Y1_exp = sum(y1_exp),
+                     Ni = sum(Mj),
+                     pbar = weighted.mean(y1_exp/Mj, Mj),
+                     pbar_var = sum(Mj * y1_exp / Mj * (1 - y1_exp/Mj)))
+                     
+  if (adjust) {
+    # Pigeon Heyse adjustment
+    statistic_col <- with(cut_df, 
+         (Y1 - Ni * pbar)^2 / pbar_var)
+    hl_table <- cut_df |>
+      add_column(adj_pearson = statistic_col)
+    
+    method <- paste(method, " (Pigeon-Heyse Adjusted)")
+  } else {
+    # pearson statistic, unadjusted
+    statistic_col <- with(cut_df,
+                        (Y0 - Y0_exp)^2 / Y0_exp + (Y1 - Y1_exp)^2 / Y1_exp)
+    hl_table <- cut_df |> add_column(pearson = statistic_col)  
+  }
+  
+  
+  nc <- length(breaks) - 1 # expected number of categories
+  if (nrow(cut_df) < nc) {
+      rlang::inform(message = glue::glue("Empty categories detected, setting g = {num_cat}. \n", num_cat = nrow(cut_df)), use_cli_format = TRUE)
+  }
+  # expected count warning
+  if (any(hl_table$Y0_exp < 5 | hl_table$Y1_exp < 5)) {
+    # cat(hl_table$Y0_exp, Y1_exp)
+    rlang::inform(message = "Groups with expected count < 5 detected, chi-squared approximation may not be valid. Consider decreasing number of groups `g`. \n", use_cli_format = TRUE)
+  }
+  
+  # (adjusted) pearson statistic
+  statistic <- sum(statistic_col)
+  names(statistic) <- "X-squared"
+  df <- nrow(cut_df) - 2
+  p.value <- pchisq(statistic, df, lower.tail = FALSE)
+  
+  structure(list(statistic = statistic,
+                 parameter = c(df = df),
+                 p.value = p.value,
+                 data.name = mod$call$data,
+                 method = method,
+                 alternative = "Population is not a good fit for the assumed model.",
+                 table = hl_table |> dplyr::select(-pbar_var)),
+            class = "htest")
+}
+
+# placekick_wl_hl0 <- gof_hl(placekick_wl, breaks = c(.48, .5, .7))
+# placekick_wl_hl0 <- gof_hl(placekick_wl, breaks = c(.1, .3, .6, .8))
+# placekick_wl_hl0 <- gof_hl(placekick_wl, fixed = TRUE, g = 5)
+# placekick_wl_hl0 <- gof_hl(placekick_wl, fixed = TRUE)
+# placekick_wl_hl0 <- gof_hl(placekick_wl, g = 50)
+
+placekick_wl_hl0 <- gof_hl(placekick_wl, fixed = FALSE, adjust = FALSE)
+placekick_wl_hl0
+placekick_wl_hl0$table
+```
+
+These results match the implementation in Bilder's HLTest, 
+
+#### `vcdExtra::HLtest`
+
+This is the version in `vcdExtra`, but I think it's incorrect for the aggregated model. The totals are not correct, and I don't think the code accounts for the prior weights.
+
+```{r}
+placekick_wl_hl <- vcdExtra::HLtest(placekick_wl)
+placekick_wl_hl$table
+```
+
+
+```{r}
+try(placekick_wl_hl <- vcdExtra::HLtest(placekick_l))
+```
+
+Well, unfortunately the unaggregated version errors out because of the cut command is not unique. In this case, I think it would have worked for other datasets, but the deciles of risk overlap in this case.
+
+Overall do not recommend this function, although there is fairly convenient table output.
+
+#### HLTest
+
+I think this is the best one available I've found. This is the function provided by Dr. Bilder:
+
+```{r}
+placekick_wl_hl2 <- HLTest(placekick_wl, g = 10)
+print(placekick_wl_hl2)
+cbind(placekick_wl_hl2$observed, round(placekick_wl_hl2$expect, digits = 1))
+```
+
+This table is useful because it breaks down the statistic into the 10 groups used for the cuts. We should look at the table for large deviations. Although I would still like a function in which I can specify the cuts manually and evaluate the robustness of the HLtest.
+
+#### `glmtoolbox::hltest`
+
+This function seems like it's doing as it should, but has an automatic way of calculating the number of groups without a way of modifying the number of groups used. Though it does look like the statistic is being calculated correctly from the code.
+
+I don't like this version becaues the group cuts are not displayed, and so diagnosing where the model fits and doesn't fit is not very useful. It's also an automatic selection, which makes it hard to test sensitivity.
+
+The results of this test are also dramatically different than the HLTest. We would conclude that the logistic regression is not a good fit from this test, but from the other cuts, with 10 groups, we would conclude it's an okay fit.
+
+```{r}
+placekick_wl_hl3 <- glmtoolbox::hltest(placekick_wl) # different, but I think it's because of the different cuts
+placekick_wl_hl3$hm
+```
+
+
+#### `ResourceSelection::hoslem.test`
+
+Does not implement the weighted glm version. This version fixes the problem in `vcdExtra` in which for the raw model, we need to use "unique" quantiles, otherwise the `cut` function will not work with repeated values. Hence if you request `g = 10` 10 groups, you may only end up with 6 groups. This is fine, but now the df in the test is incorrect, and doesn't adjust for the fact that `g` is lower now, and instead uses the df as you requested.
+
+The conclusion from this test would be similar to the version by Dr. Bilder, and also gives the table of cuts, but also not recommended.
+
+
+```{r}
+# aggregated (incorrect results)
+placekick_wl_hl4 <- ResourceSelection::hoslem.test(placekick_bin_data$p, fitted(placekick_wl))
+cbind(placekick_wl_hl4$observed, placekick_wl_hl4$expected)
+```
+
+
+```{r}
+# not aggregated (still incorrect)
+placekick_wl_hl4 <- ResourceSelection::hoslem.test(placekick$good, fitted(placekick_l), g = 10)
+print(placekick_wl_hl4)
+cbind(placekick_wl_hl4$observed, placekick_wl_hl4$expected)
+```
+
+#### `LogisticDx::gof`
+
+This package was taken off of CRAN, but has many of the binomial diagnostics implemented. There certainly are a lot of tests, but most are automatic unfortunatly. it would be helpful to review the source code for this package to understand the statistics [gof.R](https://github.com/cran/LogisticDx/blob/master/R/gof.R)
+
+I see the same problem here with the number of groups in which we're using the df from the groups requested rather than the actual number of groups formed. I also kind of have a problem in which most of the tests are somewhat meaningless in the binomial context, but there's no discrimination for what is reported since they're calculated for all glm. ie, i'm not sure I trust a lot of these statistics.
+
+```{r}
+# LogisticDx::gof(placekick_wl) 
+placekick_wl_hl5 <- LogisticDx::gof(placekick_l) # note this is on the unweighted version of the binomial
+
+
+placekick_wl_hl5$chiSq # many "chisq" statistics. for logisitc regression, these are rarely chisq
+placekick_wl_hl5$ct # contingency table by fitted values
+placekick_wl_hl5$ctHL
+```
+
+
+```{r}
+#| include: false
+#| eval: false
+# Most are calculated from `dx` function
+dx(placekick_l, byCov = TRUE) # given by covariate pattern
+
+# we try to diagnose soem of how these statistics are calculated here
+hlct <- placekick_wl_hl5$ctHL
+sum((hlct$y1 - hlct$y1hat)^2 / hlct$y1hat) + sum((hlct$y0 - hlct$y0hat)^2 / hlct$y0) # doesn't seem to match up with statistic..
+# this implies that Pbar is not calculated as expected?
+
+placekick_fitted_data <- placekick_bin_data |> add_column(phat = fitted(placekick_wl))
+
+placekick_fitted_data
+y_breaks <- unique(quantile(fitted(placekick_l), 0:10/10))
+y_cuts <- cut(fitted(placekick_l), breaks = y_breaks, include.lowest = TRUE)
+
+xtabs(~y_cuts)
+```
+
+The `dx` function in this package is incredibly useful though, see the help file for all the residual help we get.
+
+#### `DescTools::HosmerLemeshowTest`
+
+The two gof tests implemented here are `C` statistic, which is the 10 deciles or risk, and `H` are fixed cutpoints (equally separated by number of groups between min and max). The notation comes from 1997 paper by hosmer and lemeshow.
+
+There is also another test based on smooth residuals based on the X space, smoothed residuals that is only calculated when the covariate space is specified.
+
+
+```{r}
+#| results: hold
+# DescTools::HosmerLemeshowTest(fit = fitted(placekick_wl), obs = placekick_bin_data$p, X = cbind(placekick_bin_data$distance), verbose = TRUE) # incorrect, doesn't count weights
+placekick_wl_hl6 <- DescTools::HosmerLemeshowTest(fit = fitted(placekick_l),
+                                                  obs = placekick$good,
+                                                  X = cbind(placekick$distance),
+                                                  verbose = TRUE)
+print(placekick_wl_hl6)
+cbind(placekick_wl_hl6$C$observed, placekick_wl_hl6$C$expected)
+```
+I like this function, as it seems to print out mose of the important aspects of the test I want. This function _does_ adjust for the fact that only 6 unique cuts were formed, and does testing on the righ
+
+```{r}
+#| include: false
+#| eval: false
+
+# Running and verifything things manually.
+
+# C statistic (deciles of risk)
+hlct <- cbind(placekick_wl_hl6$C$observed, placekick_wl_hl6$C$expected)
+sum((hlct[,1] - hlct[,3])^2 / hlct[,3] + (hlct[,2] - hlct[,4])^2 / hlct[,4]) # pearson statistic
+
+# H statistic (fixed)
+# seq(.144, .978, length.out = 11)
+```
+
+
+::: 
+
+
+
+overall I recommend the one by dr. bilder, or the manual one you've made.
+
+
+### Osius-Rojek
+
+::: {.panel-tabset}
+
+#### Manually
+
+```{r}
+#' Osius and Rojek
+#' 
+#' Implements the goodness of fit tests examined by osius and rojek
+#'
+#' @param mod weighted, binomial, glm
+#' @param ss standardize the sum of squares instead of pearson statistic
+#'
+#' @return htest
+#' @export
+#'
+#' @examples
+gof_or <- function(mod, ss = FALSE) {
+  # type checking for weighted binomial glm
+  if (!inherits(mod, "glm") | # glm
+      mod$family$family != "binomial" | # binomial glm
+      !("(weights)" %in% names(mod$model))) # weighted regression
+  {
+    rlang::abort(message = "Osius Rojek Test only implemented for weighted, binomial, glm objects.")
+  }
+  
+  y <- mod$y
+  J <- length(y)
+  p <- mod$rank - 1 # num independent parameters?
+  phat <- fitted(mod)
+  mj <- mod$prior.weights
+  vj <- mj * phat * (1 - phat)
+  cj <- (1 - 2 * phat) / vj
+  A <- 2 * (J - sum(1/mj))
+  X2 <- sum((mj*y - mj*phat)^2 / vj) # pearson statistic
+  S <- sum((mj*y - mj * phat)^2)
+  if (ss) {
+    dj <- (1 - 2 * phat)
+    new_form <- update(mod$formula, dj~.)
+    environment(new_form) <- environment()
+    wlm <- lm(new_form, data = cbind(mod$data, dj), weights = vj)
+    RSS <- sum(vj * residuals(wlm)^2)
+    zstat <- (S - sum(vj)) / sqrt(A + RSS)
+    method <- "Osius Rojek Goodness of Fit Test, Normalized Sum. Sq"
+  } else {
+    new_form <- update(mod$formula, cj~.)
+    environment(new_form) <- environment() # need to update formula environment because model was created outside function
+    wlm <- lm(new_form, data = cbind(mod$data, cj), weights = vj)
+    RSS <- sum(vj * residuals(wlm)^2)
+    zstat <- sum(X2 - (J - p - 1)) / (sqrt(A + RSS)) # not sure what the mean of the pearson chisq should be, could check against
+    method <- "Osius Rojek Goodness of Fit Test, Normalized Pearson"
+  }
+  names(zstat) <- "z"
+  p.value <- pnorm(abs(zstat), lower.tail = FALSE) * 2 # two sided
+  structure(list(p.value = p.value,
+                 statistic = zstat,
+                 method = method,
+                 data.name = mod$call$data,
+                 alternative = "Model is not a good fit."),
+            class = "htest")
+}
+
+placekick_wl_or0 <- gof_or(placekick_wl, ss = FALSE)
+placekick_wl_or0
+```
+
+There's a little bit of controversy as to what the approriate mean for the pearson statistic is, i've seen n - p - 1 and n - p. I should look back in the original paper and look at the asymptotic results, or do some more simlations as to the better mean under various situations.
+
+```{r}
+#| include: false
+#| eval: false
+# This section is diagnosing why Bilder's function returns differently than mine. It's becuase in the approximation he's subtracting an extra 1, not sure which is correct. My version matches LogisticDx::gof
+y <- placekick_wl$y
+
+J <- length(y)
+p <- ncol(model.matrix(placekick_wl))
+p
+
+phat <- fitted(placekick_wl)
+mj <- placekick_wl$prior.weights
+vj <- mj * phat * (1 - phat)
+cj <- (1 - 2 * phat) / vj
+
+X2 <- sum((mj*y - mj * phat)^2 / vj) # 56
+
+# weighted regressio?
+
+wlm <- lm(cj~placekick_wl$model$distance, weights = vj)
+RSS <- anova(wlm)$`Sum Sq`[2] # RSS, is this scaled?
+
+rss <- sum(vj*residuals(wlm)^2)
+A <- 2 * (J - sum(1/mj))
+
+zstat <- (X2 - (J - p)) / (sqrt(A + RSS))
+p.value <- pnorm(abs(zstat), lower.tail = FALSE) * 2
+p.value
+zstat
+
+obj <- placekick_wl
+mf <- obj$model
+ trials = rep(1, times = nrow(mf))
+ if(any(colnames(mf) == "(weights)")) 
+  trials <- mf[[ncol(mf)]]
+ prop = mf[[1]]
+ # the double bracket (above) gets the index of items within an object
+ if (is.factor(prop)) 
+  prop = as.numeric(prop) == 2  # Converts 1-2 factor levels to logical 0/1 values
+ pi.hat = obj$fitted.values 
+ y <- trials*prop
+ yhat <- trials*pi.hat
+ nu <- yhat*(1-pi.hat)
+ pearson <- sum((y - yhat)^2/nu)
+ c = (1 - 2*pi.hat)/nu
+ exclude <- c(1,which(colnames(mf) == "(weights)"))
+ vars <- data.frame(c,mf[,-exclude]) 
+ wlr <- lm(formula = c ~ ., weights = nu, data = vars)
+  rss <- sum(nu*residuals(wlr)^2 )
+ J <- nrow(mf)
+ A <- 2*(J - sum(1/trials))
+ z <- (pearson - (J - ncol(vars) - 1)) / sqrt(A + rss) # i think this line is incorrect, as ncol(vars) includes the response but it shouldn't since p is the dimension of the covariates?
+ p.value <- 2*(1 - pnorm(abs(z)))
+ cat("z = ", z, "with p-value = ", p.value, "\n")
+
+
+```
+
+
+#### `sjstats::chisq_gof`
+
+
+I don't think this version is implementing the RSS correctly, it should be with weights, so I've submitted a bug report. It looks like the implementation is the nearly the same as mine though.
+
+```{r}
+placekick_wl_or <- sjstats::chisq_gof(placekick_wl)
+placekick_wl_or
+```
+
+```{r}
+#| include: false
+#| eval: false
+# bug report pr requested
+library(sjstats)
+
+# example in documentation
+data(efc)
+efc$neg_c_7d <- ifelse(efc$neg_c_7 < median(efc$neg_c_7, na.rm = TRUE), 0, 1)
+m <- glm(
+  neg_c_7d ~ c161sex + barthtot + c172code,
+  data = efc,
+  family = binomial(link = "logit")
+)
+
+x <- m
+
+# source code of chisq_gof
+y_hat <- stats::fitted(x)
+wt <- x$prior.weight
+vJ <- wt * y_hat * (1 - y_hat)
+cJ <- (1 - 2 * y_hat)/vJ
+X2 <- sum(stats::resid(x, type = "pearson")^2)
+form <- stats::as.formula(x$formula)
+form[[2]] <- as.name("cJ")
+dat <- stats::na.omit(x$model)
+dat$cJ <- cJ
+dat$vJ <- vJ
+RSS <- sum(stats::resid(stats::lm(form, data = dat, weights = vJ))^2)
+
+# results from lm
+wls <- stats::lm(form, data = dat, weights = vJ)
+anova(wls) # RSS = 138.73
+RSS
+
+sum(vJ * stats::resid(stats::lm(form, data = dat, weights = vJ))^2) # proposed fix
+
+```
+
+
+#### `o.r.test`
+
+unfortunately gives different value than the oj test above
+
+```{r}
+# seems that it just prints the value and no test object
+placekick_wl_or2 <- o.r.test(placekick_wl)
+```
+
+#### `LogisticDx:gof`
+
+```{r}
+placekick_wl_or3 <- gof(placekick_l)
+placekick_wl_or3$gof
+```
+
+This statistic matches my implementation
+
+#### `or.test`
+
+Found on [Rstat Help Mailing List](https://stat.ethz.ch/pipermail/r-help/2002-January/017858.html)
+
+```{r}
+or.test <- function(object) {
+  ### ancillary function
+  ## ags adapted from agg.sum provided by Bill Dunlap	
+  ags <- function(x, by){
+    by <- data.frame(by)
+    ord <- do.call("order", unname(by))
+    x <- x[ord]
+    by <- by[ord,  ]
+    logical.diff <- function(group) group[-1] != group[ - length(group)]
+    change <- logical.diff(by[[1]])
+    for(i in seq(along = by)[-1])
+      change <- change | logical.diff(by[[i]])
+    by <- by[c(T, change),  , drop = F]
+    by$x <- diff(c(0, cumsum(x)[c(change, T)]))
+    by
+  }
+  ###
+  ### computations
+  ###
+  mf <- model.frame(object)
+  ## collapse the original data by covariate pattern
+  xx <- ags(rep(1, nrow(mf)), mf[-1])
+  ## observed number of cases by covariate pattern
+  yy <- unname(unlist(ags(mf[ , 1], mf[-1])[ncol(xx)]))
+  ## fitted proba
+  pp <- predict(object, newdata = xx, type = "response")
+  ## number of rows with the same covariate pattern
+  mm <- unname(unlist(xx[ncol(xx)]))
+  ## new model frame
+  xx <- xx[ , - ncol(xx)]
+  ## weights
+  nu <- mm * pp * (1 - pp)
+  ## new response
+  cc <- (1 - 2 * pp) / nu
+  ### Pearson's X2
+  X2 <- sum( (yy - mm * pp)^2 / nu)
+  ### weighted regression
+  mod <- lm(cc ~ . , weights = nu, data = xx)
+  rss <- sum( nu * resid(mod)^2 )
+  ### compute the stat.
+  J <- nrow(xx)
+  A <- 2 * (J - sum( 1 / mm))
+  z <- abs( (X2 - (J - length( coef(object) ) ) ) / sqrt(A + rss) )
+  ### report results
+  print(object$call)
+  cat("Osius & Rojek's goodness-of-fit test for logistic models.\n")
+  cat("Null hypothesis: model fits the data well.\n")
+  cat("z =", round(z, 3), "; P =", round(2 * (1 - pnorm(z)), 3), "\n")
+}
+
+or.test(placekick_wl)
+
+```
+
+I don't really get the right version, and I think he was asking for help in the R help channel. It makes sense that these values don't match, there must be an error somewhere.
+
+
+:::
+
+### Stukel
+
+the stukel test checks a better fit with more parameters in the tails of the logistic regression. The implementation is taken from hosmer's book.
+
+There are two "created variables" $z1, z2$, which are defined as coefficients for the upper and lower tail respectivly. Ie. do we need more information for those parts of the model, it could indicate that a logistic model is not the perfect fit.
+
+::: {.panel-tabset}
+
+```{r}
+#| results: hold
+# https://stackoverflow.com/questions/13690184/update-inside-a-function-only-searches-the-global-environment
+# some issues in updating formulas, as update and add1 are meant for interactive use probably, and updating the model in the same context the model was created.
+# this function solves a slightly different issue, in that it evaluates the model based on where the formula was defined, but I want to change the environment that the formula was defined in. 
+# I can see how this would be troublesome if the variables I'm defining are the same as the user is using, that might lead to bugs.
+my_update <- function(mod, formula = NULL, data = NULL) {
+  call <- getCall(mod)
+  if (is.null(call)) {
+    stop("Model object does not support updating (no call)", call. = FALSE)
+  }
+  term <- terms(mod)
+  if (is.null(term)) {
+    stop("Model object does not support updating (no terms)", call. = FALSE)
+  }
+
+  if (!is.null(data)) call$data <- data
+  if (!is.null(formula)) call$formula <- update.formula(call$formula, formula)
+  env <- attr(term, ".Environment")
+
+  eval(call, env, parent.frame())
+}
+
+gof_stukel <- function(mod, test = c("Rao", "LRT")) {
+  # type checking for weighted binomial glm
+  if (!inherits(mod, "glm") | # glm
+      mod$family$family != "binomial" | # binomial glm
+      !("(weights)" %in% names(mod$model))) # weighted regression
+  {
+    rlang::abort(message = "Stukel Test only implemented for weighted, binomial, glm objects.")
+  }
+  test <- match.arg(test)
+  phat <- fitted(mod)
+  ghat <- predict(mod, type = "link")
+  z1 <- .5 * ghat^2 * (phat >= .5) # upper tail variable
+  z2 <- .5 * ghat^2 * (phat < .5) # lower tail variable
+  new_form <- update(mod$formula, .~.+z1 + z2)
+  environment(new_form) <- environment() # set environment of formula
+  newmod_call <- mod$call
+  newmod_call$formula <- new_form # update the formula _inside_ the call
+  newmod <- eval(newmod_call)
+  anova_both <- anova(mod, newmod, test = test) # test both tails together
+  method <- "Stukel Goodness of Fit Test, both tails"
+  alternative <- "Model is not a good fit."
+  switch(test,
+         Rao = {
+           method <- paste(method, " (Score test)")
+           statistic <- anova_both$Rao[2]
+         },
+         LRT = {
+           method <- paste(method, " (LRT test)")
+           statistic <- anova_both$Deviance[2]
+         }
+         )
+  names(statistic) <- "X-squared"
+  p.value <- anova_both$`Pr`[2]
+  
+  structure(list(method = method,
+                 alternative = alternative,
+                 statistic = statistic,
+                 p.value = p.value,
+                 data.name = mod$call$data),
+                 # uppertail = add1(mod, .~.+z1, test = test),  # provide anova tables for separate tails
+                 # lowertail = add1(mod, .~.+z2, test = test)), # provide anova tables for separate tails
+            class = "htest")
+}
+
+placekick_wl_st0 <- gof_stukel(placekick_wl, test = "Rao")
+placekick_wl_st0
+placekick_wl_st0$uppertail
+placekick_wl_st0$lowertail
+```
+
+Here we're showing the results of testing gof for both tails, and then the upper and lower separately
+
+```{r}
+#| include: false
+#| eval: false
+# devlopment of function above
+mod <- placekick_wl
+
+phat <- fitted(mod)
+# ghat <- binomial(link = "logit")$linkfun(phat) # logit
+ghat <- predict(mod, type = "link")
+z1 <- .5 * ghat^2 * ifelse(phat >= .5, 1, 0)
+z2 <- -.5 * ghat^2 * ifelse(phat < .5, 1, 0)
+.5 * ghat^2 * (phat >=.5)
+
+newmod <- update(mod, .~.+z1 + z2)
+add1(mod, .~.+z1, test = "Rao") # upper tail
+add1(mod, .~.+z2, test = "Rao")
+
+
+add1(mod, .~.+z1, test = "LRT") # lower tail
+add1(mod, .~.+z2, test = "LRT") # lower tail
+anova(mod, newmod, test = "LRT")
+
+drop1(newmod, test = "Rao")
+drop1(newmod, test = "Rao")[c("z1", "z2"), ]
+```
+
+####  stukel.test
+
+This is Prof Bilder's version of the GOF test. He uses the LRT version for testing both tails at once.
+
+```{r}
+stukel.test(placekick_l) # LRT of both z1 and z2
+```
+
+#### `LogisticDx::gof`
+
+```{r}
+gof(placekick_l)$gof
+```
+
+The Stukel tests are provided those starting with S. `st` stands for the score test, and "ll" stands for likelihood. I get matching values for all except `sstBoth` (score test for both tails). I'm not sure what's going on there.
+
+
+:::
+
+## Residuals
+
+Hosmer recommends 7 different logistic regression plots that all tell you slightly different things. 
+
+## Pseudo R2
+
+Here we implement some Pseudo R2 values for
+
 
 ## Testing
 
@@ -193,30 +1187,38 @@ tribble(~test, ~parameter, ~sampling, ~pvalue, ~hypothesis,
         "cochran", "cell", "unconditional two sample", "approximate", "association")
 ```
 
+We should be careful to distinguish three types of testing that can happen, in relation to all the assumed sampling distributions that we assume for the table:
 
-A list of summary
+1.  Independence
+2.  Homogeneity
+
+-   This is identical to a test for independence when we are fixing one of the columns.
+
+3.  Goodness of Fit
+
+-   The idea is that you provide the probability vector that you want to test. In this case, there is normally a model behind the predicted probabilities, and you're using the chisq statistic to tell you how well the model fits.
 
 A list of tests:
 
-- Cochran summary test
-- (Cochran)-Mantel-Haenszel summary test
-- Generalized CMH Test
-- Cochran's Q test
-- Pearson Chi Squared
-- Cochran-Armitrage Trend Test
-- Cochran-Q Test
-- Mann-Whitney U test (Wilcoxon Rank Sum)
-- Wilcoson Signed Rank Test (paired samples)
-- Krustkal Wallis
+-   Cochran summary test
+-   (Cochran)-Mantel-Haenszel summary test
+-   Generalized CMH Test
+-   Cochran's Q test
+-   Pearson Chi Squared
+-   Cochran-Armitrage Trend Test
+-   Cochran-Q Test
+-   Mann-Whitney U test (Wilcoxon Rank Sum)
+-   Wilcoson Signed Rank Test (paired samples)
+-   Krustkal Wallis
 
 Exact tests
 
-- Fisher Exact Test
-- Barnard Exact Test
+-   Fisher Exact Test
+-   Barnard Exact Test
 
 Dependent "Matched pairs" tests
 
-- McNemar Test
+-   McNemar Test
 
 ### Pearson
 
@@ -230,7 +1232,6 @@ tribble(~"", ~"Disease", ~"No Disease", ~"",
   kable("html")
 ```
 
-
 Assume two sample proportional sampling model: A derivation from 2 sample proportion (pooled) z-test:
 
 $$
@@ -240,37 +1241,65 @@ z^2 &= \frac{(\hat p_1 - \hat p_2)^2}{\hat p(1 - \hat p)(\frac{1}{n_1} + \frac{1
 \end{aligned}
 $$
 
-
 $$
 \begin{aligned}
-X^2 = \sum_i^c \frac{|O_i - E_i|}{E_i} \sim \chi^2_{c-1}
+X^2 = \sum_i^c \frac{|O_i - E_i|^2}{E_i} \sim \chi^2_{c-1}
 \end{aligned}
 $$
 
-Resources:
+
+When the pearson table is generalized to Ix2, we have a column proportions, so we have the Brandt-Snedecor formula of the pearson independence statistic: 
+
+$$
+\begin{aligned}
+\chi^2(I) = \sum\frac{n_i (p_i - p)^2}{p(1-p)}
+\end{aligned}
+$$
+where $\chi^2(I)$ represents the independence chisq statistic, $n_i$ is the number in each group, $p_i$ is the proportion by row, and $p$ is the proportion by total row.
+
+
+Resources: 
+
 - [Pearson as Score Test](https://projecteuclid.org/download/pdf_1/euclid.lnms/1215091138)
 - [7 proofs of independence test](https://arxiv.org/pdf/1808.09171.pdf)
 
 
+### Likelihood Ratio Test (G Test)
+
+-   `AMR::g.test()`
+-   `DescTools::GTest()`
+-   `RVAideMemoire::G.test()`
+
+These are the likelihood ratio test statistics, and the statistic can be calculated by the formula
+
+$$
+\begin{aligned}
+2\sum O \log \left(\frac{O}{E}\right)
+\end{aligned}
+$$
+
+-   This is an alternative to pearson chisq tests, but are asymptotically equivalent.
+-   Consider using this when both variables are "nominal"
+
 ### Barnard Exact Test
 
-Barnard is considered an "unconditional" approach to exact testing. contrast to Fisher exact test which is a "conditional" approach to testing the p-value
+Barnard is considered an "unconditional" approach to exact testing.
+contrast to Fisher exact test which is a "conditional" approach to testing the p-value
 
-Barnard is effectively a 2 stage test, given some observed table X, a "p-value" is the probability of observing a table more extreme than the observed. 
+Barnard is effectively a 2 stage test, given some observed table X, a "p-value" is the probability of observing a table more extreme than the observed.
 
 The two stages are thus:
 
-1. determine which tables are more "extreme"
-2. calculated probability of those tables
+1.  determine which tables are more "extreme"
+2.  calculated probability of those tables
 
 Thus, the "exactness" part of the description refers to how a probability is calculated.
 
 Many methods have been proposed for stage 1
 
-- Suissa and Shuster (1985) use pooled and unpooled z statistic for two proportions.
-- Booschloo (1970) used the p-value from fisher's exact test to determine extremeness...
-- Santner Snell - difference in proportion
-
+-   Suissa and Shuster (1985) use pooled and unpooled z statistic for two proportions.
+-   Booschloo (1970) used the p-value from fisher's exact test to determine extremeness...
+-   Santner Snell - difference in proportion
 
 ```{r}
 X <- matrix(c(3, 0, 0, 3), nrow = 2)
@@ -345,18 +1374,22 @@ barnard %>% ggplot(aes(x = p, color = type)) +
   labs(title = "Barnard extremeness method comparison")
 ```
 
-For accuracy of the size of the test, it seems that csm is the most accurate, but also the most computationally intensive. We not that all the tests have more approriate "size" than the fisher_exact test.
+For accuracy of the size of the test, it seems that csm is the most accurate, but also the most computationally intensive.
+We not that all the tests have more approriate "size" than the fisher_exact test.
 
 Resources
 
-- [Explanation of difference between unconditional and conditional](https://www.researchgate.net/publication/242179503_Conditional_versus_Unconditional_Exact_Tests_for_Comparing_Two_Binomials)
-- [Exact Test Package Documentation](https://cran.r-project.org/web/packages/Exact/Exact.pdf) - `exact.test` function documentation has more information about barnard implmenetation.
+-   [Explanation of difference between unconditional and conditional](https://www.researchgate.net/publication/242179503_Conditional_versus_Unconditional_Exact_Tests_for_Comparing_Two_Binomials)
+-   [Exact Test Package Documentation](https://cran.r-project.org/web/packages/Exact/Exact.pdf) - `exact.test` function documentation has more information about barnard implmenetation.
 
 ### McNemar
 
-McNemar tests are used when there is some "dichotomous trait", for matched pairs. This means that the responses are statistically dependent. This is common for some longitudinal studies in which a single individual is asked two questions, and their answers are coded as locations in the table. Thus, the grand total, should be the number of pairs of data, not the total number of observations.
+McNemar tests are used when there is some "dichotomous trait", for matched pairs.
+This means that the responses are statistically dependent.
+This is common for some longitudinal studies in which a single individual is asked two questions, and their answers are coded as locations in the table.
+Thus, the grand total, should be the number of pairs of data, not the total number of observations.
 
-For example, suppose a person is asked if they voted democrat 
+For example, suppose a person is asked if they voted democrat
 
 ```{r}
 tribble(~"", ~"2008 democrat", ~"2008 republican",
@@ -365,14 +1398,16 @@ tribble(~"", ~"2008 democrat", ~"2008 republican",
   kbl()
 ```
 
-McNemar tests "Marginal Homogeneity", meaning that the probabilities of the margins are the same. $p_a + p_b = p_a + p_c$ and $p_c + p_d = p_b + p_d$. Thus, this means that we are testing $H_0: p_b = p_c$, $H_A: p_b \neq p_c$. The score statistic is:
+McNemar tests "Marginal Homogeneity", meaning that the probabilities of the margins are the same.
+$p_a + p_b = p_a + p_c$ and $p_c + p_d = p_b + p_d$.
+Thus, this means that we are testing $H_0: p_b = p_c$, $H_A: p_b \neq p_c$.
+The score statistic is:
 
 $$
 \begin{aligned}
 z_0^2 = \frac{(b-c)^2}{b+c} \sim \chi^2_1
 \end{aligned}
 $$
-
 
 <!-- This section needs clarification... -->
 
@@ -395,10 +1430,9 @@ pres_mcnemar <- mcnemar.test(pres, correct = FALSE)
 pres_mcnemar
 ```
 
-
 Notes
 
-- only the off diagonal matters for significance, where as the main diagonal 
+-   only the off diagonal matters for significance, where as the main diagonal
 
 A good reference is 11.1 in Categorical Data Analysis, 3rd edition by Agresti
 
@@ -408,19 +1442,321 @@ a test of homogeneity.
 
 ### Wilcox Test
 
-Is a test of location for two samples. This somewhat analogous to a nonparametric t-test.
+Is a test of location for two samples. This somewhat analogous to a nonparametric t-test, it wouldn't normally be considered a categorical test, but there's an equivalence to the trend test with average ranks as the scores.
 
 ### Krustkal Wallis
 
-Also a test of location for K samples. This is an extension of the Wilcox test that is also nonparametric. this can be thought of a nonparameteric anova.
+Also a test of location for K samples.
+This is an extension of the Wilcox test that is also nonparametric.
+this can be thought of a nonparameteric anova.
 
 ### Cochran-Armitrage Trend Test (ordinal)
 
-Appropriate for IxJ tables in which _both_ directions are ordinal. This assumes the tables are sampled by binomial fixed proportions for the two groups. We can kind of think of fitting some weighted regression to a surface that is determined by the scores along X and Y.
+- `CochranArmitageTest`
 
-In the 2xJ case, this reduces to a Wilcoxon test, (also known as Mann-Whitney).
+Appropriate for IxJ tables in which *both* directions are ordinal.
 
-These tests are more powerful for testing specific hypotheses, like a specific trend. If we don't know what the trend is, then we may be better off testing with a pearson test which just looks for general association.
+These tests are more powerful for testing specific hypotheses, like a specific trend. We can kind of think of fitting some weighted regression to a surface that is determined by the scores along X and Y. This means that we must assign scores of separation to X and Y. If one of them is a binary variable, we'd generally assign 0-1, or if the ordinal categories carry some numeric meaning, ie. number of drinks is 0-1, 1-4, 5-7. You may consider using .5, 2.5, 6 for the scores of separation for them.
+
+In the 2xJ case, this reduces to a Wilcoxon test, (also known as Mann-Whitney). The Wilcoxon test would use the midranks for each of the categories of separation. Misassigning the scores when there's a linear trend means it'll be inefficient, but by a factor the correlation of false and true scores squared (Agresti)
+
+If we don't know what the trend is, then we may be better off testing with a pearson test which just looks for general association.
+
+I think the terminology is a little confusing here, but although it generalizes to IxJ, it seems most common for case-control studies in which we have 2xJ or Ix2. In either case, it's a proprotional trend test that the probabilities are increasing based on score.
+
+First we consider testing Ix2 tables, so that we have a column of proportions we can test. The trend test is testing a linear trend in the column of proportions.
+
+It is useful to think about the trend test as a breakdown of the chisq from the independence pearson test. That is, we can first calculate the pearson chisq:
+
+$$
+\begin{aligned}
+\chi^2(I) = \chi^2(T) + \chi^2(L)
+\end{aligned}
+$$
+where $\chi^2(I)$ is the pearson chisq statistic, $\chi^2(T)$ is the trend chisq statistic, and $X^2(L)$ is the component leftover, deviance from the regression.
+
+The model behind the test is a linear logistic model, which we weight the scores of the coefficients:
+
+$$
+\begin{aligned}
+\operatorname{logit}(\pi_i) = \alpha + \beta x_i
+\end{aligned}
+$$
+
+
+#### Example: Infants and Alcohol
+
+This example is from @agrestiCategoricalDataAnalysis2013, and looks at the if the number of drinks you have per week has an effect on the malformation of your child.
+
+```{r}
+# Infant Alcohol data, Table 5.3 in Agresti
+alcohol <- matrix(c(48, 17066, 
+                    38, 14464,
+                    5, 788,
+                    1, 126,
+                    1, 37), byrow = T, ncol = 2,
+                  dimnames = list(alcohol = c("0", "<1", "1-2", "3-5", ">5"),
+                                  malformation = c("present", "absent")))
+
+# in data frame form
+alcohol_df <- alcohol |> 
+  as.data.frame() |> 
+  rownames_to_column(var = "alcohol")
+alcohol_ldf <- alcohol_df |> 
+  pivot_longer(present:absent, names_to = "malformation") # long format
+alcohol_lldf <- Untable(alcohol) # every observation listed
+
+# margins
+alcohol_rsum <- marginSums(alcohol, margin = 1)
+alcohol_csum <- marginSums(alcohol, margin = 2)
+alcohol_sum <- marginSums(alcohol)
+
+# obs and expected proportions
+alcohol_expected_prop <- outer(alcohol_rsum, alcohol_csum) / alcohol_sum^2
+alcohol_expected_count <- outer(alcohol_rsum, alcohol_csum) / alcohol_sum # expected counts
+
+alcohol |> kable() |> kable_minimal()
+```
+
+After having so many drinks, we can show you the proportion of those that have malformations in their infants.
+
+```{r}
+#| results: hold
+# pearson statistic, and manually
+# sum((alcohol - alcohol_expected_count)^2 / alcohol_expected_count) # pearson statistic
+# chisq.test(alcohol, correct = FALSE)
+prop.test(alcohol)
+```
+
+The pearson statistic is 12.082, with 4 degrees of freedom
+
+```{r}
+#| results: hold
+# LRT G^2, manually
+# 2 * sum(alcohol * log(alcohol / alcohol_expected_count)) # LRT statistic
+# AMR::g.test(alcohol)
+# G.test(alcohol)
+DescTools::GTest(alcohol)
+```
+
+Similarly, the LRT G^2 statistic is 6.202, in this case giving contradictory results for the p-value. But both of these tests are treating the covariates as categorical, but we should want to do something ordinal.
+
+We consider these models, because they seem related and I want to know what the difference between them is (the last one is the most correct I believe).
+
+1. Poisson
+2. Logistic
+
+ - without the weights, and fully expanding the table so that every malformation is its own row with one variable of the alcohol level.
+ 
+3. Logistic against scores
+
+4. Logistic w/ weights
+
+  - the weights here will represent the number of observations in the binomial that went into that observation
+  - If we have $i\in I$ binomial observations, the model $Binom(n_i, \pi_i) / n_i \sim x_i\beta$
+  
+5. Logistic w/ weights against scores
+
+  - This is the correct model, and how the model should be fit.
+
+```{r}
+# GLM Models
+## Logistic modeling preparation
+alcohol_logit <- logitlink(alcohol[,1]/alcohol[,2])
+alcohol_lldf_logistic <- alcohol_lldf |> mutate(malformation_num = recode(malformation, "present" = 1, "absent" = 0))
+
+## Poisson
+alcohol_poisson <- glm(value~alcohol + malformation, data = alcohol |> melt(), family = poisson())
+
+## Logit
+alcohol_logistic <- glm(malformation_num~alcohol, data = alcohol_lldf_logistic, family = binomial(link="logit"))
+
+## Linear Logit
+alcohol_lldf_linear_logistic <- alcohol_lldf_logistic |> mutate(alcohol_score = recode(alcohol,
+                                                       "0" = 0,
+                                                       "<1" = .5,
+                                                       "1-2" = 1.5,
+                                                       "3-5" = 4,
+                                                       ">5" = 7))
+alcohol_linear_logistic <- glm(malformation_num~alcohol_score, data = alcohol_lldf_linear_logistic, family = binomial(link = "logit"))
+
+## weighted logistic
+alcohol_wlogistic <- glm(alcohol[,1]/alcohol_rsum~1, family = binomial, weights = alcohol_rsum)
+
+## weighted linear logistic regression
+alcohol_scores <- c(0, .5, 1.5, 4, 7)
+alcohol_wll <- glm(alcohol[,1]/alcohol_rsum~alcohol_scores, family = binomial, weights = alcohol_rsum)
+
+summary(alcohol_wll)
+```
+
+The summary output here is the weighted linear logistic regression. It's the "proper" model here, and it seems the trend is significant, with an estimate of odds increase of malformation `r exp(.3166)` for each additional drink.
+
+
+::: {.callout-warning icon=false appearance="minimal"}
+
+For some reason fitting the non-weighted version of the logistic regression and summing the pearson residuals does NOT give you the right independence pearson statistic, for the fully expanded dataset. You will get the correct pearson statistic if you use the poisson glm, or the weighted binomial, and I'm not sure the reason why.
+
+:::
+
+```{r}
+#| results: hold
+#| echo: true
+# Statistics using logistic distribution
+anova(alcohol_logistic, test = "Rao") # X^2 (score test)
+anova(alcohol_logistic, test = "LRT") # G^2, LRT test
+
+# Statistics using poisson distribution
+sum(residuals(alcohol_poisson, type = "pearson")^2) # pearson statistic, X^2
+sum(residuals(alcohol_poisson, type = "deviance")^2) # deviance statistic, G^2
+# df.residual(alcohol_poisson) # for testing the statistics
+
+# linear logistic model
+# summary(alcohol_linear_logistic) # The estimates here are the same as the weighted logistic, and standard errors are correct, but residual degrees of freedom are incorrect.
+anova(alcohol_linear_logistic, test = "Rao") # Cochran Trend statistic, X^2(T), correct (score test)
+anova(alcohol_linear_logistic, test = "LRT") # Analogous to Cochran Trend test, but LRT test. 4.25
+
+# I'm not sure the significance of the sum of the pearson residuals in the fully expanded data
+# pearstat <- sum(residuals(alcohol_linear_logistic, type = "pearson")^2)
+# 1 - pchisq(pearstat, df.residual(alcohol_linear_logistic)) # goodness of fit? pearson test..
+
+# logistic with weights
+# summary(alcohol_wlogistic)
+sum(residuals(alcohol_wlogistic, type = "pearson")^2) # pearson statistic, X^2, score
+deviance(alcohol_wlogistic) # deviance statistic, G^2, LRT
+anova(alcohol_wlogistic, test = "Chisq") # not correct because there are no terms to drop! IT's only the
+
+# linear logistic with weights
+# summary(alcohol_wll)
+deviance(alcohol_wll) # deviance gof statistic
+sum(residuals(alcohol_wll, type = "pearson")^2) # pearson gof statistic
+anova(alcohol_wll, test = "Rao") # Cochran Trend Test statistic (score)
+anova(alcohol_wll, test = "LRT") # LRT analogue
+```
+Calculating the confidence interval by `profile` in the weighted regression seems to error out, so an example of how to estimate it with the package Bhat is given in CDA Thompson's PDF.
+
+
+```{r}
+# results: hold
+alcohol_overall_prop <- alcohol_csum / alcohol_sum
+p_i <- alcohol[,1] / alcohol_rsum
+p <- alcohol_overall_prop[1] # overall margin population
+
+# cochran armitage trend test (very manually)
+# xbar <- sum(alcohol_rsum / alcohol_sum * alcohol_scores)
+# b <- sum(alcohol_rsum * (p_i - p) * (alcohol_scores - xbar)) / sum(alcohol_rsum * (alcohol_scores - xbar)^2)
+# pi_i <- p + b * (alcohol_scores - xbar)
+
+# take the fitted values from this
+alcohol_trend_lm <- lm(p_i ~ alcohol_scores, weights = alcohol_rsum)
+pi_i <- fitted(alcohol_trend_lm)
+b <- coef(alcohol_trend_lm)[2]
+# xbar <- weighted.mean(alcohol_scores, alcohol_rsum)
+
+1 / (alcohol_overall_prop[1] * (1 - alcohol_overall_prop[1])) * sum(alcohol_rsum * (p_i - p)^2) # pearson independence from brandt Snecdor formula
+
+# decomposes into
+1 / (alcohol_overall_prop[1] * (1 - alcohol_overall_prop[1])) * sum(alcohol_rsum * (p_i - pi_i)^2) # X^2(L)
+1 / (alcohol_overall_prop[1] * (1 - alcohol_overall_prop[1])) * sum(alcohol_rsum * (pi_i - p)^2) # Trend statistic,
+```
+
+Notice in the above calculations, the only difference between the pearson independence statistic, and the "lack of fit" statistic, is the usage of the predicted probabilities. This decomposition is the classic anova move of decomposing a sum of squares into a middle ground of some model based probability, so that we get an SS for the model and SS for the
+
+There's also the relationship to the $M^2$ pearson correlation based statistic for ordinal models.
+
+```{r}
+# Cochran relation to M^2, correlation based statistic
+with(alcohol_lldf_linear_logistic,
+     cor(alcohol_score, malformation_num)^2) * alcohol_sum # Cochran trend statistic by pearson correlation
+```
+
+These above section explores the two decompositions of the independence statistic.
+
+$$
+\begin{aligned}
+\chi^2_{I - 2}(I) &= \underbrace{\chi^2_1(T)}_{\text{Cochran Trend Statistic}} +  \chi^2_{I - 2}(L) \\
+ 12.08 &= 6.5701 + 5.512 \\
+ G^2(I) &= \underbrace{G^2(I | L)}_{\text{LRT Trend Statistic}} + G^2(L) \\
+ 6.202 &= 4.2533 + 1.9487
+\end{aligned}
+$$
+$I$ in paranthesis means independent, but in the subscript it means number of rows, as in a I x 2 table. The trend statistic is a one degree of freedom test that is similar to the ANOVA principle that we can decompose the Independence into two independent test statistics, and create tests from them individually. Both of these break down and are chi squared statistic.
+
+::: {.callout-note icon=false appearance="minimal"}
+
+##### Power in Chisq testing
+
+Power is the probability of rejecting when the null hypothesis is false, so we generally need to discuss the noncentrality parameter. In chisq testing, the power increases when the degrees of freedom for the test decrease. We can gain more power by testing for narrower alternative. In this case, $G^2(I)$ has I-1 degrees of freedom, while $G^2(I|L)$ only has 1 degree of freedom. Consider two scenarios
+
+1. Linear logit function holds, then the goodness of fit $G^2(L)$ will be asymptotic chisq, and $G^2(I) and G^2(I|L)$ will have the same noncentrality parameter.
+
+2. The linear logit model does NOT hold, then $G^2(I)$ will have a higher noncentrality parameter than $G^2(I|L)$ and thus, the higher noncentrality parameter will mean that we have more power (generally), but when the linear logit model holds approximately, the noncentrality parameter should be similar, thus the lower df statistic will still be more powerful. Mantel 1964 notes that although its a linear test, it does not mean we're making an assumption of linearity, the test statistic is still useful for determining any sort of progressive trend.
+
+:::
+
+Okay, enough of messing with the raw models, this is the fastest way to run a Cochran test directly without the model.
+
+```{r}
+# events, total number, scores
+alcohol_tt <- prop.trend.test(alcohol[,1], n = alcohol_rsum, score = alcohol_scores)
+alcohol_cat <- CochranArmitageTest(alcohol) # cannot adjust scores with this type of test
+alcohol_ct <- coin::chisq_test(as.table(alcohol), scores = list(alcohol = alcohol_scores))
+# independence_test(as.table(alcohol), teststat = "quadratic") # general pearson
+# independence_test(as.table(alcohol)) # idk what this is
+alcohol_it <- independence_test(as.table(alcohol), scores = list(alcohol = alcohol_scores))
+
+alcohol_tt
+```
+
+There is a relationship to the wilcoxon two sample test (mann-whitney test) as well. Normally for wilcox_test, it's a test of the median location, that the distribution of row 1 is different from row 2, we can test this with an asymptotic z score. (Now we're considering a 2xJ table instead of a Ix2 table.) Naturally, wilcox will treat all of the same category as ties, and the ties will be replaced with the average of the ranked ties. If the table was [1, 2, 3] vs [6, 1, 1], then the wilcox test is equivalent to the trend test with scores 4, 6, 8.5.
+
+```{r}
+#| results: hold
+wilcox.test(as.numeric(alcohol)~malformation, data = Untable(alcohol), correct = FALSE) # gives the same p-value, different rank statistic
+coin::wilcox_test(as.numeric(alcohol)~malformation, Untable(alcohol))
+# alcohol_wilcox_scores <- cumsum((1 + alcohol_rsum) / 2)
+alcohol_wilcox_scores <- c(((alcohol_rsum + 1) / 2)[1:4], 0) + c(0, cumsum(alcohol_rsum)[1:4]) # average of min/max rank
+prop.trend.test(alcohol[,1], n = alcohol_rsum, alcohol_wilcox_scores)
+```
+
+
+```{r}
+#| include: false
+#| eval: false
+sum(abs(alcohol_observed - alcohol_expected) / alcohol_expected)
+
+(alcohol[, 1] / alcohol_rsum) |> cbind() |> `colnames<-`("prop")
+
+
+
+anova(alcohol_logistic)
+fitted(alcohol_logistic) |> unique()
+
+summary(alcohol_logistic)
+
+plot(alcohol_lldf$alcohol, alcohol_logistic$fitted.values)
+
+# Pearson
+residuals(alcohol_logistic, type = "response")
+phat <- fitted(alcohol_logistic)
+
+
+# Logistic regression on proportions
+alcohol_prop_df <- alcohol_df |> mutate(prop = present / (present + absent))
+alcohol_prop_logistic <- glm(prop~alcohol, data = alcohol_prop_df, family = binomial(link = "logit"))
+summary(alcohol_prop_logistic)
+
+sum(residuals(alcohol_prop_logistic, type = "pearson")^2)
+fitted(alcohol_prop_logistic)
+
+fitted(alcohol_logistic) |> unique()
+
+chisq.test(alcohol, correct = FALSE)
+
+summary(alcohol_logistic)
+sum(residuals(alcohol_logistic, type = "pearson")^2)
+
+```
 
 ```{r}
 #| include: false
@@ -484,7 +1820,6 @@ r <- sum(outer(u, v) * p) # .109
 r^2 * (N - 1)
 ```
 
-
 ```{r}
 #| include: false
 #| eval: false
@@ -507,27 +1842,40 @@ CochranArmitageTest()
 CochranQTest()
 ```
 
+#### Example: Decomposing Total Chisq
+
+This example comes from Cochran 1954, Table 4.
+@cochranMethodsStrengtheningCommon1954
+
+```{r}
+#| include: false
+#| eval: false
+matrix(c(86, 814,
+         117, 1038,
+         49, 1475,
+         61, 1580), 
+       ncol = 2, byrow = T,
+       dimnames = list(proband = c("earlier_cancer", "earlier_control", "same_cancer", "same_control"), relatives = c("with", "without")))
+
+```
 
 ### CMH testing
 
-The CMH testing is technically supposed to be done on tables in strata. the data type is an I X J X K, in which we have K strata and an I X J contingency table in each.
+The CMH testing is technically supposed to be done on tables in strata.
+the data type is an I X J X K, in which we have K strata and an I X J contingency table in each.
 
-- you are not penalized for adding tables with sparse data with the CMH test statistic
-- this reduces to the N-1 adjusted pearson chisquared statistic for 1 strata
-- the test assumes that there is a common odds ratio to estimate, but in order to test the hypothesis we can use a Breslow-Day Test of Homogeneity
-- Conditional logistic regression gives a similar answer, `clogit` in package `survival` because similar to cox model as well.
-
+-   you are not penalized for adding tables with sparse data with the CMH test statistic
+-   this reduces to the N-1 adjusted pearson chisquared statistic for 1 strata
+-   the test assumes that there is a common odds ratio to estimate, but in order to test the hypothesis we can use a Breslow-Day Test of Homogeneity
+-   Conditional logistic regression gives a similar answer, `clogit` in package `survival` because similar to cox model as well.
 
 #### Generalized CMH Testing
 
+CMH is extended to IxJxK with possibly ordinal factors for I and J.
+An implementation of these statistics can be found:
 
-CMH is extended to IxJxK with possibly ordinal factors for I and J. An implementation of these statistics can be found: 
-
-- `coin::cmh_test()`
-- `vcdExtra:CHMtest()`
-
-
- 
+-   `coin::cmh_test()`
+-   `vcdExtra:CHMtest()`
 
 #### CMH - McNemar Equivalence
 
@@ -552,7 +1900,6 @@ mantelhaen_2by2 <-  function(x) {
   mantelhaen.test(array(c(x, 0, 0, 1, 1), dim = c(2, 2, 2)), correct = FALSE)
 }
 ```
-
 
 ### 2x2 tables Comparison {.tabset}
 
@@ -782,15 +2129,15 @@ contingency_p %>%
   coord_cartesian(xlim = c(0, .1), ylim = c(0, .1)) # for zooming in
 ```
 
-
 ## More than two categories
 
-This section starts to get into 2 x I tables, and even more dimensions like, I X J X K tables, and how we analyze those tables. We'll start with an overview of the multinomial theory, which is fundamental in extending the binomial (2 categories) into multiple categories. The binomial is a special case of the multinomial distribution
+This section starts to get into 2 x I tables, and even more dimensions like, I X J X K tables, and how we analyze those tables.
+We'll start with an overview of the multinomial theory, which is fundamental in extending the binomial (2 categories) into multiple categories.
+The binomial is a special case of the multinomial distribution
 
-- `nnet::multinom`
-- `VGAM::vglm(family = multinom)`
-- `mlogit::mlogit`
-
+-   `nnet::multinom`
+-   `VGAM::vglm(family = multinom)`
+-   `mlogit::mlogit`
 
 A common example we see in this exposition is housing data from library `MASS`
 
@@ -801,8 +2148,6 @@ data(housing)
 # The array version
 housing_arr <- xtabs(Freq~Sat + Infl + Type + Cont, data = housing)
 ```
-
-
 
 ### Poisson GLM Modeling
 
@@ -831,6 +2176,7 @@ house_glm1$df.residual # nrow(housing) - length(coef(house_glm1))
 ```
 
 See 202 for rescaling the predictions from this model to the probability scale (by the margin of satisfaction)
+
 ```{r}
 hnames <- lapply(housing[, -5], levels) # 
 house_pm <- predict(house_glm1, expand.grid(hnames), type = "response") # poisson means exp(\eta)
@@ -883,7 +2229,6 @@ Hypothesis testing with nnet
 housing_wide <- housing %>% pivot_wider(names_from = "Sat", values_from = "Freq")
 ```
 
-
 Our saturated dataset is one in which every cell is estimated with a parameter.
 
 ```{r}
@@ -907,20 +2252,25 @@ deviance(housing_vglm)
 1 - pchisq(sum(residuals(housing_vglm, type = "pearson")^2), df.residual(housing_vglm)) # pearson
 ```
 
-The null hypothesis here is that the model is specified correctly. High p-values mean we fail to reject that the model is correct. In general, lack of fit tests are pretty bad tests for telling us any information. We would prefer to do some manual model searching.
+The null hypothesis here is that the model is specified correctly.
+High p-values mean we fail to reject that the model is correct.
+In general, lack of fit tests are pretty bad tests for telling us any information.
+We would prefer to do some manual model searching.
 
 ```{r}
 drop1(housing_vglm, test = "LRT")
 ```
 
-The results here say that we could probably drop `Infl:Cont` and `Type:Cont`. In fact, dropping `Infl:Cont`, we would get the biggest drop in AIC, indicating better model fit for number of parameters we estimate.
+The results here say that we could probably drop `Infl:Cont` and `Type:Cont`.
+In fact, dropping `Infl:Cont`, we would get the biggest drop in AIC, indicating better model fit for number of parameters we estimate.
 
 ```{r}
 housing_vglm1 <- update(housing_vglm, .~. - Infl:Cont)
 drop1(housing_vglm1, test = "LRT")
 ```
 
-Doing it again shows we could again get lower AIC by dropping either parameter.... an automated way of doing this can be done through `step4vglm`
+Doing it again shows we could again get lower AIC by dropping either parameter....
+an automated way of doing this can be done through `step4vglm`
 
 ```{r}
 # Forward-Backward Step selection on 2-way interaction model
@@ -928,8 +2278,8 @@ housing_vglm_step <- step4vglm(housing_vglm, direction = "both")
 housing_vglm_step@post$anova # shows the steps that the algorithm took
 ```
 
-The steps the algorithm is saved in the slot `@post$anova`. We can see that the additive model was selected, dropping all the interactions.
-
+The steps the algorithm is saved in the slot `@post$anova`.
+We can see that the additive model was selected, dropping all the interactions.
 
 ```{r}
 # additive model
@@ -938,7 +2288,8 @@ housing_vglm2 <- vglm(cbind(Low, Medium, High) ~ Infl + Type + Cont, data = hous
 anova(housing_vglm2, housing_vglm, type = 1)
 ```
 
-there's weak evidence that those dropped coefficients were not zero... so in favor of the more parsimonious and interpretable model, we choose the additive model. Now we do some diagnostics, show the mosaic plot of the pearson chisq values.
+there's weak evidence that those dropped coefficients were not zero... so in favor of the more parsimonious and interpretable model, we choose the additive model.
+Now we do some diagnostics, show the mosaic plot of the pearson chisq values.
 
 ```{r}
 sum(residuals(housing_vglm2, "pearson")^2) # asymptotically the same
@@ -1005,13 +2356,11 @@ plot(housing_vglm2)
 coef(housing_vglm2, matrix = TRUE)
 ```
 
-
 ```{r}
 # the predicted probabilities by each of the covariates.
 bind_cols(housing_wide %>% dplyr::select(Infl, Type, Cont),
           fitted(housing_vglm2))
 ```
-
 
 ```{r}
 anova(housing_vglm1, housing_vglm, type = 1) # score tests not available in VGAM currently
@@ -1026,8 +2375,11 @@ dropterm(housing_vglm, test = "Chisq")
 There are a lot of multiclass metrics that are difficult to keep straight, especially as it comes to confusion matrix.
 
 <figure>
-<img src="classification/classification_metrics.jpg" style="width:100%"></img>
-<figcaption></figcaption>
+
+<img src="../classification/classification_metrics.jpg" style="width:100%"/></img>
+
+<figcaption>
+
+</figcaption>
+
 </figure>
-
-
